@@ -177,6 +177,64 @@ for (const theme of THEMES) {
     expect(ring.nextFrame, 'one frame after focus the wrapper ring must still be the token').toBe(ring.expected)
   })
 
+  // IconButton draws its ring on the same unclipped wrapper as Button. An outside agent could not
+  // confirm it was there, because the focused element itself has no outline. This gates WCAG 2.2
+  // focus appearance on the wrapper: a solid ring at least 2px thick, offset clear of the button,
+  // contrasting at least 3:1 with the surface it sits on.
+  test(`IconButton keyboard ring is visible and 3:1 against its surface — ${theme} theme`, async ({ page }) => {
+    await gotoDocs(page, '/components/icon-button')
+    await page.evaluate(t => document.documentElement.setAttribute('data-theme', t), theme)
+    await page.keyboard.press('Tab')
+
+    const selector = '#main .bevel-focus-wrap > button[aria-label]:not([disabled])'
+    const ring = await ringColorAtFocus(page, selector, 'wrap')
+    expect(ring.focused, 'the icon button should hold focus').toBe(true)
+    expect(ring.nextFrame, 'the wrapper ring must be the focus-ring token').toBe(ring.expected)
+
+    const m = await page.evaluate(() => {
+      const wrap = document.activeElement!.closest('.bevel-focus-wrap') as HTMLElement
+      const cs = getComputedStyle(wrap)
+      let node: HTMLElement | null = wrap.parentElement
+      let bg = 'rgba(0, 0, 0, 0)'
+      while (node) {
+        const c = getComputedStyle(node).backgroundColor
+        if (c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') { bg = c; break }
+        node = node.parentElement
+      }
+      const lum = (rgb: string) => {
+        const [r, g, b] = rgb.match(/[\d.]+/g)!.slice(0, 3).map(Number).map(v => {
+          const s = v / 255
+          return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
+        })
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+      }
+      const a = lum(cs.outlineColor), b = lum(bg)
+      return {
+        style: cs.outlineStyle,
+        width: parseFloat(cs.outlineWidth),
+        offset: parseFloat(cs.outlineOffset),
+        contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+      }
+    })
+    expect(m.style).toBe('solid')
+    expect(m.width).toBeGreaterThanOrEqual(2)
+    expect(m.offset, 'the ring sits outside the clipped button, not under it').toBeGreaterThan(0)
+    expect(m.contrast, 'ring against the surface behind it').toBeGreaterThanOrEqual(3)
+
+    if (process.env.FOCUS_SHOT_DIR) {
+      // The ring is drawn outside the wrapper's box, so clip a padded region rather than the element.
+      const box = (await page.evaluate(() => {
+        const r = document.activeElement!.closest('.bevel-focus-wrap')!.getBoundingClientRect()
+        return { x: r.x, y: r.y, width: r.width, height: r.height }
+      }))
+      const pad = 24
+      await page.screenshot({
+        path: `${process.env.FOCUS_SHOT_DIR}/icon-button-focus-${theme}.png`,
+        clip: { x: box.x - pad, y: box.y - pad, width: box.width + pad * 2, height: box.height + pad * 2 },
+      })
+    }
+  })
+
   test(`keyboard walk — ${theme} theme`, async ({ page }) => {
     // /components/button is the first docs page with focusable content inside <main> (its
     // Examples render real buttons and a link), which is what makes the "reaches main" step

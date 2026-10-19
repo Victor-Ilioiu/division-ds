@@ -7,6 +7,7 @@ type Week = { week: string; online: number; store: number }
 type Category = { category: string; returns: number }
 type Day = { day: string; visits: number; orders: number }
 type Slice = { channel: string; orders: number }
+type Hour = { hour: string; pm25: number }
 type Profile = { measure: string; m4: number; ak: number }
 
 const WEEKS: Week[] = [
@@ -45,6 +46,9 @@ const CHANNELS: Slice[] = [
   { channel: 'Marketplace', orders: 87 },
   { channel: 'Phone', orders: 41 },
 ]
+
+const PM25 = [9, 8, 7, 7, 8, 11, 17, 26, 31, 24, 18, 15, 14, 13, 14, 16, 21, 29, 34, 27, 19, 14, 11, 10]
+const HOURS: Hour[] = PM25.map((pm25, hour) => ({ hour: `${String(hour).padStart(2, '0')}:00`, pm25 }))
 
 const PROFILES: Profile[] = [
   { measure: 'Range', m4: 78, ak: 64 },
@@ -117,6 +121,22 @@ export function ChartPanelDocs() {
             { key: 'online', label: 'Online' },
             { key: 'store', label: 'In store' },
           ]}
+          headingLevel={4}
+        />
+      </Example>
+
+      <Example caption="A shaded band: night hours on a 24-hour series (the band wraps past midnight)" className="block">
+        <ChartPanel<Hour>
+          title="Fine particles today"
+          summary="PM2.5 peaked at the morning and evening rush hours, 31 and 34 µg/m³, and stayed lowest overnight."
+          kind="line"
+          area
+          curve="smooth"
+          data={HOURS}
+          xKey="hour"
+          xLabel="Hour"
+          series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}
+          bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}
           headingLevel={4}
         />
       </Example>

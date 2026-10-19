@@ -15,6 +15,7 @@ import {
   PolarGrid,
   PolarRadiusAxis,
   Radar,
+  ReferenceArea,
   RadarChart,
   ResponsiveContainer,
   Tooltip,
@@ -33,6 +34,10 @@ import { DataTable, type DataTableColumn } from '../data-table/DataTable'
 type NumericKey<Row> = { [K in keyof Row]: Row[K] extends number ? K : never }[keyof Row] & string
 
 export type ChartSeries<Row> = { key: NumericKey<Row>; label: string }
+
+/** A shaded stretch of the x-axis: night hours, a sale, an outage. `from` and `to` are x-axis
+ *  values (values of `xKey`), both included. */
+export type ChartBand = { from: string | number; to: string | number; label?: string }
 
 export type ChartKind = 'line' | 'bar' | 'donut' | 'radar'
 
@@ -81,6 +86,12 @@ export type ChartPanelProps<Row extends Record<string, string | number>> = {
    *  here (rather than left to Recharts) so a panel whose tick labels run wider than two figures
    *  can grow it without the labels clipping. */
   axisWidth?: number
+  /** Line and bar only: shade stretches of the x-axis, such as night hours on a 24-hour chart.
+   *  `from` and `to` are values of `xKey`, both included. A band whose `from` comes after its `to`
+   *  in the data wraps past the end (22:00 to 06:00 shades 22:00 to the last point, and the first
+   *  point to 06:00). A band naming a value that is not in the data is skipped. Each band is listed
+   *  under the chart, so a screen reader hears it too. */
+  bands?: ChartBand[]
   /** @default 3 */
   headingLevel?: 2 | 3 | 4
   className?: string
@@ -252,6 +263,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
   formatValue = formatNumber,
   formatAxisValue = formatValue,
   axisWidth = 48,
+  bands = [],
   headingLevel = 3,
   className,
   ref,
@@ -280,6 +292,32 @@ export function ChartPanel<Row extends Record<string, string | number>>({
     ...(kind === 'donut' ? [{ key: '__share', header: 'Share', numeric: true, cell: share }] : []),
   ]
 
+  // A band is two x-axis values; one whose `from` sits after its `to` wraps, so it is drawn as
+  // two areas, its start to the last point and the first point to its end.
+  const keys: (string | number)[] = data.map(row => row[xKey])
+  const shownBands = kind === 'line' || kind === 'bar' ? bands.filter(band => keys.includes(band.from) && keys.includes(band.to)) : []
+  const bandAreas = shownBands.flatMap((band, index) => {
+    const wraps = keys.indexOf(band.from) > keys.indexOf(band.to)
+    const spans = wraps
+      ? [
+          [band.from, keys[keys.length - 1]],
+          [keys[0], band.to],
+        ]
+      : [[band.from, band.to]]
+    // Hairline as a fill: a quiet, translucent wash that reads in both themes and never competes
+    // with the series colours. No accent: a band is context, not data.
+    return spans.map(([x1, x2], part) => (
+      <ReferenceArea
+        key={`band-${index}-${part}`}
+        x1={x1}
+        x2={x2}
+        fill="var(--color-border-hairline)"
+        fillOpacity={1}
+        stroke="none"
+      />
+    ))
+  })
+
   const tooltip = (cursor: false | object) => (
     <Tooltip content={<ChartTooltip format={formatValue} />} cursor={cursor} isAnimationActive={false} wrapperStyle={{ zIndex: 10 }} />
   )
@@ -296,6 +334,10 @@ export function ChartPanel<Row extends Record<string, string | number>>({
         tick={TICK}
         tickLine={false}
         tickMargin={8}
+        // Many points at 320px: keep the first and last label and drop the ones between that
+        // would sit closer than 16px, so labels never overlap and no data point is lost.
+        interval="preserveStartEnd"
+        minTickGap={16}
         axisLine={showGrid ? { stroke: 'var(--color-border-hairline-strong)' } : false}
       />
       <YAxis
@@ -324,6 +366,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
             ))}
           </defs>
           {axes}
+          {bandAreas}
           {tooltip(lineCursor)}
           {series.map((entry, index) => (
             <Area
@@ -346,6 +389,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
       return (
         <LineChart data={data} accessibilityLayer={false} margin={margin}>
           {axes}
+          {bandAreas}
           {tooltip(lineCursor)}
           {series.map((entry, index) => (
             <Line
@@ -367,6 +411,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
       return (
         <BarChart data={data} accessibilityLayer={false} barGap={2} margin={margin}>
           {axes}
+          {bandAreas}
           {tooltip({ fill: 'var(--color-border-hairline)' })}
           {/* No dash or pattern here (see SERIES_DASH above): a grouped bar's own position
               -- series 1 always left, series 2 always right, at every category -- is a
@@ -507,6 +552,22 @@ export function ChartPanel<Row extends Record<string, string | number>>({
       </ul>
     ) : null
 
+  // Visible and read aloud: the chart itself is aria-hidden, so the bands it shades are named here.
+  const bandList = shownBands.length ? (
+    <ul role="list" aria-label="Shaded ranges" className="flex flex-wrap gap-x-4 gap-y-1">
+      {shownBands.map((band, index) => (
+        <li key={index} className="flex items-center gap-2 font-body text-xs text-[var(--color-text-secondary)]">
+          <span
+            aria-hidden="true"
+            className="w-2.5 h-2.5 shrink-0 bg-[var(--color-border-hairline-strong)]"
+          />
+          {band.label ? `${band.label}: ` : 'Shaded: '}
+          {String(band.from)} to {String(band.to)}
+        </li>
+      ))}
+    </ul>
+  ) : null
+
   // Hidden from assistive tech, and accessibilityLayer off so the SVG has no role and no tab
   // stop: the caption and the table are the text alternative.
   const chart = (
@@ -566,6 +627,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
             <>
               {legend}
               {chart}
+              {bandList}
             </>
           )}
           {/* At sm the caption follows the sparkline: the headline and the line are what the card

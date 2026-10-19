@@ -236,6 +236,40 @@ describe('ChartPanel', () => {
     expect(screen.getByRole('button', { name: 'Show as table' })).toBeInTheDocument()
   })
 
+  // --- Bands (2026-10-20): shaded x ranges, and x ticks that never collide ---
+
+  // Mutation: drop the band list; the screen reader no longer hears the band.
+  it('lists each band under the chart, with its label and range, outside the hidden chart', () => {
+    render(<Weekly bands={[{ from: 'W2', to: 'W4', label: 'Sale' }, { from: 'W6', to: 'W7' }]} />)
+    const list = screen.getByRole('list', { name: 'Shaded ranges' })
+    expect(within(list).getAllByRole('listitem').map(item => item.textContent)).toEqual(['Sale: W2 to W4', 'Shaded: W6 to W7'])
+    expect(list.closest('[aria-hidden="true"]')).toBeNull()
+  })
+
+  // Mutation: fill the band with an accent or series colour.
+  it('shades a band with the hairline token, behind the series', async () => {
+    const { container } = await renderSized(<Weekly bands={[{ from: 'W2', to: 'W4' }]} />, '.recharts-reference-area')
+    const areas = container.querySelectorAll('.recharts-reference-area-rect')
+    expect(areas).toHaveLength(1)
+    expect(areas[0].getAttribute('fill')).toBe('var(--color-border-hairline)')
+  })
+
+  // Mutation: draw a wrapping band as one area; Recharts then draws nothing or the wrong span.
+  it('draws a band whose from comes after its to as two areas, wrapping past the end', async () => {
+    const { container } = await renderSized(<Weekly bands={[{ from: 'W7', to: 'W2', label: 'Night' }]} />, '.recharts-reference-area')
+    expect(container.querySelectorAll('.recharts-reference-area-rect')).toHaveLength(2)
+    expect(screen.getByRole('list', { name: 'Shaded ranges' }).textContent).toBe('Night: W7 to W2')
+  })
+
+  // Mutation: keep bands whose values are missing from the data, or draw them on a donut.
+  it('skips a band naming a value not in the data, and draws none on a donut or radar', () => {
+    render(<Weekly bands={[{ from: 'W1', to: 'W99' }]} />)
+    expect(screen.queryByRole('list', { name: 'Shaded ranges' })).toBeNull()
+  })
+
+  // The x-tick collision fix (interval="preserveStartEnd", minTickGap) cannot be tested here:
+  // jsdom measures every label as 0px wide, so Recharts never drops one. e2e checks it at 320px.
+
   it('renders no headline unless given one', () => {
     const { container } = render(<Weekly />)
     expect(container.querySelector('[data-part="headline"]')).toBeNull()

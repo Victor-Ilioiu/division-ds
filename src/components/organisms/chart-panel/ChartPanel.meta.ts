@@ -14,6 +14,7 @@ export const meta: ComponentMeta = {
     { part: 'Headline', description: 'Optional. The figure the chart is about, printed large under the title.' },
     { part: 'Chart', description: "A line, bar, donut or radar chart, with a tooltip that follows the pointer. It's hidden from assistive tech (screen readers and similar tools), which get the table instead." },
     { part: 'Centre total', description: 'Donut only. The sum of the slices, with centerLabel under it.' },
+    { part: 'Shaded ranges', description: 'Optional, line and bar only. A quiet wash behind the chart for each band, listed under it with its label and range.' },
     { part: 'Show as table', description: "A button that opens and closes a DataTable with the same rows. It uses aria-expanded, an ARIA (Accessible Rich Internet Applications) attribute that tells screen readers whether it's open." },
   ],
   props: [
@@ -53,6 +54,13 @@ export const meta: ComponentMeta = {
       default: '48',
       description: "The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off.",
     },
+    {
+      name: 'bands',
+      type: '{ from: string | number; to: string | number; label?: string }[]',
+      default: '[]',
+      description:
+        "Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too.",
+    },
     { name: 'headingLevel', type: '2 | 3 | 4', default: '3', description: "Pick the level that fits the page's heading outline." },
     { name: 'className', type: 'string', description: "Merged with the Card classes. Later Tailwind utilities win." },
     { name: 'ref', type: 'Ref<HTMLElement>', description: 'Points at the section element.' },
@@ -69,6 +77,7 @@ export const meta: ComponentMeta = {
     'Keep to two series. Give a third its own panel.',
     "In print or greyscale, you can rely on the second line series being dashed. It doesn't depend on colour alone.",
     'Use size sm with a headline for a stat card. The caption and the table stay.',
+    'Use bands for context such as night hours or a sale, and give each one a label.',
     "Past six slices, fold a donut's smallest slices into one Other row.",
   ],
   donts: [

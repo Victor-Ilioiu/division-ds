@@ -105,6 +105,7 @@ Read a component page before using the component: it has the props, working exam
 - **Text size.** Secondary text is 14px or larger.
 - **Cards.** To highlight or select a `Card`, set the border inline with a token:
 - **Links.** Components that render links take `renderLink`, defaulting to a plain `<a>`.
+- **Charts and bundle size.** `ChartPanel` and `Sparkline` bring in recharts, a few hundred kB.
 - **Forms.** In a form, `Input`, `Textarea`, `Select`, `MultiSelect` and `QuantityStepper` go inside a `FormField`, which supplies the label, help and error and keeps an `id` you pass to the control.
 - **Buttons.** Two or more buttons side by side need a parent with a gap (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one.
 - **Icon-only buttons** are `IconButton` with a required `label`.

@@ -38,8 +38,8 @@ A gate's message says what to change. To check a single file anywhere:
 write before you finish:
 
 ```
-npx division-ds check <files or dirs>          (once the package is installed or linked)
-node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>   (works without that)
+npx division-ds check <files or dirs>          (from npm; Node 22 or newer)
+node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>   (the same, from a clone)
 ```
 
 It runs the colour and button-spacing gates and checks every Division DS element's props against
@@ -123,6 +123,11 @@ button.
 
 **Links.** Components that render links take `renderLink`, defaulting to a plain `<a>`. Under a
 router, pass an adapter (`src/demo/routerLink.tsx` is the example). No component imports a router.
+
+**Charts and bundle size.** `ChartPanel` and `Sparkline` bring in recharts, a few hundred kB.
+Load the route or screen that uses them with `React.lazy` and a `<Suspense>` fallback, so recharts
+lands in its own chunk and screens without a chart never download it. Without that, Vite warns
+about a chunk over 500 kB; the warning is about load time only, and the build is fine.
 
 <!-- topic: forms -->
 

@@ -665,7 +665,7 @@ test('ChartPanel: the chart is hidden and has no tab stop, two series have two c
   // one clean example proves nothing about a sibling built the same way but never re-checked. A
   // layer inside the surface counts too: Recharts' Pie is a tab stop unless told otherwise.
   const everySurface = page.locator('svg.recharts-surface')
-  await expect(everySurface).toHaveCount(9)
+  await expect(everySurface).toHaveCount(10)
   for (const surface of await everySurface.all()) {
     await expect(surface).not.toHaveAttribute('role')
     await expect(surface).not.toHaveAttribute('tabindex')
@@ -708,6 +708,33 @@ test('ChartPanel: the second line series is dashed, with no draw-in animation to
   await expect(lines).toHaveCount(2)
   const dashes = await lines.evaluateAll(paths => paths.map(path => path.getAttribute('stroke-dasharray')))
   expect(dashes).toEqual([null, '6 3'])
+})
+
+test('ChartPanel: at 320px, 24 hourly x labels never overlap, and the night band shades two areas and is named in text', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 320, height: 800 })
+  await page.goto('/components/chart-panel')
+  const panel = page.getByRole('region', { name: 'Fine particles today', exact: true })
+  // The x labels are the svg's only HH:00 text; Recharts 3 portals tick text into z-index layers,
+  // so it does not sit under the axis group a selector would name.
+  const ticks = panel.locator('svg.recharts-surface text').filter({ hasText: /^\d\d:00$/ })
+  await expect(ticks.first()).toBeAttached()
+  const boxes = await ticks.evaluateAll(nodes => nodes.map(node => {
+    const box = node.getBoundingClientRect()
+    return { left: box.left, right: box.right, text: node.textContent }
+  }))
+  expect(boxes.length).toBeGreaterThan(1)
+  expect(boxes.length).toBeLessThan(24)
+  expect(boxes[0].text).toBe('00:00')
+  for (let index = 1; index < boxes.length; index++) {
+    expect(boxes[index].left).toBeGreaterThanOrEqual(boxes[index - 1].right)
+  }
+  // Wraps past midnight: 22:00 to 23:00, and 00:00 to 06:00.
+  await expect(panel.locator('.recharts-reference-area-rect')).toHaveCount(2)
+  await expect(panel.getByRole('list', { name: 'Shaded ranges' })).toHaveText('Night: 22:00 to 06:00')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
 })
 
 // Carousel. jsdom lays nothing out, so everything about real geometry is here: where a press

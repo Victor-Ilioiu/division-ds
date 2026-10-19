@@ -27,7 +27,7 @@ Outside this repository, read the same files online: `https://victor-ilioiu.verc
 
 ## Check your work
 
-- In a project that uses the components: `node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>`. The checker is not on npm yet, so `npx division-ds` does not work: clone https://github.com/Victor-Ilioiu/division-ds once and run `npm install` in it, then point `<path-to-division-ds>` at that clone. It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
+- In a project that uses the components: `npx division-ds check <files or dirs>` (the checker is on npm; Node 22 or newer). It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
 - In the Division DS repository itself: `npm run verify` (type-check, every gate, the unit tests).
 
 A finding says what to write instead. `commands/fix.md` explains each one.

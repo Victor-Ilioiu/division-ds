@@ -60,6 +60,9 @@ Your project needs React 19 and Tailwind CSS 4. Then, once:
    ```
 3. Dark is the default theme. For light, set `data-theme="light"` on `<html>`.
 
+Check your screens against the system's rules (raw colours, invented tokens, touching buttons,
+unknown props) with `npx division-ds check src`. Node 22 or newer.
+
 ### 3. Run the whole thing locally
 
 You need [Git](https://git-scm.com/) and [Node.js](https://nodejs.org/) 22 or newer.

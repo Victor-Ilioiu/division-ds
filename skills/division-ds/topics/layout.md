@@ -24,3 +24,8 @@ button.
 
 **Links.** Components that render links take `renderLink`, defaulting to a plain `<a>`. Under a
 router, pass an adapter (`src/demo/routerLink.tsx` is the example). No component imports a router.
+
+**Charts and bundle size.** `ChartPanel` and `Sparkline` bring in recharts, a few hundred kB.
+Load the route or screen that uses them with `React.lazy` and a `<Suspense>` fallback, so recharts
+lands in its own chunk and screens without a chart never download it. Without that, Vite warns
+about a chunk over 500 kB; the warning is about load time only, and the build is fine.

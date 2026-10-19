@@ -33,6 +33,7 @@ import { ChartPanel } from 'src/components/organisms/chart-panel/ChartPanel'
 | `formatValue` | `(value: number) => string` | `Intl.NumberFormat('en-IE')` | Formats numbers in the tooltip and the table. It formats the y-axis too, unless you give formatAxisValue. |
 | `formatAxisValue` | `(value: number) => string` | `formatValue` | Formats only the y-axis tick labels. Use a shorter, compact formatter when formatValue's output is too wide for the axis. SpendChart's compact euro formatter is one example. |
 | `axisWidth` | `number` | `48` | The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off. |
+| `bands` | `{ from: string \| number; to: string \| number; label?: string }[]` | `[]` | Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too. |
 | `headingLevel` | `2 \| 3 \| 4` | `3` | Pick the level that fits the page's heading outline. |
 | `className` | `string` |  | Merged with the Card classes. Later Tailwind utilities win. |
 | `ref` | `Ref<HTMLElement>` |  | Points at the section element. |
@@ -165,6 +166,30 @@ const WEEKS: Week[] = [
     { key: 'online', label: 'Online' },
     { key: 'store', label: 'In store' },
   ]}
+  headingLevel={4}
+/>
+```
+
+### A shaded band: night hours on a 24-hour series (the band wraps past midnight)
+
+```tsx
+type Hour = { hour: string; pm25: number }
+
+const PM25 = [9, 8, 7, 7, 8, 11, 17, 26, 31, 24, 18, 15, 14, 13, 14, 16, 21, 29, 34, 27, 19, 14, 11, 10]
+
+const HOURS: Hour[] = PM25.map((pm25, hour) => ({ hour: `${String(hour).padStart(2, '0')}:00`, pm25 }))
+
+<ChartPanel<Hour>
+  title="Fine particles today"
+  summary="PM2.5 peaked at the morning and evening rush hours, 31 and 34 µg/m³, and stayed lowest overnight."
+  kind="line"
+  area
+  curve="smooth"
+  data={HOURS}
+  xKey="hour"
+  xLabel="Hour"
+  series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}
+  bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}
   headingLevel={4}
 />
 ```
@@ -307,6 +332,7 @@ const PROFILES: Profile[] = [
 - Keep to two series. Give a third its own panel.
 - In print or greyscale, you can rely on the second line series being dashed. It doesn't depend on colour alone.
 - Use size sm with a headline for a stat card. The caption and the table stay.
+- Use bands for context such as night hours or a sale, and give each one a label.
 - Past six slices, fold a donut's smallest slices into one Other row.
 
 ## Don't
@@ -324,4 +350,5 @@ const PROFILES: Profile[] = [
 - **Headline**: Optional. The figure the chart is about, printed large under the title.
 - **Chart**: A line, bar, donut or radar chart, with a tooltip that follows the pointer. It's hidden from assistive tech (screen readers and similar tools), which get the table instead.
 - **Centre total**: Donut only. The sum of the slices, with centerLabel under it.
+- **Shaded ranges**: Optional, line and bar only. A quiet wash behind the chart for each band, listed under it with its label and range.
 - **Show as table**: A button that opens and closes a DataTable with the same rows. It uses aria-expanded, an ARIA (Accessible Rich Internet Applications) attribute that tells screen readers whether it's open.

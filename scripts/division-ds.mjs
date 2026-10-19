@@ -10,10 +10,10 @@
 // gate, reusing the same rule modules (scripts/lib/token-discipline.mjs, button-spacing.mjs) plus
 // the props validator (props-validator.mjs), and the same AGENTS.md rules (agent-docs.mjs).
 //
-// The package is private and unpublished. `npx division-ds` works once it is installed or linked
-// into the project (`npm link`, a file: dependency, a workspace); until then, call this file by
-// path: `node <path-to-division-ds>/scripts/division-ds.mjs check src`. It needs Node 22+
-// (fs.globSync) and resolves `typescript` from this repository's node_modules.
+// Published to npm as `division-ds` (only this file, the modules it imports, the two manifests and
+// AGENTS.md: scripts/build-cli-package.mjs), so `npx division-ds check src` works anywhere. From a
+// clone, call it by path: `node <path-to-division-ds>/scripts/division-ds.mjs check src`. It needs
+// Node 22+ (fs.globSync) and `typescript`, which the npm package declares as its one dependency.
 import { existsSync, globSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'

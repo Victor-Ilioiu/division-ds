@@ -40,3 +40,4 @@ npm-debug.log*
 
 # Milestone checkpoint screenshots (scripts/checkpoint-shots.mjs): review material, never pushed
 docs/g4-checkpoint/
+cli-package/

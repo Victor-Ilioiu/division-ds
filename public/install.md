@@ -40,15 +40,10 @@ Files land in `src/division-ds/`. Then, once:
 
 ## 3. Check your screens
 
-The checker is not on npm yet. Clone the repository once and install it:
+From your project (Node 22 or newer):
 
 ```bash
-git clone https://github.com/Victor-Ilioiu/division-ds.git
-cd division-ds && npm install
+npx division-ds check src
 ```
 
-Then, from your project:
-
-```bash
-node <path-to-the-clone>/scripts/division-ds.mjs check src
-```
+It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union, and says what to write instead.
