@@ -41,6 +41,7 @@ npx shadcn@latest add https://raw.githubusercontent.com/Victor-Ilioiu/division-d
 ```
 
 Swap `button` for any component's name in lowercase, with hyphens: `data-table`, `alert-dialog`.
+For the whole library in one command, use `division-ds-all`. No `components.json` is needed.
 [`registry.json`](https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/registry.json) lists
 them all.
 

@@ -23,11 +23,11 @@ Before writing a screen, list its regions and, for each, its states: empty, load
 | Shared helpers: form errors, money, links, theme, streamed text | `public/docs/helpers.md` |
 | The same as data | `public/manifest/components.json`, `public/manifest/tokens.json` |
 
-Outside this repository, read the same files online: `https://victor-ilioiu.vercel.app/systems/division-ds/llms.txt`, `https://victor-ilioiu.vercel.app/systems/division-ds/docs/components/<slug>.md`, and so on. Add a component to a project with `npx shadcn@latest add https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/<slug>.json`.
+Outside this repository, read the same files online: `https://victor-ilioiu.vercel.app/systems/division-ds/llms.txt`, `https://victor-ilioiu.vercel.app/systems/division-ds/docs/components/<slug>.md`, and so on. Add a component to a project with `npx shadcn@latest add https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/<slug>.json`, or every component with `division-ds-all` as the slug. The setup steps, in plain text: `https://victor-ilioiu.vercel.app/systems/division-ds/install.md`.
 
 ## Check your work
 
-- In a project that uses the components: `npx division-ds check <files or dirs>`, or `node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>` where the package is not installed. It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
+- In a project that uses the components: `node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>`. The checker is not on npm yet, so `npx division-ds` does not work: clone https://github.com/Victor-Ilioiu/division-ds once and run `npm install` in it, then point `<path-to-division-ds>` at that clone. It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
 - In the Division DS repository itself: `npm run verify` (type-check, every gate, the unit tests).
 
 A finding says what to write instead. `commands/fix.md` explains each one.

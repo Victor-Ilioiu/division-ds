@@ -168,7 +168,17 @@ for (const component of manifest) {
   })
 }
 
-const SCHEMA_ITEM = 'https://ui.shadcn.com/schema/registry-item.json'
+// The whole library in one command. No files of its own: it only depends on every other item.
+items.push({
+  name: 'division-ds-all',
+  type: 'registry:item',
+  title: 'Division DS, every component',
+  description: 'Installs the base and all components in one command.',
+  registryDependencies: items.map(item => `${REGISTRY_URL}/${item.name}.json`),
+  files: [],
+})
+
+const SCHEMA_ITEM ='https://ui.shadcn.com/schema/registry-item.json'
 const outputs = new Map(items.map(item => [`${item.name}.json`, JSON.stringify({ $schema: SCHEMA_ITEM, ...item }, null, 2) + '\n']))
 outputs.set('registry.json', JSON.stringify({
   $schema: 'https://ui.shadcn.com/schema/registry.json',

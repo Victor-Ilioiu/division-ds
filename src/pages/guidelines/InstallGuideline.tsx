@@ -117,9 +117,12 @@ export function InstallGuideline() {
               <p className={prose}>
                 Swap <code className="font-mono text-sm">button</code> for any component&apos;s name in lowercase with
                 hyphens, such as <code className="font-mono text-sm">data-table</code>. The{' '}
-                <Link href={`${REGISTRY}/registry.json`}>registry index</Link> lists all 67.
+                <Link href={`${REGISTRY}/registry.json`}>registry index</Link> lists all 67. No{' '}
+                <code className="font-mono text-sm">components.json</code> is needed.
               </p>
               <CopyCommand label="the add Button command" command={`npx shadcn@latest add ${REGISTRY}/button.json`} />
+              <p className={prose}>Or every component at once:</p>
+              <CopyCommand label="the add everything command" command={`npx shadcn@latest add ${REGISTRY}/division-ds-all.json`} />
             </Step>
             <Step n={2} title="Import the styles, once">
               <p className={prose}>

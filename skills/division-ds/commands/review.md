@@ -18,5 +18,5 @@ Go through every line. A line that does not hold is a change to make, not a note
 
 ## Check
 
-- In a project that uses the components: `npx division-ds check <files or dirs>`, or `node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>` where the package is not installed. It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
+- In a project that uses the components: `node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>`. The checker is not on npm yet, so `npx division-ds` does not work: clone https://github.com/Victor-Ilioiu/division-ds once and run `npm install` in it, then point `<path-to-division-ds>` at that clone. It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union.
 - In the Division DS repository itself: `npm run verify` (type-check, every gate, the unit tests).

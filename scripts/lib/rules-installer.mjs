@@ -27,8 +27,8 @@ const FILES = {
 
 const NOTE =
   '> Installed by `division-ds rules`. Re-run it to update; anything between the division-ds markers is ' +
-  'overwritten. Before finishing a screen, run `npx division-ds check <files>` (or ' +
-  '`node <path-to-division-ds>/scripts/division-ds.mjs check <files>`): it flags a raw colour, an ' +
+  'overwritten. Before finishing a screen, run `npx division-ds check <files>` (or, while the package is not on npm, ' +
+  '`node <path-to-division-ds>/scripts/division-ds.mjs check <files>` from a clone with `npm install` run in it): it flags a raw colour, an ' +
   'invented token, touching buttons, an unknown prop and a wrong enum value, and says what to write instead.'
 
 /** The rules as they read in someone else's file: titled with the system's name, since "## Rules"
