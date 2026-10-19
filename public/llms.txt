@@ -1,0 +1,113 @@
+# Division DS
+
+> A React 19, Tailwind 4 and Radix design system: 67 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
+
+Links below are relative to this file, so they work wherever the site is served. In the repository the same files are under `public/`.
+Read a component page before using the component: it has the props, working examples and the rules.
+
+## Start here
+
+- [Rules](llms-guidelines.txt): imports, colour, providers, forms. Short. Read it first.
+- [Tokens](llms-tokens.txt): every semantic and component token with when to use it.
+- [Helpers](docs/helpers.md): the shared functions and types under src/lib (form errors, money, links, theme, streamed text).
+- [All components, compact](llms-components.txt): every prop signature in one file.
+- [Component manifest](manifest/components.json) and [token manifest](manifest/tokens.json): the same as data.
+
+## Atoms
+
+- [Avatar](docs/components/avatar.md): A small square that shows who someone is. Best for: Showing who a person is, next to their name, as in a roster row, a comment or an account menu. Not for: Several people in one spot: use AvatarGroup.
+- [Badge](docs/components/badge.md): A small chip that shows a status. Best for: You need to label a status with a word and a tone, like an order state or a sync result. Not for: A filter or selection someone can remove. Use Tag for that.
+- [Button](docs/components/button.md): The main control for taking an action. Best for: An action on this page, like submit, save or open a dialog. Not for: Going somewhere (use Link, or Button asChild around an anchor), or an action with no visible word (use IconButton).
+- [Checkbox](docs/components/checkbox.md): A checkbox with three states: off, on and mixed. Best for: An on/off choice that applies when the form is saved, or a parent whose children are partly selected. Not for: A setting that takes effect the moment you flip it. Use Switch for that.
+- [Divider](docs/components/divider.md): A thin line, with an optional legend (a short text label). Best for: A thin line between groups of content, labelled when it starts a new section. Not for: Making space (use the spacing scale), or going between items that already have their own borders.
+- [IconButton](docs/components/icon-button.md): A square button with one icon. Best for: An action shown as a single icon, with a label that names the action. Not for: An action with a visible word (use Button), or a status (use Badge).
+- [Input](docs/components/input.md): A single-line text field. Best for: Single-line text, inside a FormField. Not for: Several lines of text: use Textarea. Searching the page: use Search.
+- [Kbd](docs/components/kbd.md): A small keycap that shows a key's name. Best for: Showing a keyboard shortcut next to the action it triggers, with one Kbd per key. Not for: Anything that isn't a key, such as a status: use Badge.
+- [Link](docs/components/link.md): A link inside text. Best for: Text that takes you somewhere: another page, a section or another site. Not for: Something that does an action. Use Button for that (its link variant if it's inside running text).
+- [LoadingAnimation](docs/components/loading-animation.md): A loading state that fills a whole panel, drawn as an animated instrument dial in WebGL (the browser's graphics engine for drawing with the graphics card). Best for: A wait that takes over a whole panel or page, like a route loading, a report building or a first sync. Not for: A wait inside a button or a line of text: use Spinner. A wait with a known end: use Progress.
+- [Progress](docs/components/progress.md): A progress bar that's either determinate (it knows how far along the task is) or indeterminate (it doesn't). Best for: Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left. Not for: A wait with no measurable work. Use Spinner.
+- [Radio](docs/components/radio.md): Pick one choice from a set. Best for: One choice from a short set, up to about seven, all shown at once. Not for: A yes/no question: use Checkbox or Switch. A longer list: use Select.
+- [ScoreRing](docs/components/score-ring.md): One 0 to 100 score shown as a ring with the number in its centre, split into bands the way Lighthouse (Google’s website audit tool) bands its scores. Best for: A 0 to 100 score with good and bad bands, like an audit, a health check or a quality score. Several side by side read as one report. Not for: Progress through a task: use Progress. A number with a change over time: use Stat. Parts of a whole: use a donut ChartPanel.
+- [Select](docs/components/select.md): A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Best for: One choice from a list of about five options or more. Not for: Several values: use MultiSelect. Fewer than about five options: use Radio.
+- [Skeleton](docs/components/skeleton.md): A loading placeholder shaped like the content it stands in for: lines of text, a cut-corner block, or an Avatar’s footprint. Best for: A region whose content is loading, shown as placeholders in its shape inside one SkeletonGroup. Not for: A busy button: use Button loading. A wait under a few hundred milliseconds: show nothing.
+- [Slider](docs/components/slider.md): A value or a range picked on a track. Best for: A value or range on a track, where the rough position matters and the value is shown. Not for: A precise value with no other way to enter it. Use Input.
+- [Sparkline](docs/components/sparkline.md): A small trend line with no axes. Best for: You want the shape of a recent series, not its values. Think of a reading over the last hour. Not for: Values people need to read, compare or hover over. Use ChartPanel for those.
+- [Spinner](docs/components/spinner.md): A busy indicator for an indeterminate wait, meaning one with no known end or percentage. Best for: A short wait with no known end, inside a control or a line of text. Not for: Progress with a known amount (use Progress), or a wait for a whole page (use Skeleton or LoadingAnimation).
+- [Switch](docs/components/switch.md): An on/off control that acts right away. Best for: An on/off setting that takes effect the moment it's flipped. Not for: A choice in a form that needs a Save. Use Checkbox.
+- [Tag](docs/components/tag.md): A removable chip for filters and selections. Best for: A removable chip, such as an active filter or a selected value. Not for: A status. Use Badge.
+- [Textarea](docs/components/textarea.md): A text box for several lines. Best for: Free text over several lines, inside a FormField. Not for: A single line. Use Input.
+- [Tooltip](docs/components/tooltip.md): Extra text that shows on hover or focus. Best for: Extra detail on hover or focus for an element that can take focus, such as an IconButton. Not for: The only label, or the only explanation of an error. Use the label prop or visible text.
+
+## Molecules
+
+- [Accordion](docs/components/accordion.md): Sections that open and close in place, each under its own heading. Best for: Sections people scan by heading and open one or two of: frequently asked questions (FAQ), grouped settings, long specifications. Not for: Steps in a sequence: use Stepper. Equal views of the same thing: use Tabs.
+- [Alert](docs/components/alert.md): A message that sits in the page. Best for: A message that sits in the page and stays there: a warning about this screen, or a failed load with a retry. Not for: Something that will go away on its own: use Toast.
+- [ApprovalRequest](docs/components/approval-request.md): A pause before an action that changes something in the real world (a side effect). Best for: An assistant is about to send, change or spend something outside the conversation. Not for: Confirming a destructive action on an ordinary screen: use AlertDialog.
+- [AvatarGroup](docs/components/avatar-group.md): Overlapping avatars (small profile pictures) with a “+N” for the rest. Best for: Several people in one place, with a count: a squad, the people on an order, who’s viewing. Not for: Picking people: use MultiSelect.
+- [Breadcrumbs](docs/components/breadcrumbs.md): Shows where this page sits among the pages above it. Best for: Showing where a page sits in a hierarchy more than one level deep. Not for: Steps in a sequence: use Stepper.
+- [Card](docs/components/card.md): A surface that groups related content. Best for: Grouping related content on one surface, or one item in a grid whose whole surface is one link. Not for: A card inside another card: cards don't nest.
+- [ChatMessage](docs/components/chat-message.md): One turn in a conversation with an assistant: the person's words in a bubble, the reply at full width, or a centred system line. Best for: Each turn inside a ChatThread. Not for: Comments or an activity history between people: use Timeline.
+- [DescriptionList](docs/components/description-list.md): Pairs of a term and its value, all about one thing, in one to three columns. Best for: The fixed fields of one record: serial, firmware, owner, dates. Not for: Many records: use DataTable; one headline number: use Stat.
+- [DropdownMenu](docs/components/dropdown-menu.md): A short list of actions behind a button. Best for: A short list of actions, under about eight, behind a button. Not for: Picking a value for a form: use Select.
+- [EmptyState](docs/components/empty-state.md): What a list, a table or a page region shows when it has nothing in it: an icon, a title that names what is empty, a sentence on why, and the action that fills it. Best for: A list, table or region with nothing in it, along with the action that fills it. Not for: A list that's still loading: use Skeleton or Spinner. A failed load: use Alert in the hostile tone.
+- [FormField](docs/components/form-field.md): The label, help text and error text for one form control. Best for: The label, help and error for an Input, Textarea, Select, MultiSelect or QuantityStepper. Not for: Search or RatingInput, which name themselves. Switch, Checkbox and Radio take an id and a label with htmlFor instead.
+- [ListItem](docs/components/list-item.md): One row of a list: something at the start (a picture or icon), a title and description, extra details on the right, and actions at the end. Best for: A row people scan in a List: media, a title, meta and one or two actions. Not for: Data in a table that people compare across columns: use DataTable.
+- [MultiSelect](docs/components/multi-select.md): Pick several choices from a list. Best for: Any number of choices, including none, from a list too long to show all at once. Not for: A single choice: use Select, or Radio when there are fewer than about five options. A handful that all fit: use Checkbox.
+- [PageHeader](docs/components/page-header.md): The top of a screen. Best for: The top of every screen: its one h1, with eyebrow, description, breadcrumbs and page actions. Not for: A section inside a page: use SectionHeading.
+- [Pagination](docs/components/pagination.md): Moves through a long list one page at a time. Best for: Moving through a long list or table one page at a time. Not for: Steps in a form: use Stepper. Fewer than two pages: don't render anything.
+- [PromptInput](docs/components/prompt-input.md): The box where a person writes to an assistant. Best for: The message box under a ChatThread. Not for: A long field in a form: use Textarea inside a FormField.
+- [QuantityStepper](docs/components/quantity-stepper.md): A whole number between a lowest and a highest value, with a button on each side. Best for: A whole number between real limits, such as a quantity in a cart. Not for: A value that isn't a whole number: use Input. A range of hundreds: use Slider or Input.
+- [Rating](docs/components/rating.md): A score out of five, either shown or collected. Best for: Showing or collecting a score out of five. Not for: Anything that isn't a rating, such as a difficulty grade.
+- [Search](docs/components/search.md): A search field inside a search landmark (a region of the page that screen readers can jump straight to). Best for: Searching the content of the page that shows the results, inside a search landmark. Not for: Suggestions that appear as you type, or jumping to an action: use CommandPalette.
+- [SectionHeading](docs/components/section-heading.md): The heading that opens a section of a page: a title under a hairline, with an optional description and an optional action. Best for: Opening a section of a page, at the level that carries on the outline. Not for: The page title: use PageHeader.
+- [SegmentedControl](docs/components/segmented-control.md): Two to five options in one framed row, with one selected. Best for: Switching the view of the same content in place: Board or Table, 24 h or 7 d. Not for: Panels of different content: use Tabs. A choice in a form: use Radio.
+- [Stat](docs/components/stat.md): One number that matters, and how it has moved. Best for: One headline number and how it has moved. Up to four in a row. Not for: A value that only makes sense as a chart: use ChartPanel.
+- [StatusTracker](docs/components/status-tracker.md): Health over time, drawn as a row of thin bars with one bar per period. Best for: The health history of one service or device, such as uptime over 30 or 90 days. Not for: A current status: use Badge. A measured value: use Sparkline.
+- [Stepper](docs/components/stepper.md): Shows where someone is in a flow of several steps. Best for: Showing where someone is in a flow of two to five steps. Not for: Sections that are equally important: use Tabs. Also not for a single step.
+- [Tabs](docs/components/tabs.md): Sections of one view, with only one visible at a time. Best for: Switching between equally important sections of one view. Not for: Steps in a sequence: use Stepper. Moving between pages: use links (Navbar, Sidebar).
+- [Timeline](docs/components/timeline.md): Events in time order down a vertical line. Best for: A record of what happened to one thing, newest or oldest first: a shipment, a depot, an account. Not for: Steps of a flow someone is going through: use Stepper. Rows people sort and compare: use DataTable.
+- [Toast](docs/components/toast.md): A short message that pops up, stays a few seconds and goes away. Best for: Confirming something the person just did, for a few seconds. Not for: The only copy of important information: use Alert. Also not for a change the page already shows.
+- [ToolCall](docs/components/tool-call.md): A tool the assistant ran, shown right where it ran. Best for: An assistant reply that ran a tool, such as a query, a lookup or a calculation. Not for: An action with side effects that needs a yes first: use ApprovalRequest.
+
+## Organisms
+
+- [AlertDialog](docs/components/alert-dialog.md): Asks for confirmation before something with real consequences. Best for: Confirming an action that matters and can't be undone, such as a delete. Not for: Something that can be undone: just do it and offer Undo in a Toast. A form or a task: use Dialog.
+- [AuthForm](docs/components/auth-form.md): One form with four modes: sign in, create an account, reset a password, or enter a two-step code. Best for: Sign in, create an account, reset a password or enter a two-step code. Not for: A newsletter sign-up: use NewsletterForm. Any other form: build it from FormField controls.
+- [Carousel](docs/components/carousel.md): A row of items that scrolls sideways. Best for: A sideways preview of more items than fit, with a link to the full list nearby. Not for: A few items that fit: use a grid. And it's not for the only copy of anything.
+- [Cart](docs/components/cart.md): The lines someone means to buy, with quantities, line totals and a subtotal that screen readers announce as it changes. Best for: The lines someone means to buy: quantities, line totals, a subtotal and removal that can be undone. Not for: Collecting shipping and payment: use CheckoutForm.
+- [ChartPanel](docs/components/chart-panel.md): One chart in a card. Best for: One chart (a line over time, bars by category, a donut of one whole, or a radar of several measures) with a summary sentence and the numbers as a table. Not for: One number and its change: use Stat. One score from 0 to 100: use ScoreRing. Two measures on two scales: use two panels.
+- [ChatThread](docs/components/chat-thread.md): A scrolling log of ChatMessages. Best for: A conversation with an assistant, above a PromptInput, where replies stream in. Not for: A record of events on one thing: use Timeline.
+- [CheckoutForm](docs/components/checkout-form.md): Shipping, delivery and payment in three steps, with the order summary beside them. Best for: A demo checkout: shipping, delivery and payment in three steps beside the order summary. Not for: Taking a real payment. It's a demo and never charges.
+- [CommandPalette](docs/components/command-palette.md): Every action in one place. Best for: Every action in one place behind Ctrl+K, with a visible button that opens it too. Not for: Searching page content: use Search. A few actions on one control: use DropdownMenu.
+- [DataTable](docs/components/data-table.md): Rows of records that people read, compare and sort. Best for: Records people read, compare and sort across columns, with optional bulk selection. Not for: A list people scan row by row: use ListItem. A form in every cell.
+- [Dialog](docs/components/dialog.md): A panel for one focused task, shown on top of the page. Best for: A focused task on top of the page, such as an edit form. Not for: A destructive confirm: use AlertDialog. A message that doesn't need a decision: use Toast.
+- [Footer](docs/components/footer.md): The bottom of a site: where else to go, one more thing to say, the small print, and the name. Best for: The bottom of a site: link groups, a section of your own, the small print and the wordmark. Not for: A copy of the main navigation, or the only route to a page: use Navbar.
+- [KanbanBoard](docs/components/kanban-board.md): Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. Best for: Work items that move through a few named stages, where the point is seeing every stage at once. Not for: Records compared across many fields: use DataTable. A single ordered sequence: use Stepper.
+- [Navbar](docs/components/navbar.md): The top of a page: the brand, the main links and a few actions. Best for: The top of a site: the brand, up to about six main links and a few actions. Not for: App navigation across many grouped pages: use Sidebar.
+- [NewsletterForm](docs/components/newsletter-form.md): An email field, a line saying what you're agreeing to, and a button. Best for: Collecting one email address for a newsletter, with a consent line. Not for: Creating an account: use AuthForm.
+- [ProductCard](docs/components/product-card.md): One product as one link. Best for: One product in a shop grid, where the whole card opens it and Add to cart sits on it. Not for: A general content panel: use Card.
+- [Sheet](docs/components/sheet.md): A dialog that slides in from the side and runs the full height of the screen. Best for: Filters, navigation on a narrow screen, or one item's details next to a list, sliding in from the side. Not for: A short confirmation: use Dialog or AlertDialog.
+- [Sidebar](docs/components/sidebar.md): The navigation down the side of an app. Best for: App navigation down the side: grouped pages with icons and counts. Not for: A site header with a few links: use Navbar.
+
+## The rules in brief
+
+- **Imports.** Import a component from its own file, by relative path.
+- **Colour.** Every colour is a semantic token inside a Tailwind arbitrary value:
+- **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`, `DemoLayout`).
+- **Focus.** Anything focusable that you style yourself gets `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.
+- **Page title, empty, loading.** Plan these before writing a screen.
+- **What the system does not have.** No Popover, no Combobox (single value:
+- **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`, `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the docs).
+- **Fill, text, ink.** Each accent has three roles.
+- **Status tones.** `ok` done or healthy; `warning` degraded or needs attention; `hostile` failed or destructive; `info` in progress or neutral news; `signal` brand emphasis (a sale, the selected thing); `neutral` inactive.
+- **Themes.** The theme is `data-theme="light"` or `"dark"` on `<html>` (`src/lib/theme.ts`); dark is the default.
+- **Type.** Three families, as utilities:
+- **Text size.** Secondary text is 14px or larger.
+- **Cards.** To highlight or select a `Card`, set the border inline with a token:
+- **Links.** Components that render links take `renderLink`, defaulting to a plain `<a>`.
+- **Forms.** In a form, `Input`, `Textarea`, `Select`, `MultiSelect` and `QuantityStepper` go inside a `FormField`, which supplies the label, help and error and keeps an `id` you pass to the control.
+- **Buttons.** Two or more buttons side by side need a parent with a gap (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one.
+- **Icon-only buttons** are `IconButton` with a required `label`.
+- **Overlays.** A task on top of the page is a `Dialog`; a destructive confirm is `AlertDialog`, not `Dialog`; filters, navigation on a narrow screen or one item's detail beside a list is a `Sheet`.
+- **Feedback.** A `Toast` confirms something the person just did and then leaves, so it never holds the only copy of anything; a message that must stay is an `Alert` in the page.
+- **Motion.** The components animate themselves, and the shell animates a route change.

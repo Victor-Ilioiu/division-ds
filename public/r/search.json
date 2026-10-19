@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "search",
+  "type": "registry:item",
+  "title": "Search",
+  "description": "Search. Best for: Searching the content of the page that shows the results, inside a search landmark.",
+  "dependencies": [
+    "lucide-react@^1.47.0",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/kbd.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/molecules/search/Search.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/molecules/search/Search.tsx",
+      "content": "import { useEffect, useRef, useState, type Ref } from 'react'\nimport { Search as SearchIcon, X } from 'lucide-react'\nimport { cn } from '../../../lib/cn'\nimport { useMergedRefs } from '../../../lib/refs'\nimport { IconButton } from '../../atoms/icon-button/IconButton'\nimport { Input } from '../../atoms/input/Input'\nimport { Kbd } from '../../atoms/kbd/Kbd'\n\nexport type SearchProps = {\n  /** Required: the field's accessible name, and the search landmark's. */\n  label: string\n  value?: string\n  defaultValue?: string\n  onValueChange?: (value: string) => void\n  /** Called on Enter with the trimmed value. Not called for an empty query. */\n  onSearch?: (query: string) => void\n  placeholder?: string\n  /** One printable key, e.g. \"/\". Focuses the field from anywhere on the page, except while\n   *  another text field has focus. Shown as a Kbd hint while the field is empty. */\n  shortcut?: string\n  inputSize?: 'sm' | 'md' | 'lg'\n  className?: string\n  ref?: Ref<HTMLInputElement>\n}\n\nconst TYPING_TARGET = 'input, textarea, select, [contenteditable=\"\"], [contenteditable=\"true\"]'\n\n/**\n * A search field inside a named search landmark. Enter submits the trimmed query, Escape and the\n * clear button empty it, and an optional single-key shortcut focuses the field from anywhere on\n * the page unless another text field already has focus. No suggestions: that is the command\n * palette's job, with a listbox built for it.\n */\nexport function Search({\n  label,\n  value,\n  defaultValue = '',\n  onValueChange,\n  onSearch,\n  placeholder = 'Search',\n  shortcut,\n  inputSize = 'md',\n  className,\n  ref,\n}: SearchProps) {\n  const [internal, setInternal] = useState(defaultValue)\n  const current = value ?? internal\n  const inputRef = useRef<HTMLInputElement | null>(null)\n  const setInputRef = useMergedRefs(inputRef, ref)\n\n  const setValue = (next: string) => {\n    if (value === undefined) setInternal(next)\n    onValueChange?.(next)\n  }\n\n  useEffect(() => {\n    if (!shortcut) return\n    const onKeyDown = (event: KeyboardEvent) => {\n      if (event.key !== shortcut || event.metaKey || event.ctrlKey || event.altKey) return\n      const target = event.target as Element | null\n      if (target?.closest?.(TYPING_TARGET)) return\n      event.preventDefault()\n      inputRef.current?.focus()\n    }\n    window.addEventListener('keydown', onKeyDown)\n    return () => window.removeEventListener('keydown', onKeyDown)\n  }, [shortcut])\n\n  return (\n    <form\n      role=\"search\"\n      aria-label={label}\n      className={cn('relative flex items-center', className)}\n      onSubmit={event => {\n        event.preventDefault()\n        const query = current.trim()\n        if (query) onSearch?.(query)\n      }}\n    >\n      <SearchIcon\n        aria-hidden=\"true\"\n        className=\"pointer-events-none absolute left-3 w-4 h-4 text-[var(--color-text-muted)]\"\n      />\n      <Input\n        ref={setInputRef}\n        type=\"search\"\n        aria-label={label}\n        aria-keyshortcuts={shortcut}\n        inputSize={inputSize}\n        placeholder={placeholder}\n        value={current}\n        onChange={event => setValue(event.target.value)}\n        onKeyDown={event => {\n          if (event.key === 'Escape' && current) {\n            event.preventDefault()\n            setValue('')\n          }\n        }}\n        className=\"pl-9 pr-10 [&::-webkit-search-cancel-button]:appearance-none\"\n      />\n      <span className=\"absolute right-1.5 flex items-center\">\n        {current ? (\n          <IconButton\n            label=\"Clear search\"\n            variant=\"ghost\"\n            size=\"sm\"\n            className=\"h-7 w-7\"\n            wrapperClassName=\"no-reticle\"\n            onClick={() => {\n              setValue('')\n              inputRef.current?.focus()\n            }}\n          >\n            <X aria-hidden=\"true\" className=\"w-3.5 h-3.5\" />\n          </IconButton>\n        ) : shortcut ? (\n          <Kbd aria-hidden=\"true\" className=\"mr-1\">\n            {shortcut}\n          </Kbd>\n        ) : null}\n      </span>\n    </form>\n  )\n}\n"
+    }
+  ]
+}

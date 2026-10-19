@@ -1,0 +1,8 @@
+{
+  "name": "division-ds",
+  "description": "The Division DS skill: which component and token to use, the composition rules prop types cannot express, and how to check a screen.",
+  "version": "0.1.0",
+  "author": { "name": "Victor Ilioiu" },
+  "homepage": "https://victor-ilioiu.vercel.app/systems/division-ds/",
+  "repository": "https://github.com/Victor-Ilioiu/division-ds"
+}

@@ -1,0 +1,64 @@
+{
+  "color": {
+    "semantic": {
+      "surface": {
+        "base": { "$type": "color", "$value": "#07080b" },
+        "sunken": { "$type": "color", "$value": "#0d1016" },
+        "raised": { "$type": "color", "$value": "rgba(40, 52, 69, 0.42)" },
+        "scrim": { "$type": "color", "$value": "rgba(0, 0, 0, 0.6)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." }
+      },
+      "border": {
+        "hairline": { "$type": "color", "$value": "rgba(214, 226, 240, 0.16)" },
+        "hairline-strong": { "$type": "color", "$value": "rgba(214, 226, 240, 0.32)", "$description": "Decorative only — panel edges and the corner-crosshair chrome. Deliberately subtle; composited over surface.base it reaches 2.39:1, which carries no SC 1.4.11 obligation. Never use it for a form control's boundary; that is border.control." },
+        "control": { "$type": "color", "$value": "#646b72", "$description": "3.53:1 on surface.sunken (the control fill it is painted on) and 3.71:1 on surface.base — the INFORMATIONAL hairline, the one SC 1.4.11 governs. Opaque rather than alpha so the boundary holds whatever surface it lands on." },
+        "selection": { "$type": "color", "$value": "#8a939e", "$description": "The boundary of the small selection controls (Checkbox, Radio, Switch track) at rest. 6.12:1 on surface.sunken. Brighter than border.control (3.53:1) on purpose: a 20px box drawn with the same hairline as a 320px input carries a fraction of the edge length, and at 3.53:1 an unchecked checkbox all but vanished on the dark page. border.control stays the hairline for the large fields." }
+      },
+      "text": {
+        "primary": { "$type": "color", "$value": "#e9eef4" },
+        "secondary": { "$type": "color", "$value": "#a3adba" },
+        "muted": { "$type": "color", "$value": "#7b8592", "$description": "Raised 2026-09-21 from #6f7a88 (4.59:1 on surface.base, but only 4.00:1 on surface.raised composited over surface.base — a real SC 1.4.11 failure once that pair was actually gated). Now 5.35:1 on surface.base and 4.66:1 on surface.raised." },
+        "placeholder": { "$type": "color", "$value": "#747f8d", "$description": "4.68:1 on surface.sunken, which is the control fill placeholder text is actually painted on. text.muted is gated against surface.base and passes there at 4.59:1, but reaches only 4.37:1 on the sunken fill — so placeholder needs its own step." },
+        "label": { "$type": "color", "$value": "#6f7a88", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 4.59:1 on surface.base against text.secondary's 8.82:1 for the items beneath: the gap in luminance is the point. Sits just above the AA floor on purpose; gated." }
+      },
+      "accent": {
+        "signal": {
+          "fill": { "$type": "color", "$value": "{color.primitive.signal.500}" },
+          "text": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "5.80:1 on surface.base" },
+          "ink": { "$type": "color", "$value": "#0a0602", "$description": "5.85:1 on accent.signal.fill" },
+          "wash": { "$type": "color", "$value": "rgba(242, 85, 15, 0.12)", "$description": "Hover wash under a nav item or an inactive tab. Text on it is text.primary and gated. The focus ring and a checked control's fill drop under 3:1 on it in light theme, so neither is ever drawn on it." },
+          "glow": { "$type": "color", "$value": "rgba(242, 85, 15, 0.38)", "$description": "The colour of the faint shadow an interactive Card casts on hover and on keyboard focus inside it (.card-interactive, src/styles/elevation.css): signal.500 at part strength, on the near-black page a shadow this strong reads as a soft halo. A shadow, never a fill, a border or text: it bounds nothing and carries no state on its own (the border beside it does, in accent.signal.fill), so it owes no ratio and has no pair in the gate." }
+        },
+        "hostile": {
+          "fill": { "$type": "color", "$value": "{color.primitive.hostile.500}" },
+          "text": { "$type": "color", "$value": "{color.primitive.hostile.400}", "$description": "6.23:1 on surface.base, 5.42:1 on surface.raised, 4.80:1 on raised nested in raised, 5.92:1 on surface.sunken. hostile.500 measured 4.48:1 on surface.raised, under 4.5:1." },
+          "ink": { "$type": "color", "$value": "#0a0602", "$description": "5.19:1 on accent.hostile.fill" }
+        },
+        "ok": {
+          "fill": { "$type": "color", "$value": "{color.primitive.ok.500}" },
+          "text": { "$type": "color", "$value": "{color.primitive.ok.500}", "$description": "7.63:1 on surface.base" },
+          "ink": { "$type": "color", "$value": "#0a0602", "$description": "7.69:1 on accent.ok.fill" }
+        },
+        "info": {
+          "fill": { "$type": "color", "$value": "{color.primitive.info.500}" },
+          "text": { "$type": "color", "$value": "{color.primitive.info.500}", "$description": "8.02:1 on surface.base" },
+          "ink": { "$type": "color", "$value": "#0a0602", "$description": "8.08:1 on accent.info.fill" }
+        },
+        "warning": {
+          "fill": { "$type": "color", "$value": "{color.primitive.warning.500}" },
+          "text": { "$type": "color", "$value": "{color.primitive.warning.500}", "$description": "10.67:1 on surface.base" },
+          "ink": { "$type": "color", "$value": "#0a0602", "$description": "10.76:1 on accent.warning.fill" }
+        }
+      },
+      "numeral": {
+        "pad": { "$type": "color", "$value": "#7b8592", "$description": "The dimmed leading-zero pad on a hero numeral (Overview, Progress readout, docs section index). Decorative and aria-hidden: it is a column width, never a value, so no SC 1.4.3 obligation attaches to it. 5.35:1 on surface.base, which is 31% of text.primary's 17.17:1 there -- that share, not the absolute ratio, is what makes it read as padding rather than as a digit. Holds the same value text.muted holds in this theme and is deliberately NOT an alias of it: text.muted is real secondary text with an AA floor, and the two move for different reasons." }
+      },
+      "focus": {
+        "ring": { "$type": "color", "$value": "{color.primitive.signal.500}" }
+      },
+      "chart": {
+        "series-1": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "First chart series: a line, a bar, a legend swatch. A graphic, 3:1: 5.80:1 on surface.base, 5.05:1 on surface.raised, 4.47:1 nested. Never text." },
+        "series-2": { "$type": "color", "$value": "{color.primitive.info.600}", "$description": "Second chart series. 5.52:1 on surface.base, 4.80:1 on surface.raised, 4.25:1 nested. Never text. There is no third: the other hues are status colours." }
+      }
+    }
+  }
+}

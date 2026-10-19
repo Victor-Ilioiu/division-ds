@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:item",
+  "title": "Skeleton",
+  "description": "Skeleton. Best for: A region whose content is loading, shown as placeholders in its shape inside one SkeletonGroup.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/skeleton/Skeleton.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/skeleton/Skeleton.tsx",
+      "content": "import type { HTMLAttributes, ReactNode, Ref } from 'react'\nimport { cn } from '../../../lib/cn'\n\n/** The fill every shape paints, and the sweep that crosses it, live in `.skeleton-shimmer`\n *  (src/styles/motion.css) so reduced motion can stop the sweep in one place. The fill is\n *  `border.hairline`, not `surface.sunken`: hairline is translucent, so the same placeholder reads\n *  on the page, on a raised Card and inside a Dialog, where sunken is all but invisible against\n *  the dark page background. */\nconst SHAPE = 'skeleton-shimmer block'\n\n/** Avatar's own footprints, with the same rule for the cut: md and lg are bevelled, sm (24px)\n *  is not. A placeholder that changes shape when the image arrives reads as a layout jump. */\nconst AVATAR_SIZES = {\n  sm: 'w-6 h-6',\n  md: 'w-9 h-9 bevel-sm',\n  lg: 'w-12 h-12 bevel-sm',\n} as const\n\nexport type SkeletonProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {\n  /** `text` draws `lines` bars; `block` is any rectangle you size with className; `avatar` is an\n   *  Avatar's exact footprint. */\n  shape?: 'text' | 'block' | 'avatar'\n  /** Only for `text`. The last of several lines is shorter, the way a paragraph ends. */\n  lines?: number\n  /** Only for `avatar`, matching Avatar's size. */\n  size?: 'sm' | 'md' | 'lg'\n  className?: string\n  ref?: Ref<HTMLDivElement>\n  children?: never\n}\n\n/**\n * A loading placeholder in the bevel language: square corners, the cut on anything big enough to\n * carry it, no pill and no circle. There is no `circle` shape because the system has no circle;\n * Avatar is a square, so its placeholder is `shape=\"avatar\"`.\n *\n * Every shape is aria-hidden. A grey bar says nothing to a screen reader, and twenty of them say\n * nothing twenty times. The words belong on the container: wrap the placeholders in\n * `SkeletonGroup`, which sets `aria-busy` and carries a visually hidden \"Loading…\".\n *\n * Text lines are 0.75rem tall with 0.5rem between them, close to a 14px line of body copy, so a\n * text skeleton occupies roughly the height of the text that replaces it.\n */\nexport function Skeleton({ shape = 'text', lines = 1, size = 'md', className, ref, ...rest }: SkeletonProps) {\n  if (shape === 'text') {\n    const count = Math.max(1, Math.floor(lines))\n    return (\n      <div ref={ref} aria-hidden=\"true\" className={cn('flex w-full flex-col gap-2', className)} {...rest}>\n        {Array.from({ length: count }, (_, i) => (\n          <span\n            key={i}\n            data-skeleton-line=\"\"\n            className={cn(SHAPE, 'h-3', count > 1 && i === count - 1 ? 'w-3/5' : 'w-full')}\n          />\n        ))}\n      </div>\n    )\n  }\n  return (\n    <div\n      ref={ref}\n      aria-hidden=\"true\"\n      className={cn(\n        SHAPE,\n        'shrink-0',\n        shape === 'avatar' ? AVATAR_SIZES[size] : 'bevel-sm min-h-6',\n        className\n      )}\n      {...rest}\n    />\n  )\n}\n\nexport type SkeletonGroupProps = HTMLAttributes<HTMLDivElement> & {\n  /** The words a screen reader hears in place of the shapes. Name what is loading when you can:\n   *  \"Loading orders\" says more than \"Loading…\". */\n  label?: string\n  children: ReactNode\n  className?: string\n  ref?: Ref<HTMLDivElement>\n}\n\n/**\n * The container half of the pattern. `aria-busy=\"true\"` tells assistive tech the region is being\n * filled, and the hidden label says so in words, because the shapes inside are aria-hidden.\n *\n * Unmount it when the content arrives rather than flipping `aria-busy` to false around the real\n * content: the real content then renders in its own markup, with no leftover busy region.\n */\nexport function SkeletonGroup({ label = 'Loading…', children, className, ref, ...rest }: SkeletonGroupProps) {\n  return (\n    <div ref={ref} aria-busy=\"true\" className={className} {...rest}>\n      <span className=\"sr-only\">{label}</span>\n      {children}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

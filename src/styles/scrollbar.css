@@ -1,0 +1,49 @@
+/* Scrollbars, drawn from the system's own tokens instead of the OS default: a grey rounded
+   Windows bar in a near-black, square-cornered UI was the one surface on every page that the
+   token pipeline never reached.
+
+   The thumb rests at `border.control`, the same grey every unbevelled control's outline uses, so
+   it reads as a control and not as decoration. It warms to `accent.signal.fill` only while it is
+   being hovered or dragged, the same "the accent means you are touching this" rule the sidebar's
+   current item follows. The track is transparent so the column behind it (`surface.base`) shows
+   through. Square ends, never rounded: the system has no radius outside its bevels.
+
+   Two engines, two syntaxes, and they must not both apply. Chromium 121+ honours the standard
+   `scrollbar-color` / `scrollbar-width` and, once either is set, IGNORES every `::-webkit-scrollbar`
+   rule. The webkit pseudo-elements are the only way to get a hover colour and an exact width, so
+   the standard properties are applied only where the pseudo-elements do not exist (Firefox). */
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: var(--color-border-control) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* The transparent border plus `background-clip: padding-box` draws a 4px bar centred in a 10px
+   hit area: thin to look at, still easy to grab. */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-control);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--color-accent-signal-fill);
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}

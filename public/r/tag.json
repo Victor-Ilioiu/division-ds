@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag",
+  "type": "registry:item",
+  "title": "Tag",
+  "description": "Tag. Best for: A removable chip, such as an active filter or a selected value.",
+  "dependencies": [
+    "lucide-react@^1.47.0",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/tag/Tag.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/tag/Tag.tsx",
+      "content": "import { useLayoutEffect, useRef, type HTMLAttributes, type Ref } from 'react'\nimport { X } from 'lucide-react'\nimport { cn } from '../../../lib/cn'\nimport { exitTag, slideIntoPlace } from '../../../lib/exit'\nimport { useMergedRefs } from '../../../lib/refs'\nimport { IconButton } from '../icon-button/IconButton'\n\nexport type TagProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {\n  /** Text, not ReactNode: the dismiss button's accessible name is built from it. */\n  children: string\n  /** Runs once the tag has faded out (M7), not on the click: remove the tag from the list here.\n   *  Its neighbours then slide into the space it left. With reduced motion it runs at once. */\n  onDismiss?: () => void\n  /** Override the composed dismiss name, e.g. for another verb or another language. */\n  dismissLabel?: (text: string) => string\n  ref?: Ref<HTMLSpanElement>\n}\n\nexport function Tag({\n  children,\n  onDismiss,\n  dismissLabel = text => `Remove ${text}`,\n  className,\n  ref,\n  ...rest\n}: TagProps) {\n  const rootRef = useRef<HTMLSpanElement | null>(null)\n  const setRefs = useMergedRefs(rootRef, ref)\n  const exiting = useRef(false)\n\n  // No deps on purpose: after the render that removed a neighbour, every remaining tag checks\n  // whether it moved and, if it did, slides there instead of jumping (src/lib/exit.ts).\n  useLayoutEffect(() => {\n    slideIntoPlace(rootRef.current)\n  })\n\n  const dismiss = () => {\n    if (!onDismiss || exiting.current) return\n    exiting.current = true\n    exitTag(rootRef.current, () => {\n      exiting.current = false\n      onDismiss()\n    })\n  }\n\n  return (\n    <span\n      ref={setRefs}\n      className={cn(\n        // `isolate` so the backing layer's -z-10 stacks under this tag's text, not under the page.\n        'relative isolate inline-flex items-center gap-1 h-[28px] pl-[9px] shrink-0',\n        // With a dismiss button, the button sits 2px in from the right and bottom outer edges, so\n        // its own 8px cut runs parallel to the tag's, one even gap inside it, and the two corners\n        // read as one shape.\n        onDismiss ? 'pr-[2px]' : 'pr-[9px]',\n        'font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-secondary)]',\n        className\n      )}\n      {...rest}\n    >\n      {/* The cut corner lives on a backing layer, never on the tag itself. A clip-path on the root\n          would also clip the dismiss button's focus ring, which is drawn 3px outside that button\n          and so reaches past the tag's own edge. The layer carries the shape, fill and border;\n          the root stays unclipped. See design.md, \"The focus ring is never clipped\". */}\n      <span\n        aria-hidden=\"true\"\n        className={cn(\n          'absolute inset-0 -z-10 pointer-events-none',\n          'bevel-sm bevel-edge [--bevel-edge-color:var(--color-border-hairline-strong)]',\n          'border border-[var(--color-border-hairline-strong)] bg-[var(--color-surface-sunken)]'\n        )}\n      />\n      {children}\n      {onDismiss ? (\n        <IconButton\n          label={dismissLabel(children)}\n          variant=\"ghost\"\n          size=\"sm\"\n          onClick={dismiss}\n          className=\"h-6 w-6 min-w-0\"\n          // No reticle: brackets outside a 24px button would land on the tag's own border.\n          wrapperClassName=\"leading-none no-reticle\"\n        >\n          <X aria-hidden=\"true\" className=\"w-3 h-3\" />\n        </IconButton>\n      ) : null}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

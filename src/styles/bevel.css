@@ -1,0 +1,129 @@
+/* Cut-corner shape tokens, ported from the Phase 1 mood board's "cut corners" motif.
+   clip-path clips ANYTHING painted on the element it's applied to, including a focus ring drawn
+   as its own outline/box-shadow -- so the ring must live on an unclipped wrapper, never on the
+   clipped element itself. See ShapeGuideline.tsx's focus demo and BUILD-LOG.md's Phase 2 finding
+   (augmented-ui: clip-path can clip a focus ring right off the element). */
+.bevel-sm { --bevel-cut: 8px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); }
+.bevel-md { --bevel-cut: 14px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
+.bevel-lg { --bevel-cut: 22px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%); }
+/* Square corners on a control that is otherwise bevelled: for a control that sits flush against a
+   neighbour at its bottom-right, where the cut would open a notch in the shared seam
+   (QuantityStepper's Decrease button). Unlayered and after the three above, so it wins over them
+   and over Tailwind utilities alike; it also drops the `.bevel-edge` diagonal the cut no longer
+   needs. */
+.bevel-none { clip-path: none; }
+.bevel-none.bevel-edge::after { content: none; }
+
+/* The diagonal edge a bordered bevel is otherwise missing.
+
+   clip-path cuts the corner off the border box, border included, so a bevelled element with a
+   1px border shows three bordered sides, a bordered bottom, and a bare diagonal where the cut
+   is: the outline visibly breaks at the one corner the shape is known for. This paints the
+   missing stretch. It is a square the size of the cut, sat on the border-box corner, filled
+   with a gradient whose 50% line IS the cut line (a `to bottom right` gradient in a square puts
+   its midline on the other diagonal exactly), coloured from just inside that line outward. The
+   element's own clip-path then trims the outer half, leaving a band hugging the cut.
+
+   1.25px rather than 1px: a 45-degree hairline antialiases across two pixel columns and reads
+   lighter than the straight 1px sides beside it; the extra quarter pixel brings it back to the
+   same visual weight. Set `--bevel-edge-color` to the element's border colour. It assumes a 1px
+   border, which is the only border width a bevelled element carries in this system.
+
+   The element must be positioned (`relative` or `absolute`) for the square to anchor to it. This
+   rule deliberately does not set `position` itself: it is unlayered, so it would outrank a
+   Tailwind `absolute` on the same element and silently pull a backing layer back into flow. */
+.bevel-edge::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: var(--bevel-cut, 8px);
+  height: var(--bevel-cut, 8px);
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 1.25px),
+    var(--bevel-edge-color, currentColor) calc(50% - 1.25px)
+  );
+}
+
+/* ---- Alert: a bottom-right cut sized to the button inside it --------------------------------
+   Same corner (bottom-right) and 45 degrees as Button, cut 12px on every Alert, full and compact
+   (Victor, 2026-10-14). The Alert's side padding is 8px (`px-2`, set in Alert.tsx), so an action
+   Button's own 8px cut sits close enough to the Alert's corner for the two diagonals to read as
+   one shape. He chose 12px by eye over the literal "child cut + padding" sum (24px), whose
+   diagonal gap read wider than the side gap. Pairs with `.bevel-edge` for the border along the
+   diagonal (the Alert sets `--bevel-edge-color` per tone), and the Alert must be `relative`, as
+   `.bevel-edge` requires. */
+.bevel-alert {
+  --bevel-cut: 12px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.bevel-focus-wrap {
+  display: inline-block;
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+/* :has(:focus-visible), not :focus-within. :focus-within matches whenever the inner button holds
+   focus, including after a mouse click — so a clicked Button painted a ring while a clicked
+   Checkbox (which uses focus-visible: directly, like every unbevelled control here) did not. The
+   bevelled/unbevelled split is about WHERE the ring lives, never about WHEN it appears; both
+   halves now answer to focus-visible. */
+.bevel-focus-wrap:has(:focus-visible) {
+  outline-color: var(--color-focus-ring);
+}
+
+/* Reticle lock-on: the hover signature of Button and IconButton, from the mood board's
+   "Reticle lock-on" motif. Four corner brackets start wide and faint and close onto the control.
+
+   It lives on the unclipped `.bevel-focus-wrap`, for the same reason the focus ring does: the
+   control's own clip-path would cut brackets drawn outside its box clean off.
+
+   A transition, not the mood board's looping keyframe. The board animated it forever to show it
+   off; on a real control it runs once per hover and holds, and reverses when the pointer leaves.
+   Same restraint as M5: nothing re-fires while the pointer rests. It is monotonic (the brackets
+   only ever close in and brighten), so, as with M5, WCAG 2.3.1's flash rule has nothing to count.
+
+   Disabled controls do not lock on. `:has(> :hover:not(:disabled):not([aria-disabled="true"]))`
+   keys the bracket to the control, not to the wrapper, so the wrapper's own box never triggers it.
+
+   Opt out with `.no-reticle` on the wrapper, for a control nested so tightly inside another
+   element (Tag's dismiss button) that brackets outside it would land on its parent's border. */
+.bevel-focus-wrap { position: relative; }
+.bevel-focus-wrap::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--reticle-from, 12px));
+  pointer-events: none;
+  opacity: 0;
+  --reticle-arm: 10px;
+  --reticle-c: var(--color-accent-signal-fill);
+  background:
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 0 / var(--reticle-arm) 2px,
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 0 / 2px var(--reticle-arm),
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 0 / var(--reticle-arm) 2px,
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 0 / 2px var(--reticle-arm),
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 100% / var(--reticle-arm) 2px,
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 100% / 2px var(--reticle-arm),
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 100% / var(--reticle-arm) 2px,
+    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 100% / 2px var(--reticle-arm);
+  background-repeat: no-repeat;
+  /* Leaving: fast and flat, so a pointer sweeping across a toolbar does not leave a trail. */
+  transition: inset var(--duration-fast) linear, opacity var(--duration-fast) linear;
+}
+.bevel-focus-wrap:has(> :hover:not(:disabled):not([aria-disabled="true"]))::before {
+  inset: calc(-1 * var(--reticle-to, 5px));
+  opacity: 1;
+  /* Arriving: the M1 snap curve, over the lock-on window the mood board specifies (160-220ms). */
+  transition: inset var(--duration-base) var(--ease-snap), opacity var(--duration-base) var(--ease-snap);
+}
+.bevel-focus-wrap.no-reticle::before { content: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* The brackets still appear, which is the information; they just do not travel. */
+  .bevel-focus-wrap::before,
+  .bevel-focus-wrap:has(> :hover)::before {
+    transition: none;
+  }
+}

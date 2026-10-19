@@ -1,0 +1,79 @@
+/* Panel chrome and the corner crosshair, ported from the Phase 1 mood board (G1-decided: dimmed,
+   solid colour, symmetric arms of equal length at all four corners). */
+.panel {
+  position: relative;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-hairline);
+  backdrop-filter: blur(6px);
+}
+
+/* The crosshair, split out of `.panel` so a surface can take the motif without also taking the
+   panel's fill, border and blur. Select's portalled listbox is the one atom that is a surface
+   framing other content, and it brings its own fill and border; before this split it could only
+   have had the crosshair by inheriting those too.
+
+   The arms are drawn 5px OUTSIDE the element, so a host must not clip its own overflow. */
+.crosshair {
+  position: relative;
+}
+.crosshair::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) left 1px top 4px/15px 1px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) left 4px top 1px/1px 14px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) right 1px top 4px/15px 1px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) right 4px top 1px/1px 14px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) left 1px bottom 4px/15px 1px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) left 4px bottom 1px/1px 14px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) right 1px bottom 4px/15px 1px no-repeat,
+    linear-gradient(var(--color-text-muted), var(--color-text-muted)) right 4px bottom 1px/1px 14px no-repeat;
+}
+
+/* Hero tilt: static, blurred glass, reserved for hero/marketing sections only (G1-decided). */
+.holo {
+  transform: perspective(700px) rotateY(-14deg) rotateX(3deg);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-hairline-strong);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); /* token-discipline: allow, a cast shadow is black in both themes */
+}
+
+/* An interactive card: one whose whole surface is a click target (Card's `interactive` prop sets
+   this class; nothing else should). Flat and hairline-bordered at rest. On hover, and while
+   anything inside it has keyboard focus, the border takes the signal accent and the whole card
+   slides up 4px.
+
+   `:has(:focus-visible)`, not `:focus-within`, so a keyboard user gets it and a card does not
+   stay lit and raised after a mouse click on a button inside it.
+
+   `transform` is set only in the hover state. At rest the card has no transform at all: no
+   stacking context, no compositor layer, text drawn on the pixel grid. It is a transform, so no
+   layout box moves. The crosshair marks and a CardMedia are inside the card and travel with it.
+   Border and lift ease over `--duration-base` (180ms) `ease-out`, the same as the border did.
+
+   There is no glow shadow: the hover is the border and the lift, nothing else. To bring the
+   glow back, add `box-shadow: 0 0 20px -4px var(--color-accent-signal-glow);` to the hover rule
+   and `box-shadow` to the transition-property. */
+.card-interactive {
+  transition-property: border-color, transform;
+  transition-duration: var(--duration-base);
+  transition-timing-function: ease-out;
+}
+.card-interactive:hover,
+.card-interactive:has(:focus-visible) {
+  border-color: var(--color-accent-signal-fill);
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The border still changes, at once. The card does not move. */
+  .card-interactive {
+    transition: none;
+  }
+  .card-interactive:hover,
+  .card-interactive:has(:focus-visible) {
+    transform: none;
+  }
+}

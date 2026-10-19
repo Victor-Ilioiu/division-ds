@@ -1,0 +1,12 @@
+{
+  "duration": {
+    "fast": { "$type": "duration", "$value": "120ms" },
+    "base": { "$type": "duration", "$value": "180ms" },
+    "slow": { "$type": "duration", "$value": "320ms" },
+    "stepped": { "$type": "duration", "$value": "180ms" }
+  },
+  "ease": {
+    "snap": { "$type": "cubicBezier", "$value": "cubic-bezier(0.2, 0.8, 0.2, 1)" },
+    "accelerate": { "$type": "cubicBezier", "$value": "cubic-bezier(0.4, 0, 1, 1)" }
+  }
+}

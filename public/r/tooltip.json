@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:item",
+  "title": "Tooltip",
+  "description": "Tooltip. Best for: Extra detail on hover or focus for an element that can take focus, such as an IconButton.",
+  "dependencies": [
+    "radix-ui@^1.6.7",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/tooltip/Tooltip.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/tooltip/Tooltip.tsx",
+      "content": "import type { ComponentPropsWithoutRef, ReactElement } from 'react'\nimport { Tooltip as RadixTooltip } from 'radix-ui'\nimport { cn } from '../../../lib/cn'\n\n/** Mounted once in AppShell, so every tooltip in the app shares one delay and one\n *  \"skip the delay while moving between triggers\" behaviour — no consumer has to remember it. */\nexport function TooltipProvider(props: ComponentPropsWithoutRef<typeof RadixTooltip.Provider>) {\n  return <RadixTooltip.Provider delayDuration={300} skipDelayDuration={150} {...props} />\n}\n\nexport type TooltipProps = {\n  /** Supplementary text. A tooltip is never the only place this information lives — it does not\n   *  appear on touch, and never for a keyboard user who never focuses the trigger. */\n  content: string\n  /** The trigger. Rendered asChild, so no wrapper element is added to the layout or focus order —\n   *  a single focusable element. */\n  children: ReactElement\n  side?: 'top' | 'right' | 'bottom' | 'left'\n  className?: string\n}\n\nexport function Tooltip({ content, children, side = 'top', className }: TooltipProps) {\n  return (\n    <RadixTooltip.Root>\n      <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>\n      <RadixTooltip.Portal>\n        <RadixTooltip.Content\n          side={side}\n          sideOffset={2}\n          className={cn(\n            'z-50 max-w-[260px] px-2.5 py-2',\n            // A single object with its own fill, holding nothing focusable and nothing that can\n            // be selected, so it takes the cut corner. `bevel-sm` and not a focus wrapper: the\n            // panel is never focused (the trigger is), so there is no ring here for clip-path to\n            // clip. See design.md, \"The focus ring is never clipped\".\n            'relative bevel-sm bevel-edge [--bevel-edge-color:var(--color-border-hairline-strong)]',\n            'border border-[var(--color-border-hairline-strong)]',\n            'bg-[var(--color-surface-sunken)] backdrop-blur-md',\n            'font-body text-xs text-[var(--color-text-primary)]',\n            'anim-tooltip',\n            className\n          )}\n        >\n          {content}\n        </RadixTooltip.Content>\n      </RadixTooltip.Portal>\n    </RadixTooltip.Root>\n  )\n}\n"
+    }
+  ]
+}

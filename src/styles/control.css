@@ -1,0 +1,36 @@
+/* The colour transition every unbevelled interactive element uses, with `outline-color`
+   deliberately left out of the property list.
+
+   Tailwind v4's `transition-colors` expands to
+   `color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, …`.
+   Every unbevelled control here draws its own focus ring as an `outline` and declares no
+   `outline-color` at rest, so the property started at its initial value — `currentColor`, i.e.
+   `text.primary`, near-white in the dark theme — and animated to `--color-focus-ring` over the
+   whole 120ms. Measured on `main input` at /components/input: rgb(233,238,244) at t+0ms,
+   rgb(239,139,96) at t+30ms, rgb(242,85,15) at t+60ms. The ring is this system's reticle motif
+   and the one signal a keyboard user relies on; it has to be the right colour at the instant of
+   focus, not a tenth of a second later.
+
+   Excluding the property rather than painting a transparent outline at rest: a transparent rest
+   colour only converts a wrong-coloured animation into a fade-in, and `.bevel-focus-wrap` has no
+   transition at all, so the bevelled half would still paint instantly while the unbevelled half
+   arrived over 120ms. design.md's rule is that the bevelled/unbevelled split is about WHERE the
+   ring lives and never about WHEN it appears — so the ring is excluded from motion on both
+   halves. This matches Button, which has always listed its transitioned properties explicitly.
+
+   Reduced motion is handled here rather than by a `motion-reduce:transition-none` utility at each
+   call site: this rule is unlayered, so it outranks Tailwind's layered utilities and a variant
+   class could not override it. */
+.transition-control {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: var(--duration-fast);
+  /* Tailwind's own default transition curve, stated explicitly so moving off `transition-colors`
+     changes nothing but the property list. */
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-control {
+    transition-property: none;
+  }
+}

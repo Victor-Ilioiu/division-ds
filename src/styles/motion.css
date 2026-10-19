@@ -1,0 +1,364 @@
+/* M1 snap-in: elements arrive a little large and settle. Signature motion for focus/selection/toasts. */
+@keyframes snap-in {
+  from { opacity: 0; transform: scale(1.08); }
+  to { opacity: 1; transform: scale(1); }
+}
+.anim-snap-in { animation: snap-in var(--duration-base) var(--ease-snap); }
+
+/* M2 draw-on line: a hairline scales in from one edge before content settles. */
+@keyframes draw-on {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.anim-draw-on { transform-origin: left; animation: draw-on var(--duration-slow) var(--ease-snap); }
+
+/* M4 rationed glitch: capped at 2 iterations of a 400ms cycle (~2.5 flashes/sec), staying under
+   the WCAG 2.3.1 limit of 3 flashes per second. Errors and "signal lost" moments only. */
+@keyframes glitch-flash {
+  0%, 100% { filter: none; transform: translateX(0); }
+  50% { filter: hue-rotate(25deg); transform: translateX(1px); }
+}
+.anim-glitch { animation: glitch-flash 400ms steps(2) 2; }
+
+/* M5 stepped arrival: the hover state lands in discrete jumps instead of sliding in.
+
+   A transition with a stepped timing function, deliberately NOT a keyframe animation and
+   deliberately NOT `.anim-glitch` above, for three reasons in order of how load-bearing they are:
+
+   1. Restraint. PRODUCT.md Principle 3 reserves the glitch for failure. Hover is the
+      highest-frequency interaction in the system, so spending the one effect that carries meaning
+      on it leaves nothing left to say "this broke". The discrete, switched quality is the part
+      worth having here; the hue shift and the jitter are the part that has to stay rare.
+   2. The rule enforces itself. A transition fires once per state entry by construction: there is
+      no iteration count to cap and nothing can re-fire while the pointer rests, so "it must not
+      repeat" stops being a thing to police. It also reverses on pointer-leave with no second
+      keyframe.
+   3. It reads as a switching circuit rather than as a tween, which is the whole point.
+
+   FLASH SAFETY, and read this before changing the step count or the duration. WCAG 2.3.1 counts a
+   flash as a PAIR of opposing changes in relative luminance. This staircase is monotonic: every
+   step moves further toward the hover value and never back, so it contains no opposing change and
+   is not a flash at any step rate. That is why there is no three-per-second cap here, and why the
+   absence of one is a conclusion rather than an oversight. `.anim-glitch` needs its cap because
+   its cycle returns to where it started. If anyone ever adds an over- or under-shoot to this
+   staircase, 2.3.1 applies again and the rate has to be measured and written down the way M4's
+   comment does it. Do not copy the absence of a cap out of here into something non-monotonic.
+
+   Cadence. 3 steps over 180ms is a 60ms plateau each, chosen by sampling the rendered `filter`
+   and `background-color` once per animation frame rather than by picking a number. Measured on
+   Button variant=danger, headless Chromium at 60fps, each plateau given as the span of frames
+   holding one value: 180ms x 3 holds for 5, 4 and then indefinitely (the chosen one, each step
+   clearly its own state); 120ms x 3, the old `--duration-fast`, holds for 4 then 2 frames, which
+   reads as a cheap ramp; 160ms x 3 holds 5 then 3; 200ms x 3 matches 180ms frame for frame and
+   only costs 20ms; 180ms x 2 gives a single mid-tone, closer to a crossfade than to switching;
+   180ms x 6 holds each of the five intermediates for 1 to 2 frames, which is indistinguishable
+   from smooth and also below the resolution any test could see. 240ms x 4 also reads well but
+   240ms is long for the highest-frequency interaction in the system.
+
+   The step count lives in `--steps-arrival` so the cadence is readable from one place, and
+   `e2e/button-hover.spec.ts` reads it back off the computed timing function instead of hardcoding
+   a number, then asserts the plateau is at least 50ms so a future 6-step version fails the gate
+   rather than quietly becoming a ramp again.
+
+   Press stays instant. `:active` zeroes the duration, so a press acknowledges in the frame it
+   happens: measured `brightness(0.95)` on the first frame after `mousedown`, one distinct value
+   for the whole press. Stepping is for arrival, not for acknowledgement, and a press that climbs
+   a staircase reads as lag. This was NOT already true and is a fix rather than a preservation:
+   before M5, `active:brightness-95` rode the same 120ms hover transition as everything else on
+   Button, so the press ramped too.
+
+   Reduced motion is handled inside this rule rather than by a `motion-reduce:transition-none`
+   utility at the call site, because this rule is unlayered and therefore outranks Tailwind's
+   layered utilities: a variant class at the call site could not override it. Same decision and
+   the same reason as `.transition-control` in control.css.
+
+   What that collapse does and does not compute to, because it is easy to assert the wrong thing:
+   `transition-property` becomes `none`, and `transition-duration` stays at its declared 180ms.
+   Tailwind's own `transition-none` behaves identically (`transition-property: none`, nothing
+   else), so this was already the case before M5. A gate written as "duration computes to 0s"
+   would have been red against working code. The observable claim, and the one
+   `e2e/button-hover.spec.ts` makes, is that the settled hover value is already in place on the
+   first frame after the pointer arrives, with no intermediate value at all. */
+.transition-stepped {
+  --steps-arrival: 3;
+  transition-property: background-color, color, border-color, filter;
+  transition-duration: var(--duration-stepped);
+  /* `jump-start`, not the `jump-end` default: the first step lands in the frame the pointer
+     arrives, so the control answers immediately and then climbs. `jump-end` holds the rest value
+     for the first 60ms, which reads as lag on an interaction that has to feel instant. */
+  transition-timing-function: steps(var(--steps-arrival), jump-start);
+}
+
+.transition-stepped:active {
+  transition-duration: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-stepped {
+    transition-property: none;
+  }
+}
+
+/* Spinner, ring variant. Two motions at different periods (a 2s turn and a 1.5s arc that grows
+   then slides away), so the arc never lands in the same place twice in a row and reads as working
+   rather than as a wheel. Circumference at r=9.5 is ~59.7, hence the 59.7 offset at the end: the
+   arc slides fully off before the next one grows. Ported from the dash-ring reference Victor
+   supplied, moved from SMIL into CSS so reduced motion can stop it. */
+@keyframes spinner-turn { to { transform: rotate(360deg); } }
+@keyframes spinner-arc {
+  0% { stroke-dasharray: 0 150; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 42 150; stroke-dashoffset: -16; }
+  100% { stroke-dasharray: 42 150; stroke-dashoffset: -59.7; }
+}
+.spinner-ring { transform-origin: center; animation: spinner-turn 2s linear infinite; }
+.spinner-ring-arc { stroke-dasharray: 42 150; animation: spinner-arc 1.5s ease-in-out infinite; }
+
+/* Spinner, conveyor variant. Each block runs the whole track, the trailing shades a beat behind
+   the lead block, so the three travel as one smeared shape. */
+@keyframes spinner-conveyor {
+  from { transform: translateX(var(--conveyor-start)); }
+  to { transform: translateX(var(--conveyor-end)); }
+}
+/* The numbers below assume the component's 10-column track and 3 blocks: the blocks travel from
+   -2ch to 12ch (14ch) in 1.8s, so each 0.05s of lag is 0.39ch.
+
+   The track under the blocks is hidden by a moving mask rather than by painting the blocks in
+   the page colour, so the spinner works on any surface. The mask image is 30ch wide, opaque
+   except for a window at 13.1ch to 15ch: the lead block's width plus the two trailing blocks'
+   0.78ch of lag. The mask slides on the lead block's exact clock, from -16ch to -2ch, which
+   keeps the window's right edge on the lead block's right edge the whole way across. */
+@keyframes spinner-conveyor-window {
+  from { mask-position: -16ch 0; }
+  to { mask-position: -2ch 0; }
+}
+.spinner-conveyor-track {
+  /* token-discipline: allow, a mask reads alpha only, so its black is never painted */
+  mask-image: linear-gradient(to right, #000 13.1ch, transparent 13.1ch, transparent 15ch, #000 15ch);
+  mask-size: 30ch 100%;
+  mask-repeat: no-repeat;
+  animation: spinner-conveyor-window 1.8s linear infinite;
+}
+.spinner-conveyor-block {
+  animation: spinner-conveyor 1.8s linear infinite;
+  animation-delay: calc(0.05s * var(--i));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Stopped, not removed: the ring holds a three-quarter arc and the conveyor holds its blocks
+     mid-track, so a still spinner still looks like a spinner. The label carries the meaning. */
+  .spinner-ring,
+  .spinner-ring-arc {
+    animation: none;
+  }
+  .spinner-conveyor-block {
+    animation-play-state: paused;
+    animation-delay: calc(-0.7s + 0.05s * var(--i));
+  }
+  .spinner-conveyor-track {
+    animation-play-state: paused;
+    animation-delay: -0.7s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-snap-in,
+  .anim-draw-on,
+  .anim-glitch {
+    animation: none !important;
+  }
+}
+
+/* Docs route change. The routed view inside #main arrives in a short cascade: the page header
+   first, then each following block 40ms behind the one before (capped at 5 steps, 200ms of
+   stagger, the same cap and step the Sidebar organism's group reveal uses). Each block fades and
+   rises 8px over --duration-slow on --ease-snap. Only the routed view animates: the header and
+   sidebar sit outside it and never re-render, so nothing around the content moves.
+
+   Applied only after an in-app navigation (AppShell keys it off `location.key`), never on a fresh
+   load: a direct load has nothing to transition from, and the axe sweeps that load a page directly
+   must never sample a mid-fade frame. `both` fill holds the delayed blocks at their start frame,
+   so a block waiting its turn is invisible rather than drawn and then snapped back to hidden. */
+@keyframes route-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-route-in > * > * {
+  animation: route-in var(--duration-slow) var(--ease-snap) both;
+}
+.anim-route-in > * > :nth-child(2) { animation-delay: 40ms; }
+.anim-route-in > * > :nth-child(3) { animation-delay: 80ms; }
+.anim-route-in > * > :nth-child(4) { animation-delay: 120ms; }
+.anim-route-in > * > :nth-child(5) { animation-delay: 160ms; }
+.anim-route-in > * > :nth-child(n + 6) { animation-delay: 200ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-route-in > * > * {
+    animation: none !important;
+  }
+}
+
+/* M7 exits. Every surface that leaves the screen leaves with a motion of its own, chosen by what
+   it is, never one fade for everything:
+
+   - A popup menu (`.anim-popover`) slides down out of its trigger to open and back up into it to
+     close, so it reads as attached to the thing that opened it. Opened above its trigger
+     (`data-side="top"`), both directions flip.
+   - An overlay surface (`.anim-overlay`) settles in with M1 and shrinks slightly as it fades out;
+     its scrim (`.anim-scrim`) fades with it. A Sheet (`data-side` left or right) slides back off
+     its own edge instead.
+   - A Tag or an Alert is removed by JavaScript (`src/lib/exit.ts`), because what happens after the
+     fade is layout: the Tag's neighbours slide over into its place, the Alert's height collapses.
+
+   Exits run on `--ease-accelerate` at `--duration-fast`: leaving is quicker than arriving, and an
+   ease-in reads as the thing moving away rather than settling. Radix's Presence keeps a closed
+   menu, dialog or sheet mounted until its exit animation ends, and unmounts at once when the
+   animation is `none`, which is what reduced motion sets below. */
+@keyframes popover-down-in { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes popover-up-out { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes popover-up-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes popover-down-out { to { opacity: 0; transform: translateY(8px); } }
+.anim-popover { animation: popover-down-in var(--duration-base) var(--ease-snap); }
+.anim-popover[data-side="top"] { animation-name: popover-up-in; }
+.anim-popover[data-state="closed"] {
+  animation: popover-up-out var(--duration-fast) var(--ease-accelerate) forwards;
+}
+.anim-popover[data-side="top"][data-state="closed"] { animation-name: popover-down-out; }
+
+@keyframes overlay-out { to { opacity: 0; transform: scale(0.96); } }
+@keyframes sheet-out-right { to { transform: translateX(100%); } }
+@keyframes sheet-out-left { to { transform: translateX(-100%); } }
+@keyframes scrim-in { from { opacity: 0; } }
+@keyframes scrim-out { to { opacity: 0; } }
+.anim-overlay { animation: snap-in var(--duration-base) var(--ease-snap); }
+.anim-overlay[data-state="closed"] {
+  animation: overlay-out var(--duration-fast) var(--ease-accelerate) forwards;
+}
+.anim-overlay[data-side="right"][data-state="closed"] {
+  animation: sheet-out-right var(--duration-base) var(--ease-accelerate) forwards;
+}
+.anim-overlay[data-side="left"][data-state="closed"] {
+  animation: sheet-out-left var(--duration-base) var(--ease-accelerate) forwards;
+}
+/* The scrim outlasts the surface it holds: Presence unmounts the scrim, and the surface with it,
+   when the scrim's own animation ends, so it must never end first. */
+.anim-scrim { animation: scrim-in var(--duration-base) var(--ease-snap); }
+.anim-scrim[data-state="closed"] {
+  animation: scrim-out var(--duration-base) var(--ease-accelerate) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-popover,
+  .anim-overlay,
+  .anim-scrim {
+    animation: none !important;
+  }
+}
+
+/* ---- Accordion height (added 2026-10-14) ----
+   An Accordion panel opens by growing from 0 to the height Radix measures for it and publishes as
+   `--radix-accordion-content-height`, and closes by shrinking back on the SAME clock (see the close
+   rule): both on `--duration-base`/`--ease-snap`, so single mode blends old total to new total.
+   The opacity rides along so the text does not sit fully
+   inked against a clip edge that is still moving.
+
+   `forwards` on the close holds the 0 height until Presence unmounts the panel, so there is no
+   frame at full height between the animation ending and the panel leaving. Radix suppresses the
+   open animation on first mount, so an item open by default renders open, not growing.
+
+   Height, not a transform: the content below has to move with the panel, and only a layout
+   property moves it. The panels are short and the animation is 120 to 180ms, so the layout cost is
+   a handful of frames on one subtree. */
+@keyframes accordion-open {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-close {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+.anim-accordion[data-state="open"] {
+  animation: accordion-open var(--duration-base) var(--ease-snap);
+}
+.anim-accordion[data-state="closed"] {
+  /* Same duration and curve as the open, on purpose: in single mode one panel closes while its
+     neighbour opens, and the root's height is the sum of the two. Matching clocks make that sum a
+     straight blend of old total to new total; a quicker, differently eased close made it
+     overshoot (the block below jumped down, then back up). */
+  animation: accordion-close var(--duration-base) var(--ease-snap) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* `none` makes Presence unmount a closing panel at once, so the panel snaps shut. */
+  .anim-accordion {
+    animation: none !important;
+  }
+}
+/* ---- end Accordion height ---- */
+
+/* Skeleton sweep (added 2026-10-14). A loading placeholder (src/components/atoms/skeleton) paints
+   a translucent hairline fill, and a slightly brighter band crosses it left to right, once every
+   1.6s. Both colours are border tokens because both are translucent: the same placeholder reads on
+   the page, on a raised Card and inside an overlay without a per-surface variant.
+
+   A sweep and not a pulse: a pulse fades the whole shape up and down, which is a repeated
+   opposing luminance change across the full area. The sweep moves a soft band over a fixed fill,
+   so no area flashes, and its contrast is that of two hairline tokens, far under WCAG 2.3.1's
+   threshold at any rate. `linear`, because a scanner does not ease.
+
+   Reduced motion removes the band as well as stopping it: a band frozen mid-shape reads as a
+   highlight that means something. The shape keeps its flat fill, which is still a placeholder.
+
+   The band is a fixed 320px, not a percentage of the shape. Sized to the shape, a 36px avatar
+   placeholder got a 36px band and read as a shaded cylinder; at a fixed width a small shape is
+   washed evenly as the band passes, and a wide one sees a band of the same softness as a narrow
+   one. The positions run from one band-width off the left edge to one band-width off the right. */
+@keyframes skeleton-sweep {
+  from { background-position: -320px 0; }
+  to { background-position: calc(100% + 320px) 0; }
+}
+.skeleton-shimmer {
+  background-color: var(--color-border-hairline);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-border-hairline-strong) 50%,
+    transparent 100%
+  );
+  background-size: 320px 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none !important;
+    background-image: none;
+  }
+}
+
+/* ---- Tabs indicator ----
+   One block per tab list, slid under the active trigger (Tabs.tsx measures it). Transitions are
+   off until `data-ready`, so the first paint lands in place; reduced motion jumps. */
+.tabs-indicator { transition: none; }
+.tabs-indicator[data-ready] {
+  transition:
+    transform var(--duration-base) var(--ease-snap),
+    width var(--duration-base) var(--ease-snap),
+    height var(--duration-base) var(--ease-snap);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabs-indicator[data-ready] { transition: none; }
+}
+
+/* ---- Tooltip entry (added 2026-10-14) ----
+   Opacity only, no scale. A tooltip is a 1px-bordered, cut-corner (clip-path) surface sitting on a
+   fractional pixel position. M1's scale(1.08) put the clip edge and the border on sub-pixel rows
+   for the whole animation, and the bottom border row, the one the clip-path trims, dropped out
+   until the transform settled: the outline arrived in two steps. A fade keeps every edge on the
+   pixel grid, so the outline and the fill appear together. */
+@keyframes tooltip-in { from { opacity: 0; } to { opacity: 1; } }
+.anim-tooltip { animation: tooltip-in var(--duration-fast) var(--ease-snap); }
+@media (prefers-reduced-motion: reduce) {
+  .anim-tooltip { animation: none !important; }
+}
+/* ---- end Tooltip entry ---- */

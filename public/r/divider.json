@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "divider",
+  "type": "registry:item",
+  "title": "Divider",
+  "description": "Divider. Best for: A thin line between groups of content, labelled when it starts a new section.",
+  "dependencies": [
+    "radix-ui@^1.6.7",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/divider/Divider.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/divider/Divider.tsx",
+      "content": "import type { HTMLAttributes, Ref } from 'react'\nimport { Separator } from 'radix-ui'\nimport { cn } from '../../../lib/cn'\n\n/** Every native div prop except `role` is available — a molecule composing a Divider can attach\n *  a `data-testid` or extra `aria-*`/`data-*` attributes. `role` is typed `never` rather than\n *  merely omitted: the component's whole guarantee is that `label` (via `decorative={!label}`)\n *  decides between `role=\"none\"` and `role=\"separator\"`, and Radix's own `Primitive.div` spreads\n *  `domProps` *after* its computed `semanticProps` — so a caller-supplied `role` surviving into\n *  the rest spread would silently win at runtime, not just look wrong in the type. Same remedy as\n *  Button's asChild/disabled union, IconButton's aria-label exclusion, and Link's target/rel\n *  exclusion on `external`.\n *\n *  `children` is excluded too, and Divider is the worst case of the five atoms that offered it:\n *  in the `!label` branch there are no JSX children, so a caller's `children` DOES render —\n *  inside a `decorative` separator, where nothing should be. In the `label` branch the JSX\n *  children win and it vanishes. One prop, two behaviours, neither of them the one a caller\n *  would expect. It is an ordinary key, so the `Omit` does the rejecting and the declared\n *  `never` only makes the error legible; both are shipped, matching `IconButton`. */\nexport type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'children'> & {\n  orientation?: 'horizontal' | 'vertical'\n  /** A legend set into the rule. A labelled divider is structure, so it stops being decorative. */\n  label?: string\n  className?: string\n  ref?: Ref<HTMLDivElement>\n  role?: never\n  children?: never\n}\n\nconst RULE = 'bg-[var(--color-border-hairline)] shrink-0'\n\nexport function Divider({ orientation = 'horizontal', label, className, ref, ...rest }: DividerProps) {\n  if (!label) {\n    return (\n      <Separator.Root\n        ref={ref}\n        decorative\n        orientation={orientation}\n        className={cn(RULE, orientation === 'horizontal' ? 'h-px w-full' : 'w-px self-stretch', className)}\n        {...rest}\n      />\n    )\n  }\n\n  return (\n    <Separator.Root\n      ref={ref}\n      orientation={orientation}\n      className={cn(\n        'flex items-center gap-3',\n        orientation === 'horizontal' ? 'w-full' : 'flex-col self-stretch',\n        className\n      )}\n      {...rest}\n    >\n      <span className={cn(RULE, orientation === 'horizontal' ? 'h-px flex-1' : 'w-px flex-1')} />\n      <span className=\"font-mono text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]\">\n        {label}\n      </span>\n      <span className={cn(RULE, orientation === 'horizontal' ? 'h-px flex-1' : 'w-px flex-1')} />\n    </Separator.Root>\n  )\n}\n"
+    }
+  ]
+}

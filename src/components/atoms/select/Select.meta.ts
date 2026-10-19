@@ -1,0 +1,81 @@
+import type { ComponentMeta } from '../../docs/meta'
+
+export const meta: ComponentMeta = {
+  name: 'Select',
+  title: 'Select',
+  tier: 'atoms',
+  slug: 'select',
+  summary:
+    'A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Options come in as an array instead of as children, because the trigger, the panel and the look of each row are decisions the system makes once, not per use.',
+  requires: [
+    'A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and connects their ids so assistive tech (screen readers and similar tools) reads them together.',
+  ],
+  anatomy: [
+    { part: 'Trigger', description: "Uses exactly the same frame and styling as Input, so a select and a text field line up in a form." },
+    { part: 'Value', description: 'Shows the placeholder until something’s chosen.' },
+    { part: 'Content', description: 'Portalled and positioned by Radix, the library of accessible building blocks this sits on. It slides down out of the trigger as it opens (M7; Radix’s Select closes at once, with no exit animation). It’s the one atom that carries the corner crosshair, because it’s a surface framing other content, and that’s what the crosshair marks. It’s also the shape that can’t be cut, since clip-path would clip the crosshair’s arms and the last row’s selection fill along with them.' },
+    { part: 'Item', description: 'Highlighted rows use signal.fill with signal.ink. That’s the fill-selection grammar, the system’s rule for how a selection looks.' },
+    { part: 'ItemIndicator', description: 'A tick on the selected row, so selection isn’t shown by the highlight alone.' },
+    { part: 'Item icon', description: 'Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger.' },
+    { part: 'Group label', description: 'Used with groups: a mono (monospaced font) heading over its rows that names the group for screen readers. It can’t be selected. A hairline separates the groups.' },
+  ],
+  props: [
+    { name: 'label', type: 'string', description: 'Required. The trigger’s accessible name, the name a screen reader announces for it.' },
+    { name: 'options', type: 'SelectOptionWithIcon[]', description: '{ value, label, disabled?, icon? } rows shown in the listbox. Pass this or groups, never both.' },
+    { name: 'groups', type: 'SelectGroup[]', description: '{ label, options }[]: rows under headings. Pass this or options, never both.' },
+    { name: 'placeholder', type: 'string', default: "'Select…'", description: 'Shown until a value is chosen.' },
+    { name: 'value', type: 'string', description: 'The selection, when you control it from outside. Following Radix’s own convention, pass it together with onValueChange.' },
+    { name: 'defaultValue', type: 'string', description: 'The starting selection, when the select manages it itself (uncontrolled). Pass this or value, never both.' },
+    { name: 'onValueChange', type: '(value: string) => void', description: 'Fires with the new value when a row is chosen, whether the select is controlled or uncontrolled.' },
+    { name: 'disabled', type: 'boolean', description: 'Disables the whole control.' },
+    { name: 'required', type: 'boolean', description: 'Marks the control as required for form submission.' },
+    { name: 'name', type: 'string', description: 'The form field name, for native form submission.' },
+    { name: 'inputSize', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Matches Input’s sizes so the two line up.' },
+    { name: 'invalid', type: 'boolean', default: 'false', description: 'Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border.' },
+    { name: 'className', type: 'string', description: 'Merged with the trigger’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.' },
+    { name: 'ref', type: 'Ref<HTMLButtonElement>', description: 'Passed through to the trigger button.' },
+    { name: 'id', type: 'string', description: 'The trigger’s id. FormField sets it.' },
+    { name: 'aria-describedby', type: 'string', description: 'The ids of the help and error text, set on the trigger so a screen reader reads them with it. FormField sets it.' },
+    {
+      name: 'triggerProps',
+      type: "Omit<ComponentPropsWithoutRef<'button'>, 'aria-label' | 'aria-invalid' | 'className'>",
+      description:
+        'Extra props for the visible trigger button, e.g. data-testid. These are separate from the top-level rest, which goes to Radix’s Root (value, onValueChange, disabled, required, name, dir, form…) and never reaches an element on the page. aria-label and aria-invalid are typed away instead of being quietly overridden at runtime, because label and invalid already decide those.',
+    },
+    {
+      name: '...rest',
+      type: "Omit<Select.Root props, 'children'>, minus every aria-* key and data-testid",
+      description:
+        'Radix’s Root control props only. Every aria-* attribute and data-testid are typed away at the top level, because Root renders no element on the page, and anything that lands there vanishes with no error anywhere. Send them through triggerProps instead. children is typed away because this component renders its own Trigger and Portal.',
+    },
+  ],
+  keyboard: [
+    { keys: ['Tab'], does: 'Moves focus to the trigger.' },
+    { keys: ['Space', 'Enter'], does: 'Opens the listbox.' },
+    { keys: ['↑', '↓'], does: 'Moves the highlight.' },
+    { keys: ['Home', 'End'], does: 'Jumps to the first or last option.' },
+    { keys: ['A–Z'], does: 'Typeahead: jumps to the first option that starts with the letters you type.' },
+    { keys: ['Enter'], does: 'Selects the highlighted option and closes the list.' },
+    { keys: ['Esc'], does: 'Closes without selecting and puts focus back on the trigger.' },
+  ],
+  useWhen: 'One choice from a list of about five options or more.',
+  notFor: 'Several values: use MultiSelect. Fewer than about five options: use Radio.',
+  dos: [
+    'Keep option labels short and written the same way.',
+    'Use a placeholder that says what’s being chosen.',
+    'Disable an unavailable option instead of removing it, so the list stops jumping around.',
+    'Below about five options, use radios instead.',
+    'Group rows under headings once the list mixes different kinds of thing, and keep each group to a handful.',
+    'Give every row an icon, or none of them.',
+    'Wrap it in a FormField for a visible label, help and error. FormField hands it the label.',
+  ],
+  donts: [
+    "Don't build a searchable select out of this. That's the command palette's job.",
+    "Don't use it for several values. That's MultiSelect, which shows each choice as a removable tag.",
+    "Don't put more than a couple of dozen options in it without search.",
+    "Don't make a group of one. A heading over a single row is just noise.",
+    "Don't style the trigger differently from Input. A form with mismatched control heights looks broken.",
+    "Don't bevel the trigger. It shares Input's frame and draws its own focus ring (the outline that shows which control the keyboard is on), and a cut corner would clip it. The listbox carries the crosshair instead: the shape lives on the surface, not on the control.",
+    "Don't pass aria-label or aria-invalid through triggerProps. Both are typed away, not overridable, because label and invalid already decide them.",
+  ],
+}

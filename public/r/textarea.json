@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "type": "registry:item",
+  "title": "Textarea",
+  "description": "Textarea. Best for: Free text over several lines, inside a FormField.",
+  "dependencies": [
+    "class-variance-authority@^0.7.1",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/textarea/Textarea.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/textarea/Textarea.tsx",
+      "content": "import type { Ref, TextareaHTMLAttributes } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from '../../../lib/cn'\nimport { disabledText } from '../../../lib/disabled'\n\n// Deliberately not sharing inputVariants: its variants are fixed heights, which are exactly wrong\n// for a multi-line box. Repeating six class strings is cheaper than a variant that fits neither.\nexport const textareaVariants = cva(\n  cn(\n    'block w-full font-body text-sm px-3 py-2 resize-y min-h-[88px]',\n    'bg-[var(--component-control-fill-rest)] text-[var(--component-control-text-rest)]',\n    'border placeholder:text-[var(--component-control-text-placeholder)]',\n    // `transition-control`, not `transition-colors`: Tailwind v4's colour transition\n    // includes `outline-color`, which made the focus ring animate in from currentColor\n    // (near-white) instead of painting the ring token at the instant of focus. See\n    // control.css, which also owns the reduced-motion case.\n    'transition-control',\n    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',\n    disabledText,\n    'disabled:bg-[var(--component-control-fill-disabled)] aria-disabled:bg-[var(--component-control-fill-disabled)] data-[disabled]:bg-[var(--component-control-fill-disabled)]',\n    'read-only:text-[var(--color-text-secondary)]'\n  ),\n  {\n    variants: {\n      invalid: {\n        true: 'border-[var(--component-control-border-invalid)]',\n        false: cn(\n          'border-[var(--component-control-border-rest)]',\n          'hover:border-[var(--component-control-border-hover)]'\n        ),\n      },\n    },\n    defaultVariants: { invalid: false },\n  }\n)\n\n/** Textarea computes `aria-invalid` from `invalid` and spreads `{...rest}` after it onto the\n *  same element, so a caller-supplied `aria-invalid` in rest would silently win at runtime (JSX\n *  later attributes override earlier ones), defeating the one thing this prop promises. `invalid`\n *  is the single source of truth for both the visual border and the aria attribute — letting a\n *  caller set `aria-invalid` directly would let visual and semantic state drift apart. `aria-\n *  invalid` is hyphenated, so `Omit<>` alone is a no-op — TypeScript's JSX checker never treats\n *  an aria-/data-prefixed attribute as an excess/unknown property — so the key is also redeclared\n *  with type `never`, which TypeScript does enforce. Same precedent as Input's `aria-invalid`\n *  exclusion (settled one task ago), `IconButton`'s `aria-label` exclusion and `Avatar`'s\n *  `aria-label` exclusion. */\nexport type TextareaProps = Omit<\n  TextareaHTMLAttributes<HTMLTextAreaElement>,\n  'aria-invalid'\n> &\n  VariantProps<typeof textareaVariants> & {\n    ref?: Ref<HTMLTextAreaElement>\n    'aria-invalid'?: never\n  }\n\nexport function Textarea({ invalid, className, rows = 4, ref, ...rest }: TextareaProps) {\n  return (\n    <textarea\n      ref={ref}\n      rows={rows}\n      aria-invalid={invalid ? true : undefined}\n      className={cn(textareaVariants({ invalid }), className)}\n      {...rest}\n    />\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "division-ds",
+  "owner": { "name": "Victor Ilioiu" },
+  "plugins": [
+    {
+      "name": "division-ds",
+      "source": "./",
+      "description": "The Division DS skill for Claude Code."
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "component": {
+    "control": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "32px" },
+        "md": { "$type": "dimension", "$value": "40px" },
+        "lg": { "$type": "dimension", "$value": "48px" }
+      },
+      "border": {
+        "rest": { "$type": "color", "$value": "{color.semantic.border.control}" },
+        "hover": { "$type": "color", "$value": "{color.semantic.text.muted}" },
+        "invalid": { "$type": "color", "$value": "{color.semantic.accent.hostile.text}" },
+        "selection": { "$type": "color", "$value": "{color.semantic.border.selection}" },
+        "selection-hover": { "$type": "color", "$value": "{color.semantic.text.secondary}" },
+        "disabled": { "$type": "color", "$value": "{color.semantic.border.control}" }
+      },
+      "indicator": {
+        "checked": { "$type": "color", "$value": "{color.semantic.accent.signal.text}" }
+      },
+      "progress": {
+        "fill": {
+          "ok": { "$type": "color", "$value": "{color.semantic.accent.ok.text}" },
+          "warning": { "$type": "color", "$value": "{color.semantic.accent.warning.text}" },
+          "hostile": { "$type": "color", "$value": "{color.semantic.accent.hostile.text}" }
+        }
+      },
+      "fill": {
+        "rest": { "$type": "color", "$value": "{color.semantic.surface.sunken}" },
+        "disabled": { "$type": "color", "$value": "{color.semantic.surface.raised}" }
+      },
+      "text": {
+        "rest": { "$type": "color", "$value": "{color.semantic.text.primary}" },
+        "placeholder": { "$type": "color", "$value": "{color.semantic.text.placeholder}" },
+        "disabled": { "$type": "color", "$value": "{color.semantic.text.muted}" }
+      }
+    },
+    "button": {
+      "primary": {
+        "fill": { "$type": "color", "$value": "{color.semantic.accent.signal.fill}" },
+        "text": { "$type": "color", "$value": "{color.semantic.accent.signal.ink}" }
+      },
+      "danger": {
+        "fill": { "$type": "color", "$value": "{color.semantic.accent.hostile.fill}" },
+        "text": { "$type": "color", "$value": "{color.semantic.accent.hostile.ink}" }
+      },
+      "secondary": {
+        "border": { "$type": "color", "$value": "{color.semantic.border.control}" },
+        "text": { "$type": "color", "$value": "{color.semantic.text.primary}" }
+      },
+      "ghost": {
+        "text": { "$type": "color", "$value": "{color.semantic.text.secondary}" },
+        "text-hover": { "$type": "color", "$value": "{color.semantic.text.primary}" }
+      }
+    }
+  }
+}

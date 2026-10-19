@@ -1,0 +1,1796 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "division-ds",
+  "homepage": "https://victor-ilioiu.vercel.app/systems/division-ds/",
+  "items": [
+    {
+      "name": "division-ds-base",
+      "type": "registry:item",
+      "title": "Division DS base",
+      "description": "Tokens, style sheets and shared helpers. Every component depends on it. Then add @import \"./division-ds/styles/division-ds.css\"; after @import \"tailwindcss\"; in your CSS entry.",
+      "dependencies": [
+        "clsx@^2.1.1",
+        "lucide-react@^1.47.0",
+        "react@^19.2.8",
+        "tailwind-merge@^3.7.0"
+      ],
+      "files": [
+        {
+          "path": "src/lib/cn.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/cn.ts"
+        },
+        {
+          "path": "src/lib/disabled.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/disabled.ts"
+        },
+        {
+          "path": "src/lib/exit.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/exit.ts"
+        },
+        {
+          "path": "src/lib/field-errors.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/field-errors.ts"
+        },
+        {
+          "path": "src/lib/money.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/money.ts"
+        },
+        {
+          "path": "src/lib/refs.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/refs.ts"
+        },
+        {
+          "path": "src/lib/render-link.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/render-link.tsx"
+        },
+        {
+          "path": "src/lib/stream-text.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/stream-text.ts"
+        },
+        {
+          "path": "src/lib/theme.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/theme.ts"
+        },
+        {
+          "path": "src/lib/tokens-runtime.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/tokens-runtime.ts"
+        },
+        {
+          "path": "src/lib/tone.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/lib/tone.ts"
+        },
+        {
+          "path": "src/styles/bevel.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/bevel.css"
+        },
+        {
+          "path": "src/styles/control.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/control.css"
+        },
+        {
+          "path": "src/styles/elevation.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/elevation.css"
+        },
+        {
+          "path": "src/styles/motion.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/motion.css"
+        },
+        {
+          "path": "src/styles/scrollbar.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/scrollbar.css"
+        },
+        {
+          "path": "src/styles/tokens.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/tokens.css"
+        },
+        {
+          "path": "src/styles/division-ds.css",
+          "type": "registry:file",
+          "target": "src/division-ds/styles/division-ds.css"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:item",
+      "title": "Avatar",
+      "description": "Avatar. Best for: Showing who a person is, next to their name, as in a roster row, a comment or an account menu.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/avatar/Avatar.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/avatar/Avatar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:item",
+      "title": "Badge",
+      "description": "Badge. Best for: You need to label a status with a word and a tone, like an order state or a sync result.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/badge/Badge.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/badge/Badge.tsx"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:item",
+      "title": "Button",
+      "description": "Button. Best for: An action on this page, like submit, save or open a dialog.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/button/Button.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/button/Button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:item",
+      "title": "Checkbox",
+      "description": "Checkbox. Best for: An on/off choice that applies when the form is saved, or a parent whose children are partly selected.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/checkbox/Checkbox.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/checkbox/Checkbox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "divider",
+      "type": "registry:item",
+      "title": "Divider",
+      "description": "Divider. Best for: A thin line between groups of content, labelled when it starts a new section.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/divider/Divider.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/divider/Divider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "icon-button",
+      "type": "registry:item",
+      "title": "Icon button",
+      "description": "Icon button. Best for: An action shown as a single icon, with a label that names the action.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/icon-button/IconButton.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/icon-button/IconButton.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:item",
+      "title": "Input",
+      "description": "Input. Best for: Single-line text, inside a FormField.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/input/Input.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/input/Input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:item",
+      "title": "Kbd",
+      "description": "Kbd. Best for: Showing a keyboard shortcut next to the action it triggers, with one Kbd per key.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/kbd/Kbd.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/kbd/Kbd.tsx"
+        }
+      ]
+    },
+    {
+      "name": "link",
+      "type": "registry:item",
+      "title": "Link",
+      "description": "Link. Best for: Text that takes you somewhere: another page, a section or another site.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/link/Link.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/link/Link.tsx"
+        }
+      ]
+    },
+    {
+      "name": "loading-animation",
+      "type": "registry:item",
+      "title": "Loading animation",
+      "description": "Loading animation. Best for: A wait that takes over a whole panel or page, like a route loading, a report building or a first sync.",
+      "dependencies": [
+        "react@^19.2.8",
+        "three@^0.186.1"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18",
+        "@types/three@^0.186.0"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/loading-animation/kit.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/kit.ts"
+        },
+        {
+          "path": "src/components/atoms/loading-animation/LoadingAnimation.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/LoadingAnimation.tsx"
+        },
+        {
+          "path": "src/components/atoms/loading-animation/palette.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/palette.ts"
+        },
+        {
+          "path": "src/components/atoms/loading-animation/scene.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/scene.ts"
+        },
+        {
+          "path": "src/components/atoms/loading-animation/variants.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/variants.ts"
+        },
+        {
+          "path": "src/fx/core/gate.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/gate.ts"
+        },
+        {
+          "path": "src/fx/core/webgl.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/webgl.ts"
+        },
+        {
+          "path": "src/fx/core/loop.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/loop.ts"
+        },
+        {
+          "path": "src/fx/core/quality.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/quality.ts"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:item",
+      "title": "Progress",
+      "description": "Progress. Best for: Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/progress/Progress.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/progress/Progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radio",
+      "type": "registry:item",
+      "title": "Radio",
+      "description": "Radio. Best for: One choice from a short set, up to about seven, all shown at once.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/radio/Radio.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/radio/Radio.tsx"
+        }
+      ]
+    },
+    {
+      "name": "score-ring",
+      "type": "registry:item",
+      "title": "Score ring",
+      "description": "Score ring. Best for: A 0 to 100 score with good and bad bands, like an audit, a health check or a quality score. Several side by side read as one report.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/score-ring/ScoreRing.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/score-ring/ScoreRing.tsx"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:item",
+      "title": "Select",
+      "description": "Select. Best for: One choice from a list of about five options or more.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/select/Select.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/select/Select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:item",
+      "title": "Skeleton",
+      "description": "Skeleton. Best for: A region whose content is loading, shown as placeholders in its shape inside one SkeletonGroup.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/skeleton/Skeleton.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/skeleton/Skeleton.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:item",
+      "title": "Slider",
+      "description": "Slider. Best for: A value or range on a track, where the rough position matters and the value is shown.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/slider/Slider.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/slider/Slider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:item",
+      "title": "Sparkline",
+      "description": "Sparkline. Best for: You want the shape of a recent series, not its values. Think of a reading over the last hour.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/sparkline/Sparkline.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/sparkline/Sparkline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:item",
+      "title": "Spinner",
+      "description": "Spinner. Best for: A short wait with no known end, inside a control or a line of text.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/spinner/Spinner.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/spinner/Spinner.tsx"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:item",
+      "title": "Switch",
+      "description": "Switch. Best for: An on/off setting that takes effect the moment it's flipped.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/switch/squash.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/switch/squash.ts"
+        },
+        {
+          "path": "src/components/atoms/switch/Switch.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/switch/Switch.tsx"
+        },
+        {
+          "path": "src/fx/core/gate.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/gate.ts"
+        }
+      ]
+    },
+    {
+      "name": "tag",
+      "type": "registry:item",
+      "title": "Tag",
+      "description": "Tag. Best for: A removable chip, such as an active filter or a selected value.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/tag/Tag.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/tag/Tag.tsx"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:item",
+      "title": "Textarea",
+      "description": "Textarea. Best for: Free text over several lines, inside a FormField.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/textarea/Textarea.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/textarea/Textarea.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:item",
+      "title": "Tooltip",
+      "description": "Tooltip. Best for: Extra detail on hover or focus for an element that can take focus, such as an IconButton.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/tooltip/Tooltip.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/tooltip/Tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:item",
+      "title": "Accordion",
+      "description": "Accordion. Best for: Sections people scan by heading and open one or two of: frequently asked questions (FAQ), grouped settings, long specifications.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/accordion/Accordion.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/accordion/Accordion.tsx"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:item",
+      "title": "Alert",
+      "description": "Alert. Best for: A message that sits in the page and stays there: a warning about this screen, or a failed load with a retry.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/alert/Alert.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/alert/Alert.tsx"
+        }
+      ]
+    },
+    {
+      "name": "approval-request",
+      "type": "registry:item",
+      "title": "Approval request",
+      "description": "Approval request. Best for: An assistant is about to send, change or spend something outside the conversation.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/approval-request/ApprovalRequest.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/approval-request/ApprovalRequest.tsx"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:item",
+      "title": "Avatar group",
+      "description": "Avatar group. Best for: Several people in one place, with a count: a squad, the people on an order, who’s viewing.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/avatar.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tooltip.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/avatar-group/AvatarGroup.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/avatar-group/AvatarGroup.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "registry:item",
+      "title": "Breadcrumbs",
+      "description": "Breadcrumbs. Best for: Showing where a page sits in a hierarchy more than one level deep.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/link.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/breadcrumbs/Breadcrumbs.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/breadcrumbs/Breadcrumbs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "card",
+      "type": "registry:item",
+      "title": "Card",
+      "description": "Card. Best for: Grouping related content on one surface, or one item in a grid whose whole surface is one link.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/card/Card.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/card/Card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "chat-message",
+      "type": "registry:item",
+      "title": "Chat message",
+      "description": "Chat message. Best for: Each turn inside a ChatThread.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/chat-message/announcer.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/chat-message/announcer.ts"
+        },
+        {
+          "path": "src/components/molecules/chat-message/ChatMessage.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/chat-message/ChatMessage.tsx"
+        }
+      ]
+    },
+    {
+      "name": "description-list",
+      "type": "registry:item",
+      "title": "Description list",
+      "description": "Description list. Best for: The fixed fields of one record: serial, firmware, owner, dates.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/description-list/DescriptionList.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/description-list/DescriptionList.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:item",
+      "title": "Dropdown menu",
+      "description": "Dropdown menu. Best for: A short list of actions, under about eight, behind a button.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/dropdown-menu/DropdownMenu.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/dropdown-menu/DropdownMenu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:item",
+      "title": "Empty state",
+      "description": "Empty state. Best for: A list, table or region with nothing in it, along with the action that fills it.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/empty-state/EmptyState.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/empty-state/EmptyState.tsx"
+        }
+      ]
+    },
+    {
+      "name": "form-field",
+      "type": "registry:item",
+      "title": "FormField",
+      "description": "FormField. Best for: The label, help and error for an Input, Textarea, Select, MultiSelect or QuantityStepper.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/form-field/ErrorSummary.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/form-field/ErrorSummary.tsx"
+        },
+        {
+          "path": "src/components/molecules/form-field/FormField.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/form-field/FormField.tsx"
+        }
+      ]
+    },
+    {
+      "name": "list-item",
+      "type": "registry:item",
+      "title": "List item",
+      "description": "List item. Best for: A row people scan in a List: media, a title, meta and one or two actions.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/list-item/ListItem.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/list-item/ListItem.tsx"
+        }
+      ]
+    },
+    {
+      "name": "multi-select",
+      "type": "registry:item",
+      "title": "Multi-select",
+      "description": "Multi-select. Best for: Any number of choices, including none, from a list too long to show all at once.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/select.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tag.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/multi-select/MultiSelect.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/multi-select/MultiSelect.tsx"
+        }
+      ]
+    },
+    {
+      "name": "page-header",
+      "type": "registry:item",
+      "title": "Page header",
+      "description": "Page header. Best for: The top of every screen: its one h1, with eyebrow, description, breadcrumbs and page actions.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/page-header/PageHeader.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/page-header/PageHeader.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:item",
+      "title": "Pagination",
+      "description": "Pagination. Best for: Moving through a long list or table one page at a time.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/select.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/pagination/Pagination.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/pagination/Pagination.tsx"
+        }
+      ]
+    },
+    {
+      "name": "prompt-input",
+      "type": "registry:item",
+      "title": "Prompt input",
+      "description": "Prompt input. Best for: The message box under a ChatThread.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/textarea.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/prompt-input/PromptInput.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/prompt-input/PromptInput.tsx"
+        }
+      ]
+    },
+    {
+      "name": "quantity-stepper",
+      "type": "registry:item",
+      "title": "Quantity stepper",
+      "description": "Quantity stepper. Best for: A whole number between real limits, such as a quantity in a cart.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/quantity-stepper/QuantityStepper.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/quantity-stepper/QuantityStepper.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rating",
+      "type": "registry:item",
+      "title": "Rating",
+      "description": "Rating. Best for: Showing or collecting a score out of five.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/rating/Rating.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/rating/Rating.tsx"
+        }
+      ]
+    },
+    {
+      "name": "search",
+      "type": "registry:item",
+      "title": "Search",
+      "description": "Search. Best for: Searching the content of the page that shows the results, inside a search landmark.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/kbd.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/search/Search.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/search/Search.tsx"
+        }
+      ]
+    },
+    {
+      "name": "section-heading",
+      "type": "registry:item",
+      "title": "Section heading",
+      "description": "Section heading. Best for: Opening a section of a page, at the level that carries on the outline.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/section-heading/SectionHeading.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/section-heading/SectionHeading.tsx"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:item",
+      "title": "Segmented control",
+      "description": "Segmented control. Best for: Switching the view of the same content in place: Board or Table, 24 h or 7 d.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/segmented-control/SegmentedControl.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/segmented-control/SegmentedControl.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stat",
+      "type": "registry:item",
+      "title": "Stat",
+      "description": "Stat. Best for: One headline number and how it has moved. Up to four in a row.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/stat/Stat.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/stat/Stat.tsx"
+        }
+      ]
+    },
+    {
+      "name": "status-tracker",
+      "type": "registry:item",
+      "title": "Status tracker",
+      "description": "Status tracker. Best for: The health history of one service or device, such as uptime over 30 or 90 days.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tooltip.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/status-tracker/StatusTracker.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/status-tracker/StatusTracker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:item",
+      "title": "Stepper",
+      "description": "Stepper. Best for: Showing where someone is in a flow of two to five steps.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/stepper/Stepper.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/stepper/Stepper.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:item",
+      "title": "Tabs",
+      "description": "Tabs. Best for: Switching between equally important sections of one view.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/tabs/Tabs.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/tabs/Tabs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:item",
+      "title": "Timeline",
+      "description": "Timeline. Best for: A record of what happened to one thing, newest or oldest first: a shipment, a depot, an account.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/timeline/Timeline.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/timeline/Timeline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:item",
+      "title": "Toast",
+      "description": "Toast. Best for: Confirming something the person just did, for a few seconds.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/toast/Toast.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/toast/Toast.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tool-call",
+      "type": "registry:item",
+      "title": "Tool call",
+      "description": "Tool call. Best for: An assistant reply that ran a tool, such as a query, a lookup or a calculation.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/tool-call/ToolCall.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/tool-call/ToolCall.tsx"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:item",
+      "title": "Alert dialog",
+      "description": "Alert dialog. Best for: Confirming an action that matters and can't be undone, such as a delete.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/alert-dialog/AlertDialog.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/alert-dialog/AlertDialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "auth-form",
+      "type": "registry:item",
+      "title": "Auth form",
+      "description": "Auth form. Best for: Sign in, create an account, reset a password or enter a two-step code.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/link.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/auth-form/AuthForm.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/auth-form/AuthForm.tsx"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:item",
+      "title": "Carousel",
+      "description": "Carousel. Best for: A sideways preview of more items than fit, with a link to the full list nearby.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/carousel/Carousel.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/carousel/Carousel.tsx"
+        }
+      ]
+    },
+    {
+      "name": "cart",
+      "type": "registry:item",
+      "title": "Cart",
+      "description": "Cart. Best for: The lines someone means to buy: quantities, line totals, a subtotal and removal that can be undone.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/quantity-stepper.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/toast.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/cart/Cart.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/cart/Cart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "chart-panel",
+      "type": "registry:item",
+      "title": "Chart panel",
+      "description": "Chart panel. Best for: One chart (a line over time, bars by category, a donut of one whole, or a radar of several measures) with a summary sentence and the numbers as a table.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8",
+        "recharts@^3.10.1"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/card.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/data-table.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/chart-panel/ChartPanel.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/chart-panel/ChartPanel.tsx"
+        }
+      ]
+    },
+    {
+      "name": "chat-thread",
+      "type": "registry:item",
+      "title": "Chat thread",
+      "description": "Chat thread. Best for: A conversation with an assistant, above a PromptInput, where replies stream in.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/chat-message.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/chat-thread/ChatThread.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/chat-thread/ChatThread.tsx"
+        }
+      ]
+    },
+    {
+      "name": "checkout-form",
+      "type": "registry:item",
+      "title": "Checkout form",
+      "description": "Checkout form. Best for: A demo checkout: shipping, delivery and payment in three steps beside the order summary.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/alert.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/cart.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/checkbox.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/radio.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/select.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/stepper.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/checkout-form/CheckoutForm.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/checkout-form/CheckoutForm.tsx"
+        }
+      ]
+    },
+    {
+      "name": "command-palette",
+      "type": "registry:item",
+      "title": "Command palette",
+      "description": "Command palette. Best for: Every action in one place behind Ctrl+K, with a visible button that opens it too.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/kbd.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/command-palette/CommandPalette.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/command-palette/CommandPalette.tsx"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:item",
+      "title": "Data table",
+      "description": "Data table. Best for: Records people read, compare and sort across columns, with optional bulk selection.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/checkbox.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/data-table/DataTable.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/data-table/DataTable.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:item",
+      "title": "Dialog",
+      "description": "Dialog. Best for: A focused task on top of the page, such as an edit form.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/toast.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/dialog/Dialog.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/dialog/Dialog.tsx"
+        },
+        {
+          "path": "src/components/organisms/dialog/OverlayFrame.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/dialog/OverlayFrame.tsx"
+        }
+      ]
+    },
+    {
+      "name": "footer",
+      "type": "registry:item",
+      "title": "Footer",
+      "description": "Footer. Best for: The bottom of a site: link groups, a section of your own, the small print and the wordmark.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/link.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/footer/Footer.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/footer/Footer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "kanban-board",
+      "type": "registry:item",
+      "title": "Kanban board",
+      "description": "Kanban board. Best for: Work items that move through a few named stages, where the point is seeing every stage at once.",
+      "dependencies": [
+        "@dnd-kit/core@6.3.1",
+        "@dnd-kit/sortable@10.0.0",
+        "@dnd-kit/utilities@3.2.2",
+        "lucide-react@^1.47.0",
+        "react@^19.2.8",
+        "react-dom@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18",
+        "@types/react-dom@^19.2.7"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dropdown-menu.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/kanban-board/KanbanBoard.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/kanban-board/KanbanBoard.tsx"
+        }
+      ]
+    },
+    {
+      "name": "navbar",
+      "type": "registry:item",
+      "title": "Navbar",
+      "description": "Navbar. Best for: The top of a site: the brand, up to about six main links and a few actions.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sheet.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/navbar/Navbar.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/navbar/Navbar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "newsletter-form",
+      "type": "registry:item",
+      "title": "Newsletter form",
+      "description": "Newsletter form. Best for: Collecting one email address for a newsletter, with a consent line.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/newsletter-form/NewsletterForm.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/newsletter-form/NewsletterForm.tsx"
+        }
+      ]
+    },
+    {
+      "name": "product-card",
+      "type": "registry:item",
+      "title": "Product card",
+      "description": "Product card. Best for: One product in a shop grid, where the whole card opens it and Add to cart sits on it.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/card.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/rating.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/product-card/ProductCard.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/product-card/ProductCard.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:item",
+      "title": "Sheet",
+      "description": "Sheet. Best for: Filters, navigation on a narrow screen, or one item's details next to a list, sliding in from the side.",
+      "dependencies": [
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/sheet/Sheet.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/sheet/Sheet.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:item",
+      "title": "Sidebar",
+      "description": "Sidebar. Best for: App navigation down the side: grouped pages with icons and counts.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/sidebar/Sidebar.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/sidebar/Sidebar.tsx"
+        }
+      ]
+    }
+  ]
+}

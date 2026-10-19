@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumbs",
+  "type": "registry:item",
+  "title": "Breadcrumbs",
+  "description": "Breadcrumbs. Best for: Showing where a page sits in a hierarchy more than one level deep.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/link.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/molecules/breadcrumbs/Breadcrumbs.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/molecules/breadcrumbs/Breadcrumbs.tsx",
+      "content": "import type { ReactNode, Ref } from 'react'\nimport { cn } from '../../../lib/cn'\nimport { renderAnchor, type LinkRenderProps } from '../../../lib/render-link'\nimport { linkVariants } from '../../atoms/link/Link'\n\nexport type Crumb = { label: string; href?: string }\n\nexport type BreadcrumbsProps = {\n  items: Crumb[]\n  /** Collapse the middle when there are more items than this. Minimum 3. Default: no collapse. */\n  maxItems?: number\n  label?: string\n  className?: string\n  /** How each linked level is drawn. Defaults to a plain anchor. */\n  renderLink?: (props: LinkRenderProps) => ReactNode\n  ref?: Ref<HTMLElement>\n}\n\n/** First item, a gap, then the last (maxItems - 1). Three is the floor: below it there is no\n *  middle left to collapse and the gap would replace the only context the trail gives. */\nexport function collapseCrumbs(items: Crumb[], maxItems?: number): (Crumb | 'gap')[] {\n  if (maxItems === undefined || items.length <= maxItems) return items\n  const keep = Math.max(3, maxItems)\n  if (items.length <= keep) return items\n  return [items[0], 'gap', ...items.slice(items.length - (keep - 1))]\n}\n\n/**\n * Where the current page sits in a hierarchy. A named navigation landmark holding an ordered\n * list: the order is the information, so it is never a plain <ul>. The last item is text with\n * aria-current=\"page\", never a link to the page you are on. Separators are a mono slash inside\n * an aria-hidden span, drawn inside the preceding <li> (not between <li>s, which <ol> does not\n * allow), so the list still reports the right item count and a screen reader hears \"list, 4\n * items\" and the labels, not \"slash\" three times.\n */\nexport function Breadcrumbs({\n  items,\n  maxItems,\n  label = 'Breadcrumb',\n  className,\n  renderLink = renderAnchor,\n  ref,\n}: BreadcrumbsProps) {\n  const shown = collapseCrumbs(items, maxItems)\n  const last = shown.length - 1\n\n  return (\n    <nav ref={ref} aria-label={label} className={className}>\n      {/* role=\"list\" because list-none removes list semantics from VoiceOver/Safari, not just\n          the bullet. */}\n      <ol\n        role=\"list\"\n        className=\"flex flex-wrap items-center gap-x-2 gap-y-2 font-mono text-xs uppercase tracking-[0.12em] list-none\"\n      >\n        {shown.map((item, index) => (\n          <li key={item === 'gap' ? 'gap' : `${item.label}-${index}`} className=\"flex items-center gap-2\">\n            {item === 'gap' ? (\n              <span className=\"inline-flex items-center min-h-6\">\n                <span aria-hidden=\"true\" className=\"text-[var(--color-text-muted)]\">\n                  …\n                </span>\n                <span className=\"sr-only\">more levels</span>\n              </span>\n            ) : index === last ? (\n              <span aria-current=\"page\" className=\"font-semibold text-[var(--color-text-primary)]\">\n                {item.label}\n              </span>\n            ) : item.href ? (\n              renderLink({\n                href: item.href,\n                className: cn(\n                  linkVariants({ tone: 'quiet' }),\n                  'inline-flex items-center min-h-6 no-underline hover:underline'\n                ),\n                children: item.label,\n              })\n            ) : (\n              <span className=\"text-[var(--color-text-muted)]\">{item.label}</span>\n            )}\n            {index < last ? (\n              <span\n                aria-hidden=\"true\"\n                data-separator\n                className=\"inline-flex items-center min-h-6 text-[var(--color-text-muted)]\"\n              >\n                /\n              </span>\n            ) : null}\n          </li>\n        ))}\n      </ol>\n    </nav>\n  )\n}\n"
+    }
+  ]
+}

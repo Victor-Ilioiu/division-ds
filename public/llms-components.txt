@@ -1,0 +1,1470 @@
+# Division DS: components, compact
+
+> One block per component: what it is, how to import it, what it needs, and every prop as `name: type = default`. Full pages with examples: /docs/components/<slug>.md.
+
+## Atoms
+
+### Avatar
+
+A small square that shows who someone is. The name is required, because it's both the alt text (the description screen readers read for an image) and the source of the initials. Without one, an avatar is just an image nobody can identify.
+
+```tsx
+import { Avatar, avatarVariants, initialsFrom } from 'src/components/atoms/avatar/Avatar'
+```
+
+- `name: string` Required. The source of the fallback initials and the announced name.
+- `src: string` Optional image. If it can't load, the fallback takes its place without the layout jumping.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` 24 / 36 / 48px.
+- `status: 'online' \| 'away' \| 'busy' \| 'offline'` Whether the person is around. It adds the dot and adds the word to the announced name. Leave it out when you don't know.
+- `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLSpanElement>` Passed through to the root element.
+- `...rest: Omit<HTMLAttributes<HTMLSpanElement>, 'aria-label' \| 'children'>` Every native span prop except aria-label and children. aria-label is removed from the types rather than quietly overwritten when the page runs. The announced name comes from the sr-only span, and an aria-label on the root would override it. children is removed because the component renders its own image/fallback/sr-only children, so anything passed as children would silently disappear.
+
+Page: /docs/components/avatar.md
+
+### Badge
+
+A small chip that shows a status. It comes in six tones and two emphases, and it always carries a word. A colour on its own isn't a status anyone can read.
+
+```tsx
+import { Badge, badgeVariants } from 'src/components/atoms/badge/Badge'
+```
+
+- `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` The status the badge shows.
+- `emphasis: 'solid' \| 'subtle' = 'subtle'` Solid uses the invariant fill (the same in light and dark themes) with its matching ink. Subtle is the outline badge: a 1px border and text in the tone’s theme-adaptive text token, with no fill. There's no separate outline emphasis, because it would be this same look under a second name.
+- `size: 'sm' \| 'md' = 'sm'` sm (small) is the chip for everyday interface: rows, cards, tables. md (medium) takes the small control height (32px) and the 14px text step. Use it for a badge next to display-size type, like a price.
+- `dot: boolean = false` Adds a marker next to the text.
+- `icon: ReactNode` An icon before the text, hidden from screen readers with aria-hidden and sized to the badge. It takes the badge’s colour, so the same contrast pair that covers the text covers it too. It adds to the word. It never replaces it.
+- `className: string` Merged with the component classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
+- `ref: Ref<HTMLSpanElement>` Passed through to the span element.
+- `...rest: HTMLAttributes<HTMLSpanElement>` Any other span attribute. For example, aria-hidden on a count that a label next to it already reads out.
+
+Page: /docs/components/badge.md
+
+### Button
+
+The main control for taking an action. It comes in five variants (one of them a button that looks like a text link) and four sizes, with optional icons on either side of the label. It also draws its own focus ring, the outline that shows which control the keyboard is on. The component places that ring for you, because the bevel (the cut corners) would clip one placed anywhere else.
+
+```tsx
+import { Button, buttonVariants } from 'src/components/atoms/button/Button'
+```
+
+- `variant: 'primary' \| 'secondary' \| 'danger' \| 'ghost' \| 'link' = 'primary'` Which fill/border treatment to use. link looks like a Link (signal text, underline, no fill, no bevel, no fixed height) but it's still a button. Use it for an action inside a sentence, not for going to another page.
+- `size: 'xs' \| 'sm' \| 'md' \| 'lg' = 'md'` 24 / 32 / 40 / 48px (pixels). xs is exactly the 24px minimum target, the smallest area people can reliably click or tap. It isn't a token step (there is no xs control-height token) and it's meant for dense toolbars and table rows. Size has no effect on the link variant, which takes the size of the text around it.
+- `fullWidth: boolean = false` Stretches the wrapper as well as the button.
+- `loading: boolean = false` Sets aria-busy and aria-disabled, blocks the click and the form submit, and shows the spinner. The button stays focusable.
+- `loadingLabel: string = 'Working'` Text that's hidden on screen but read aloud while loading.
+- `iconStart: ReactNode` An icon before the label, rendered aria-hidden and sized to the button. The spinner replaces it while loading. It isn't available with asChild: put the icon inside the child element instead.
+- `iconEnd: ReactNode` An icon after the label, rendered aria-hidden. It stays while loading. Not available with asChild.
+- `asChild: boolean = false` Renders the child element with the button's classes. Use it for links that look like buttons. Combining it with disabled, loading or loadingLabel is a type error, so the code won't compile, instead of quietly doing nothing. A link can't really be disabled or made busy, so those props are removed from the types rather than ignored when the page runs.
+- `wrapperClassName: string` Classes for the focus wrapper, not the button.
+- `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLButtonElement>` Passed through to the button element.
+- `type: 'button' \| 'submit' \| 'reset' = 'button'` A Button never submits a form by accident. Ask for submit on the one that should.
+- `...rest: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-busy' \| 'children'>` Every native button prop except aria-busy. aria-busy is removed from the types rather than quietly overwritten when the page runs. loading is the only thing that sets it, and a loading button saying aria-busy="false" would be a spinning, aria-disabled control telling assistive tech (screen readers and other tools people with disabilities use) that it's idle. children is its own declared prop above, not part of rest.
+
+Page: /docs/components/button.md
+
+### Checkbox
+
+A checkbox with three states: off, on and mixed. Radix (the open-source library of accessible building blocks underneath it) handles the semantics and the keyboard behaviour. The look comes from the system's shape language: a square with no rounding and a tick in ink.
+
+```tsx
+import { Checkbox } from 'src/components/atoms/checkbox/Checkbox'
+```
+
+- `checked: boolean \| 'indeterminate'` The checked state, when your code controls it.
+- `defaultChecked: boolean` The starting state when the checkbox manages itself (uncontrolled). It's narrower than Radix's own boolean \| 'indeterminate'. The tick or dash can only follow a checked value the caller passed in. Radix would track an uncontrolled mixed state internally but never hand it back, so that state is excluded instead of being drawn with the wrong mark.
+- `onCheckedChange: (checked: boolean \| 'indeterminate') => void` Runs every time it toggles.
+- `disabled: boolean` Takes it out of the tab order and stops it toggling.
+- `required: boolean` Uses the browser's built-in form validation.
+- `name: string` The field name sent with a native form.
+- `value: string \| number \| readonly string[]` The field value sent with a native form.
+- `invalid: boolean = false` Sets aria-invalid (an ARIA attribute, from Accessible Rich Internet Applications, that tells screen readers the field has an error) and shows the invalid border.
+- `id: string` Pair it with a real label through htmlFor.
+- `className: string` Merged with the control's classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
+- `ref: Ref<HTMLButtonElement>` Passed through to the Radix root button.
+- `...rest: Omit<CheckboxProps, 'aria-invalid' \| 'defaultChecked'>` Every Radix Checkbox.Root prop except aria-invalid, spread onto the root. aria-invalid is removed from the type, so you can't pass it, instead of being quietly overwritten while the page runs. invalid is the only thing that sets both the attribute and the border. defaultChecked is declared again above, narrowed to boolean.
+
+Page: /docs/components/checkbox.md
+
+### Divider
+
+A thin line, with an optional legend (a short text label). When it's only decoration, screen readers skip it. When it marks where a section starts, it's a real separator they announce.
+
+```tsx
+import { Divider } from 'src/components/atoms/divider/Divider'
+```
+
+- `orientation: 'horizontal' \| 'vertical' = 'horizontal'` Which way the line runs.
+- `label: string` Adds a legend and makes the divider more than decoration.
+- `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the root element.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'role' \| 'children'>` Every native div prop except role and children. role is removed from the types rather than quietly overwritten when the page runs, because label already decides whether the divider is decorative or structural. children is removed because it behaved two different ways: with no label it rendered inside a decorative separator, and with one it disappeared.
+
+Page: /docs/components/divider.md
+
+### IconButton
+
+A square button with one icon. It uses exactly the same variants as Button (same source code, so the two can't drift apart). It requires a label, because an icon on its own tells a screen reader nothing.
+
+```tsx
+import { IconButton } from 'src/components/atoms/icon-button/IconButton'
+```
+
+- `label: string` Required. It becomes aria-label. It's required in the types, so an icon button with no name won't compile.
+- `variant: 'primary' \| 'secondary' \| 'danger' \| 'ghost' = 'primary'` Which fill/border treatment to use. These are Button’s variants minus link, since an icon has no text to underline.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` 32 / 40 / 48px (pixels), all above the 24px minimum target size, the smallest area people can reliably click or tap. Button’s xs isn't offered: 32px is the smallest this control goes.
+- `count: number` A number in a corner badge, like items in a cart or unread notifications. It's added to the accessible name, the name screen readers announce (‘Notifications, 3 unread’). It shows as 99+ past 99 and is hidden at 0 unless showZero is set.
+- `countLabel: (count: number) => string = String` Formats the spoken part of the name that comes after the label and a comma: count => `${count} unread`. It always gets the real number, never 99+.
+- `showZero: boolean = false` Shows the badge when the count is 0.
+- `asChild: boolean = false` Renders the child element with the button's classes. Use it for links that look like icon buttons. Combining it with disabled is a type error, so the code won't compile, instead of quietly doing nothing. A link can't really be disabled, so the prop is removed from the types rather than ignored when the page runs.
+- `fullWidth: —` Left out on purpose. An icon button is always square, and stretching it would break that.
+- `wrapperClassName: string` Classes for the focus wrapper, not the button.
+- `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLButtonElement>` Passed through to the button element.
+- `...rest: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' \| 'children'>` Every native button prop except aria-label. aria-label is removed from the types rather than quietly overwritten when the page runs. label is the only source of the accessible name, and an aria-label in rest would beat it. children is its own declared prop above, not part of rest.
+
+Page: /docs/components/icon-button.md
+
+### Input
+
+A single-line text field. It doesn't label itself. The label, help text, error text and the wiring between them are FormField's job. On its own, Input handles the box, its states and the focus ring (the outline that shows which element the keyboard is on). It also has three optional extras inside its right edge: a password reveal, a character counter and a clear button.
+
+```tsx
+import { Input, inputVariants } from 'src/components/atoms/input/Input'
+```
+
+Requires: A <FormField> around it. On its own the control has no label. FormField adds the label, the help text and the error, and connects their ids.
+
+- `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` Called inputSize because size is already a real HTML attribute on input.
+- `invalid: boolean = false` Sets aria-invalid (an ARIA attribute, from Accessible Rich Internet Applications, that tells screen readers the field has an error) and shows the invalid border. It doesn't show any error text.
+- `size: number` The browser's own attribute, still available.
+- `revealable: boolean = false` On type="password", adds a Show password toggle with aria-pressed. The name stays the same, and the pressed state says whether the password is showing. It goes back to hidden when the form submits. Other types ignore it.
+- `showCount: boolean = false` Works with maxLength. It shows 12/80 in mono inside the field and adds it to aria-describedby, the attribute that links extra description to a field. It's merged with any describedby you pass in, which is how FormField keeps its help and error text. It only announces the characters left near the limit (the last tenth, and at least the last three), through a polite live region, an area screen readers read out without interrupting.
+- `clearable: boolean = false` Shows a clear button while the field has a value (never when it's disabled or read-only). Clearing fires onChange with an empty value, so a controlled field clears through its own handler. Then it calls onClear, then puts focus back in the input.
+- `onClear: () => void` Called after the clear button empties the field.
+- `clearLabel: string = 'Clear'` The clear button’s name. If the page has more than one, say what it clears: ‘Clear call sign’.
+- `wrapperClassName: string` Classes for the wrapper a field with extras renders. Put width classes here when an extra is on. It does nothing on a bare input.
+- `className: string` Merged with the input’s classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
+- `ref: Ref<HTMLInputElement>` Passed through to the input element.
+- `...rest: Omit<InputHTMLAttributes<HTMLInputElement>, 'aria-invalid' \| 'size'>` Every native input prop except aria-invalid, spread onto the element. aria-invalid is removed from the type, so you can't pass it, instead of being quietly overwritten while the page runs. invalid is the only thing that sets both the attribute and the border. If a caller could set one directly, what you see and what screen readers hear could drift apart. size is declared again above as the native number attribute, because inputSize controls the variant.
+
+Page: /docs/components/input.md
+
+### Kbd
+
+A small keycap that shows a key's name. Making shortcuts easy to find was one of the motifs from the G1 mood board (the project's first approval step) worth keeping: if a surface has a shortcut, the surface says so.
+
+```tsx
+import { Kbd } from 'src/components/atoms/kbd/Kbd'
+```
+
+- `children: ReactNode` The key's name, for example "Esc" or "⌘".
+- `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLElement>` Passed through to the kbd element.
+- `...rest: HTMLAttributes<HTMLElement>` Every native attribute, passed onto the kbd element, such as a title, or an aria-label for a symbol key (aria-label is the name screen readers read out).
+
+Page: /docs/components/kbd.md
+
+### Link
+
+A link inside text. It's underlined, because in a paragraph colour alone isn't enough to show that something is a link.
+
+```tsx
+import { Link, linkVariants } from 'src/components/atoms/link/Link'
+```
+
+- `tone: 'signal' \| 'quiet' = 'signal'` Which colour treatment to use.
+- `external: boolean = false` Opens the link in a new tab. It adds target="_blank", the rel hardening (attributes that stop the new page reaching back into yours), a trailing icon and the hidden "(opens in a new tab)" warning. Using it together with target or rel is a type error, so it can't fail silently. external already sets those values, so those props are removed from the type instead of being quietly overwritten while the page runs.
+- `href: string` Where the link goes.
+- `className: string` Merged with the component classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
+- `ref: Ref<HTMLAnchorElement>` Passed through to the anchor element.
+- `...rest: AnchorHTMLAttributes<HTMLAnchorElement>` Every native anchor prop.
+
+Page: /docs/components/link.md
+
+### LoadingAnimation
+
+A loading state that fills a whole panel, drawn as an animated instrument dial in WebGL (the browser's graphics engine for drawing with the graphics card). The three dials follow the same rules. They draw themselves from the outside in, and their structure drifts. One mechanism clicks to its next detent using the system's snap easing (the motion where things arrive a little large and settle), and the signal accent colour only appears on the part that shows progress.
+
+```tsx
+import { LoadingAnimation } from 'src/components/atoms/loading-animation/LoadingAnimation'
+```
+
+- `variant: 'aperture' \| 'gyro' \| 'reticle' = 'aperture'` Aperture: shaded blades stepping round a spinning core. Gyro: nested rings turning against each other. Reticle: a progress ring filling up from a marker at 12 o’clock.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` A 96px, 160px or 240px square (px means pixels). It shrinks with its container below that size, but never grows.
+- `label: string` Status text that is hidden on screen. Passing it turns the loader into a live region, an area screen readers announce when it changes.
+- `className: string` Merged with the component classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
+- `ref: Ref<HTMLDivElement>` Passed through to the root div.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'role'>` Every native div prop except role, for the same reason as Spinner: label is the only thing that sets role="status".
+
+Page: /docs/components/loading-animation.md
+
+### Progress
+
+A progress bar that's either determinate (it knows how far along the task is) or indeterminate (it doesn't). The readout is real text in the DOM (the Document Object Model, the live page structure the browser builds) from the very first render. That's motion token M3's rule, and it means a screen reader, the software that reads the page aloud for blind and low-vision people, never hears a number roll.
+
+```tsx
+import { Progress } from 'src/components/atoms/progress/Progress'
+```
+
+- `label: string` Required. The bar’s accessible name.
+- `value: number \| null` null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.
+- `max: number = 100` The value at which the bar is complete.
+- `showValue: boolean = false` Shows the percentage (or "In progress") as a readout.
+- `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.fill to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
+- `className: string` Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.
+- `ref: Ref<HTMLDivElement>` Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning.
+
+Page: /docs/components/progress.md
+
+### Radio
+
+Pick one choice from a set. The whole group is a single tab stop, and the arrow keys move inside it. That’s how native radio buttons behave, and it’s most of the reason this is built on a Radix primitive (Radix is a library of accessible building blocks) instead of three styled inputs.
+
+```tsx
+import { Radio, RadioGroup } from 'src/components/atoms/radio/Radio'
+```
+
+- `value (RadioGroup): string` The selected value, when you control it from outside.
+- `defaultValue (RadioGroup): string` The starting value, when the group manages it itself (uncontrolled).
+- `onValueChange (RadioGroup): (value: string) => void` Fires when the selection changes.
+- `name (RadioGroup): string` The native form field name.
+- `required (RadioGroup): boolean` Uses the browser’s native form validation.
+- `disabled (RadioGroup): boolean` Disables every option in the group.
+- `orientation (RadioGroup): 'horizontal' \| 'vertical'` Sets which arrow keys move between options. The visual layout is still up to className.
+- `aria-label / aria-labelledby (RadioGroup): string` One of these is required. They’re ARIA attributes (from Accessible Rich Internet Applications) that give the group a name screen readers announce. A radiogroup with no name is a bug.
+- `value (Radio): string` Required. This option’s value.
+- `disabled (Radio): boolean` Takes just this option out of selection.
+- `id (Radio): string` Pair it with a real label using htmlFor.
+- `invalid (Radio): boolean = false` Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border.
+- `className: string` Merged with the control's classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.
+- `ref: Ref<HTMLDivElement> (RadioGroup) / Ref<HTMLButtonElement> (Radio)` Passed through to the Radix root element.
+- `...rest: (Radio) Omit<RadioGroup.Item props, 'aria-invalid'>` Every Radix RadioGroup.Item prop except aria-invalid, spread onto the item. aria-invalid is typed away instead of being quietly overridden at runtime, because invalid is the only source of both the attribute and the border. RadioGroup itself excludes nothing. It computes no value of its own that a rest prop could defeat.
+
+Page: /docs/components/radio.md
+
+### ScoreRing
+
+One 0 to 100 score shown as a ring with the number in its centre, split into bands the way Lighthouse (Google’s website audit tool) bands its scores. It’s a meter, so a screen reader, the software that reads the page aloud, hears both the score and its band.
+
+```tsx
+import { ScoreRing, scoreBand } from 'src/components/atoms/score-ring/ScoreRing'
+```
+
+- `label: string` Required. What’s being scored. It’s both the accessible name and the caption.
+- `value: number` Required. 0 to 100, clamped and rounded to a whole number.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` The ring is 56, 96 or 128px (pixels) wide.
+- `className: string` Merged with the meter’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.
+- `ref: Ref<HTMLDivElement>` Points to the meter.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, spread onto the meter. The ring draws its own content.
+- `scoreBand(): (value: number) => 'hostile' \| 'warning' \| 'ok'` The banding the ring uses. It’s exported so a table or a sentence beside the ring agrees with it.
+
+Page: /docs/components/score-ring.md
+
+### Select
+
+A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Options come in as an array instead of as children, because the trigger, the panel and the look of each row are decisions the system makes once, not per use.
+
+```tsx
+import { Select } from 'src/components/atoms/select/Select'
+```
+
+Requires: A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and connects their ids so assistive tech (screen readers and similar tools) reads them together.
+
+- `label: string` Required. The trigger’s accessible name, the name a screen reader announces for it.
+- `options: SelectOptionWithIcon[]` { value, label, disabled?, icon? } rows shown in the listbox. Pass this or groups, never both.
+- `groups: SelectGroup[]` { label, options }[]: rows under headings. Pass this or options, never both.
+- `placeholder: string = 'Select…'` Shown until a value is chosen.
+- `value: string` The selection, when you control it from outside. Following Radix’s own convention, pass it together with onValueChange.
+- `defaultValue: string` The starting selection, when the select manages it itself (uncontrolled). Pass this or value, never both.
+- `onValueChange: (value: string) => void` Fires with the new value when a row is chosen, whether the select is controlled or uncontrolled.
+- `disabled: boolean` Disables the whole control.
+- `required: boolean` Marks the control as required for form submission.
+- `name: string` The form field name, for native form submission.
+- `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` Matches Input’s sizes so the two line up.
+- `invalid: boolean = false` Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border.
+- `className: string` Merged with the trigger’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.
+- `ref: Ref<HTMLButtonElement>` Passed through to the trigger button.
+- `id: string` The trigger’s id. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text, set on the trigger so a screen reader reads them with it. FormField sets it.
+- `triggerProps: Omit<ComponentPropsWithoutRef<'button'>, 'aria-label' \| 'aria-invalid' \| 'className'>` Extra props for the visible trigger button, e.g. data-testid. These are separate from the top-level rest, which goes to Radix’s Root (value, onValueChange, disabled, required, name, dir, form…) and never reaches an element on the page. aria-label and aria-invalid are typed away instead of being quietly overridden at runtime, because label and invalid already decide those.
+- `...rest: Omit<Select.Root props, 'children'>, minus every aria-* key and data-testid` Radix’s Root control props only. Every aria-* attribute and data-testid are typed away at the top level, because Root renders no element on the page, and anything that lands there vanishes with no error anywhere. Send them through triggerProps instead. children is typed away because this component renders its own Trigger and Portal.
+
+Page: /docs/components/select.md
+
+### Skeleton
+
+A loading placeholder shaped like the content it stands in for: lines of text, a cut-corner block, or an Avatar’s footprint. The shapes themselves are silent. SkeletonGroup is what tells people the region is loading.
+
+```tsx
+import { Skeleton, SkeletonGroup } from 'src/components/atoms/skeleton/Skeleton'
+```
+
+- `shape: 'text' \| 'block' \| 'avatar' = 'text'` What the placeholder stands in for.
+- `lines: number = 1` Text only. The number of lines. Anything below 1 counts as 1.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` Avatar only. Matches Avatar’s size prop.
+- `className: string` Merged with the component classes. A block takes its width and height from here.
+- `ref: Ref<HTMLDivElement>` Passed through to the root element.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, because a skeleton draws its own shapes.
+- `label (SkeletonGroup): string = 'Loading…'` The hidden words a screen reader hears instead of the shapes.
+- `className (SkeletonGroup): string` Lay the placeholders out here, the way the real content will be laid out.
+- `ref (SkeletonGroup): Ref<HTMLDivElement>` Passed through to the container.
+- `...rest (SkeletonGroup): HTMLAttributes<HTMLDivElement>` Every native div prop.
+
+Page: /docs/components/skeleton.md
+
+### Slider
+
+A value or a range picked on a track. Each thumb (the handle you drag) gets its own name. If a range slider shared one name, a screen-reader user (someone using software that reads the page aloud) would get two controls called the same thing.
+
+```tsx
+import { Slider } from 'src/components/atoms/slider/Slider'
+```
+
+- `label: string` Required. Applied to each thumb. A single thumb gets it as-is, and a range adds "minimum" / "maximum" to the end.
+- `value: number[]` The value(s), when you control them from outside. One number makes a single slider; two make a range.
+- `defaultValue: number[]` The starting value(s), when the slider manages them itself (uncontrolled).
+- `onValueChange: (value: number[]) => void` Fires as the thumb moves.
+- `min: number = 0` The lowest value.
+- `max: number = 100` The highest value.
+- `step: number = 1` The increment for both snapping while dragging and the arrow keys.
+- `disabled: boolean` Takes it out of the tab order and blocks input.
+- `formatValue: (value: number) => string` One function feeds both the readout and aria-valuetext (the ARIA, or Accessible Rich Internet Applications, attribute a screen reader speaks as the value). So the spoken value and the printed one can’t drift apart, whether the slider is controlled or not.
+- `showValue: boolean = false` Shows the current value(s) as a readout.
+- `className: string` Merged with the outer wrapper's classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.
+- `ref: Ref<HTMLSpanElement>` Passed through to the Radix Slider root. Radix is the library of accessible building blocks this sits on.
+- `...rest: Omit<Slider.Root props, 'aria-label' \| 'aria-labelledby' \| 'children'>` Every Radix Slider.Root prop except those three, spread onto the root. aria-label and aria-labelledby are left out because the accessible name lives on each thumb, where label puts it. One on the root would do nothing at all, not override anything. children is typed away because this component draws its own Track/Range/Thumbs, and a children prop would be thrown away without any warning.
+
+Page: /docs/components/slider.md
+
+### Sparkline
+
+A small trend line with no axes. It sits beside a Stat or in a table cell. It's plain SVG (Scalable Vector Graphics, the web's format for drawn shapes): one image named by a sentence, with an optional safe band behind it and a square on the last value.
+
+```tsx
+import { Sparkline } from 'src/components/atoms/sparkline/Sparkline'
+```
+
+- `values: readonly number[]` Required. Oldest first. Non-finite values (such as NaN or Infinity) are dropped.
+- `label: string` Required. The chart as one sentence: "Temperature, last hour: 3.1 to 4.2 °C, rising".
+- `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` The line's colour. Each tone means what it means on Badge.
+- `min: number` A fixed bottom for the scale. Without it, the scale follows the data (and the band).
+- `max: number` A fixed top for the scale. Without it, the scale follows the data (and the band).
+- `band: { from: number; to: number }` A range drawn behind the line.
+- `showLast: boolean = false` Puts a square on the last value.
+- `width: number = 96` In CSS px, the pixel unit of Cascading Style Sheets. className="w-full" overrides it.
+- `height: number = 24` In CSS px.
+- `className: string` Goes on the frame.
+- `ref: Ref<HTMLSpanElement>` Forwarded to the frame.
+
+Page: /docs/components/sparkline.md
+
+### Spinner
+
+A busy indicator for an indeterminate wait, meaning one with no known end or percentage. It comes in two forms. The ring has a lit arc that grows and slides as it turns. The conveyor is a row of shaded blocks, for a wait that sits inside a line of text.
+
+```tsx
+import { Spinner, spinnerVariants } from 'src/components/atoms/spinner/Spinner'
+```
+
+- `variant: 'ring' \| 'conveyor' = 'ring'` The rotating ring, or the block conveyor.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` Ring: a 14px, 20px or 24px (pixel) box. Conveyor: 12px, 14px or 16px glyphs.
+- `label: string` Status text that's hidden on screen. Passing it makes the spinner a live region, an area whose changes screen readers announce on their own.
+- `className: string` Merged with the component's classes. Later Tailwind utilities (the small styling classes this system uses) win.
+- `ref: Ref<HTMLSpanElement>` Forwarded to the span element.
+- `...rest: Omit<HTMLAttributes<HTMLSpanElement>, 'role'>` Every native span prop except role, spread onto the span. role is removed from the type instead of being quietly overridden at runtime. Here's why: label is the only source of role="status", and a role in rest would silence the live region a caller asked for when they passed label.
+
+Page: /docs/components/spinner.md
+
+### Switch
+
+An on/off control that acts right away. The thumb's position shows the state, so the meaning still comes through with colour turned off. It takes effect the moment it's flipped.
+
+```tsx
+import { Switch } from 'src/components/atoms/switch/Switch'
+```
+
+Requires: Its own label. A Switch isn't a FormField child (FormField takes Input, Textarea, Select or QuantityStepper). Give it an id and put a <label htmlFor> beside it.
+
+- `checked: boolean` The checked state, when your code controls it.
+- `defaultChecked: boolean` The starting state, when the switch manages itself.
+- `onCheckedChange: (checked: boolean) => void` Fires the moment it's flipped.
+- `disabled: boolean` Takes it out of the tab order and blocks toggling.
+- `required: boolean` The browser's own form validation.
+- `name: string` The browser's own form field name.
+- `value: string` The browser's own form field value.
+- `id: string` Pair it with a real label through htmlFor.
+- `className: string` Merged with the control's classes. Later Tailwind utilities (the small styling classes this system uses) win.
+- `ref: Ref<HTMLButtonElement>` Forwarded to the root button from Radix, the open-source library this switch is built on.
+- `...rest: ButtonHTMLAttributes<HTMLButtonElement>` Every other Radix Switch.Root prop, which means every native button attribute, spread onto the root button. For example aria-describedby, or aria-label when no label element points at it. aria-* attributes are ARIA (Accessible Rich Internet Applications) settings that give screen readers extra information.
+
+Page: /docs/components/switch.md
+
+### Tag
+
+A removable chip for filters and selections. Its dismiss button is named after the thing it removes, so a row of them doesn't sound like six identical 'Remove' buttons to a screen reader.
+
+```tsx
+import { Tag } from 'src/components/atoms/tag/Tag'
+```
+
+- `children: string` The tag text. Required.
+- `onDismiss: () => void` Adds the dismiss button. It runs once the tag has faded out, not on the click. Remove the tag from your list here, and the tags after it slide into its place (M7, a motion token). With reduced motion turned on, it runs at once.
+- `dismissLabel: (text: string) => string = t => `Remove ${t}`` Replaces the built dismiss name, for example with another verb or another language.
+- `className: string` Merged with the component's classes. Later Tailwind utilities (the small styling classes this system uses) win.
+- `ref: Ref<HTMLSpanElement>` Forwarded to the span element.
+- `...rest: Omit<HTMLAttributes<HTMLSpanElement>, 'children'>` Every native span attribute except children, spread onto the root span.
+
+Page: /docs/components/tag.md
+
+### Textarea
+
+A text box for several lines. It has the same chrome (border, fill and states) as Input, resizes vertically and shows four rows by default. Like Input, it doesn't label itself.
+
+```tsx
+import { Textarea, textareaVariants } from 'src/components/atoms/textarea/Textarea'
+```
+
+Requires: A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and links up their ids.
+
+- `invalid: boolean = false` Sets aria-invalid and the invalid border. aria-invalid is an ARIA (Accessible Rich Internet Applications) attribute that tells screen readers the value has a problem. It doesn't render error text.
+- `rows: number = 4` The browser's own rows attribute. Size it to the answer you expect.
+- `className: string` Merged with the control's classes. Later Tailwind utilities (the small styling classes this system uses) win.
+- `ref: Ref<HTMLTextAreaElement>` Forwarded to the textarea element.
+- `...rest: Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'aria-invalid'>` Every native textarea prop except aria-invalid, spread onto the element. aria-invalid is removed from the type instead of being quietly overridden at runtime. invalid is the only source of both the attribute and the border, so letting a caller set one directly would let what people see and what screen readers hear drift apart.
+
+Page: /docs/components/textarea.md
+
+### Tooltip
+
+Extra text that shows on hover or focus. It never holds information people can only get there. It doesn't appear on touch screens, it goes away, and someone may never trigger it.
+
+```tsx
+import { Tooltip, TooltipProvider } from 'src/components/atoms/tooltip/Tooltip'
+```
+
+Requires: One <TooltipProvider> near the root of the app. AppShell and the demo layout each mount one, so a screen doesn't add its own.
+
+- `content: string` Required. The extra text.
+- `children: ReactElement` A single element that can take focus.
+- `side: 'top' \| 'right' \| 'bottom' \| 'left' = 'top'` Which side of the trigger the content opens on.
+- `className: string` Merged with the content’s classes. Later Tailwind utilities (the small styling classes this system uses) win.
+
+Page: /docs/components/tooltip.md
+
+## Molecules
+
+### Accordion
+
+Sections that open and close in place, each under its own heading. You can allow one open at a time or several, and draw them as plain rows split by thin lines or as a panel per section.
+
+```tsx
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from 'src/components/molecules/accordion/Accordion'
+```
+
+- `type: 'single' \| 'multiple'` Required on the root. single: opening one section closes the other. multiple: any number can be open.
+- `collapsible: boolean = false` single mode only. Lets the open section be closed again by its own trigger. You'll want it almost always.
+- `variant: 'plain' \| 'boxed' = 'plain'` plain: thin separator lines, for a long run of questions. boxed: a panel per section, for a few sections that each stand alone.
+- `value (Root): string \| string[]` The open section when the page controls it: a string in single mode, an array in multiple mode.
+- `defaultValue: string \| string[]` The section or sections open at first, when the accordion keeps track itself (uncontrolled). Set on the root.
+- `onValueChange: (value: string \| string[]) => void` Called when a section opens or closes (on the root). The argument has the same shape as type.
+- `value (Item): string` Required. The section’s own value.
+- `disabled (Item): boolean = false` The section can't be opened or closed.
+- `level (Trigger): 2 \| 3 \| 4 \| 5 \| 6 = 3` The level of the heading the trigger sits in. Pick one below the heading the accordion appears under.
+- `forceMount (Content): true` Keeps a closed panel in the page's code (the DOM, the browser's live model of the page), so the browser's find-in-page search can reach its content. It then skips the closing animation.
+- `className: string` Merged with each part’s classes. On AccordionContent it goes on the inner padded box, not the animated clipping box around it.
+- `ref: Ref<HTMLElement>` Passed through to the DOM element. Every part has one; the trigger’s is the button.
+
+Page: /docs/components/accordion.md
+
+### Alert
+
+A message that sits in the page. It shows its tone three ways, as an icon, a word and a colour, so it still reads on a greyscale screen and through a screen reader.
+
+```tsx
+import { Alert } from 'src/components/molecules/alert/Alert'
+```
+
+- `tone: 'info' \| 'ok' \| 'warning' \| 'hostile' = 'info'` Which colour, icon and word the alert carries.
+- `title: string` Required. Screen readers hear the tone word in front of it.
+- `children: ReactNode` The body text.
+- `live: boolean = false` Only for an alert added after the page has loaded. It sets the role screen readers use to announce it: hostile and warning get role=alert (announced at once), info and ok get role=status (announced politely).
+- `onDismiss: () => void` Adds the dismiss button. It runs once the alert has faded and its height has collapsed (M7), not on the click itself, so remove the alert from the page here. With reduced motion it runs straight away.
+- `dismissLabel: string = 'Dismiss'` The name screen readers give the dismiss button.
+- `action: ReactNode` For example, a small Button.
+- `compact: boolean = false` One line, for a toolbar, table header or card. The body sits inside the title paragraph, so pass plain inline text, not blocks.
+- `className: string` Merged onto the root.
+- `ref: Ref<HTMLDivElement>` Passed through to the root DOM element.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'title' \| 'role'>` You can't set role yourself: live decides it.
+
+Page: /docs/components/alert.md
+
+### ApprovalRequest
+
+A pause before an action that changes something in the real world (a side effect). It shows a preview of exactly what will happen, Approve and Reject buttons, and then a status line that takes keyboard focus.
+
+```tsx
+import { ApprovalRequest } from 'src/components/molecules/approval-request/ApprovalRequest'
+```
+
+Requires: A parent that holds the state and sets it to approved or rejected in onApprove and onReject.
+
+- `title: string` Required. The action as a question. It also names the section.
+- `state: 'pending' \| 'approved' \| 'rejected'` Required. Pending shows the buttons; approved or rejected shows the status line.
+- `onApprove: () => void` Required. Run the action, then set state to approved.
+- `onReject: () => void` Required. Set state to rejected. Nothing else happens.
+- `approveLabel: string = 'Approve'` The approve button. Say the action, like "Send".
+- `rejectLabel: string = 'Reject'` The reject button, like "Don't send".
+- `approvedLabel: string = 'Approved by you'` The status line once approved.
+- `rejectedLabel: string = 'Rejected'` The status line once rejected.
+- `className: string` Goes on the section.
+
+Page: /docs/components/approval-request.md
+
+### AvatarGroup
+
+Overlapping avatars (small profile pictures) with a “+N” for the rest. It’s a list named by its count, so a screen reader hears “6 members” and then each person. The people behind the “+N” are named in words, never only counted.
+
+```tsx
+import { AvatarGroup } from 'src/components/molecules/avatar-group/AvatarGroup'
+```
+
+Requires: With overflowTooltip, the root <TooltipProvider>. AppShell and the demo layout each include one.
+
+- `people: AvatarGroupPerson[]` Required. Everyone in the group, in the order shown.
+- `max: number = 4` The most avatars drawn. The rest go into the +N chip.
+- `size: 'sm' \| 'md' \| 'lg' = 'md'` Passed to every Avatar and to the chip.
+- `label: string` What the group is. The count is added on the end: “Alpha squad, 6 members”.
+- `overflowTooltip: boolean = false` Shows the hidden names in a Tooltip on the chip and lets the chip take keyboard focus.
+- `className: string` Merged with the list classes. Later Tailwind utility classes win.
+- `ref: Ref<HTMLUListElement>` Passed through to the list.
+- `...rest: Omit<HTMLAttributes<HTMLUListElement>, 'children' \| 'aria-label'>` Every standard ul prop except children (the people are the content) and aria-label (label builds it, with the count).
+- `name (AvatarGroupPerson): string` Required. Passed to Avatar.
+- `src (AvatarGroupPerson): string` Optional image, passed to Avatar.
+- `status (AvatarGroupPerson): 'online' \| 'away' \| 'busy' \| 'offline'` Optional presence (whether they’re online), passed to Avatar, which includes it in the name screen readers hear.
+
+Page: /docs/components/avatar-group.md
+
+### Breadcrumbs
+
+Shows where this page sits among the pages above it. The last level is the current page, shown as text. Every level above it is a link.
+
+```tsx
+import { Breadcrumbs, collapseCrumbs } from 'src/components/molecules/breadcrumbs/Breadcrumbs'
+```
+
+- `items: Crumb[]` { label, href? }. A level with no href shows as plain text.
+- `maxItems: number` Collapse the trail when it has more levels than this. It never goes below 3.
+- `label: string = 'Breadcrumb'` The name of the nav landmark.
+- `className: string` Merged onto the nav.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` How each linked level is drawn. Pass your router's link component to move between pages inside the app.
+- `ref: Ref<HTMLElement>` Passed through to the nav DOM element.
+
+Page: /docs/components/breadcrumbs.md
+
+### Card
+
+A surface that groups related content. It gets the crosshair corners, the visual mark this system uses for a frame around several things. It never gets the cut corner, because cards hold buttons.
+
+```tsx
+import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle } from 'src/components/molecules/card/Card'
+```
+
+- `as: 'article' \| 'section' \| 'div' = 'article'` article for an item that stands on its own, section for a group inside a page, div for neither.
+- `interactive: boolean = false` Says the whole card is one click target, through a link or button stretched over it. Adds the hover and focus border and a 4px lift. It adds no role and no Tab stop: the link inside is still the control.
+- `level (CardTitle): 2 \| 3 \| 4 = 3` The heading level, set on CardTitle only. Card itself takes no level. The page decides its own outline.
+- `src (CardMedia): string` The picture, drawn with object-cover (it fills the box and crops the overflow) and loaded lazily (only when it's about to scroll into view). Leave it out to show CardMedia's children instead, such as a placeholder.
+- `alt (CardMedia): string = ''` The alt text screen readers read for the picture. Empty by default: the picture is decorative because the card title already names it. Write real text only when the picture says something the title doesn't.
+- `aspect (CardMedia): '16/9' \| '4/3' \| '1/1' = '16/9'` The shape of the box the picture is cropped to.
+- `className: string` Merged onto any part.
+- `...rest: HTMLAttributes<...>` Standard HTML attributes on every part, except aria-labelledby on Card: the Card points that at its CardTitle itself, and the types won't accept one passed in. Give CardTitle an id only if something else needs it.
+- `ref: Ref<HTMLElement>` Passed through to the Card root DOM element.
+
+Page: /docs/components/card.md
+
+### ChatMessage
+
+One turn in a conversation with an assistant: the person's words in a bubble, the reply at full width, or a centred system line. While a reply is still streaming in, it sets aria-busy (an ARIA, Accessible Rich Internet Applications, attribute that tells screen readers the content isn't finished) and shows a caret that doesn't blink.
+
+```tsx
+import { ChatMessage } from 'src/components/molecules/chat-message/ChatMessage'
+```
+
+Requires: A ChatThread around it. Outside one, a message still shows, but nothing announces it when it finishes.
+
+- `role: 'user' \| 'assistant' \| 'system'` Required. Who's speaking. system is a quiet, centred status line.
+- `author: string` Required. "You", "Assistant". It names the message.
+- `time: string` The date and time in ISO format (the international standard way of writing them), for <time dateTime>.
+- `timeLabel: string` The time as shown on screen: "09:40".
+- `streaming: boolean = false` The text is still arriving: sets aria-busy and shows a caret. Inside a ChatThread, the finished text is announced once, when this turns false.
+- `actions: ReactNode` Small buttons under an assistant message. They aren't shown on a user message.
+- `className: string` Goes on the article.
+
+Page: /docs/components/chat-message.md
+
+### DescriptionList
+
+Pairs of a term and its value, all about one thing, in one to three columns. The columns drop away as the space they get narrows. It's a real dl (the HTML description list element): a label in a monospaced font over each value, and a thin line above each pair.
+
+```tsx
+import { DescriptionList } from 'src/components/molecules/description-list/DescriptionList'
+```
+
+- `items: readonly DescriptionListItem[]` Required. The pairs, in the order people read them.
+- `columns: 1 \| 2 \| 3 = 1` How many columns at full width. It drops to one when the container is narrower than 28rem.
+- `className: string` On the container.
+- `ref: Ref<HTMLDivElement>` Forwarded to the container.
+- `term (DescriptionListItem): string` Required. The field name: "Serial".
+- `description (DescriptionListItem): ReactNode` Required. Its value.
+
+Page: /docs/components/description-list.md
+
+### DropdownMenu
+
+A short list of actions behind a button. It uses the same background as Select, so the system's two pop-ups look like one family. The highlighted item gets a fill, as it does everywhere else.
+
+```tsx
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from 'src/components/molecules/dropdown-menu/DropdownMenu'
+```
+
+- `open (Root): boolean` Whether the menu is open, when the page keeps track of it (controlled).
+- `defaultOpen (Root): boolean` Whether it starts open, when the menu keeps track itself (uncontrolled).
+- `onOpenChange (Root): (open: boolean) => void` Called when the menu opens or closes.
+- `modal (Root): boolean = true` While open, keyboard focus stays inside the menu and the page behind can't scroll.
+- `align (Content): 'start' \| 'center' \| 'end' = 'center'` Alignment against the trigger.
+- `side (Content): 'top' \| 'right' \| 'bottom' \| 'left'` Preferred side of the trigger.
+- `sideOffset (Content): number = 4` Gap between trigger and content, in pixels.
+- `onSelect (Item): (event: Event) => void` Called when the item is chosen.
+- `disabled (Item): boolean = false` The item can't be chosen, and typing letters (typeahead) skips it.
+- `tone (Item): 'default' \| 'hostile' = 'default'` Use hostile for a destructive action: hostile-coloured text at rest, the hostile fill with ink text when highlighted.
+- `icon (Item): ReactNode` A small icon before the text, hidden from screen readers (aria-hidden).
+- `shortcut (Item): string` Shown on the right and passed to screen readers as aria-keyshortcuts. It only displays the key: the menu never makes the key work.
+- `checked (Checkbox item): boolean` Whether the tick shows.
+- `onCheckedChange (Checkbox item): (checked: boolean) => void` Called when the checkbox item is toggled.
+- `value (RadioGroup): string` The checked radio item.
+- `onValueChange (RadioGroup): (value: string) => void` Called with the chosen radio item value.
+- `value (RadioItem): string` This radio item's own value.
+- `icon (SubTrigger): ReactNode` A small icon before the text, hidden from screen readers, as on Item.
+- `open / defaultOpen / onOpenChange (Sub): boolean / boolean / (open: boolean) => void` Whether the submenu is open, tracked by the page (controlled) or by the submenu (uncontrolled). You'll usually leave these alone.
+- `alignOffset (SubContent): number = -5` Shifts the submenu so its first row lines up with its trigger.
+- `className: string` Extra CSS classes, merged with the part's own. When two Tailwind classes clash, the later one wins. Every part takes it.
+- `ref: Ref<HTMLDivElement>` Passed through to the rendered element (the DOM node). On Content, Item, Checkbox item, Radio item, Sub trigger and Sub content.
+
+Page: /docs/components/dropdown-menu.md
+
+### EmptyState
+
+What a list, a table or a page region shows when it has nothing in it: an icon, a title that names what is empty, a sentence on why, and the action that fills it.
+
+```tsx
+import { EmptyState } from 'src/components/molecules/empty-state/EmptyState'
+```
+
+- `title: string` Required. What is empty, said plainly: “No orders yet”.
+- `level: 2 \| 3 \| 4` Required, with no default. The heading level the page's outline of headings needs at this point.
+- `description: ReactNode` One or two sentences: why it's empty, or what fills it.
+- `icon: ReactNode` A lucide icon element. The component sizes it and wraps it in a tile that screen readers skip (aria-hidden).
+- `actions: ReactNode` One or two Buttons. The component lays out the row and its gap.
+- `size: 'sm' \| 'md' = 'md'` md for a page region. sm inside a table, a card or a panel.
+- `framed: boolean = true` The dashed frame. Turn it off where the container already draws an edge.
+- `className: string` Extra CSS classes, merged onto the outer element. When two Tailwind classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the outer element.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'title'>` Any other div attribute, put on the outer element. role="status" goes here when nothing else on the page tells screen readers that the list has emptied.
+
+Page: /docs/components/empty-state.md
+
+### FormField
+
+The label, help text and error text for one form control. They're connected so a screen reader reads all three, in that order, when the control gets focus. The atoms (the smallest components) never label themselves. This is where it happens.
+
+```tsx
+import { FormField } from 'src/components/molecules/form-field/FormField'
+import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
+```
+
+- `label: string` The field label. Required.
+- `help: string` Instruction text, read out before any error.
+- `error: string` Sets invalid on the control and adds the error line.
+- `required: boolean = false` Adds the asterisk (hidden from screen readers) and the built-in required attribute on the control. That attribute is what assistive technology actually announces.
+- `children: ReactElement` Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label.
+- `className: string` Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the outer element.
+- `errors (ErrorSummary): { fieldId: string; message: string }[]` What stopped the form from submitting, in the order of the fields. Each entry links to its field and moves focus there. An empty list shows nothing.
+- `title (ErrorSummary): string = 'There is a problem'` The heading. It's what a screen reader reads first when the form moves focus to the summary.
+- `headingLevel (ErrorSummary): 2 \| 3 \| 4 = 2` The heading level, so the summary fits the outline of headings on its page.
+- `className (ErrorSummary): string` Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins.
+- `ref (ErrorSummary): Ref<HTMLDivElement>` The summary itself. A form moves focus to it after a submit that failed.
+
+Page: /docs/components/form-field.md
+
+### ListItem
+
+One row of a list: something at the start (a picture or icon), a title and description, extra details on the right, and actions at the end. A row that goes somewhere is one real link or button stretched over the whole row. Its actions sit beside it, never inside it.
+
+```tsx
+import { List, ListItem } from 'src/components/molecules/list-item/ListItem'
+```
+
+Requires: A <List> around the rows (a ul with role="list"), or as="div" on a row that stands alone.
+
+- `title: ReactNode` Required. The main line, and the name screen readers give the row’s link or button.
+- `description: ReactNode` A second line under the title, in secondary text.
+- `media: ReactNode` Something at the start of the row: an Avatar, an icon (hidden from screen readers with aria-hidden), a thumbnail.
+- `meta: ReactNode` Right-aligned monospaced text: a time, a price, a count.
+- `actions: ReactNode` Controls at the end. Each one can still be focused and clicked on its own.
+- `href: string` Makes the row one link to this address, named by the title.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain <a>` Draws the row link when href is set. Pass your router's link here. It has to pass className through.
+- `onActivate: () => void` Makes the row one button, named by the title. Ignored when href is set.
+- `as: 'li' \| 'div' = 'li'` li inside a List. div for a row on its own.
+- `dividers (List): boolean = true` A thin line between rows.
+- `className: string` Extra CSS classes, merged with the outer element's own classes on List or ListItem.
+- `ref: Ref<HTMLElement>` Passed through to the ul (List) or the row element (ListItem).
+
+Page: /docs/components/list-item.md
+
+### MultiSelect
+
+Pick several choices from a list. The chosen ones sit inside the field as tags you can remove, followed by a text field that filters the list as you type. It's the many-values version of Select.
+
+```tsx
+import { MultiSelect } from 'src/components/molecules/multi-select/MultiSelect'
+```
+
+Requires: A <FormField> around it. FormField supplies the visible label, the help and the error, and replaces the label prop with its own.
+
+- `label: string` Required. The name screen readers give the text field and the list. FormField replaces it with its own label.
+- `options: SelectOption[]` { value, label, disabled? }, the same rows Select takes.
+- `value: string[]` The current selection when the page keeps track of it (controlled), as option values in the order they were chosen.
+- `defaultValue: string[]` The starting selection when the component keeps track itself (uncontrolled).
+- `onValueChange: (value: string[]) => void` Runs with the whole new array every time an option is added or removed.
+- `placeholder: string = 'Select…'` Shown while nothing is chosen.
+- `emptyMessage: string = 'No matches'` Shown in the panel when the typed text matches no option.
+- `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` Matches Input and Select: a minimum height of 32, 40 or 48px (pixels), with text at size xs, sm or base. It also sets the size of the typed text and of the option rows in the list (28, 32 or 40px). The tags come in one size, so sm fits a single row of them snugly, and md and lg add room around it. The field grows past the minimum as tags wrap.
+- `invalid: boolean = false` Sets aria-invalid (which tells screen readers the value has a problem) and the invalid border. FormField sets it from error.
+- `disabled: boolean = false` Turns the field off. The chosen tags stay visible, without their remove buttons.
+- `required: boolean = false` Sets aria-required on the text field, so screen readers say it's required.
+- `name: string` Sends each chosen value with the form as its own hidden input under this name.
+- `className: string` Extra CSS classes, merged onto the field.
+- `ref: Ref<HTMLInputElement>` Passed through to the text field.
+- `id: string` The text field’s id. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text, put on the text field so screen readers read them. FormField sets it.
+
+Page: /docs/components/multi-select.md
+
+### PageHeader
+
+The top of a screen. It holds the page’s one h1 (the main, level-1 heading), and can add an eyebrow, a description, a breadcrumb trail and the page’s own actions at the far edge.
+
+```tsx
+import { PageHeader } from 'src/components/molecules/page-header/PageHeader'
+```
+
+- `title: string` Required. The page’s name, shown as its h1.
+- `eyebrow: ReactNode` A short label above the title: the area the page belongs to.
+- `description: ReactNode` One or two sentences under the title.
+- `actions: ReactNode` The page’s own actions, usually one or two Buttons. The component lays out the row and its gap.
+- `breadcrumbs: ReactNode` A Breadcrumbs element, drawn above the eyebrow.
+- `id: string` Goes on the h1, not the wrapper, so main can point aria-labelledby at it. That ARIA (Accessible Rich Internet Applications) attribute lets the main area take its name from the heading.
+- `level: 1 \| 2 = 1` Use 2 only for a page-style header inside a page that already has its h1 (a pane, a tab panel). It looks the same either way.
+- `className: string` Extra CSS classes, merged onto the outer element. When two Tailwind classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the outer element.
+
+Page: /docs/components/page-header.md
+
+### Pagination
+
+Moves through a long list one page at a time. The current page gets the signal fill. Where there are too many pages to fit, a gap stands in for the run that's hidden.
+
+```tsx
+import { Pagination, paginationRange } from 'src/components/molecules/pagination/Pagination'
+```
+
+- `page: number` Counts from 1. A number outside the range is pulled back into it.
+- `pageCount: number` Below 1, nothing renders.
+- `onPageChange: (page: number) => void` It's never called with the page you're already on.
+- `variant: 'numbered' \| 'compact' \| 'select' = 'numbered'` What sits between Previous and Next: the page buttons, a 'Page 3 of 20' readout (which screen readers announce politely, without interrupting, when it changes), or a page Select. Only use 'select' up to a few dozen pages.
+- `siblings: number = 1` How many pages show on each side of the current page, for 'numbered'.
+- `showFirstLast: boolean = false` Adds First page and Last page icon buttons at the ends. Like Previous and Next, they go aria-disabled at the first and last page.
+- `showLabels: boolean = false` Shows Previous and Next as text buttons ('Previous', 'Next') with their chevrons, instead of icons alone.
+- `showJump: boolean = false` Adds a 'Go to page' field. Enter or Go jumps there, and a number past either end goes to that end.
+- `totalItems: number` Together with pageSize, it shows the range on view ('21–40 of 400') at the start and lays the control out as a table footer.
+- `pageSize: number` Items per page, used for the range text and the rows-per-page Select.
+- `onPageSizeChange: (pageSize: number) => void` Together with pageSize, it shows a rows-per-page Select. When it fires, reset page to 1: the old page may not exist any more.
+- `pageSizeOptions: number[] = [10, 20, 50, 100]` The rows-per-page choices.
+- `label: string = 'Pagination'` The name of the nav landmark (a region screen readers can jump to).
+- `className: string` Added to the nav element.
+- `ref: Ref<HTMLElement>` Passed through to the nav DOM node (the element in the page).
+
+Page: /docs/components/pagination.md
+
+### PromptInput
+
+The box where a person writes to an assistant. It grows to fit the text, has one Send/Stop button and can show suggestions. Enter sends, and Shift+Enter starts a new line.
+
+```tsx
+import { PromptInput } from 'src/components/molecules/prompt-input/PromptInput'
+```
+
+Requires: A parent that keeps the draft in state and clears it in onSubmit.
+
+- `label: string` Required. Names the box. It's hidden on screen.
+- `value: string` Required. The draft. Controlled, meaning your page holds it.
+- `onValueChange: (value: string) => void` Required.
+- `onSubmit: (value: string) => void` Required. Fires on Enter, Send or a suggestion, and never with a blank draft. Clear the draft here.
+- `busy: boolean = false` Send turns into Stop, and Enter sends nothing.
+- `onStop: () => void` Runs on Stop, and on Escape in the box while busy.
+- `suggestions: readonly string[]` Ready-made prompts shown as chips. Clicking one submits it.
+- `placeholder: string` Shown in the empty box.
+- `disabled: boolean = false` Nothing can be typed or sent. Say why somewhere nearby.
+- `hint: string = 'Enter to send, Shift+Enter for a new line'` The line under the box, which is also its description.
+- `className: string` Added to the form.
+
+Page: /docs/components/prompt-input.md
+
+### QuantityStepper
+
+A whole number between a lowest and a highest value, with a button on each side. It follows the spinbutton pattern (the standard recipe for a number you nudge up and down), so the keyboard can do everything from inside the field.
+
+```tsx
+import { QuantityStepper, clampQuantity, gridMax } from 'src/components/molecules/quantity-stepper/QuantityStepper'
+```
+
+- `label: string` Required. Names the field and both buttons ("Decrease Speed loader quantity").
+- `value: number` Controlled value (your page holds it).
+- `defaultValue: number = min` Starting value when the component holds the value itself (uncontrolled).
+- `onValueChange: (value: number) => void` Fires with the final value, pulled inside the limits: after a button click, an arrow key, Home/End, or when typing is finished by leaving the field or pressing Enter.
+- `min: number = 0` Lowest allowed value.
+- `max: number = 99` Highest allowed value.
+- `step: number = 1` The size of each step the value snaps to, counted from min.
+- `disabled: boolean = false` Disables the field and both buttons.
+- `inputSize: 'sm' \| 'md' = 'md'` Size of the field and buttons.
+- `className: string` Combined with the root classes. Where Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLInputElement>` Passed through to the field.
+- `id: string` The field's id, so a FormField's label and error text can point at it. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text, set on the field so screen readers read them out. FormField sets it.
+- `invalid: boolean` Marks the field as invalid: aria-invalid and the invalid border. FormField sets it when there is an error.
+- `required: boolean` Marks the field as required. FormField sets it.
+
+Page: /docs/components/quantity-stepper.md
+
+### Rating
+
+A score out of five, either shown or collected. The display is one image that a screen reader reads as one sentence. The input is a radio group, because picking a rating means picking one value.
+
+```tsx
+import { Rating, RatingInput } from 'src/components/molecules/rating/Rating'
+```
+
+- `value (Rating): number` From 0 up to max, rounded to the nearest half for both the drawing and what screen readers say.
+- `max (Rating): number = 5` Number of stars.
+- `label (Rating): string` What is being rated, read out as "<label> rated 4.5 out of 5".
+- `showValue (Rating): boolean = false` Prints the rounded value beside the stars, aria-hidden.
+- `size (Rating): 'sm' \| 'md' = 'md'` Star size.
+- `className (Rating): string` Combined with the root classes. Where Tailwind utility classes clash, the later one wins.
+- `ref (Rating): Ref<HTMLSpanElement>` Passed through to the root span.
+- `label (RatingInput): string` Required. The radiogroup's name, for example "Rate the Prism holo sight".
+- `value (RatingInput): number` The selected value, when your page holds it (controlled).
+- `defaultValue (RatingInput): number` Starting value when the component holds it itself (uncontrolled).
+- `onValueChange (RatingInput): (value: number) => void` Fires when a star is picked by click or arrow key.
+- `max (RatingInput): number = 5` Number of stars.
+- `disabled (RatingInput): boolean` Disables every star.
+- `className (RatingInput): string` Combined with the root classes.
+- `ref (RatingInput): Ref<HTMLDivElement>` Passed through to the Radix radiogroup root. It's built straight on that, not on the Radio atom: see the anatomy row above.
+
+Page: /docs/components/rating.md
+
+### Search
+
+A search field inside a search landmark (a region of the page that screen readers can jump straight to). Enter submits, Escape clears, and a one-key shortcut can move focus to it from anywhere on the page.
+
+```tsx
+import { Search } from 'src/components/molecules/search/Search'
+```
+
+- `label: string` Required. The name screen readers use for the field, and for the search landmark.
+- `value: string` The value, when your page holds it (controlled).
+- `defaultValue: string = ''` Starting value when the component holds it itself (uncontrolled).
+- `onValueChange: (value: string) => void` Called whenever the value changes, clearing included.
+- `onSearch: (query: string) => void` Called on Enter with the value, spaces trimmed from both ends. It isn't called for an empty query.
+- `placeholder: string = 'Search'` 
+- `shortcut: string` One printable key, for example "/". It moves focus to the field from anywhere on the page, except while someone is typing in another text field. While the field is empty, it shows as a Kbd hint.
+- `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` 
+- `className: string` Combined with the root classes. Where Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLInputElement>` Passed through to the input element.
+
+Page: /docs/components/search.md
+
+### SectionHeading
+
+The heading that opens a section of a page: a title under a hairline, with an optional description and an optional action. The page tells it which heading level to use, because only the page knows its own outline.
+
+```tsx
+import { SectionHeading } from 'src/components/molecules/section-heading/SectionHeading'
+```
+
+- `title: string` Required. The heading text.
+- `level: 2 \| 3 \| 4` Required, with no default. The heading level the page outline needs at this point. Leave it out and the code won't compile.
+- `description: ReactNode` One or two sentences under the title.
+- `action: ReactNode` A single control at the end of the row, usually a link to the full list.
+- `index: number` The section's position in a numbered run of sections, drawn above the title. It's decoration and never part of the heading's name.
+- `id: string` Goes on the heading element, not the wrapper, so a section can point aria-labelledby at it (that's how the section gets its name for screen readers).
+- `className: string` Added to the root. Where Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the root element.
+
+Page: /docs/components/section-heading.md
+
+### SegmentedControl
+
+Two to five options in one framed row, with one selected. It changes what's on screen in place. Under the hood it's a radio group: Tab stops on it once, the arrow keys move and select, and the selected option has a signal fill with ink text.
+
+```tsx
+import { SegmentedControl } from 'src/components/molecules/segmented-control/SegmentedControl'
+```
+
+- `label: string` Required. Names the group: "View", "Range".
+- `options: readonly SegmentedControlOption[]` Required. Two to five.
+- `value: string` Required. The selected option.
+- `onValueChange: (value: string) => void` Required. Called with the new value.
+- `size: 'sm' \| 'md' = 'md'` The same height as Button's sm or md.
+- `className: string` Added to the group.
+- `ref: Ref<HTMLDivElement>` Passed through to the group.
+- `value (SegmentedControlOption): string` Required. What onValueChange receives.
+- `label (SegmentedControlOption): string` Required. Always shown.
+- `icon (SegmentedControlOption): ReactNode` A lucide icon before the label, aria-hidden so screen readers skip it.
+
+Page: /docs/components/segmented-control.md
+
+### Stat
+
+One number that matters, and how it has moved. The number is the star of the show. The label is small, set in a monospaced font and kept quiet.
+
+```tsx
+import { Stat } from 'src/components/molecules/stat/Stat'
+```
+
+- `label: string` The stat's name, for example "Kits dispatched".
+- `value: number \| string` Whole numbers get padded. Anything else (for example "4.2k") is shown exactly as given.
+- `unit: string` Shown beside the value, for example "kg".
+- `padTo: number` Pads a whole-number value to this many digits with dimmed zeros that screen readers skip (aria-hidden).
+- `delta: { value: string; direction: 'up' \| 'down'; sentiment: 'positive' \| 'negative' \| 'neutral'; period: string }` value comes already formatted (for example "12%"). direction picks the arrow. sentiment picks the colour, and it doesn't depend on direction: fewer failed syncs is down, and that's positive. period is what the number is compared with, for example "last week". It's both shown and spoken.
+- `className: string` Merged with the root classes. If two Tailwind utilities clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` Passed through to the root div.
+- `...rest: HTMLAttributes<HTMLDivElement>` Any standard div attribute, applied to the root div.
+
+Page: /docs/components/stat.md
+
+### StatusTracker
+
+Health over time, drawn as a row of thin bars with one bar per period. The oldest is on the left. Each bar says its status in words and shows them in a tooltip when you hover over it or reach it with the keyboard. The whole row is a single Tab stop, and the arrow keys move along it.
+
+```tsx
+import { StatusTracker, statusTrackerText } from 'src/components/molecules/status-tracker/StatusTracker'
+```
+
+Requires: The root TooltipProvider (AppShell and DemoLayout mount it).
+
+- `label: string` Required. Names the row, for example "Uptime, last 30 days".
+- `items: readonly StatusTrackerItem[]` Required. Oldest first.
+- `summary: ReactNode` Shown on the right of the label row, for example "99.2% up".
+- `statusLabels: Partial<Record<StatusTrackerStatus, string>>` Replaces the status words: Operational, Degraded, Down, No data.
+- `className: string` Added to the root.
+- `ref: Ref<HTMLDivElement>` Passed through to the root.
+- `id (StatusTrackerItem): string` Required. A key that never changes for that item.
+- `status (StatusTrackerItem): 'ok' \| 'warning' \| 'hostile' \| 'neutral'` Required. ok means up. warning means degraded. hostile means down or failed. neutral means no data.
+- `label (StatusTrackerItem): string` Required. The period and what happened, for example "12 Oct: 2 alerts, 14 min degraded".
+- `statusTrackerText(): (item, words?) => string` Builds the text a bar uses for its name and tooltip, for example "Degraded. 12 Oct: 2 alerts".
+
+Page: /docs/components/status-tracker.md
+
+### Stepper
+
+Shows where someone is in a flow of several steps. Finished steps get a check mark, the current one is filled with the signal colour, and the rest wait as outlines.
+
+```tsx
+import { Stepper } from 'src/components/molecules/stepper/Stepper'
+```
+
+- `steps: Step[]` Required. { label: string; description?: string }.
+- `current: number` Counts from 0. steps.length means every step is complete.
+- `label: string = 'Progress'` The list's accessible name, the name screen readers announce.
+- `orientation: 'horizontal' \| 'vertical' = 'horizontal'` Horizontal runs in a row from sm up and stacks below it. Vertical is a column at every width, with connectors.
+- `className: string` Merged with the root classes. If two Tailwind utilities clash, the later one wins.
+- `ref: Ref<HTMLOListElement>` Passed through to the root ol.
+
+Page: /docs/components/stepper.md
+
+### Tabs
+
+Sections of one view, with only one visible at a time. The active tab is filled with the signal colour, the same way every other selection in the system is.
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/molecules/tabs/Tabs'
+```
+
+- `value (Root): string` The active tab, when the page controls it.
+- `variant: 'fill' \| 'line' = 'fill'` How the active tab is shown (Root). 'line' underlines it, for a row inside a panel that already has lots of fills.
+- `defaultValue: string` The tab that starts active, when the component manages it (Root).
+- `onValueChange: (value: string) => void` Called when the active tab changes (Root).
+- `orientation: 'horizontal' \| 'vertical' = 'horizontal'` Which arrow keys move between tabs (Root). Vertical also puts the list beside the panels.
+- `activationMode: 'automatic' \| 'manual' = 'automatic'` 'manual' waits for Enter or Space before switching, for panels that are slow to draw (Root).
+- `value (Trigger): string` This tab's own value.
+- `disabled: boolean = false` Turns off one tab (Trigger).
+- `icon (Trigger): ReactNode` A small symbol before the label, hidden from screen readers (aria-hidden).
+- `count (Trigger): number` A number after the label, included in the name screen readers announce.
+- `className: string` Merged with the root classes. If two Tailwind utilities clash, the later one wins. Available on every part.
+- `ref: Ref<HTMLElement>` Passed through to the underlying page element. Available on every part.
+
+Page: /docs/components/tabs.md
+
+### Timeline
+
+Events in time order down a vertical line. Each one has a square marker with an icon, a title line, a time and an optional body. You can group them by day, or not.
+
+```tsx
+import { Timeline, TimelineGroup, TimelineItem } from 'src/components/molecules/timeline/Timeline'
+```
+
+- `label (Timeline): string` Required. Names the list.
+- `className (Timeline): string` Added to the root ol.
+- `title (TimelineGroup): string` Required. A day or a period, for example "Today".
+- `level (TimelineGroup): 2 \| 3 \| 4 = 3` The heading level of the group title (2 means an h2, and so on).
+- `icon (TimelineItem): ReactNode` Required. A lucide icon, there for decoration only.
+- `tone (TimelineItem): 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` Colours the marker, with the same meanings as Badge. The title still says it in words.
+- `title (TimelineItem): ReactNode` Required. What happened, in one line.
+- `meta (TimelineItem): ReactNode` Beside the title: who did it, or a Badge with the outcome.
+- `time (TimelineItem): string` Required. An ISO datetime (a date and time written in the international standard format), used for <time dateTime>.
+- `timeLabel (TimelineItem): string` Required. What people see, for example "09:40" or "Mon 12 Oct".
+- `details (TimelineItem): ReactNode` Extra information, folded away behind a "Show details" button.
+
+Page: /docs/components/timeline.md
+
+### Toast
+
+A short message that pops up, stays a few seconds and goes away. Hostile toasts (errors) interrupt and stay longer. Everything else waits its turn.
+
+```tsx
+import { Toaster, useToast } from 'src/components/molecules/toast/Toast'
+```
+
+Requires: One <Toaster> near the root of the app, wrapped around everything that calls useToast(). AppShell and the demo layout each mount one. Outside it, useToast() throws an error.
+
+- `title (ToastOptions): string` Required. Screen readers hear the tone word before it.
+- `description (ToastOptions): string` Optional body text.
+- `tone (ToastOptions): 'info' \| 'ok' \| 'warning' \| 'hostile' = 'info'` Which colour, icon and word the toast has.
+- `duration (ToastOptions): number = 5000` How many milliseconds before it goes away on its own. 8000 for hostile.
+- `action (ToastOptions): { label: string; altText: string; onAction: () => void }` Optional. Radix (the library the toast is built on) requires altText: what to do somewhere else if someone can't reach the toast in time.
+- `useToast(): { toast: (options: ToastOptions) => string; dismiss: (id: string) => void }` Shows a toast (and returns its id) or closes one. Throws an error outside a Toaster.
+
+Page: /docs/components/toast.md
+
+### ToolCall
+
+A tool the assistant ran, shown right where it ran. It has the status as a word and a small symbol, a title, the tool name and how long it took, with the input and output folded away behind a button.
+
+```tsx
+import { ToolCall } from 'src/components/molecules/tool-call/ToolCall'
+```
+
+- `name: string` Required. The tool's own name, shown in a monospaced font.
+- `title: string` A plain-language description of the call, shown above the name.
+- `status: 'running' \| 'done' \| 'failed'` Required. Shown as a word, a symbol and a colour.
+- `duration: string` How long it took, for example "1.2 s".
+- `input: ReactNode` What the assistant sent the tool. Folded away by default.
+- `output: ReactNode` What came back. Folded away by default.
+- `defaultOpen: boolean = false` Starts with the details showing.
+- `className: string` Added to the panel.
+
+Page: /docs/components/tool-call.md
+
+## Organisms
+
+### AlertDialog
+
+Asks for confirmation before something with real consequences. It shows a question, says what will happen, and offers Cancel and the action. Screen readers announce it as an alert, a click outside won't dismiss it, and focus starts on Cancel. If the action returns a promise (a value that finishes later, such as a server call), the dialog stays open and shows it's busy until that work is done.
+
+```tsx
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from 'src/components/organisms/alert-dialog/AlertDialog'
+```
+
+- `open (AlertDialog): boolean` Whether it is open, when your code controls that (controlled mode).
+- `defaultOpen (AlertDialog): boolean = false` Whether it starts open, when the component tracks its own state (uncontrolled mode).
+- `onOpenChange (AlertDialog): (open: boolean) => void` Called on every open and close. It isn't called when someone tries to close it while the action is busy.
+- `asChild (Trigger): boolean` Uses its single child as the trigger instead of adding its own button. Pass a Button.
+- `ref (Trigger): Ref<HTMLButtonElement>` The trigger button.
+- `title (Content): string` Required. The question, and the name screen readers say.
+- `description (Content): string` Required. What confirming does. Screen readers read it as the accessible description.
+- `size (Content): 'sm' \| 'md' = 'md'` Maximum width: 24rem or 32rem (rem is a unit based on the root text size, usually 16 pixels).
+- `className (Content): string` Added to the panel classes. Where two Tailwind utility classes clash, the later one wins.
+- `ref (Content): Ref<HTMLDivElement>` The element with the role alertdialog.
+- `onPointerDownOutside / onInteractOutside (Content): —` Not available: a click outside never dismisses an alert dialog.
+- `className (Footer): string` Added to the button row classes.
+- `children (Cancel): ReactNode = 'Cancel'` The label. Name what the person keeps, for example Keep editing.
+- `ref (Cancel): Ref<HTMLButtonElement>` The Cancel button, which gets focus when the dialog opens.
+- `tone (Action): 'hostile' \| 'default' = 'hostile'` hostile (the danger button) for something that can't be undone. default (the primary button) for a confirm that's safe but still matters.
+- `onClick (Action): (event) => void \| Promise<unknown>` Runs on confirm, then closes the dialog. If it returns a promise, the dialog stays open and busy until the promise settles: success closes it, failure keeps it open. Calling event.preventDefault() also keeps it open.
+- `loading (Action): boolean = false` Marks it busy from outside, for work you track yourself. It holds the dialog open the same way a pending promise does.
+- `loadingLabel (Action): string = 'Working'` Text you can't see that screen readers announce while it's busy.
+- `ref (Action): Ref<HTMLButtonElement>` The action button.
+
+Page: /docs/components/alert-dialog.md
+
+### AuthForm
+
+One form with four modes: sign in, create an account, reset a password, or enter a two-step code. It's built so password managers, pasting and keyboards all just work.
+
+```tsx
+import { AuthForm } from 'src/components/organisms/auth-form/AuthForm'
+```
+
+- `mode: 'sign-in' \| 'create-account' \| 'reset-password' \| 'verify-code'` Required. Which form shows.
+- `onSubmit: (values: AuthValues, mode: AuthMode) => void \| AuthErrors \| Promise<void \| AuthErrors>` Required. Runs once every field passes its checks. Resolve with errors keyed by field name to show them. If it rejects, a general alert for the whole form appears, so the failure isn't lost.
+- `onModeChange: (mode: AuthMode) => void` Offers the other modes and reports when someone switches.
+- `headingLevel: 2 \| 3 \| 4 = 2` Match the page's heading outline. The error summary sits one level below. The exception is 4, the lowest heading this system uses: there the summary stays an h4 (a level-4 heading) too.
+- `className: string` Merged with the root classes. Later Tailwind utilities win.
+- `ref: Ref<HTMLFormElement>` The form.
+
+Page: /docs/components/auth-form.md
+
+### Carousel
+
+A row of items that scrolls sideways. The browser does the scrolling, and Previous and Next move it a page at a time. Nothing ever moves on its own.
+
+```tsx
+import { Carousel } from 'src/components/organisms/carousel/Carousel'
+```
+
+- `label: string` Required. The region's accessible name (the name a screen reader announces), for example "Offers". Leaving it out is a compile error.
+- `children: ReactNode` Each child becomes one list item and keeps its own key.
+- `itemWidth: string = 'min(18rem, 80%)'` Any CSS length. A percentage is a share of the track's width. Keep it under the full width, so the edge of the next item shows.
+- `gutter: string = '0.5rem'` The space between the track's edge and the first and last item, in any CSS length (rem is a unit tied to the base text size). It's never less than 0.5rem, whatever you pass, because an edge item draws its focus ring there. Set it to the page gutter to run the track edge to edge.
+- `className: string` Merged onto the region.
+- `ref: Ref<HTMLElement>` Forwarded to the region.
+
+Page: /docs/components/carousel.md
+
+### Cart
+
+The lines someone means to buy, with quantities, line totals and a subtotal that screen readers announce as it changes. Removing a line can be undone, and focus (where keyboard input goes) is never lost.
+
+```tsx
+import { Cart } from 'src/components/organisms/cart/Cart'
+```
+
+- `lines: CartLine[]` Required. The cart doesn't keep any lines of its own.
+- `onQuantityChange: (id: string, quantity: number) => void` Required. Called when a line's QuantityStepper changes.
+- `onRemove: (id: string) => void` Required. Called when Remove is pressed.
+- `onRestore: (line: CartLine, index: number) => void` Puts a removed line back at its old position. When you pass it, the removal toast offers Undo.
+- `title: string = 'Cart'` The heading's text, and the cart's accessible name (the name a screen reader announces).
+- `headingLevel: 2 \| 3 \| 4 = 2` Match the page's heading outline.
+- `emptyMessage: string = 'Your cart is empty.'` Shown in place of the list.
+- `footer: ReactNode` Under the subtotal, such as a checkout button. Hidden while the cart's empty.
+- `currency: string = 'EUR'` Passed to formatMoney.
+- `locale: string = 'en-IE'` Passed to formatMoney.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Draws a line name that has an href.
+- `className: string` Merged with the root classes. Later Tailwind utilities win.
+- `ref: Ref<HTMLElement>` The section.
+
+Page: /docs/components/cart.md
+
+### ChartPanel
+
+One chart in a card. A sentence says what it shows, and the same numbers sit in a table. The data below is sample data.
+
+```tsx
+import { ChartPanel } from 'src/components/organisms/chart-panel/ChartPanel'
+```
+
+- `title: string` Required. The panel's heading and its name.
+- `summary: string` Required. One sentence, the chart's caption.
+- `kind: 'line' \| 'bar' \| 'donut' \| 'radar'` Required. Line for change over time. Bar to compare categories. Donut for parts of one whole (one series, a slice per row). Radar for several measures of one or two things (an axis per row).
+- `data: Row[]` Required. One object per category.
+- `xKey: keyof Row` Required. The category. Its values must be unique.
+- `xLabel: string` Required. The header of the table's first column.
+- `series: [ChartSeries] \| [ChartSeries, ChartSeries]` Required. One or two series, coloured chart.series-1 then chart.series-2. Passing a third is a type error, and so is a ChartSeries.key that isn't one of Row's own numeric columns.
+- `area: boolean = false` Line only. Fills under each line with a gradient of its colour that fades to nothing.
+- `curve: 'linear' \| 'smooth' = 'linear'` Line only. smooth draws a monotone curve, so it never overshoots a data point.
+- `grid: boolean = true` The dashed horizontal grid (on a radar, its web). false also drops the axis lines but keeps the tick labels.
+- `size: 'md' \| 'sm' = 'md'` sm is the stat-card size: a short sparkline with no axes or grid, and the caption under it. Pair it with headline.
+- `headline: string` A formatted figure printed large under the title.
+- `centerLabel: string` Donut only. The caption under the total in the centre of the ring.
+- `formatValue: (value: number) => string = Intl.NumberFormat('en-IE')` Formats numbers in the tooltip and the table. It formats the y-axis too, unless you give formatAxisValue.
+- `formatAxisValue: (value: number) => string = formatValue` Formats only the y-axis tick labels. Use a shorter, compact formatter when formatValue's output is too wide for the axis. SpendChart's compact euro formatter is one example.
+- `axisWidth: number = 48` The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off.
+- `headingLevel: 2 \| 3 \| 4 = 3` Pick the level that fits the page's heading outline.
+- `className: string` Merged with the Card classes. Later Tailwind utilities win.
+- `ref: Ref<HTMLElement>` Points at the section element.
+
+Page: /docs/components/chart-panel.md
+
+### ChatThread
+
+A scrolling log of ChatMessages. It follows new text only while the reader is at the end, and it announces each finished reply to screen readers once.
+
+```tsx
+import { ChatThread } from 'src/components/organisms/chat-thread/ChatThread'
+```
+
+Requires: A height, because the thread scrolls and the page doesn't. Use h-[28rem], or flex-1 min-h-0 inside a column.
+
+Requires: ChatMessage children, so the thread can announce each finished reply.
+
+- `label: string` Required. Names the log.
+- `busy: boolean = false` The assistant is working. Shows a working line and makes one announcement when it starts.
+- `busyLabel: string = 'Assistant is working'` The working line's words, and what gets announced.
+- `jumpLabel: string = 'Jump to latest'` The jump button's words.
+- `className: string` Goes on the root. Give the thread a height here.
+
+Page: /docs/components/chat-thread.md
+
+### CheckoutForm
+
+Shipping, delivery and payment in three steps, with the order summary beside them. It's a demo: no payment is ever taken, and the card fields say so.
+
+```tsx
+import { CheckoutForm, DELIVERY_OPTIONS } from 'src/components/organisms/checkout-form/CheckoutForm'
+```
+
+- `lines: CartLine[]` Required. What's being bought. The order summary lists them.
+- `countries: SelectOption[]` Required. The options for the country Select.
+- `deliveryOptions: DeliveryOption[] = DELIVERY_OPTIONS` Prices in the currency's smallest unit. Zero shows as Free.
+- `onPlaceOrder: (order: CheckoutOrder) => void \| { error: string } \| Promise<void \| { error: string }>` Required. Gets the contact details, addresses, delivery id and total, and never a card field. If it rejects, an alert appears that lets the person try again, so the failure isn't lost. Resolving { error } shows that specific message in the same alert.
+- `headingLevel: 2 \| 3 = 2` The level of the 'Checkout' heading. Steps and the order summary sit one level below it, and never below ErrorSummary's own fixed h4 (level-4 heading).
+- `currency: string = 'EUR'` Passed to formatMoney.
+- `locale: string = 'en-IE'` Passed to formatMoney.
+- `className: string` Merged with the root classes. Later Tailwind utilities win.
+- `ref: Ref<HTMLDivElement>` The root.
+
+Page: /docs/components/checkout-form.md
+
+### CommandPalette
+
+Every action in one place. Press Ctrl+K anywhere, type a few letters, move with the arrow keys and press Enter. Focus (where keyboard input goes) returns to where it was, and then the command runs.
+
+```tsx
+import { CommandPalette, filterCommands, groupCommands } from 'src/components/organisms/command-palette/CommandPalette'
+```
+
+- `commands: Command[]` Required. Each has id, label, group, keywords, shortcut, icon and onSelect.
+- `open: boolean` Open state when controlled, meaning your code decides whether it is open.
+- `defaultOpen: boolean = false` Starting open state when uncontrolled, meaning the palette keeps track of it itself.
+- `onOpenChange: (open: boolean) => void` Called on every open and close, including Escape and a click on the scrim (the dimmed backdrop). If you refuse the close, the chosen command stays ready to run until the user does anything else in the palette. Closing it yourself later counts as accepting it.
+- `shortcut: boolean = true` Ctrl+K or Cmd+K opens and closes the palette from anywhere.
+- `label: string = 'Command palette'` The dialog's accessible name (what a screen reader announces), hidden from view.
+- `searchLabel: string = 'Search commands'` The search field's accessible name.
+- `placeholder: string = 'Type a command or search'` Shown in the empty search field.
+- `emptyMessage: string = 'No matching commands'` Shown when nothing matches the search.
+- `ref: Ref<HTMLInputElement>` The search field, while the palette is open.
+
+Page: /docs/components/command-palette.md
+
+### DataTable
+
+Rows of records that people read, compare and sort. It's a real HTML table with a caption, column and row headers, and sortable columns. When there's a job to do, each row gets a checkbox.
+
+```tsx
+import { DataTable, sortRows } from 'src/components/organisms/data-table/DataTable'
+```
+
+- `caption: string` Required. Names the table and its scroll region.
+- `hideCaption: boolean = false` Hides the caption visually. It still names the table and its scroll region for screen readers.
+- `columns: DataTableColumn<Row>[]` Required. Each column has key, header, cell, sortValue and numeric.
+- `rows: readonly Row[]` Required.
+- `getRowId: (row: Row) => string` Required.
+- `rowHeader: string` Required. The key of the column that heads each row.
+- `defaultSort: DataTableSort` Starts the table sorted. Uncontrolled: the table keeps track of the sort itself after that.
+- `sort: DataTableSort` Controlled sort, meaning your code holds the sort and passes it in. Set it together with onSortChange. A header click then only reports the next sort.
+- `onSortChange: (sort: DataTableSort) => void` Called with the next sort on every header click, whether sort is controlled or not.
+- `emptyMessage: ReactNode = 'Nothing to show.'` Shown across every column when rows is empty.
+- `selectable: boolean = false` Turns on the checkbox column.
+- `rowLabel: (row: Row) => string` Required when selectable. Gives each row's checkbox its name.
+- `selected: ReadonlySet<string>` Controlled selection (your code holds it), keyed by getRowId.
+- `defaultSelected: Iterable<string>` The starting selection when it's uncontrolled (the table holds it).
+- `onSelectedChange: (selected: Set<string>) => void` Called with the next selection on every change.
+- `className: string` Goes on the table element.
+- `ref: Ref<HTMLTableElement>` Points at the table element.
+
+Page: /docs/components/data-table.md
+
+### Dialog
+
+A panel for one focused task, shown on top of the page. The page dims and goes inert, meaning it can't be clicked or focused. Keyboard focus moves inside the dialog and stays there. Escape or the close button hands focus back to whatever opened the dialog.
+
+```tsx
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from 'src/components/organisms/dialog/Dialog'
+```
+
+- `open (Dialog): boolean` Whether it is open, when your code controls that (controlled mode).
+- `defaultOpen (Dialog): boolean = false` Whether it starts open, when the component tracks its own state (uncontrolled mode).
+- `onOpenChange (Dialog): (open: boolean) => void` Called on every open and close, including Escape and a click on the scrim.
+- `asChild (Trigger): boolean` Uses its single child as the trigger instead of adding its own button. Pass a Button.
+- `title (Content): string` Required. The visible heading, and the name screen readers say.
+- `description (Content): string` Shown under the title. Screen readers read it as the accessible description.
+- `size (Content): 'sm' \| 'md' \| 'lg' = 'md'` Maximum width: 24rem, 32rem or 42rem (rem is a unit based on the root text size, usually 16 pixels).
+- `closeLabel (Content): string = 'Close'` What screen readers call the close button.
+- `className (Content): string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
+- `ref (Content): Ref<HTMLDivElement>` The element with the role dialog.
+- `ref (Trigger): Ref<HTMLButtonElement>` The trigger button.
+- `asChild (Close): boolean` Uses its single child as a control that closes the dialog.
+- `className (Footer): string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
+
+Page: /docs/components/dialog.md
+
+### Footer
+
+The bottom of a site: where else to go, one more thing to say, the small print, and the name. Link groups sit on the left and a section of your own on the right. Under them is the wordmark, as wide as the footer and cut off by its bottom edge. One nav holds every group, so a screen reader meets one navigation landmark (a labelled region it can jump to), not six.
+
+```tsx
+import { Footer } from 'src/components/organisms/footer/Footer'
+```
+
+- `label: string` Required. The name of the nav landmark.
+- `columns: FooterColumn[]` Required. Each has a title, links and an optional defaultOpen. A link can be external. The grid is laid out for up to six groups; more wrap onto extra rows.
+- `aside: { title: string; content: ReactNode }` The second section, such as a sign-up form, an address or opening hours. The footer draws the title as a heading at headingLevel, with the slash.
+- `wordmark: string` The name, drawn across the whole width at the bottom edge. It's a string, not a node, because the footer sizes the line from its letters and uses it to name the image.
+- `backdrop: ReactNode` Decoration behind the wordmark. Position it with absolute inset-0. It's hidden from assistive technology (screen readers and similar tools) and takes no pointer input, so it mustn't hold content or anything focusable.
+- `brand: ReactNode` A small brand mark above the groups, for a footer with no wordmark.
+- `tagline: string` A line under the brand, or on its own above the groups.
+- `legal: ReactNode` The small print, such as a copyright line or a legal link.
+- `headingLevel: 2 \| 3 \| 4 = 2` The level of the group headings and the aside's heading. Match the page's heading outline.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Internal links only. An external link always renders through the Link atom. Pass your router's link component here, mapping href to its own prop and passing className through.
+- `className: string` Merged with the root classes. Later Tailwind utilities win. The side spacing is the page gutter, --page-gutter (1rem unless a shell sets it). The wordmark and the backdrop ignore it.
+- `ref: Ref<HTMLElement>` The footer element.
+
+Page: /docs/components/footer.md
+
+### KanbanBoard
+
+Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. It's controlled, meaning the board reports a move and the parent updates its items.
+
+```tsx
+import { KanbanBoard, applyKanbanMove, groupKanbanItems, kanbanDragOver, kanbanDrop, kanbanMessages, kanbanPosition } from 'src/components/organisms/kanban-board/KanbanBoard'
+```
+
+Requires: A parent that holds items in state and applies each onMove (applyKanbanMove does the update).
+
+- `label: string` Required. Names the board's region.
+- `columns: readonly KanbanColumn[]` Required. { id, title, meta? }, in display order.
+- `items: readonly T[]` Required. Every card. A column shows its items in this array's order.
+- `getItemId: (item: T) => string` Required.
+- `getColumnId: (item: T) => string` Required. The id of the item's column.
+- `getItemLabel: (item: T) => string` Required. The card in plain words. The Move control, its menu and every screen reader announcement use it.
+- `renderCard: (item: T) => ReactNode` Required. The card's body. It can hold one link or button. The board draws the frame.
+- `renderCardCorner: (item: T) => ReactNode` A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name.
+- `onMove: (itemId: string, toColumnId: string, toIndex: number) => void` Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last.
+- `emptyColumnMessage: string = 'Nothing here'` Shown in a column with no cards.
+- `columnHeadingLevel: 2 \| 3 \| 4 = 3` The heading level of the column titles. Pick one that sits under the page's own heading outline.
+- `className: string` Goes on the region.
+- `applyKanbanMove(): (items, itemId, toColumnId, toIndex, { getItemId, getColumnId, setColumnId }) => T[]` The parent's half of onMove. It returns a new items array with the card in its new column and place.
+
+Page: /docs/components/kanban-board.md
+
+### Navbar
+
+The top of a page: the brand, the main links and a few actions. When its container gets narrow, the links move into a menu sheet. Nothing gets cut off, and nothing is hidden for good.
+
+```tsx
+import { Navbar } from 'src/components/organisms/navbar/Navbar'
+```
+
+- `label: string` Required. The name screen readers give the navigation region.
+- `brand: ReactNode` Required. The wordmark or logo, usually a link to the home page.
+- `items: NavbarItem[]` Required. Each item has label, href and current.
+- `actions: ReactNode` Controls on the right: icon buttons, a cart link, an account menu. Keep them small, because they stay visible at every width.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through.
+- `menuLabel: string = 'Menu'` The menu button's name for screen readers, and the sheet's title.
+- `menuFooter: ReactNode` Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex.
+- `className: string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLElement>` The header element.
+
+Page: /docs/components/navbar.md
+
+### NewsletterForm
+
+An email field, a line saying what you're agreeing to, and a button. It checks input the same way every form here does, is honest about waiting while it sends, and tells you when it worked.
+
+```tsx
+import { NewsletterForm } from 'src/components/organisms/newsletter-form/NewsletterForm'
+```
+
+- `label: string` Required. The form's accessible name, the name screen readers say, e.g. "Newsletter sign-up". Leaving it out is a compile error.
+- `onSubmit: (email: string) => void \| Promise<void>` Required. Called with the trimmed address once it passes validation. Resolve (finish successfully) to show the success state. Reject (fail) to show the alert, and what was typed stays in the field.
+- `consent: ReactNode` Required. The consent line. Leaving it out is a compile error.
+- `fieldLabel: string = 'Email'` The field's label and the name screen readers say for it, as one string. Say what the address is for when the page might have another email field, such as a footer under a sign-in form.
+- `submitLabel: string = 'Subscribe'` The button text.
+- `busyLabel: string = 'Subscribing'` What a screen reader hears while onSubmit is pending.
+- `successTitle: string = 'You are subscribed'` The success heading.
+- `successBody: (email: string) => ReactNode = email => `Updates go to ${email}.`` The line under the success heading. It receives the subscribed address.
+- `headingLevel: 2 \| 3 \| 4 = 3` The level of the error summary heading and the success heading. Make it one below the heading of the section the form sits in.
+- `className: string` Added to the root element.
+- `ref: Ref<HTMLDivElement>` Passed to the root element, which stays on the page when the success message replaces the form.
+
+Page: /docs/components/newsletter-form.md
+
+### ProductCard
+
+One product as one link. Clicking anywhere on the card opens it, Add to cart stays a separate control, and a grid of cards adapts to the space it's given.
+
+```tsx
+import { ProductCard, ProductGrid } from 'src/components/organisms/product-card/ProductCard'
+```
+
+- `product (ProductCard): Product` Required. id, name, href and price (in the currency's minor unit, so cents for EUR). rating, image, badge and soldOut are optional.
+- `onAddToCart: (product: Product) => void` Draws Add to cart. Leave it out for a card that only links to the product.
+- `headingLevel: 2 \| 3 \| 4 = 3` Pick the level that fits the page's heading outline.
+- `currency: string = 'EUR'` Passed to formatMoney.
+- `locale: string = 'en-IE'` Passed to formatMoney.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Draws the name's link. It must pass className through, because that class carries the stretched click area and the focus ring.
+- `renderMedia: (product: Product) => ReactNode = the product's image, 4:3, cover` Draws the picture instead of the image or the placeholder, for example a staged cutout. Keep the 4:3 box and keep it decorative. The badge still sits over it.
+- `className (ProductCard): string` Merged with the root classes. Later Tailwind utilities win.
+- `ref (ProductCard): Ref<HTMLElement>` Points at the article element.
+- `products (Grid): Product[]` Required.
+- `label (Grid): string` Required. The list's accessible name, the name a screen reader announces for it.
+- `emptyMessage (Grid): string = 'No products match.'` Announced by a status message that's always on the page when products is empty. The list itself keeps rendering (so its ref stays stable), but it's hidden while there's nothing in it.
+- `className (Grid): string` Merged with the list's own classes. Later Tailwind utilities win.
+- `ref (Grid): Ref<HTMLUListElement>` Points at the list element.
+
+Page: /docs/components/product-card.md
+
+### Sheet
+
+A dialog that slides in from the side and runs the full height of the screen. Use it for filters, a menu on a narrow screen, or the details of one item next to a list.
+
+```tsx
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from 'src/components/organisms/sheet/Sheet'
+```
+
+- `open (Sheet): boolean` Whether it is open, when your code controls that (controlled mode).
+- `defaultOpen (Sheet): boolean = false` Whether it starts open, when the component tracks its own state (uncontrolled mode).
+- `onOpenChange (Sheet): (open: boolean) => void` Called on every open and close, including Escape and a click on the scrim.
+- `asChild (Trigger): boolean` Uses its single child as the trigger instead of adding its own button. Pass a Button.
+- `title (Content): string` Required. The visible heading, and the name screen readers say.
+- `description (Content): string` Shown under the title. Screen readers read it as the accessible description.
+- `side (Content): 'left' \| 'right' = 'right'` Which edge the sheet slides in from and stays attached to.
+- `closeLabel (Content): string = 'Close'` What screen readers call the close button.
+- `className (Content): string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
+- `ref (Content): Ref<HTMLDivElement>` The element with the role dialog.
+- `ref (Trigger): Ref<HTMLButtonElement>` The trigger button.
+- `asChild (Close): boolean` Uses its single child as a control that closes the sheet.
+
+Page: /docs/components/sheet.md
+
+### Sidebar
+
+The navigation down the side of an app. It holds groups of pages, each page with an icon and an optional count. Groups can fold away, and there is room for a header and an account line.
+
+```tsx
+import { Sidebar } from 'src/components/organisms/sidebar/Sidebar'
+```
+
+- `label: string` Required. The name screen readers give the navigation region.
+- `groups: SidebarGroup[]` Required. Each group has title, icon, items, collapsible and defaultOpen.
+- `header: ReactNode` Sits above the groups: a product name, a workspace switcher.
+- `footer: ReactNode` Pinned below the groups when the Sidebar has a height (h-full in a column layout): the signed-in account, a help link.
+- `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through.
+- `className: string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLElement>` The nav element.
+
+Page: /docs/components/sidebar.md
