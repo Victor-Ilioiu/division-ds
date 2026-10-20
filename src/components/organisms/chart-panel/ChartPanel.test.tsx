@@ -267,6 +267,22 @@ describe('ChartPanel', () => {
     expect(screen.queryByRole('list', { name: 'Shaded ranges' })).toBeNull()
   })
 
+  // Mutation: drop the limit list, or skip formatValue on it.
+  it('lists each limit under the chart with its label and formatted value', () => {
+    render(<Weekly limits={[{ value: 35, label: 'Alert limit' }, { value: 1200 }]} />)
+    const list = screen.getByRole('list', { name: 'Limits' })
+    expect(within(list).getAllByRole('listitem').map(item => item.textContent)).toEqual(['Alert limit: 35', 'Limit: 1,200'])
+    expect(list.closest('[aria-hidden="true"]')).toBeNull()
+  })
+
+  // Mutation: draw the limit in a series colour or as a solid line.
+  it('draws a limit as a dashed text.secondary line', async () => {
+    const { container } = await renderSized(<Weekly limits={[{ value: 35 }]} />, '.recharts-reference-line')
+    const line = container.querySelector('.recharts-reference-line-line')
+    expect(line?.getAttribute('stroke')).toBe('var(--color-text-secondary)')
+    expect(line?.getAttribute('stroke-dasharray')).toBe('6 4')
+  })
+
   // The x-tick collision fix (interval="preserveStartEnd", minTickGap) cannot be tested here:
   // jsdom measures every label as 0px wide, so Recharts never drops one. e2e checks it at 320px.
 

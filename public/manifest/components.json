@@ -3861,7 +3861,8 @@
             "CardFooter",
             "CardHeader",
             "CardMedia",
-            "CardTitle"
+            "CardTitle",
+            "cardLinkClass"
           ],
           "from": "src/components/molecules/card/Card"
         }
@@ -3916,6 +3917,14 @@
           "name": "ref",
           "type": "Ref<HTMLElement>",
           "description": "Passed through to the Card root DOM element."
+        }
+      ],
+      "api": [
+        {
+          "name": "cardLinkClass",
+          "kind": "const",
+          "code": "/** The stretched link an interactive card needs, for the `a` (or button) in its title: the link\n *  is the name's own, its `::after` covers the card, and the focus ring is drawn there, around the\n *  whole card. The shape ProductCard uses. Exported so a consumer never copies the string. */\nexport const cardLinkClass =\n  \"outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]\"",
+          "from": "src/components/molecules/card/Card"
         }
       ],
       "keyboard": [
@@ -4012,7 +4021,7 @@
         },
         {
           "caption": "Interactive: the whole card is one link. Hover over it, or press Tab to reach it",
-          "source": "const STRETCHED =\n  \"outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]\"\n\nfunction DepotLink({ title, note, href }: { title: string; note: string; href: string }) {\n  return (\n    <Card interactive className=\"h-full\">\n      <CardBody className=\"flex flex-col gap-1\">\n        <CardTitle>\n          <a href={href} className={STRETCHED}>\n            {title}\n          </a>\n        </CardTitle>\n        <CardDescription>{note}</CardDescription>\n      </CardBody>\n    </Card>\n  )\n}\n\n<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4 w-full\">\n  <DepotLink title=\"Ridge depot\" note=\"Open until 18:00. Twelve kits ready.\" href=\"#ridge-depot\" />\n  <DepotLink title=\"Quarry depot\" note=\"Open until 20:00. Four kits ready.\" href=\"#quarry-depot\" />\n  <DepotLink title=\"Mill depot\" note=\"Closed today. Opens tomorrow, 08:00.\" href=\"#mill-depot\" />\n</div>"
+          "source": "function DepotLink({ title, note, href }: { title: string; note: string; href: string }) {\n  return (\n    <Card interactive className=\"h-full\">\n      <CardBody className=\"flex flex-col gap-1\">\n        <CardTitle>\n          <a href={href} className={cardLinkClass}>\n            {title}\n          </a>\n        </CardTitle>\n        <CardDescription>{note}</CardDescription>\n      </CardBody>\n    </Card>\n  )\n}\n\n<div className=\"grid grid-cols-1 sm:grid-cols-3 gap-4 w-full\">\n  <DepotLink title=\"Ridge depot\" note=\"Open until 18:00. Twelve kits ready.\" href=\"#ridge-depot\" />\n  <DepotLink title=\"Quarry depot\" note=\"Open until 20:00. Four kits ready.\" href=\"#quarry-depot\" />\n  <DepotLink title=\"Mill depot\" note=\"Closed today. Opens tomorrow, 08:00.\" href=\"#mill-depot\" />\n</div>"
         },
         {
           "caption": "As a section",
@@ -8312,6 +8321,12 @@
           "description": "Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too."
         },
         {
+          "name": "limits",
+          "type": "{ value: number; label?: string }[]",
+          "default": "[]",
+          "description": "Line and bar only, not at size sm. Draws a dashed horizontal line at a y value, such as an alert limit of 35 µg/m³. The y-axis grows to include it, so a limit above every data point stays in view. Every limit is listed under the chart with its label and its value formatted by formatValue, so screen readers hear it too."
+        },
+        {
           "name": "headingLevel",
           "type": "2 | 3 | 4",
           "default": "3",
@@ -8419,7 +8434,7 @@
         },
         {
           "caption": "A shaded band: night hours on a 24-hour series (the band wraps past midnight)",
-          "source": "type Hour = { hour: string; pm25: number }\n\nconst PM25 = [9, 8, 7, 7, 8, 11, 17, 26, 31, 24, 18, 15, 14, 13, 14, 16, 21, 29, 34, 27, 19, 14, 11, 10]\n\nconst HOURS: Hour[] = PM25.map((pm25, hour) => ({ hour: `${String(hour).padStart(2, '0')}:00`, pm25 }))\n\n<ChartPanel<Hour>\n  title=\"Fine particles today\"\n  summary=\"PM2.5 peaked at the morning and evening rush hours, 31 and 34 µg/m³, and stayed lowest overnight.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  data={HOURS}\n  xKey=\"hour\"\n  xLabel=\"Hour\"\n  series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}\n  bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}\n  headingLevel={4}\n/>"
+          "source": "type Hour = { hour: string; pm25: number }\n\nconst PM25 = [9, 8, 7, 7, 8, 11, 17, 26, 31, 24, 18, 15, 14, 13, 14, 16, 21, 29, 34, 27, 19, 14, 11, 10]\n\nconst HOURS: Hour[] = PM25.map((pm25, hour) => ({ hour: `${String(hour).padStart(2, '0')}:00`, pm25 }))\n\n<ChartPanel<Hour>\n  title=\"Fine particles today\"\n  summary=\"PM2.5 peaked at the morning and evening rush hours, 31 and 34 µg/m³, and stayed lowest overnight.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  data={HOURS}\n  xKey=\"hour\"\n  xLabel=\"Hour\"\n  series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}\n  bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}\n  limits={[{ value: 35, label: 'Alert limit (µg/m³)' }]}\n  headingLevel={4}\n/>"
         },
         {
           "caption": "Small: stat cards, each with a sparkline (a tiny line chart with no axes)",

@@ -137,6 +137,7 @@ export function ChartPanelDocs() {
           xLabel="Hour"
           series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}
           bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}
+          limits={[{ value: 35, label: 'Alert limit (µg/m³)' }]}
           headingLevel={4}
         />
       </Example>

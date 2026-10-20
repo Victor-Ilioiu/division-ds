@@ -34,6 +34,7 @@ import { ChartPanel } from 'src/components/organisms/chart-panel/ChartPanel'
 | `formatAxisValue` | `(value: number) => string` | `formatValue` | Formats only the y-axis tick labels. Use a shorter, compact formatter when formatValue's output is too wide for the axis. SpendChart's compact euro formatter is one example. |
 | `axisWidth` | `number` | `48` | The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off. |
 | `bands` | `{ from: string \| number; to: string \| number; label?: string }[]` | `[]` | Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too. |
+| `limits` | `{ value: number; label?: string }[]` | `[]` | Line and bar only, not at size sm. Draws a dashed horizontal line at a y value, such as an alert limit of 35 µg/m³. The y-axis grows to include it, so a limit above every data point stays in view. Every limit is listed under the chart with its label and its value formatted by formatValue, so screen readers hear it too. |
 | `headingLevel` | `2 \| 3 \| 4` | `3` | Pick the level that fits the page's heading outline. |
 | `className` | `string` |  | Merged with the Card classes. Later Tailwind utilities win. |
 | `ref` | `Ref<HTMLElement>` |  | Points at the section element. |
@@ -190,6 +191,7 @@ const HOURS: Hour[] = PM25.map((pm25, hour) => ({ hour: `${String(hour).padStart
   xLabel="Hour"
   series={[{ key: 'pm25', label: 'PM2.5 (µg/m³)' }]}
   bands={[{ from: '22:00', to: '06:00', label: 'Night' }]}
+  limits={[{ value: 35, label: 'Alert limit (µg/m³)' }]}
   headingLevel={4}
 />
 ```

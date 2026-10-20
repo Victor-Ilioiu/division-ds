@@ -37,6 +37,22 @@ Files land in `src/division-ds/`. Then, once:
    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700&family=Saira:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
    ```
 3. Dark is the default theme. For light, set `data-theme="light"` on `<html>`.
+4. Give your app a root that does what this repository's shell does: mount the two providers once,
+   set the page gutter, paint the background and set the body font. Toasts and tooltips need the
+   providers; Navbar, Footer and the `px-gutter` utility read `--page-gutter` (the page's side
+   margin: 16px, and 64px from 1024px wide).
+   ```tsx
+   import { TooltipProvider } from './division-ds/components/atoms/tooltip/Tooltip'
+   import { Toaster } from './division-ds/components/molecules/toast/Toast'
+
+   <TooltipProvider>
+     <Toaster>
+       <div className="[--page-gutter:1rem] lg:[--page-gutter:4rem] min-h-screen bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
+         {/* your routes */}
+       </div>
+     </Toaster>
+   </TooltipProvider>
+   ```
 
 ## 3. Check your screens
 

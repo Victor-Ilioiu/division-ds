@@ -61,6 +61,13 @@ export const meta: ComponentMeta = {
       description:
         "Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too.",
     },
+    {
+      name: 'limits',
+      type: '{ value: number; label?: string }[]',
+      default: '[]',
+      description:
+        "Line and bar only, not at size sm. Draws a dashed horizontal line at a y value, such as an alert limit of 35 µg/m³. The y-axis grows to include it, so a limit above every data point stays in view. Every limit is listed under the chart with its label and its value formatted by formatValue, so screen readers hear it too.",
+    },
     { name: 'headingLevel', type: '2 | 3 | 4', default: '3', description: "Pick the level that fits the page's heading outline." },
     { name: 'className', type: 'string', description: "Merged with the Card classes. Later Tailwind utilities win." },
     { name: 'ref', type: 'Ref<HTMLElement>', description: 'Points at the section element.' },

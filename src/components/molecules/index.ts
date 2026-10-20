@@ -17,7 +17,7 @@ export { Alert, type AlertProps } from './alert/Alert'
 export { ApprovalRequest, type ApprovalRequestProps, type ApprovalState } from './approval-request/ApprovalRequest'
 export { AvatarGroup, type AvatarGroupPerson, type AvatarGroupProps } from './avatar-group/AvatarGroup'
 export { Breadcrumbs, collapseCrumbs, type BreadcrumbsProps, type Crumb } from './breadcrumbs/Breadcrumbs'
-export { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, type CardMediaProps, type CardProps } from './card/Card'
+export { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass, type CardMediaProps, type CardProps } from './card/Card'
 export { ChatMessage, type ChatMessageProps, type ChatMessageRole } from './chat-message/ChatMessage'
 export { DescriptionList, type DescriptionListItem, type DescriptionListProps } from './description-list/DescriptionList'
 export {

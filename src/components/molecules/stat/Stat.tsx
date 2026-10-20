@@ -14,7 +14,7 @@ export type StatDelta = {
 
 export type StatProps = HTMLAttributes<HTMLDivElement> & {
   label: string
-  /** Integers are padded; anything else (e.g. "4.2k") is shown as given. */
+  /** A number is shown with thousands separators ("1,276"), or padded when `padTo` is set; a string (e.g. "4.2k") is shown as given. */
   value: number | string
   unit?: string
   /** Pad an integer value to this many digits with dimmed, aria-hidden zeros. */
@@ -50,6 +50,8 @@ const SENTIMENT = {
   neutral: { className: 'text-[var(--color-text-secondary)]', words: 'neither better nor worse' },
 } as const
 
+const GROUPED = new Intl.NumberFormat('en-US', { maximumFractionDigits: 20 })
+
 /**
  * One number that matters, and how it has moved. The numerals-as-heroes motif as a component.
  *
@@ -74,7 +76,8 @@ const SENTIMENT = {
  * how this surfaced.
  */
 export function Stat({ label, value, unit, padTo, delta, className, ref, ...rest }: StatProps) {
-  const digits = String(value)
+  // A number is grouped ("1,276"); a padded field keeps its raw digits, since the pad counts them.
+  const digits = typeof value === 'number' && !padTo ? GROUPED.format(value) : String(value)
   const pad =
     typeof value === 'number' && Number.isInteger(value) && value >= 0 && padTo
       ? '0'.repeat(Math.max(0, padTo - digits.length))

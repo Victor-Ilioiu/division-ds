@@ -2,19 +2,14 @@ import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Card.meta'
 import { Example } from '../../docs/Example'
 import { Button } from '../../atoms'
-import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle } from './Card'
-
-/** The stretched link an interactive card needs: the link is the name's own, its `::after` covers
- *  the card, and the focus ring is drawn there, around the whole card. The shape ProductCard uses. */
-const STRETCHED =
-  "outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]"
+import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass } from './Card'
 
 function DepotLink({ title, note, href }: { title: string; note: string; href: string }) {
   return (
     <Card interactive className="h-full">
       <CardBody className="flex flex-col gap-1">
         <CardTitle>
-          <a href={href} className={STRETCHED}>
+          <a href={href} className={cardLinkClass}>
             {title}
           </a>
         </CardTitle>

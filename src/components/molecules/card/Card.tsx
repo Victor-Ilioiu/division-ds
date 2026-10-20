@@ -19,6 +19,12 @@ import { cn } from '../../../lib/cn'
 type TitleRegistration = { titleId: string; registerTitle: () => () => void }
 const TitleIdContext = createContext<TitleRegistration | undefined>(undefined)
 
+/** The stretched link an interactive card needs, for the `a` (or button) in its title: the link
+ *  is the name's own, its `::after` covers the card, and the focus ring is drawn there, around the
+ *  whole card. The shape ProductCard uses. Exported so a consumer never copies the string. */
+export const cardLinkClass =
+  "outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]"
+
 export type CardProps = HTMLAttributes<HTMLElement> & {
   as?: 'article' | 'section' | 'div'
   ref?: Ref<HTMLElement>

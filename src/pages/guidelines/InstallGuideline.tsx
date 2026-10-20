@@ -11,6 +11,14 @@ import { REGISTRY, REPO, REPO_SLUG, SKILL_INSTALL } from '../../links'
 const FONTS =
   '<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700&family=Saira:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />'
 
+const APP_ROOT = `<TooltipProvider>
+  <Toaster>
+    <div className="[--page-gutter:1rem] lg:[--page-gutter:4rem] min-h-screen bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
+      {/* your routes */}
+    </div>
+  </Toaster>
+</TooltipProvider>`
+
 /** A command in a box, with a button that copies it. The copy is confirmed twice: the icon turns
  *  into a tick, and a toast says so for anyone who cannot see the icon change. */
 export function CopyCommand({ command, label }: { command: string; label: string }) {
@@ -137,6 +145,17 @@ export function InstallGuideline() {
                 <code className="font-mono text-sm">index.html</code>. Without them the text falls back to a system font.
               </p>
               <CopyCommand label="the font link" command={FONTS} />
+            </Step>
+            <Step n={4} title="Give your app a root, once">
+              <p className={prose}>
+                The two providers toasts and tooltips need, the page gutter, the background and the body font. Navbar,
+                Footer and the <code className="font-mono text-sm">px-gutter</code> utility read{' '}
+                <code className="font-mono text-sm">--page-gutter</code>, the page&apos;s side margin: 16px, and 64px from
+                1024px wide. Import <code className="font-mono text-sm">TooltipProvider</code> and{' '}
+                <code className="font-mono text-sm">Toaster</code> from their files under{' '}
+                <code className="font-mono text-sm">src/division-ds/components/</code>.
+              </p>
+              <CopyCommand label="the app root" command={APP_ROOT} />
             </Step>
           </ol>
           <p className={prose}>

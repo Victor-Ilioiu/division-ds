@@ -93,7 +93,7 @@ Read a component page before using the component: it has the props, working exam
 
 - **Imports.** Import a component from its own file, by relative path.
 - **Colour.** Every colour is a semantic token inside a Tailwind arbitrary value:
-- **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`, `DemoLayout`).
+- **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`, `DemoLayout` in this repository).
 - **Focus.** Anything focusable that you style yourself gets `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.
 - **Page title, empty, loading.** Plan these before writing a screen.
 - **What the system does not have.** No Popover, no Combobox (single value:

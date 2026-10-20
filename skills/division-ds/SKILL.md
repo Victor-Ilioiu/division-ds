@@ -58,7 +58,7 @@ docs write `src/components/atoms/button/Button`, and from `src/pages/Screen.tsx`
 `'../lib/money'` from there. The tier barrels (`components/atoms`, `/molecules`,
 `/organisms`) are for the system's own composition; the organisms barrel pulls the chart library
 into whatever imports it. Icons come from `lucide-react`, with `aria-hidden="true"` unless the
-icon is the only content.
+icon is the only content. Installed with shadcn, paths start `src/division-ds/` instead of `src/`.
 
 **Colour.** Every colour is a semantic token inside a Tailwind arbitrary value:
 `text-[var(--color-text-primary)]`, `bg-[var(--color-surface-base)]`. Never a hex, never
@@ -67,9 +67,10 @@ have not seen in `llms-tokens.txt`. An invented name fails silently in the brows
 `npm run verify`.
 
 **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`,
-`DemoLayout`). Assume both, including for a screen you are writing that is not mounted anywhere
-yet: it will be mounted under one of the two shells. Call `useToast()` freely; do not mount a
-second `Toaster`, and do not drop a toast or a tooltip because you cannot see the provider.
+`DemoLayout` in this repository). Assume both, including for a screen you are writing that is not
+mounted anywhere yet: it will be mounted under one of the two shells. Call `useToast()` freely; do
+not mount a second `Toaster`, and do not drop a toast or a tooltip because you cannot see the
+provider. A project that uses the components mounts both itself (step 4 of `install.md`).
 
 **Focus.** Anything focusable that you style yourself gets
 `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.

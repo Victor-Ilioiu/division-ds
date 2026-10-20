@@ -1,4 +1,4 @@
-import { useId, useState, type CSSProperties, type Ref } from 'react'
+import { useEffect, useId, useState, type CSSProperties, type Ref } from 'react'
 import { ChevronDown } from 'lucide-react'
 import {
   Area,
@@ -16,6 +16,7 @@ import {
   PolarRadiusAxis,
   Radar,
   ReferenceArea,
+  ReferenceLine,
   RadarChart,
   ResponsiveContainer,
   Tooltip,
@@ -38,6 +39,7 @@ export type ChartSeries<Row> = { key: NumericKey<Row>; label: string }
 /** A shaded stretch of the x-axis: night hours, a sale, an outage. `from` and `to` are x-axis
  *  values (values of `xKey`), both included. */
 export type ChartBand = { from: string | number; to: string | number; label?: string }
+export type ChartLimit = { value: number; label?: string }
 
 export type ChartKind = 'line' | 'bar' | 'donut' | 'radar'
 
@@ -92,6 +94,9 @@ export type ChartPanelProps<Row extends Record<string, string | number>> = {
    *  point to 06:00). A band naming a value that is not in the data is skipped. Each band is listed
    *  under the chart, so a screen reader hears it too. */
   bands?: ChartBand[]
+  /** Line and bar only: a dashed horizontal line at a y value, such as an alert limit. The y-axis
+   *  grows to include it. Each limit is listed under the chart, formatted with `formatValue`. */
+  limits?: ChartLimit[]
   /** @default 3 */
   headingLevel?: 2 | 3 | 4
   className?: string
@@ -221,6 +226,9 @@ const HEIGHT = {
   sm: { line: 'h-16', bar: 'h-16', donut: 'h-40', radar: 'h-44' },
 } as const
 
+/** How long the first draw-in runs; after it, data changes render without animation. */
+const DRAW_MS = 800
+
 /**
  * A chart in a Card: a title, a one-sentence summary as the figure's caption, a line, bar, donut
  * or radar chart of one or two series, and a "Show as table" disclosure with the same rows.
@@ -264,6 +272,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
   formatAxisValue = formatValue,
   axisWidth = 48,
   bands = [],
+  limits = [],
   headingLevel = 3,
   className,
   ref,
@@ -273,6 +282,14 @@ export function ChartPanel<Row extends Record<string, string | number>>({
   const svgId = `chart${uid.replace(/[^a-zA-Z0-9_-]/g, '')}`
   const [open, setOpen] = useState(false)
   const [width, setWidth] = useState(0)
+  // The draw-in plays once, on mount. A live page that rebuilds its data array on every render
+  // would otherwise restart the animation before it ends, and the chart would never finish
+  // drawing (the 2026-10-20 outside test). After the first draw, new data swaps in place.
+  const [firstDraw, setFirstDraw] = useState(true)
+  useEffect(() => {
+    const timer = setTimeout(() => setFirstDraw(false), DRAW_MS)
+    return () => clearTimeout(timer)
+  }, [])
   const small = size === 'sm'
   const showGrid = grid && !small
   const curveType = curve === 'smooth' ? 'monotone' : 'linear'
@@ -317,6 +334,20 @@ export function ChartPanel<Row extends Record<string, string | number>>({
       />
     ))
   })
+
+  // Drawn in text.secondary, dashed: a limit is a threshold to read against, stronger than the
+  // hairline grid, never a series colour. extendDomain keeps a limit above the data in view.
+  const shownLimits = (kind === 'line' || kind === 'bar') && !small ? limits : []
+  const limitLines = shownLimits.map((limit, index) => (
+    <ReferenceLine
+      key={`limit-${index}`}
+      y={limit.value}
+      stroke="var(--color-text-secondary)"
+      strokeWidth={1}
+      strokeDasharray="6 4"
+      ifOverflow="extendDomain"
+    />
+  ))
 
   const tooltip = (cursor: false | object) => (
     <Tooltip content={<ChartTooltip format={formatValue} />} cursor={cursor} isAnimationActive={false} wrapperStyle={{ zIndex: 10 }} />
@@ -367,6 +398,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
           </defs>
           {axes}
           {bandAreas}
+          {limitLines}
           {tooltip(lineCursor)}
           {series.map((entry, index) => (
             <Area
@@ -380,6 +412,8 @@ export function ChartPanel<Row extends Record<string, string | number>>({
               fill={`url(#${svgId}-area-${index})`}
               dot={false}
               activeDot={squareDot(SERIES_COLOURS[index], 8)}
+              isAnimationActive={firstDraw}
+              animationDuration={DRAW_MS}
             />
           ))}
         </AreaChart>
@@ -390,6 +424,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
         <LineChart data={data} accessibilityLayer={false} margin={margin}>
           {axes}
           {bandAreas}
+          {limitLines}
           {tooltip(lineCursor)}
           {series.map((entry, index) => (
             <Line
@@ -402,6 +437,8 @@ export function ChartPanel<Row extends Record<string, string | number>>({
               strokeDasharray={SERIES_DASH[index]}
               dot={false}
               activeDot={squareDot(SERIES_COLOURS[index], 8)}
+              isAnimationActive={firstDraw}
+              animationDuration={DRAW_MS}
             />
           ))}
         </LineChart>
@@ -412,6 +449,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
         <BarChart data={data} accessibilityLayer={false} barGap={2} margin={margin}>
           {axes}
           {bandAreas}
+          {limitLines}
           {tooltip({ fill: 'var(--color-border-hairline)' })}
           {/* No dash or pattern here (see SERIES_DASH above): a grouped bar's own position
               -- series 1 always left, series 2 always right, at every category -- is a
@@ -428,6 +466,8 @@ export function ChartPanel<Row extends Record<string, string | number>>({
               fill={SERIES_COLOURS[index]}
               radius={[2, 2, 0, 0]}
               maxBarSize={small ? 12 : 32}
+              isAnimationActive={firstDraw}
+              animationDuration={DRAW_MS}
             />
           ))}
         </BarChart>
@@ -568,6 +608,18 @@ export function ChartPanel<Row extends Record<string, string | number>>({
     </ul>
   ) : null
 
+  const limitList = shownLimits.length ? (
+    <ul role="list" aria-label="Limits" className="flex flex-wrap gap-x-4 gap-y-1">
+      {shownLimits.map((limit, index) => (
+        <li key={index} className="flex items-center gap-2 font-body text-xs text-[var(--color-text-secondary)]">
+          <span aria-hidden="true" className="w-3 shrink-0 border-t border-dashed border-[var(--color-text-secondary)]" />
+          {limit.label ? `${limit.label}: ` : 'Limit: '}
+          {formatValue(limit.value)}
+        </li>
+      ))}
+    </ul>
+  ) : null
+
   // Hidden from assistive tech, and accessibilityLayer off so the SVG has no role and no tab
   // stop: the caption and the table are the text alternative.
   const chart = (
@@ -628,6 +680,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
               {legend}
               {chart}
               {bandList}
+              {limitList}
             </>
           )}
           {/* At sm the caption follows the sparkline: the headline and the line are what the card

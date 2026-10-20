@@ -40,6 +40,13 @@ describe('Stat', () => {
     expect(screen.getByRole('definition')).toHaveTextContent('24kg')
   })
 
+  it('groups a number into thousands, and leaves a string as given', () => {
+    const { rerender } = render(<Stat label="Readings" value={1276} />)
+    expect(screen.getByRole('definition')).toHaveTextContent('1,276')
+    rerender(<Stat label="Readings" value="1276" />)
+    expect(screen.getByRole('definition')).toHaveTextContent(/^1276$/)
+  })
+
   it('forwards a ref to the root', () => {
     const ref = createRef<HTMLDivElement>()
     render(<Stat ref={ref} label="x" value={1} />)

@@ -10,7 +10,7 @@
 ## Import
 
 ```tsx
-import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle } from 'src/components/molecules/card/Card'
+import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass } from 'src/components/molecules/card/Card'
 ```
 
 ## Props
@@ -26,6 +26,18 @@ import { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, C
 | `className` | `string` |  | Merged onto any part. |
 | `...rest` | `HTMLAttributes<...>` |  | Standard HTML attributes on every part, except aria-labelledby on Card: the Card points that at its CardTitle itself, and the types won't accept one passed in. Give CardTitle an id only if something else needs it. |
 | `ref` | `Ref<HTMLElement>` |  | Passed through to the Card root DOM element. |
+
+## Types and helpers
+
+Exported beside the component, from the same file. Import a type with `import type { ... }`.
+
+```ts
+/** The stretched link an interactive card needs, for the `a` (or button) in its title: the link
+ *  is the name's own, its `::after` covers the card, and the focus ring is drawn there, around the
+ *  whole card. The shape ProductCard uses. Exported so a consumer never copies the string. */
+export const cardLinkClass =
+  "outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]"
+```
 
 ## Examples
 
@@ -148,15 +160,12 @@ function Depot({ title = 'North field depot' }: { title?: string }) {
 ### Interactive: the whole card is one link. Hover over it, or press Tab to reach it
 
 ```tsx
-const STRETCHED =
-  "outline-none hover:underline underline-offset-2 after:absolute after:inset-0 after:content-[''] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--color-focus-ring)]"
-
 function DepotLink({ title, note, href }: { title: string; note: string; href: string }) {
   return (
     <Card interactive className="h-full">
       <CardBody className="flex flex-col gap-1">
         <CardTitle>
-          <a href={href} className={STRETCHED}>
+          <a href={href} className={cardLinkClass}>
             {title}
           </a>
         </CardTitle>

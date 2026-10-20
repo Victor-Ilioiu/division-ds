@@ -189,7 +189,7 @@ export function DataTable<Row>(props: DataTableProps<Row>) {
         {activeSort ? `Sorted by ${activeSort.column.header}, ${activeSort.direction}` : ''}
       </p>
       {/* Focusable and named, so a keyboard user can scroll a table wider than the screen. */}
-      <div role="region" aria-labelledby={captionId} tabIndex={0} className={cn('overflow-x-auto', RING)}>
+      <div role="region" aria-labelledby={captionId} tabIndex={0} className={cn('overflow-x-auto overflow-y-hidden', RING)}>
         <table ref={ref} className={cn('w-full border-collapse font-body text-sm', className)}>
           <caption
             id={captionId}
