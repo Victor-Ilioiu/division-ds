@@ -88,7 +88,9 @@ export function sortRows<Row>(
 const RING = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]'
 const HEADER_CELL =
   'px-3 py-2 text-left align-bottom font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-secondary)]'
-const CELL = 'px-3 py-2.5 text-left align-top text-[var(--color-text-primary)]'
+// Middle, not top: a row mixing a line of text with a 32px button (an Acknowledge column) reads
+// as uneven top-aligned (the 2026-10-20 outside test).
+const CELL = 'px-3 py-2.5 text-left align-middle text-[var(--color-text-primary)]'
 
 function SortGlyph({ direction }: { direction?: SortDirection }) {
   const Glyph = direction === 'ascending' ? ArrowUp : direction === 'descending' ? ArrowDown : ArrowUpDown
@@ -189,7 +191,7 @@ export function DataTable<Row>(props: DataTableProps<Row>) {
         {activeSort ? `Sorted by ${activeSort.column.header}, ${activeSort.direction}` : ''}
       </p>
       {/* Focusable and named, so a keyboard user can scroll a table wider than the screen. */}
-      <div role="region" aria-labelledby={captionId} tabIndex={0} className={cn('overflow-x-auto overflow-y-hidden', RING)}>
+      <div role="region" aria-labelledby={captionId} tabIndex={0} className={cn('@container overflow-x-auto overflow-y-hidden', RING)}>
         <table ref={ref} className={cn('w-full border-collapse font-body text-sm', className)}>
           <caption
             id={captionId}
@@ -243,8 +245,12 @@ export function DataTable<Row>(props: DataTableProps<Row>) {
           <tbody>
             {sorted.length === 0 ? (
               <tr>
-                <td colSpan={columnCount} className="px-3 py-8 text-center text-[var(--color-text-secondary)]">
-                  {emptyMessage}
+                <td colSpan={columnCount} className="p-0 text-[var(--color-text-secondary)]">
+                  {/* As wide as the visible region (the region is the container), and stuck to its
+                      left edge: on a phone the table scrolls sideways, and a message centred across
+                      the full table width was cut off with its button off-screen (the 2026-10-20
+                      outside test). */}
+                  <div className="sticky left-0 w-[100cqw] px-3 py-8 text-center">{emptyMessage}</div>
                 </td>
               </tr>
             ) : (
@@ -253,7 +259,7 @@ export function DataTable<Row>(props: DataTableProps<Row>) {
                 return (
                   <tr key={rowId} className="border-b border-[var(--color-border-hairline)]">
                     {selection ? (
-                      <td className="w-10 px-3 py-2 align-top">
+                      <td className="w-10 px-3 py-2 align-middle">
                         <Checkbox
                           aria-label={`Select ${selection.rowLabel(row)}`}
                           checked={selected.has(rowId)}

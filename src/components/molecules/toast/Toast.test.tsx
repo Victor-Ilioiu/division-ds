@@ -87,6 +87,40 @@ describe('Toast', () => {
     expect(screen.queryByText('Manifest saved')).toBeNull()
   })
 
+  // The 2026-10-20 outside test: Undo closed its toast with focus inside it, Radix parked focus on
+  // the viewport (pausing every timer), the list emptied and Radix dropped its resume listeners, so
+  // the pause outlived the focus and every later toast stayed up until a reload.
+  it('still closes later toasts on their own after an action closes its toast', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    renderWith({ title: 'Alert acknowledged', duration: 1000, action: { label: 'Undo', altText: 'Undo', onAction: () => {} } })
+    const raise = screen.getByRole('button', { name: 'Raise' })
+    await user.click(raise)
+    await user.click(await screen.findByRole('button', { name: 'Undo' }))
+    // Focus goes back to where it was before it entered the toast, never the viewport.
+    expect(raise).toHaveFocus()
+    await act(async () => {
+      vi.advanceTimersByTime(500)
+    })
+    expect(screen.queryByText('Alert acknowledged')).toBeNull()
+    await user.click(raise)
+    expect(await screen.findByText('Alert acknowledged')).toBeInTheDocument()
+    await act(async () => {
+      vi.advanceTimersByTime(1500)
+    })
+    expect(screen.queryByText('Alert acknowledged')).toBeNull()
+  })
+
+  // Mutation: ignore `replace`; three clicks then show three toasts.
+  it('closes an open toast with the same replace key, so repeats show once', async () => {
+    renderWith({ title: 'Alert acknowledged', replace: 'ack' })
+    const raise = screen.getByRole('button', { name: 'Raise' })
+    await userEvent.click(raise)
+    await userEvent.click(raise)
+    await userEvent.click(raise)
+    await waitFor(() => expect(screen.getAllByText('Alert acknowledged')).toHaveLength(1))
+  })
+
   it('is axe clean with a toast showing', async () => {
     renderWith({ title: 'Sync failed', description: 'Retrying in a minute.', tone: 'hostile' })
     await userEvent.click(screen.getByRole('button', { name: 'Raise' }))

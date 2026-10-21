@@ -71,6 +71,11 @@
           "target": "src/division-ds/lib/tone.ts"
         },
         {
+          "path": "src/fx/core/gate.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/gate.ts"
+        },
+        {
           "path": "src/styles/bevel.css",
           "type": "registry:file",
           "target": "src/division-ds/styles/bevel.css"
@@ -366,11 +371,6 @@
           "target": "src/division-ds/components/atoms/loading-animation/variants.ts"
         },
         {
-          "path": "src/fx/core/gate.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/fx/core/gate.ts"
-        },
-        {
           "path": "src/fx/core/webgl.ts",
           "type": "registry:file",
           "target": "src/division-ds/fx/core/webgl.ts"
@@ -595,11 +595,6 @@
           "path": "src/components/atoms/switch/Switch.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/switch/Switch.tsx"
-        },
-        {
-          "path": "src/fx/core/gate.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/fx/core/gate.ts"
         }
       ]
     },

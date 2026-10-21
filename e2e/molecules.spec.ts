@@ -57,6 +57,21 @@ test('Toast: appears, is reachable with F8, and leaves on its own', async ({ pag
   await expect(toast).toBeHidden({ timeout: 8000 })
 })
 
+// The 2026-10-20 outside test: after a click on Undo, every later toast stayed up until a reload
+// (Radix's pause outlived the toast that set it). Each toast here must still leave on its own.
+test('Toast: toasts still leave on their own after an action was clicked', async ({ page }) => {
+  await page.goto('/components/toast')
+  const region = page.getByRole('region', { name: /^Notifications/ })
+  const remove = page.getByRole('button', { name: 'Remove item' })
+  await remove.click()
+  await region.getByRole('button', { name: 'Undo' }).click()
+  await expect(region.locator('li').filter({ hasText: 'Item restored' })).toBeHidden({ timeout: 8000 })
+  await remove.click()
+  const again = region.locator('li').filter({ hasText: 'Item removed' })
+  await expect(again).toBeVisible()
+  await expect(again).toBeHidden({ timeout: 8000 })
+})
+
 test('QuantityStepper: arrow keys step, buttons stay out of the tab order', async ({ page }) => {
   await page.goto('/components/quantity-stepper')
   const field = page.getByRole('spinbutton').first()

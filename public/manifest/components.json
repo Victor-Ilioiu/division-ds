@@ -7307,6 +7307,11 @@
           "description": "Optional. Radix (the library the toast is built on) requires altText: what to do somewhere else if someone can't reach the toast in time."
         },
         {
+          "name": "replace (ToastOptions)",
+          "type": "string",
+          "description": "Optional. Closes any open toast raised with the same string as this one opens, so an action repeated quickly (\"Alert acknowledged\" three times) shows one toast instead of a stack."
+        },
+        {
           "name": "useToast()",
           "type": "{ toast: (options: ToastOptions) => string; dismiss: (id: string) => void }",
           "description": "Shows a toast (and returns its id) or closes one. Throws an error outside a Toaster."
@@ -7316,7 +7321,7 @@
         {
           "name": "ToastOptions",
           "kind": "type",
-          "code": "export type ToastOptions = {\n  title: string\n  description?: string\n  tone?: Tone\n  /** ms before it leaves on its own. Default 5000; 8000 for hostile. */\n  duration?: number\n  /** Radix requires altText: the way to do the same thing for someone who cannot reach the toast\n   *  before it leaves. */\n  action?: { label: string; altText: string; onAction: () => void }\n}",
+          "code": "export type ToastOptions = {\n  title: string\n  description?: string\n  tone?: Tone\n  /** ms before it leaves on its own. Default 5000; 8000 for hostile. */\n  duration?: number\n  /** Radix requires altText: the way to do the same thing for someone who cannot reach the toast\n   *  before it leaves. */\n  action?: { label: string; altText: string; onAction: () => void }\n  /** Any open toast raised with the same string closes as this one opens, so a repeated action\n   *  (\"Alert acknowledged\" three times) shows one toast, not a stack over the page. */\n  replace?: string\n}",
           "from": "src/components/molecules/toast/Toast"
         },
         {
@@ -7350,6 +7355,7 @@
         "Use a toast to confirm something the person just did.",
         "Give every action an altText that says where else it can be done.",
         "Keep the title under about six words.",
+        "After an action runs, focus goes back to where it was before it entered the toast. If the action changes the page (Undo puts a row back), move focus to what changed yourself.",
         "A toast follows the innermost open overlay (a dialog or panel on top of the page). If it's raised while one is open, or is already showing when one opens, it shows inside that overlay, and it moves back to the page corner when the overlay closes. AlertDialog is the exception: its toasts always show in the page corner, above the scrim (the dimmed layer behind the dialog)."
       ],
       "donts": [

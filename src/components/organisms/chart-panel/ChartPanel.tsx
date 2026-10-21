@@ -170,6 +170,25 @@ function squareDot(colour: string, size: number) {
   }
 }
 
+/** The chart's right margin at size md, in px; the last x label may overhang the plot by this much. */
+const RIGHT_MARGIN = 16
+
+/** An x-axis label, centred on its point like Recharts' own, except the last: centred, a label
+ *  wider than twice the right margin ("22:00" in 12px mono is about 36px) would hang past the
+ *  SVG's edge and be clipped ("22:0", the 2026-10-20 outside test). That one slides left just far
+ *  enough to fit. Monospace glyphs are 0.6em wide, so the width is known without measuring. */
+function XTick(props: { x?: number | string; y?: number | string; index?: number; visibleTicksCount?: number; payload?: { value?: unknown } }) {
+  const text = String(props.payload?.value ?? '')
+  const last = props.index !== undefined && props.index === (props.visibleTicksCount ?? 0) - 1
+  const overhang = (text.length * TICK.fontSize * 0.6) / 2 - RIGHT_MARGIN + 2
+  const x = Number(props.x ?? 0) - (last ? Math.max(0, overhang) : 0)
+  return (
+    <text x={x} y={Number(props.y ?? 0)} dy="0.71em" textAnchor="middle" fill={TICK.fill} fontSize={TICK.fontSize} fontFamily={TICK.fontFamily}>
+      {text}
+    </text>
+  )
+}
+
 /** A radar's axis label, kept inside the chart. Recharts places each label just outside the web
  *  and lets it run off the SVG edge, which at 320px clips "Reliability" to "lity". Mono figures
  *  are 0.6em wide, so the label's width is known without measuring: anchor it to whichever side it
@@ -362,7 +381,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
       {showGrid ? <CartesianGrid vertical={false} stroke="var(--color-border-hairline)" strokeDasharray="3 4" /> : null}
       <XAxis
         dataKey={xKey as DataKey<Row>}
-        tick={TICK}
+        tick={XTick}
         tickLine={false}
         tickMargin={8}
         // Many points at 320px: keep the first and last label and drop the ones between that
@@ -381,7 +400,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
     </>
   )
 
-  const margin = small ? { top: 4, right: 2, bottom: 2, left: 2 } : { top: 8, right: 16, bottom: 0, left: 0 }
+  const margin = small ? { top: 4, right: 2, bottom: 2, left: 2 } : { top: 8, right: RIGHT_MARGIN, bottom: 0, left: 0 }
   const lineCursor = { stroke: 'var(--color-border-hairline-strong)', strokeDasharray: '3 3' }
 
   function renderChart() {

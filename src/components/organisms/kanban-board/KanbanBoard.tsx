@@ -1,6 +1,7 @@
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -296,14 +297,19 @@ export function KanbanBoard<T>({
 
   // The announcements run inside dnd-kit's event dispatch, before this component renders again,
   // so they read the current layout and names through a ref rather than a stale closure.
+  // Written in a layout effect, not during render (React's rules, and a fresh project's linter,
+  // flag render-time ref writes): it runs after every render, before any later pointer or key
+  // event, so dnd-kit's handlers still see this render's values.
   const live = useRef({ layout, origin: base, byId, columns, getItemLabel })
-  live.current.layout = layout
-  live.current.byId = byId
-  live.current.columns = columns
-  live.current.getItemLabel = getItemLabel
-  // The position a drag starts from, and what a cancel returns to: the parent's layout, frozen
-  // while a card is held.
-  if (activeId === null) live.current.origin = base
+  useLayoutEffect(() => {
+    live.current.layout = layout
+    live.current.byId = byId
+    live.current.columns = columns
+    live.current.getItemLabel = getItemLabel
+    // The position a drag starts from, and what a cancel returns to: the parent's layout, frozen
+    // while a card is held.
+    if (activeId === null) live.current.origin = base
+  })
 
   const moveButtons = useRef(new Map<string, HTMLButtonElement>())
   const pendingFocus = useRef<string | null>(null)

@@ -349,7 +349,7 @@ export function CheckoutForm({
         id={idOf(field)}
         value={values[field]}
         onChange={event => set(field, event.target.value)}
-        onBlur={event => errors.blur(field, event.target.value)}
+        onBlur={event => errors.blur(field, event.target.value, event.relatedTarget)}
         {...input}
       />
     </FormField>

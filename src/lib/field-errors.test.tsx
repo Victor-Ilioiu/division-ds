@@ -20,6 +20,21 @@ describe('useFieldErrors', () => {
     expect(result.current.errors.email).toBe('Enter an email address like name@example.com.')
   })
 
+  // The 2026-10-20 outside test: the error line a blur adds pushed Save down mid-click, so the
+  // first click missed. Submit validates every field anyway, so a blur heading there says nothing.
+  it('shows nothing on a blur caused by pressing a submit button, and still does on a Tab to it', () => {
+    const { result } = renderHook(() => useFieldErrors<Field>(validate))
+    const save = document.createElement('button')
+    save.type = 'submit'
+    // jsdom never sets :active, so the press is stubbed; a Tab onto the button is the same button
+    // without it.
+    const pressed = Object.assign(save.cloneNode() as HTMLButtonElement, { matches: (selector: string) => selector === ':active' })
+    act(() => result.current.blur('email', 'ana', pressed))
+    expect(result.current.errors.email).toBeUndefined()
+    act(() => result.current.blur('email', 'ana', save))
+    expect(result.current.errors.email).toBe('Enter an email address like name@example.com.')
+  })
+
   // Mutation: in `change`, clear only when validate returns undefined; 'a' is still invalid, so the
   // stale "Enter your email address." stays.
   it('clears a message on a keystroke once it no longer describes the value, without replacing it', () => {

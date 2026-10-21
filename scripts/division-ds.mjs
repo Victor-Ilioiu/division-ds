@@ -154,6 +154,9 @@ async function check(options) {
     console.error('Each component\'s props, values and examples: /docs/components/<slug>.md. Tokens: public/manifest/tokens.json.')
   } else {
     console.log(`division-ds check passed: ${files.length} file(s), ${index.size} components, ${tokenNames.length} tokens, 0 findings.`)
+    // It reads code, not the running page: say so, or a pass reads as "the screen works" (the
+    // 2026-10-20 outside test shipped three runtime bugs past a clean check).
+    console.log('Checked: colours, tokens, button spacing and props. Not checked: how the screen behaves; run the review checklist (commands/review.md) in a browser.')
   }
   process.exit(findings.length > 0 ? 1 : 0)
 }

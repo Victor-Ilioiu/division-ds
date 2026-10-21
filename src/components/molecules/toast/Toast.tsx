@@ -2,6 +2,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useId,
   useLayoutEffect,
   useMemo,
@@ -24,6 +25,9 @@ export type ToastOptions = {
   /** Radix requires altText: the way to do the same thing for someone who cannot reach the toast
    *  before it leaves. */
   action?: { label: string; altText: string; onAction: () => void }
+  /** Any open toast raised with the same string closes as this one opens, so a repeated action
+   *  ("Alert acknowledged" three times) shows one toast, not a stack over the page. */
+  replace?: string
 }
 
 type LiveToast = ToastOptions & { id: string; open: boolean; outlet: string }
@@ -93,7 +97,11 @@ export function Toaster({ children }: { children?: ReactNode }) {
   const toast = useCallback((options: ToastOptions) => {
     const id = `toast-${++counter}`
     const outlet = outlets.current.at(-1) ?? PAGE_OUTLET
-    setToasts(list => [...list, { ...options, id, open: true, outlet }])
+    const replaced = (t: LiveToast) => options.replace !== undefined && t.open && t.replace === options.replace
+    setToasts(list => [...list.map(t => (replaced(t) ? { ...t, open: false } : t)), { ...options, id, open: true, outlet }])
+    // Closed above, so Radix plays its exit; dropped once it has.
+    if (options.replace !== undefined)
+      window.setTimeout(() => setToasts(list => list.filter(t => t.open || t.replace !== options.replace)), 400)
     return id
   }, [])
 
@@ -168,6 +176,53 @@ function ToastList({
 }) {
   const store = useContext(ToastStoreContext)
   const viewport = useRef<HTMLOListElement>(null)
+  // Where focus was before it entered a toast. When a toast closes with focus inside it, Radix
+  // parks focus on the viewport, which pauses every toast's timer. Once the last toast goes, Radix
+  // drops the listeners that would resume them, so the pause outlives the focus and every later
+  // toast stays up until a reload (Radix Toast 1.2.23; the 2026-10-20 outside test). Sending focus
+  // straight back to where it came from resumes the timers while those listeners still exist.
+  // A native listener, not React's onFocus: Radix portals each toast into the viewport, so in
+  // React's tree the toasts are not the viewport's children and onFocus never sees them.
+  useEffect(() => {
+    const list = viewport.current
+    if (!list) return
+    let before: HTMLElement | null = null
+    const onFocusIn = (event: FocusEvent) => {
+      const from = event.relatedTarget as HTMLElement | null
+      if (!from || !list.contains(from)) {
+        // Entering from outside (F8, Tab, a click, Dialog's fallback): remember where from.
+        before = from
+        return
+      }
+      // A toast closed under focus and Radix parked it here: give it back, or let it go. After
+      // this event finishes, not during it: the same focusin still has to bubble to Radix's own
+      // pause handler, which would pause the timers again right after the move resumed them.
+      if (event.target !== list) return
+      queueMicrotask(() => {
+        if (document.activeElement !== list) return
+        if (before?.isConnected) before.focus()
+        else list.blur()
+      })
+    }
+    list.addEventListener('focusin', onFocusIn)
+    return () => list.removeEventListener('focusin', onFocusIn)
+  }, [])
+  // The same stale pause, reached by the pointer: a click on an action pauses on `pointermove`,
+  // the toast leaves from under the pointer, and the `pointerleave` that would resume comes after
+  // Radix has dropped its listeners. So when this outlet goes from no toasts to one, tell Radix
+  // the pointer is not over the region, which is true then (with no toasts the region has
+  // pointer-events none). 50ms gives Radix time to attach its listeners for the new toast; its
+  // timer starts that much late.
+  const showing = store?.toasts.some(t => t.outlet === outlet) ?? false
+  useEffect(() => {
+    if (!showing) return
+    const timer = window.setTimeout(() => {
+      const region = viewport.current?.parentElement
+      if (!region || region.contains(document.activeElement) || region.matches(':hover')) return
+      region.dispatchEvent(new Event('pointerleave'))
+    }, 50)
+    return () => window.clearTimeout(timer)
+  }, [showing])
   if (!store) return null
   return (
     <RadixToast.Provider swipeDirection="right" announcerContainer={announcer ?? undefined}>

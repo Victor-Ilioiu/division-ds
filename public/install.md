@@ -8,9 +8,24 @@ The same steps as https://victor-ilioiu.vercel.app/systems/division-ds/guideline
 npx skills add https://github.com/Victor-Ilioiu/division-ds --skill division-ds
 ```
 
+It asks which of your assistants should get the skill, and whether for this project or every
+project. An AI assistant or a script cannot answer prompts: add `-y` to skip them (it installs for
+this project when run inside one), `-a <agent>` to name the assistants yourself, or `-g` for every
+project.
+
 ## 2. The components
 
 Your project needs React 19 and Tailwind CSS 4. No `components.json` is needed.
+
+A new Vite app has no Tailwind yet. Add it first (other bundlers: https://tailwindcss.com/docs/installation):
+
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+
+In `vite.config.ts`, add the plugin: `import tailwindcss from '@tailwindcss/vite'`, then
+`plugins: [react(), tailwindcss()]`. Replace the contents of `src/index.css` with
+`@import "tailwindcss";`.
 
 Every component at once:
 
@@ -53,6 +68,10 @@ Files land in `src/division-ds/`. Then, once:
      </Toaster>
    </TooltipProvider>
    ```
+
+Your linter may warn "only export components" on a few installed files (`Toast.tsx` exports
+`useToast`, `DataTable.tsx` exports `sortRows`, and so on). It is a hot-reload hint, not a bug:
+editing those files reloads the page instead of patching it in place.
 
 ## 3. Check your screens
 

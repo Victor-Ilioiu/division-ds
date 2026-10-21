@@ -201,7 +201,7 @@ function SettingsBody() {
             id={idOf('name')}
             value={profile.name}
             onChange={event => changeName(event.target.value)}
-            onBlur={event => errors.blur('name', event.target.value)}
+            onBlur={event => errors.blur('name', event.target.value, event.relatedTarget)}
           />
         </FormField>
 

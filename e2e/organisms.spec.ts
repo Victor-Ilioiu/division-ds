@@ -263,6 +263,25 @@ test.describe('Sidebar: category expand/collapse animation', () => {
   })
 })
 
+// The 2026-10-20 outside test: on a phone the empty message was centred across the whole table
+// width, so with the region scrolled it read "lo open alerts" and its button sat off-screen.
+test('DataTable: at 320px the empty message stays inside the visible region, however it is scrolled', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 })
+  await page.goto('/components/data-table')
+  const region = page.getByRole('region', { name: 'Returns', exact: true })
+  const message = region.getByText('No returns yet.')
+  await expect(message).toBeVisible()
+  for (const edge of ['start', 'end'] as const) {
+    await region.evaluate((node, side) => {
+      node.scrollLeft = side === 'start' ? 0 : node.scrollWidth
+    }, edge)
+    const frame = await region.boundingBox()
+    const box = await message.boundingBox()
+    expect(box!.x).toBeGreaterThanOrEqual(frame!.x)
+    expect(box!.x + box!.width).toBeLessThanOrEqual(frame!.x + frame!.width + 0.5)
+  }
+})
+
 test('DataTable: a sort button works from the keyboard and keeps focus', async ({ page }) => {
   await page.goto('/components/data-table')
   const table = page.getByRole('table', { name: 'Shipments, sortable' })
@@ -737,6 +756,27 @@ test('ChartPanel: at 320px, 24 hourly x labels never overlap, and the night band
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
 })
 
+// The 2026-10-20 outside test: the last x label overhung the svg and was clipped ("22:0").
+for (const width of [320, 1280]) {
+  test(`ChartPanel: at ${width}px, no label in any chart runs past its svg's edges`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/components/chart-panel')
+    await expect(page.locator('svg.recharts-surface text').first()).toBeAttached()
+    const overhangs = await page.locator('svg.recharts-surface').evaluateAll(svgs =>
+      svgs.flatMap(svg => {
+        const frame = svg.getBoundingClientRect()
+        return [...svg.querySelectorAll('text')].flatMap(node => {
+          const box = node.getBoundingClientRect()
+          const out = Math.max(frame.left - box.left, box.right - frame.right)
+          return out > 0.5 ? [`${node.textContent} by ${out.toFixed(1)}px`] : []
+        })
+      })
+    )
+    expect(overhangs).toEqual([])
+  })
+}
+
 // Carousel. jsdom lays nothing out, so everything about real geometry is here: where a press
 // lands, whether an edge item's ring fits inside the track, and whether the track ever moves
 // without being asked.
@@ -907,6 +947,16 @@ for (const theme of THEMES) {
     await expectAxeClean(page)
   })
 }
+
+// The 2026-10-20 outside test: the blur's error line pushed the button down mid-click, so the first
+// click on Save missed. The first click must submit (here: show the summary).
+test('NewsletterForm: one click on the button, straight from a bad value, submits', async ({ page }) => {
+  await page.goto('/components/newsletter-form')
+  const form = page.getByRole('form', { name: 'Field notes by email' })
+  await form.getByRole('textbox').first().fill('not-an-address')
+  await form.locator('button[type="submit"]').click()
+  await expect(form.getByRole('group', { name: 'There is a problem' })).toBeFocused()
+})
 
 test('NewsletterForm: from the keyboard, Enter submits, the busy button keeps focus, then the success heading takes it', async ({
   page,

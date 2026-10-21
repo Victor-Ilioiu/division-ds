@@ -124,7 +124,7 @@ function StoreProfile() {
             showCount
             value={profile.name}
             onChange={event => change('name', event.target.value)}
-            onBlur={event => errors.blur('name', event.target.value)}
+            onBlur={event => errors.blur('name', event.target.value, event.relatedTarget)}
           />
         </FormField>
         <FormField label="Tagline" help="One line under the name in the store header.">
@@ -143,7 +143,7 @@ function StoreProfile() {
             autoComplete="email"
             value={profile.email}
             onChange={event => change('email', event.target.value)}
-            onBlur={event => errors.blur('email', event.target.value)}
+            onBlur={event => errors.blur('email', event.target.value, event.relatedTarget)}
           />
         </FormField>
         <FormField label="Currency" help="Prices are stored in euro and shown in this currency.">

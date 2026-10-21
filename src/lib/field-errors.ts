@@ -38,8 +38,10 @@ export function summarize<F extends string>(
 export type FieldErrorsApi<F extends string> = {
   /** Each field's current error, for `FormField`'s `error` and for `summarize`. */
   errors: FieldErrors<F>
-  /** Call from the control's onBlur with its current value. */
-  blur: (field: F, value: string) => void
+  /** Call from the control's onBlur with its current value and `event.relatedTarget`, where focus
+   *  is going. A blur caused by pressing a submit button shows nothing: submit validates every
+   *  field. */
+  blur: (field: F, value: string, to?: EventTarget | null) => void
   /** Call from the control's onChange with its new value. */
   change: (field: F, value: string) => void
   /** Call on submit with every field and a way to read its value; returns the errors found. */
@@ -48,11 +50,24 @@ export type FieldErrorsApi<F extends string> = {
   replace: (next: FieldErrors<F>) => void
 }
 
+/** A submit button being pressed by the pointer right now. `:active` is set on pointer down,
+ *  before the field blurs; a Tab onto the button never sets it, so keyboard users still hear the
+ *  error on the way past, where there is no click to miss. */
+function isSubmitPress(target: EventTarget | null | undefined): boolean {
+  return (
+    (target instanceof HTMLButtonElement || target instanceof HTMLInputElement) &&
+    target.type === 'submit' &&
+    target.matches(':active')
+  )
+}
+
 /**
  * When a form's field errors may appear, change or clear, in one place (SC 3.3.1, and the rule
  * this system's forms share: never on a keystroke).
  *
- * - `blur`: show whatever is wrong with the value now, or clear the error when nothing is.
+ * - `blur`: show whatever is wrong with the value now, or clear the error when nothing is. Not
+ *   when the pointer is pressing a submit button: the error line would push the button down
+ *   under it mid-click, the click would miss, and submit validates every field anyway.
  * - `change`: never raises an error. Clears one as soon as its message no longer describes the
  *   value, so a stale "required" does not sit under a field that has text in it; the next blur
  *   says what, if anything, is wrong instead.
@@ -64,7 +79,10 @@ export function useFieldErrors<F extends string>(validate: Validate<F>): FieldEr
   const [errors, setErrors] = useState<FieldErrors<F>>({})
   return {
     errors,
-    blur: (field: F, value: string) => setErrors(current => withMessage(current, field, validate(field, value))),
+    blur: (field: F, value: string, to?: EventTarget | null) => {
+      if (isSubmitPress(to)) return
+      setErrors(current => withMessage(current, field, validate(field, value)))
+    },
     change: (field: F, value: string) =>
       setErrors(current => {
         const shown = current[field]

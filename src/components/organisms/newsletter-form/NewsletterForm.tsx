@@ -203,7 +203,7 @@ export function NewsletterForm({
                 setValue(event.target.value)
                 errors.change('email', event.target.value)
               }}
-              onBlur={event => errors.blur('email', event.target.value)}
+              onBlur={event => errors.blur('email', event.target.value, event.relatedTarget)}
             />
           </FormField>
           <p id={consentId} className="font-body text-xs text-[var(--color-text-secondary)]">

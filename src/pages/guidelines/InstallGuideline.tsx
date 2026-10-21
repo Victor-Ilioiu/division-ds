@@ -95,6 +95,11 @@ export function InstallGuideline() {
                 install it for every project instead of this one.
               </p>
               <CopyCommand label="the skill install command" command={SKILL_INSTALL} />
+              <p className={prose}>
+                An AI assistant or a script cannot answer its questions: add{' '}
+                <code className="font-mono text-sm">-y</code> to skip them, or{' '}
+                <code className="font-mono text-sm">-a</code> followed by an assistant&apos;s name to choose it yourself.
+              </p>
             </TabsContent>
             <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
               <p className={prose}>Type these two lines into Claude Code, one after the other.</p>
@@ -159,7 +164,9 @@ export function InstallGuideline() {
             </Step>
           </ol>
           <p className={prose}>
-            Your project needs React 19 and Tailwind CSS 4. Dark is the default theme; for light, set{' '}
+            Your project needs React 19 and Tailwind CSS 4. A new Vite app has no Tailwind yet:{' '}
+            <Link href="https://tailwindcss.com/docs/installation/using-vite">add it first</Link>, so your CSS file
+            has the <code className="font-mono text-sm">@import &quot;tailwindcss&quot;;</code> line step 2 goes after. Dark is the default theme; for light, set{' '}
             <code className="font-mono text-sm">data-theme=&quot;light&quot;</code> on{' '}
             <code className="font-mono text-sm">&lt;html&gt;</code>.
           </p>

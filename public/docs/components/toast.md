@@ -26,6 +26,7 @@ import { Toaster, useToast } from 'src/components/molecules/toast/Toast'
 | `tone (ToastOptions)` | `'info' \| 'ok' \| 'warning' \| 'hostile'` | `'info'` | Which colour, icon and word the toast has. |
 | `duration (ToastOptions)` | `number` | `5000` | How many milliseconds before it goes away on its own. 8000 for hostile. |
 | `action (ToastOptions)` | `{ label: string; altText: string; onAction: () => void }` |  | Optional. Radix (the library the toast is built on) requires altText: what to do somewhere else if someone can't reach the toast in time. |
+| `replace (ToastOptions)` | `string` |  | Optional. Closes any open toast raised with the same string as this one opens, so an action repeated quickly ("Alert acknowledged" three times) shows one toast instead of a stack. |
 | `useToast()` | `{ toast: (options: ToastOptions) => string; dismiss: (id: string) => void }` |  | Shows a toast (and returns its id) or closes one. Throws an error outside a Toaster. |
 
 ## Types and helpers
@@ -42,6 +43,9 @@ export type ToastOptions = {
   /** Radix requires altText: the way to do the same thing for someone who cannot reach the toast
    *  before it leaves. */
   action?: { label: string; altText: string; onAction: () => void }
+  /** Any open toast raised with the same string closes as this one opens, so a repeated action
+   *  ("Alert acknowledged" three times) shows one toast, not a stack over the page. */
+  replace?: string
 }
 ```
 
@@ -142,6 +146,7 @@ function WithActionExample() {
 - Use a toast to confirm something the person just did.
 - Give every action an altText that says where else it can be done.
 - Keep the title under about six words.
+- After an action runs, focus goes back to where it was before it entered the toast. If the action changes the page (Undo puts a row back), move focus to what changed yourself.
 - A toast follows the innermost open overlay (a dialog or panel on top of the page). If it's raised while one is open, or is already showing when one opens, it shows inside that overlay, and it moves back to the page corner when the overlay closes. AlertDialog is the exception: its toasts always show in the page corner, above the scrim (the dimmed layer behind the dialog).
 
 ## Don't

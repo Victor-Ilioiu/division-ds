@@ -280,7 +280,7 @@ export function AuthForm({ mode, onSubmit, onModeChange, headingLevel = 2, class
         id={idOf(name)}
         value={values[name]}
         onChange={event => set(name, event.target.value)}
-        onBlur={event => errors.blur(name, event.target.value)}
+        onBlur={event => errors.blur(name, event.target.value, event.relatedTarget)}
         {...input}
       />
     </FormField>

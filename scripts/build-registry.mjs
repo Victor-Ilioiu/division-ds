@@ -130,6 +130,18 @@ const libFiles = readdirSync('src/lib').filter(f => /\.tsx?$/.test(f) && !isSkip
 if (!existsSync('src/styles/tokens.css')) execFileSync(process.execPath, ['scripts/build-tokens.mjs'], { stdio: 'inherit' })
 const styleFiles = readdirSync('src/styles').filter(f => f.endsWith('.css') && f !== 'tailwind.css').map(f => `src/styles/${f}`)
 const baseWalk = walk(libFiles, null)
+// A file outside every component folder that two components reach (src/fx/core/gate.ts: Switch
+// and LoadingAnimation) would ship in both items, and `division-ds-all` then reported "Skipped 1
+// file" in an empty project (the 2026-10-20 outside test). Such files go in the base instead,
+// which every component already depends on.
+const componentWalks = manifest.map(component => {
+  const dir = posix.dirname(component.source) + '/'
+  const entries = readdirSync(dir).map(f => dir + f).filter(p => /\.tsx?$/.test(p) && !isSkipped(p))
+  return { component, dir, ...walk(entries, dir) }
+})
+const reach = new Map()
+for (const { files } of componentWalks) for (const path of files.keys()) reach.set(path, (reach.get(path) ?? 0) + 1)
+const sharedWalk = walk([...reach].filter(([path, count]) => count > 1 && !ownerOf(path)).map(([path]) => path), null)
 const entryCss = read('src/styles/tailwind.css')
   .replace(/@import "tailwindcss"[^;]*;\n/, '')
   .replace(/@source "\.\.\/\.\.\/index\.html";\n/, '')
@@ -139,18 +151,15 @@ items.push({
   type: 'registry:item',
   title: 'Division DS base',
   description: 'Tokens, style sheets and shared helpers. Every component depends on it. Then add @import "./division-ds/styles/division-ds.css"; after @import "tailwindcss"; in your CSS entry.',
-  dependencies: dependencies(baseWalk.packages),
+  dependencies: dependencies(new Set([...baseWalk.packages, ...sharedWalk.packages])),
   files: [
-    ...[...baseWalk.files].map(([path, content]) => fileEntry(path, content)),
+    ...[...baseWalk.files, ...sharedWalk.files].map(([path, content]) => fileEntry(path, content)),
     ...styleFiles.map(path => fileEntry(path, read(path))),
     { path: 'src/styles/division-ds.css', type: 'registry:file', target: `${TARGET_ROOT}styles/division-ds.css`, content: entryCss },
   ],
 })
 
-for (const component of manifest) {
-  const dir = posix.dirname(component.source) + '/'
-  const entries = readdirSync(dir).map(f => dir + f).filter(p => /\.tsx?$/.test(p) && !isSkipped(p))
-  const { files, packages, components } = walk(entries, dir)
+for (const { component, dir, files, packages, components } of componentWalks) {
   const deps = [...components].map(d => {
     const owner = bySourceDir.get(d)
     if (!owner) throw new Error(`${dir} imports ${d}, which is not a manifest component`)
@@ -164,8 +173,15 @@ for (const component of manifest) {
     dependencies: dependencies(packages),
     ...(devDependencies(packages).length ? { devDependencies: devDependencies(packages) } : {}),
     registryDependencies: [`${REGISTRY_URL}/division-ds-base.json`, ...deps.sort()],
-    files: [...files].map(([path, content]) => fileEntry(path, content)),
+    files: [...files].filter(([path]) => !sharedWalk.files.has(path)).map(([path, content]) => fileEntry(path, content)),
   })
+}
+
+// One owner per installed path, or shadcn skips the second copy and says so.
+const owners = new Map()
+for (const item of items) for (const file of item.files) {
+  if (owners.has(file.target)) throw new Error(`${file.target} ships in both ${owners.get(file.target)} and ${item.name}`)
+  owners.set(file.target, item.name)
 }
 
 // The whole library in one command. No files of its own: it only depends on every other item.

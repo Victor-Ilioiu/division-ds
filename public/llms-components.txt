@@ -1056,6 +1056,7 @@ Requires: One <Toaster> near the root of the app, wrapped around everything that
 - `tone (ToastOptions): 'info' \| 'ok' \| 'warning' \| 'hostile' = 'info'` Which colour, icon and word the toast has.
 - `duration (ToastOptions): number = 5000` How many milliseconds before it goes away on its own. 8000 for hostile.
 - `action (ToastOptions): { label: string; altText: string; onAction: () => void }` Optional. Radix (the library the toast is built on) requires altText: what to do somewhere else if someone can't reach the toast in time.
+- `replace (ToastOptions): string` Optional. Closes any open toast raised with the same string as this one opens, so an action repeated quickly ("Alert acknowledged" three times) shows one toast instead of a stack.
 - `useToast(): { toast: (options: ToastOptions) => string; dismiss: (id: string) => void }` Shows a toast (and returns its id) or closes one. Throws an error outside a Toaster.
 
 Page: /docs/components/toast.md
