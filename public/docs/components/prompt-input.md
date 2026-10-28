@@ -28,6 +28,7 @@ import { PromptInput } from 'src/components/molecules/prompt-input/PromptInput'
 | `busy` | `boolean` | `false` | Send turns into Stop, and Enter sends nothing. |
 | `onStop` | `() => void` |  | Runs on Stop, and on Escape in the box while busy. |
 | `suggestions` | `readonly string[]` |  | Ready-made prompts shown as chips. Clicking one submits it. |
+| `editableSuggestions` | `boolean` | `false` | Clicking a suggestion puts its text in the box to edit instead of sending it. Use it when a person will likely change the prompt first. The chips then stay usable while busy. |
 | `placeholder` | `string` |  | Shown in the empty box. |
 | `disabled` | `boolean` | `false` | Nothing can be typed or sent. Say why somewhere nearby. |
 | `hint` | `string` | `'Enter to send, Shift+Enter for a new line'` | The line under the box, which is also its description. |
@@ -142,7 +143,7 @@ Swapping two buttons drops keyboard focus to the page at the moment they switch.
 ## Anatomy
 
 - **Form**: Paints surface.base itself, as every form does.
-- **Suggestions**: A group of chips above the box. Clicking one submits its text. They're disabled while busy.
+- **Suggestions**: A group of chips above the box. Clicking one submits its text (disabled while busy), or with editableSuggestions puts it in the box to edit.
 - **Box**: A Textarea with a label that's hidden on screen but read by screen readers. It grows from one line to about eight, then scrolls inside.
 - **Send / Stop**: One button: a primary Send with an arrow, or, while busy, a secondary Stop with a square.
 - **Hint**: One line under the box, which is also the box's description: "Enter to send, Shift+Enter for a new line".

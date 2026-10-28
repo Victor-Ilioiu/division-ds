@@ -9,12 +9,14 @@ import { Sparkline } from '../components/atoms/sparkline/Sparkline'
 import { ApprovalRequest } from '../components/molecules/approval-request/ApprovalRequest'
 import { ChatMessage } from '../components/molecules/chat-message/ChatMessage'
 import { DescriptionList } from '../components/molecules/description-list/DescriptionList'
+import { ResponseFeedback } from '../components/molecules/chat-message/ResponseFeedback'
 import { PromptInput } from '../components/molecules/prompt-input/PromptInput'
 import { ToolCall } from '../components/molecules/tool-call/ToolCall'
 import { ChatThread } from '../components/organisms/chat-thread/ChatThread'
 import { DataTable, type DataTableColumn } from '../components/organisms/data-table/DataTable'
 import { ASSISTANT_NAME, scriptFor, SUGGESTIONS, type Message, type Part, type ToolOutput } from './assistant'
 import { sparkLabel } from './bits'
+import { DocklineApp } from './DocklineApp'
 import { sensorById } from './data'
 import { clockOf, useConsole } from './store'
 
@@ -103,6 +105,8 @@ function PartView({ part, onDecide }: { part: Part; onDecide: (approved: boolean
           ))}
         </ul>
       )
+    case 'app':
+      return <DocklineApp schedule={part.schedule} />
     case 'approval':
       return (
         <ApprovalRequest
@@ -140,6 +144,12 @@ function MessageView({ message, onDecide }: { message: Message; onDecide: (appro
       time={`2026-10-15T${message.time}`}
       timeLabel={message.time}
       streaming={message.streaming}
+      // A demo: the vote goes nowhere. A finished generated reply only, never the person's own.
+      actions={
+        message.role === 'assistant' && !message.streaming ? (
+          <ResponseFeedback onSubmit={() => {}} onDetail={() => {}} />
+        ) : undefined
+      }
     >
       {message.role === 'system' ? (
         message.parts.map(part => (part.kind === 'text' ? part.text : null))

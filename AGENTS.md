@@ -1,6 +1,6 @@
 # Division DS: instructions for coding agents
 
-A React 19 + Tailwind 4 + Radix design system: 67 components, tokens in three layers, light and
+A React 19 + Tailwind 4 + Radix design system: 68 components, tokens in three layers, light and
 dark themes, WCAG 2.2 AA. This file is the entry point. It is short on purpose; everything it
 points to is generated from the code, so it is current.
 
@@ -11,6 +11,7 @@ points to is generated from the code, so it is current.
 | The list of components, one line each | `public/llms.txt` |
 | One component: props, examples as code, keyboard, do and don't | `public/docs/components/<slug>.md` |
 | Every component's props in one compact file | `public/llms-components.txt` |
+| The whole system in one short file (for a tool that takes one design file) | `public/DESIGN.md` |
 | Which token to use for what | `public/llms-tokens.txt` |
 | Shared helpers: form errors, money, links, theme, streamed text | `public/docs/helpers.md` |
 | The same as data | `public/manifest/components.json`, `public/manifest/tokens.json` |
@@ -42,10 +43,17 @@ npx division-ds check <files or dirs>          (from npm; Node 22 or newer)
 node <path-to-division-ds>/scripts/division-ds.mjs check <files or dirs>   (the same, from a clone)
 ```
 
-It runs the colour and button-spacing gates and checks every Division DS element's props against
+It runs the colour, button-spacing and AI copy gates and checks every Division DS element's props against
 `public/manifest/components.json`: an unknown prop, or a value that is not in the prop's union.
 Exit 1 means a finding; each one says what to write instead. `division-ds rules --target <dir>`
 installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rules.
+`division-ds skill --target <dir>` installs the skill into `.agents/skills/` (Codex, Cursor) and
+`.claude/skills/` (Claude Code).
+
+An agent that supports MCP can have the docs and the same checks as tools instead:
+`claude mcp add division-ds -- npx -y division-ds mcp` (`list_components`, `get_component`,
+`search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
+`get_review_checklist`).
 
 <!-- rules:start -->
 ## Rules
@@ -175,6 +183,12 @@ element arriving, `anim-draw-on` for a hairline) and the motion tokens (`--durat
 hover, `--duration-base` by default, `--duration-slow` for a larger change, `--ease-snap`).
 Anything you animate yourself stops under `prefers-reduced-motion` (`motion-reduce:` in
 Tailwind), and nothing moves on its own: no autoplay.
+
+<!-- topic: ai -->
+
+**Assistant copy.** A button names the action ("Summarize"), never "AI". Say "response", not
+"answer". No "please" or "!" in assistant labels. The interface says "Assistant"; only its own
+messages say "I".
 <!-- rules:end -->
 
 ## Changing the system itself

@@ -88,6 +88,14 @@ export function InputDocs() {
         </div>
       </Example>
 
+      <Example caption="Filled by AI, with a revert">
+        <div className="w-full max-w-xs">
+          <FormField label="Call sign" help="Suggested from your last order. Edit it and the revert button appears.">
+            <Input aiValue="Anvil-3" defaultValue="Anvil-3" />
+          </FormField>
+        </div>
+      </Example>
+
       <Example caption="Labelled the manual way">
         <div className="flex flex-col gap-1 text-sm max-w-xs">
           <label htmlFor="input-docs-callsign">Call sign</label>

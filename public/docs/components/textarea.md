@@ -23,6 +23,7 @@ import { Textarea, textareaVariants } from 'src/components/atoms/textarea/Textar
 |---|---|---|---|
 | `invalid` | `boolean` | `false` | Sets aria-invalid and the invalid border. aria-invalid is an ARIA (Accessible Rich Internet Applications) attribute that tells screen readers the value has a problem. It doesn't render error text. |
 | `rows` | `number` | `4` | The browser's own rows attribute. Size it to the answer you expect. |
+| `aiValue` | `string` |  | The value an AI proposed, with the same contract as Input. The mark and the revert button sit in the top right corner. While the field holds exactly this value it shows the AI-filled state: an ai.border edge, a faint ai.wash tint and a sparkle mark that describes the field as Filled by AI. Once the person changes it, the field looks normal again and a Revert to suggestion button puts the value back through onChange (no button on a disabled or read-only field). An invalid field keeps its invalid border. |
 | `className` | `string` |  | Merged with the control's classes. Later Tailwind utilities (the small styling classes this system uses) win. |
 | `ref` | `Ref<HTMLTextAreaElement>` |  | Forwarded to the textarea element. |
 | `...rest` | `Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'aria-invalid'>` |  | Every native textarea prop except aria-invalid, spread onto the element. aria-invalid is removed from the type instead of being quietly overridden at runtime. invalid is the only source of both the attribute and the border, so letting a caller set one directly would let what people see and what screen readers hear drift apart. |
@@ -79,6 +80,18 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
   Read-only
   <Textarea readOnly defaultValue="Submitted 14:02, no further edits" />
 </label>
+```
+
+### Filled by AI, with a revert
+
+```tsx
+const AI_NOTES = 'Ships with two midcaps and a sling. Ask for the 1.2 J spring if you play indoors.'
+
+<div className="flex flex-col gap-2 w-full max-w-sm">
+  <label htmlFor="ai-notes" className="text-sm">Order notes</label>
+  <AiLabel explanation="Drafted from the replica's listing. Check the details before you send it." />
+  <Textarea id="ai-notes" aiValue={AI_NOTES} defaultValue={AI_NOTES} />
+</div>
 ```
 
 ### With a counter

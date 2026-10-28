@@ -82,3 +82,35 @@ npx division-ds check src
 ```
 
 It flags a raw colour, an invented token, touching buttons, an unknown prop and a value outside a prop's union, and says what to write instead.
+
+It reads the code, not the running page: how the screen behaves is still yours to try in a browser.
+
+## 4. Connect your assistant to the system (MCP)
+
+An MCP server gives your assistant the documentation and the same checks as tools it calls while it
+works. In Claude Code, once:
+
+```bash
+claude mcp add division-ds -- npx -y division-ds mcp
+```
+
+In Cursor (`.cursor/mcp.json`) and other assistants' MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "division-ds": { "command": "npx", "args": ["-y", "division-ds", "mcp"] }
+  }
+}
+```
+
+The tools:
+
+- `list_components`: every component, with when to use it.
+- `get_component`: one component's page: the import, props, keyboard, do and don't, examples.
+- `search`: components and tokens by what they are for ("page background", "confirm delete").
+- `get_tokens`: token values, in both themes, and when to use each.
+- `validate_code`: the checks from step 3, on code the assistant has just written.
+- `check_contrast`: whether two colours or tokens are readable together, in both themes (WCAG 2.2 AA).
+- `get_add_command`: the command that installs a component.
+- `get_review_checklist`: what to check in the browser before a screen is done.

@@ -6,6 +6,7 @@
   "description": "Installs the base and all components in one command.",
   "registryDependencies": [
     "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/ai-label.json",
     "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/avatar.json",
     "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
     "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",

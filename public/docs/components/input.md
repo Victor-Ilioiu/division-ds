@@ -29,6 +29,7 @@ import { Input, inputVariants } from 'src/components/atoms/input/Input'
 | `clearable` | `boolean` | `false` | Shows a clear button while the field has a value (never when it's disabled or read-only). Clearing fires onChange with an empty value, so a controlled field clears through its own handler. Then it calls onClear, then puts focus back in the input. |
 | `onClear` | `() => void` |  | Called after the clear button empties the field. |
 | `clearLabel` | `string` | `'Clear'` | The clear button’s name. If the page has more than one, say what it clears: ‘Clear call sign’. |
+| `aiValue` | `string` |  | The value an AI proposed. While the field holds exactly this value it shows the AI-filled state: an ai.border edge, a faint ai.wash tint and a sparkle mark that describes the field as Filled by AI. Once the person changes it, the field looks normal again and a Revert to suggestion button puts the value back through onChange (no button on a disabled or read-only field). An invalid field keeps its invalid border. |
 | `wrapperClassName` | `string` |  | Classes for the wrapper a field with extras renders. Put width classes here when an extra is on. It does nothing on a bare input. |
 | `className` | `string` |  | Merged with the input’s classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with). |
 | `ref` | `Ref<HTMLInputElement>` |  | Passed through to the input element. |
@@ -139,6 +140,16 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 </div>
 ```
 
+### Filled by AI, with a revert
+
+```tsx
+<div className="w-full max-w-xs">
+  <FormField label="Call sign" help="Suggested from your last order. Edit it and the revert button appears.">
+    <Input aiValue="Anvil-3" defaultValue="Anvil-3" />
+  </FormField>
+</div>
+```
+
 ### Labelled the manual way
 
 ```tsx
@@ -155,7 +166,7 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 
 | Keys | Result |
 |---|---|
-| `Tab` | Moves focus to the input, then to its clear button and reveal toggle if they are there. |
+| `Tab` | Moves focus to the input, then to its revert, clear and reveal buttons if they are there. |
 | `Esc` | Nothing by default, even with clearable. Clearing on Escape is a search behaviour, and it lives in the Search molecule. |
 | `Space` | On the reveal toggle, shows or hides the password. On the clear button, empties the field and puts focus back in it. |
 
@@ -176,11 +187,12 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 - Don't disable a field to make it read-only. Use readOnly, which you can still focus and copy from.
 - Don't add clearable to a search field. Search already has its own clear button and the Escape key.
 - Don't build your own show-password button next to a revealable field. You'll end up with two.
+- Don't set aiValue on a field the person filled in themselves. The AI look says the machine wrote it.
 
 ## Anatomy
 
 - **Input**: 40px (pixels) tall by default. The height comes from the control token, not a hand-picked number.
 - **Border**: border.control at rest, text.muted on hover and hostile.text when invalid. A control's edge tells you something, it isn't decoration, so it doesn't use a hairline token.
 - **Focus ring**: Drawn on the input itself. Form controls aren't bevelled (given a cut corner), so nothing clips it.
-- **Adornments**: Optional extras inside the right edge, in this order: the count in mono (a fixed-width typeface), the clear button and the reveal toggle. Turning on any of them wraps the input in a relative box (wrapperClassName styles it) and sizes the right padding to fit them, so text never runs underneath. With none on, the input is bare, with no wrapper.
+- **Adornments**: Optional extras inside the right edge, in this order: the AI mark or its revert button, the count in mono (a fixed-width typeface), the clear button and the reveal toggle. Turning on any of them wraps the input in a relative box (wrapperClassName styles it) and sizes the right padding to fit them, so text never runs underneath. With none on, the input is bare, with no wrapper.
 - **Placeholder**: text.placeholder, with contrast measured against the control fill it sits on, not the page. It's never a stand-in for a label.

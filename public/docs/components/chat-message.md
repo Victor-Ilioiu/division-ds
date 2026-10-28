@@ -11,6 +11,7 @@
 
 ```tsx
 import { ChatMessage } from 'src/components/molecules/chat-message/ChatMessage'
+import { ResponseFeedback } from 'src/components/molecules/chat-message/ResponseFeedback'
 ```
 
 ## Requires
@@ -28,6 +29,9 @@ import { ChatMessage } from 'src/components/molecules/chat-message/ChatMessage'
 | `streaming` | `boolean` | `false` | The text is still arriving: sets aria-busy and shows a caret. Inside a ChatThread, the finished text is announced once, when this turns false. |
 | `actions` | `ReactNode` |  | Small buttons under an assistant message. They aren't shown on a user message. |
 | `className` | `string` |  | Goes on the article. |
+| `onSubmit (ResponseFeedback)` | `(vote: 'helpful' \| 'not-helpful') => void \| Promise<void>` |  | Required. Runs on a thumbs up or down. Return a promise to show "Submitting feedback" until it settles; a rejection puts the buttons back. |
+| `onDetail (ResponseFeedback)` | `(text: string) => void` |  | Offers an optional, dismissable "what was wrong" box after a Not helpful vote. Leave it out for no such step. |
+| `className (ResponseFeedback)` | `string` |  | Goes on the group. |
 
 ## Types and helpers
 
@@ -35,6 +39,10 @@ Exported beside the component, from the same file. Import a type with `import ty
 
 ```ts
 export type ChatMessageRole = 'user' | 'assistant' | 'system'
+```
+
+```ts
+export type FeedbackVote = 'helpful' | 'not-helpful'
 ```
 
 ## Examples
@@ -83,6 +91,22 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 </div>
 ```
 
+### Feedback on a reply: thumbs up or down, one vote, and an optional detail step after Not helpful
+
+```tsx
+const pretendSend = () => new Promise<void>(resolve => setTimeout(resolve, 800))
+
+<div className="flex w-full max-w-xl flex-col gap-6">
+  <ChatMessage
+    role="assistant"
+    author="Assistant"
+    actions={<ResponseFeedback onSubmit={pretendSend} onDetail={() => {}} />}
+  >
+    Depot 4 holds 1,240 replicas. Eleven are below their reorder point.
+  </ChatMessage>
+</div>
+```
+
 ## Keyboard
 
 | Keys | Result |
@@ -95,6 +119,7 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 - Put tool calls and approvals in the assistant message where they happened, in order with its text.
 - Use a system line for events in the conversation itself: stopped, retried, context cleared.
 - Give every message an author, including a system line ("Status"). It names the article.
+- Put ResponseFeedback in the actions of a generated reply once it has finished streaming, so a vote rates the whole reply.
 
 ## Don't
 
@@ -125,5 +150,5 @@ streaming sets aria-busy, draws a caret that doesn't blink, and tells the thread
 - **Bubble (user)**: The person's words on surface.sunken, aligned right, at most 85% of the width.
 - **Body (assistant)**: Full width, with no bubble: text, paragraphs, and ToolCall and ApprovalRequest blocks stacked in a column.
 - **Caret**: A solid block in the signal colour after the last paragraph while streaming, drawn with the CSS ::after rule. It never blinks.
-- **Actions**: Small buttons under an assistant message: Copy, Retry.
+- **Actions**: Small buttons under an assistant message: Copy, Retry, and ResponseFeedback (thumbs up and down).
 - **System line**: A centred label in monospaced type between two thin lines: "Assistant stopped". Its author is there for screen readers only.

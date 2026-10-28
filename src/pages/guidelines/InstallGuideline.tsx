@@ -21,12 +21,13 @@ const APP_ROOT = `<TooltipProvider>
 
 /** A command in a box, with a button that copies it. The copy is confirmed twice: the icon turns
  *  into a tick, and a toast says so for anyone who cannot see the icon change. */
-export function CopyCommand({ command, label }: { command: string; label: string }) {
+/** Copies `text` and confirms with a toast; `copied` flips back after a moment. */
+export function useCopy(text: string, label: string) {
   const { toast } = useToast()
   const [copied, setCopied] = useState(false)
   async function copy() {
     try {
-      await navigator.clipboard.writeText(command)
+      await navigator.clipboard.writeText(text)
       setCopied(true)
       toast({ title: `Copied: ${label}` })
       window.setTimeout(() => setCopied(false), 1600)
@@ -34,6 +35,11 @@ export function CopyCommand({ command, label }: { command: string; label: string
       toast({ tone: 'warning', title: 'Copying is blocked here. Select the text and copy it yourself.' })
     }
   }
+  return { copied, copy }
+}
+
+export function CopyCommand({ command, label }: { command: string; label: string }) {
+  const { copied, copy } = useCopy(command, label)
   return (
     <div className="flex max-w-3xl items-start gap-2 border border-[var(--color-border-hairline)] bg-[var(--color-surface-sunken)] py-2 pl-4 pr-2">
       <pre className="min-w-0 flex-1 whitespace-pre-wrap break-all py-1 font-mono text-sm text-[var(--color-text-primary)]">
@@ -58,6 +64,38 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   )
 }
 
+const MCP_CONFIG = `{
+  "mcpServers": {
+    "division-ds": { "command": "npx", "args": ["-y", "division-ds", "mcp"] }
+  }
+}`
+
+// The eight tools `division-ds mcp` serves (scripts/lib/mcp-tools.mjs), in the order it lists them.
+// Not a DescriptionList: its terms render in capitals, and a tool name is case-sensitive.
+const MCP_TOOLS = [
+  { term: 'list_components', description: 'Every component, with when to use it.' },
+  { term: 'get_component', description: 'One component’s page: the import, props, keyboard, do and don’t, examples.' },
+  { term: 'search', description: 'Components and tokens by what they are for: “page background”, “confirm delete”.' },
+  { term: 'get_tokens', description: 'Token values, in both themes, and when to use each.' },
+  { term: 'validate_code', description: 'The checks from step 3, on code the assistant has just written.' },
+  { term: 'check_contrast', description: 'Whether two colours or tokens are readable together, in both themes (WCAG 2.2 AA).' },
+  { term: 'get_add_command', description: 'The command that installs a component.' },
+  { term: 'get_review_checklist', description: 'What to check in the browser before a screen is done.' },
+] as const
+
+// The five ways in, in page order. `id` is the <section>'s, not the heading's: the section takes
+// focus on arrival (tabIndex -1), so a keyboard reader who follows a link continues from there
+// instead of from the top of the page.
+const PATHS = [
+  { id: 'skill', title: 'Give your assistant the skill', summary: 'One command, and your AI assistant knows the components and the rules.' },
+  { id: 'components', title: 'Add components to your project', summary: 'Copy the code into a React 19 and Tailwind 4 app, then four one-time steps.' },
+  { id: 'check', title: 'Check your screens', summary: 'Find raw colours, invented tokens and wrong props before you ship.' },
+  { id: 'mcp', title: 'Connect your assistant to the system', summary: 'The docs and the checks as tools your assistant calls while it works.' },
+  { id: 'local', title: 'Run the whole system locally', summary: 'The docs, the three demos and every check, on your computer.' },
+] as const
+
+const SECTION = 'flex scroll-mt-8 flex-col gap-6 outline-none'
+
 const prose = 'max-w-3xl font-body text-base text-[var(--color-text-secondary)]'
 
 export function InstallGuideline() {
@@ -70,11 +108,32 @@ export function InstallGuideline() {
           </>
         }
         title="Install it your way"
-        lede="Three ways in. Give your AI coding assistant the skill, add components to a project you already have, or run the whole system on your own computer. Each command below has a copy button."
+        lede="Give your AI coding assistant the skill, add components to a project you already have, let the assistant check its own work, or run the whole system on your own computer. Each command below has a copy button."
       />
 
-      <div className="mt-12 flex flex-col gap-16">
-        <section className="flex flex-col gap-6" aria-labelledby="install-skill">
+      <nav aria-label="Ways to install" className="mt-10">
+        <p className="mb-4 font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">Pick what you need</p>
+        <ol role="list" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {PATHS.map((path, i) => (
+            <li key={path.id} className="flex">
+              {/* A plain anchor, not a router Link: a jump within this page, not a route change. */}
+              <a
+                href={`#${path.id}`}
+                className="group flex flex-1 flex-col gap-1 border border-[var(--color-border-hairline)] bg-[var(--color-surface-raised)] p-4 transition-control hover:border-[var(--color-accent-signal-text)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
+              >
+                <span className="font-body text-base font-semibold text-[var(--color-text-primary)]">
+                  <span className="mr-2 font-mono text-[var(--color-accent-signal-text)]">{String(i + 1).padStart(2, '0')}</span>
+                  {path.title}
+                </span>
+                <span className="font-body text-sm text-[var(--color-text-secondary)]">{path.summary}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div className="mt-16 flex flex-col gap-16">
+        <section id="skill" tabIndex={-1} className={SECTION} aria-labelledby="install-skill">
           <SectionHeading
             id="install-skill"
             level={2}
@@ -117,7 +176,7 @@ export function InstallGuideline() {
           </Tabs>
         </section>
 
-        <section className="flex flex-col gap-6" aria-labelledby="install-components">
+        <section id="components" tabIndex={-1} className={SECTION} aria-labelledby="install-components">
           <SectionHeading
             id="install-components"
             level={2}
@@ -172,11 +231,60 @@ export function InstallGuideline() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-6" aria-labelledby="install-local">
+        <section id="check" tabIndex={-1} className={SECTION} aria-labelledby="install-check">
+          <SectionHeading
+            id="install-check"
+            level={2}
+            index={3}
+            title="Check your screens"
+            description="Run it from your project before you call a screen done. It finds a raw colour, a token name that does not exist, two buttons with no space between them, a prop the component does not take and a value it does not accept, and says what to write instead. You need Node.js 22 or newer."
+          />
+          <CopyCommand label="the check command" command="npx division-ds check src" />
+          <p className={prose}>
+            It reads the code, not the running page. How the screen behaves is still yours to try in a browser.
+          </p>
+        </section>
+
+        <section id="mcp" tabIndex={-1} className={SECTION} aria-labelledby="install-mcp">
+          <SectionHeading
+            id="install-mcp"
+            level={2}
+            index={4}
+            title="Connect your assistant to the system"
+            description="An MCP server (Model Context Protocol: the way AI assistants plug into outside tools) gives your assistant the documentation and the checks as tools it calls by itself while it works. It looks a component up before using it, and checks each screen before it says it is done."
+          />
+          <Tabs defaultValue="claude">
+            <TabsList aria-label="Your assistant">
+              <TabsTrigger value="claude">Claude Code</TabsTrigger>
+              <TabsTrigger value="other">Cursor and others</TabsTrigger>
+            </TabsList>
+            <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
+              <p className={prose}>Run this once in a terminal. It is ready the next time you start Claude Code.</p>
+              <CopyCommand label="the MCP add command" command="claude mcp add division-ds -- npx -y division-ds mcp" />
+            </TabsContent>
+            <TabsContent value="other" className="flex flex-col gap-4 pt-6">
+              <p className={prose}>
+                Add this to your assistant&apos;s MCP settings. For Cursor that is{' '}
+                <code className="font-mono text-sm">.cursor/mcp.json</code> in your project.
+              </p>
+              <CopyCommand label="the MCP settings" command={MCP_CONFIG} />
+            </TabsContent>
+          </Tabs>
+          <p className={prose}>The tools it gets:</p>
+          <ul className="flex max-w-3xl flex-col gap-3">
+            {MCP_TOOLS.map(tool => (
+              <li key={tool.term} className={prose}>
+                <code className="font-mono text-sm text-[var(--color-text-primary)]">{tool.term}</code>: {tool.description}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section id="local" tabIndex={-1} className={SECTION} aria-labelledby="install-local">
           <SectionHeading
             id="install-local"
             level={2}
-            index={3}
+            index={5}
             title="Run the whole system locally"
             description="The documentation, the three demos and every check, on your own computer. You need Git and Node.js 22 or newer."
           />

@@ -93,6 +93,17 @@ describe('PromptInput', () => {
     expect(stop).toHaveFocus()
   })
 
+  it('with editableSuggestions, a suggestion fills the box and sends nothing, even while busy', async () => {
+    const onSubmit = vi.fn()
+    render(<Controlled onSubmit={onSubmit} suggestions={['Draft a reply to Depot 4']} editableSuggestions busy />)
+    const chip = screen.getByRole('button', { name: 'Draft a reply to Depot 4' })
+    expect(chip).toBeEnabled()
+    await userEvent.click(chip)
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(box()).toHaveValue('Draft a reply to Depot 4')
+    expect(box()).toHaveFocus()
+  })
+
   it('submits a suggestion on click, and disables suggestions while busy', async () => {
     const onSubmit = vi.fn()
     const { rerender } = render(<Controlled onSubmit={onSubmit} suggestions={['Summarise stock', 'What is low?']} />)

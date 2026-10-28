@@ -12,8 +12,8 @@
 //   agents  AGENTS.md                       Codex, Claude Code (via AGENTS.md), Copilot, Jules, ...
 //   cursor  .cursor/rules/division-ds.mdc   Cursor project rules; the whole file is ours
 //   gemini  GEMINI.md                       Gemini CLI
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { dirname, join, relative } from 'node:path'
 
 export const START = '<!-- division-ds:start -->'
 export const END = '<!-- division-ds:end -->'
@@ -102,14 +102,52 @@ export function planRules({ targetDir, rules, only = TARGETS, remove = false }) 
   })
 }
 
-/** Writes a plan to disk. */
-export function applyPlan(plan) {
+// The skill installer (`division-ds skill`): the generated skills/division-ds/ folder, copied whole
+// into the folders agents scan for skills. Checked 2026-10-26 against each agent's docs:
+//   agents  .agents/skills/division-ds/   Codex (repo scope), Cursor (also reads .claude/skills)
+//   claude  .claude/skills/division-ds/   Claude Code project skills
+// The folder is ours whole, like the .mdc: a file in it that the skill no longer ships is deleted.
+export const SKILL_TARGETS = ['agents', 'claude']
+const SKILL_DIRS = { agents: '.agents/skills/division-ds', claude: '.claude/skills/division-ds' }
+
+const filesUnder = dir =>
+  !existsSync(dir)
+    ? []
+    : readdirSync(dir, { recursive: true }).map(String).filter(name => statSync(join(dir, name)).isFile()).map(name => name.split('\\').join('/')).sort()
+
+/** Every file change to install (or `remove`) the skill in `sourceDir` into each target, in the
+ *  same shape as planRules: `[{ target, path, action, before, after }]`. */
+export function planSkill({ targetDir, sourceDir, only = SKILL_TARGETS, remove = false }) {
+  const source = filesUnder(sourceDir)
+  return only.flatMap(target => {
+    const dir = join(targetDir, SKILL_DIRS[target])
+    const names = [...new Set([...source, ...filesUnder(dir)])].sort()
+    return names.map(name => {
+      const path = join(dir, name)
+      const before = read(path)
+      const after = remove || !source.includes(name) ? null : readFileSync(join(sourceDir, name), 'utf8')
+      let action
+      if (before === null) action = after === null ? 'absent' : 'create'
+      else if (after === null) action = 'delete'
+      else action = after === before ? 'unchanged' : 'update'
+      return { target, path, action, before, after }
+    })
+  })
+}
+
+/** Writes a plan to disk. A deletion also removes the folders it left empty, up to `stopAt`. */
+export function applyPlan(plan, stopAt) {
   for (const change of plan) {
     if (change.action === 'create' || change.action === 'update') {
       mkdirSync(dirname(change.path), { recursive: true })
       writeFileSync(change.path, change.after)
     } else if (change.action === 'delete') {
       rmSync(change.path)
+      if (!stopAt) continue
+      for (let dir = dirname(change.path); relative(stopAt, dir) && !relative(stopAt, dir).startsWith('..'); dir = dirname(dir)) {
+        if (readdirSync(dir).length > 0) break
+        rmdirSync(dir)
+      }
     }
   }
 }

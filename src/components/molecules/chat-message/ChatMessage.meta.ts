@@ -25,7 +25,7 @@ export const meta: ComponentMeta = {
     { part: 'Bubble (user)', description: 'The person\'s words on surface.sunken, aligned right, at most 85% of the width.' },
     { part: 'Body (assistant)', description: 'Full width, with no bubble: text, paragraphs, and ToolCall and ApprovalRequest blocks stacked in a column.' },
     { part: 'Caret', description: "A solid block in the signal colour after the last paragraph while streaming, drawn with the CSS ::after rule. It never blinks." },
-    { part: 'Actions', description: 'Small buttons under an assistant message: Copy, Retry.' },
+    { part: 'Actions', description: 'Small buttons under an assistant message: Copy, Retry, and ResponseFeedback (thumbs up and down).' },
     { part: 'System line', description: 'A centred label in monospaced type between two thin lines: "Assistant stopped". Its author is there for screen readers only.' },
   ],
   props: [
@@ -41,6 +41,9 @@ export const meta: ComponentMeta = {
     },
     { name: 'actions', type: 'ReactNode', description: "Small buttons under an assistant message. They aren't shown on a user message." },
     { name: 'className', type: 'string', description: 'Goes on the article.' },
+    { name: 'onSubmit (ResponseFeedback)', type: "(vote: 'helpful' | 'not-helpful') => void | Promise<void>", description: 'Required. Runs on a thumbs up or down. Return a promise to show "Submitting feedback" until it settles; a rejection puts the buttons back.' },
+    { name: 'onDetail (ResponseFeedback)', type: '(text: string) => void', description: 'Offers an optional, dismissable "what was wrong" box after a Not helpful vote. Leave it out for no such step.' },
+    { name: 'className (ResponseFeedback)', type: 'string', description: 'Goes on the group.' },
   ],
   keyboard: [
     { keys: ['Tab'], does: 'Moves to the controls inside the message: a ToolCall\'s details, an approval\'s buttons, the actions.' },
@@ -50,6 +53,7 @@ export const meta: ComponentMeta = {
     'Put tool calls and approvals in the assistant message where they happened, in order with its text.',
     'Use a system line for events in the conversation itself: stopped, retried, context cleared.',
     'Give every message an author, including a system line ("Status"). It names the article.',
+    'Put ResponseFeedback in the actions of a generated reply once it has finished streaming, so a vote rates the whole reply.',
   ],
   donts: [
     "Don't animate the text in yourself. useStreamedText or your stream supplies it, and the thread handles announcing it.",

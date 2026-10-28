@@ -3,6 +3,9 @@ import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Textarea.meta'
 import { Example } from '../../docs/Example'
 import { Textarea } from './Textarea'
+import { AiLabel } from '../ai-label/AiLabel'
+
+const AI_NOTES = 'Ships with two midcaps and a sling. Ask for the 1.2 J spring if you play indoors.'
 
 function CounterExample() {
   const max = 140
@@ -60,6 +63,14 @@ export function TextareaDocs() {
           Read-only
           <Textarea readOnly defaultValue="Submitted 14:02, no further edits" />
         </label>
+      </Example>
+
+      <Example caption="Filled by AI, with a revert">
+        <div className="flex flex-col gap-2 w-full max-w-sm">
+          <label htmlFor="ai-notes" className="text-sm">Order notes</label>
+          <AiLabel explanation="Drafted from the replica's listing. Check the details before you send it." />
+          <Textarea id="ai-notes" aiValue={AI_NOTES} defaultValue={AI_NOTES} />
+        </div>
       </Example>
 
       <Example caption="With a counter">

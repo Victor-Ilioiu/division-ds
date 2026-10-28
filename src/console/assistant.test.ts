@@ -67,6 +67,11 @@ describe('the assistant runner', () => {
     expect(parts(conv).find(p => p.kind === 'links')).toMatchObject({
       links: [{ href: '/console/alerts?alert=a-01' }, { href: '/console/sites/brennick' }],
     })
+    // The Dockline app sits between the evidence and the proposal, inside the same reply.
+    const kinds = parts(conv).map(p => p.kind)
+    expect(kinds.indexOf('links')).toBeLessThan(kinds.indexOf('app'))
+    expect(kinds.indexOf('app')).toBeLessThan(kinds.indexOf('approval'))
+    expect(parts(conv).find(p => p.kind === 'app')).toMatchObject({ schedule: { app: 'Dockline', deliveries: { length: 3 } } })
     const approval = parts(conv).find(p => p.kind === 'approval')
     expect(approval).toMatchObject({ state: 'pending', draft: { to: 'm.lindqvist@brennick.example' } })
     expect(conv.messages.at(-1)?.streaming).toBe(false)

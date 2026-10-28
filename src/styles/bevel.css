@@ -3,9 +3,19 @@
    as its own outline/box-shadow -- so the ring must live on an unclipped wrapper, never on the
    clipped element itself. See ShapeGuideline.tsx's focus demo and BUILD-LOG.md's Phase 2 finding
    (augmented-ui: clip-path can clip a focus ring right off the element). */
-.bevel-sm { --bevel-cut: 8px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); }
-.bevel-md { --bevel-cut: 14px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
-.bevel-lg { --bevel-cut: 22px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%); }
+.bevel-sm { --bevel-cut: calc(8px * var(--shape-bevel, 1)); }
+.bevel-md { --bevel-cut: calc(14px * var(--shape-bevel, 1)); }
+.bevel-lg { --bevel-cut: calc(22px * var(--shape-bevel, 1)); }
+/* The shape switch (theme builder, docs/improvements/14-theme-shape.md). Two variables a consumer
+   may set on :root, neither defined by the system, so the fallbacks are the shipped look:
+   `--shape-bevel` scales every cut (1 = the cut corner, 0 = none) and `--shape-radius` rounds the
+   corners once the cut is gone. A zero cut makes the polygon the full box, which clips nothing a
+   radius draws inside it, and makes `.bevel-edge`'s square zero-sized, so the diagonal disappears
+   with the cut. */
+.bevel-sm, .bevel-md, .bevel-lg, .bevel-alert {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--bevel-cut)), calc(100% - var(--bevel-cut)) 100%, 0 100%);
+  border-radius: var(--shape-radius, 0px);
+}
 /* Square corners on a control that is otherwise bevelled: for a control that sits flush against a
    neighbour at its bottom-right, where the cut would open a notch in the shared seam
    (QuantityStepper's Decrease button). Unlayered and after the three above, so it wins over them
@@ -56,12 +66,14 @@
    diagonal (the Alert sets `--bevel-edge-color` per tone), and the Alert must be `relative`, as
    `.bevel-edge` requires. */
 .bevel-alert {
-  --bevel-cut: 12px;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  --bevel-cut: calc(12px * var(--shape-bevel, 1));
 }
 
 .bevel-focus-wrap {
   display: inline-block;
+  /* Follows a rounded control: the ring sits 3px out, so its radius is 3px larger. min() keeps
+     it exactly 0 while the radius is 0, so the shipped square ring is unchanged. */
+  border-radius: min(var(--shape-radius, 0px) * 1000, var(--shape-radius, 0px) + 3px);
   outline: 2px solid transparent;
   outline-offset: 3px;
 }

@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolveTokens } from './lib/resolve-tokens.mjs'
 import { resolveComponentTokens } from './lib/resolve-component-tokens.mjs'
 import { checkUsage, measuredNotes, tokenManifest } from './lib/token-usage.mjs'
+import { HOST_SELECTOR, hostAdapterCss } from './lib/host-tokens.mjs'
 
 const primitives = JSON.parse(readFileSync('tokens/primitive/color.json', 'utf8'))
 const spacing = JSON.parse(readFileSync('tokens/primitive/spacing.json', 'utf8'))
@@ -10,6 +11,7 @@ const dark = JSON.parse(readFileSync('tokens/semantic/color.dark.json', 'utf8'))
 const light = JSON.parse(readFileSync('tokens/semantic/color.light.json', 'utf8'))
 const control = JSON.parse(readFileSync('tokens/component/control.json', 'utf8'))
 const usage = JSON.parse(readFileSync('tokens/usage.json', 'utf8'))
+const hostMap = JSON.parse(readFileSync('tokens/host/mcp-apps.json', 'utf8')).map
 
 const toCssBlock = flat =>
   Object.entries(flat).map(([k, v]) => `  ${k}: ${v};`).join('\n')
@@ -22,6 +24,12 @@ const lightTokens = resolveTokens(primitives, light)
 // half-added token (present in dark, forgotten in light) a build failure instead of an element
 // that paints unstyled in one theme only.
 const semanticVarsInBothThemes = Object.keys(darkTokens).filter(k => k in lightTokens)
+
+// The font stacks are Tailwind @theme variables, not JSON tokens: read them back as the adapter's
+// fallbacks so the two cannot drift.
+const fontStacks = Object.fromEntries(
+  [...readFileSync('src/styles/tailwind.css', 'utf8').matchAll(/^\s*(--font-(?:display|body)):\s*(.+);$/gm)].map(m => [m[1], m[2]])
+)
 
 const colorUtilities = Object.entries(primitives.color.primitive)
   .map(([name, ramp]) =>
@@ -69,8 +77,13 @@ ${toCssBlock(lightTokens)}
    pins its own theme (the demo homepage's hero sets data-theme="dark" over its always-dark 3D
    scene) would get the semantic colours of its own theme and the component colours of the
    page's: a secondary Button with light-theme text on a dark stage. Re-declaring the block
-   wherever a theme is set makes each alias resolve against the theme it sits in. */
-:root, [data-theme] {
+   wherever a theme is set makes each alias resolve against the theme it sits in. The host
+   adapter's element is on the list for the same reason: it re-points semantic colours too. */
+/* MCP Apps host adapter (Claude, ChatGPT): inert until an element carries data-host="mcp".
+   Source: tokens/host/mcp-apps.json. */
+${hostAdapterCss(hostMap, darkTokens, lightTokens, fontStacks)}
+
+:root, [data-theme], ${HOST_SELECTOR} {
 ${toCssBlock(resolveComponentTokens(control, semanticVarsInBothThemes))}
 }
 `

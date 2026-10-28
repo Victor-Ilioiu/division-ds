@@ -52,6 +52,11 @@
       "numeral": {
         "pad": { "$type": "color", "$value": "{color.primitive.neutral.300}", "$description": "The dimmed leading-zero pad. 3.82:1 on surface.base, 22% of text.primary's 17.55:1 there, against the dark theme's 31%. Light theme needs a LIGHTER step than text.muted for the same role: muted aliases neutral.500 and measures 11.44:1 here, 65% of ink, which does not read as dimmed and out-shouts the signal.fill numeral it is padding (3.14:1 on this surface). neutral.400 would land at 6.58:1 and 38% of ink, closer to dark's share but more than twice the contrast of the digits beside it, so neutral.300 is the step that keeps the pad quieter than what it pads." }
       },
+      "ai": {
+        "text": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "Measured by the gate: 8.39:1 on surface.base, 5.75:1 on surface.sunken, 8.92:1 on surface.raised. info.700 reached only 3.49:1 on surface.sunken, so the light theme takes info.800." },
+        "border": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "The edge of a field an AI filled. 5.24:1 on the AI-filled field (ai.wash over surface.sunken). Same stop as ai.text; a separate token because a boundary and text carry different floors." },
+        "wash": { "$type": "color", "$value": "rgba(0, 99, 213, 0.08)", "$description": "Tint laid over the control fill of an AI-filled field. Text on it is text.primary and gated (composited over surface.sunken)." }
+      },
       "focus": {
         "ring": { "$type": "color", "$value": "{color.primitive.signal.500}" }
       },

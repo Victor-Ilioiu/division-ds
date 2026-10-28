@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // division-ds: the system's gates and rules, for a project that USES the components.
 //
-//   division-ds check [files, dirs or globs...]   token discipline, touching buttons, props
+//   division-ds check [files, dirs or globs...]   token discipline, touching buttons, props, AI copy
 //   division-ds rules [--target <dir>] ...         install the agent rules into a project
+//   division-ds skill [--target <dir>] ...         install the agent skill into a project
+//   division-ds mcp                                serve the docs, tokens and gates to an agent (MCP)
 //   division-ds help
 //
 // Inside this repository `npm run verify` is the loop. A consumer project has none of that: an
@@ -18,10 +20,11 @@ import { existsSync, globSync, readdirSync, readFileSync, statSync } from 'node:
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { extractRules } from './lib/agent-docs.mjs'
-import { findViolations as buttonSpacing, formatViolation as formatButtonSpacing } from './lib/button-spacing.mjs'
-import { buildIndex, findPropViolations, formatPropViolation } from './lib/props-validator.mjs'
-import { applyPlan, diff, planRules, TARGETS } from './lib/rules-installer.mjs'
-import { findViolations as tokenDiscipline, formatViolation as formatTokenDiscipline } from './lib/token-discipline.mjs'
+import { checkText } from './lib/check-text.mjs'
+import { createServer } from './lib/mcp-server.mjs'
+import { createTools } from './lib/mcp-tools.mjs'
+import { buildIndex } from './lib/props-validator.mjs'
+import { applyPlan, diff, planRules, planSkill, SKILL_TARGETS, TARGETS } from './lib/rules-installer.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DEFAULT_MANIFEST = join(ROOT, 'public/manifest/components.json')
@@ -33,12 +36,16 @@ const HELP = `division-ds: Division DS gates and agent rules for a project that 
 Usage:
   division-ds check [paths...] [--manifest <path|url>] [--tokens <path|url>] [--json]
       Checks .tsx, .jsx and .ts files (default: ./src). A path may be a file, a directory or a
-      glob ("src/**/*.tsx"). Runs three gates and exits 1 on any finding:
+      glob ("src/**/*.tsx"). Runs five gates and exits 1 on any finding:
         token-discipline   raw colours, Tailwind palette classes, token names that do not exist
         button-spacing     two Buttons/IconButtons side by side with no gap on their parent
+        host-inline        an element marked data-host-mode="inline" (an MCP Apps inline card)
+                           with over 2 actions, a scroll container, or a menu/popover inside
         props              an unknown prop or an enum value outside the union, on elements
                            imported from Division DS (components/atoms|molecules|organisms, or
                            the package name); a component of your own with the same name is skipped
+        ai-copy            "AI" in a button label; "answer", "please" or "!" in the labels of
+                           the assistant components (ChatThread, PromptInput, ApprovalRequest, ...)
       --manifest  components.json to check props against (default: the one beside this script)
       --tokens    tokens.json for token names (default: tokens.json beside the manifest)
       --json      one JSON object on stdout instead of text
@@ -48,6 +55,17 @@ Usage:
       (created if missing, replaced on re-run, your text around it untouched) and the file
       .cursor/rules/division-ds.mdc. --dry-run prints the changes and writes nothing. --remove
       takes the blocks out and deletes the .mdc (and a file left holding nothing).
+
+  division-ds skill [--target <dir>] [--only agents,claude] [--dry-run] [--remove]
+      Copies the Division DS skill (SKILL.md, topics/, commands/) into .agents/skills/division-ds/
+      (Codex and Cursor read it) and .claude/skills/division-ds/ (Claude Code). The folders are
+      replaced whole on re-run. --dry-run lists the changes and writes nothing; --remove deletes them.
+
+  division-ds mcp [--manifest <path|url>] [--tokens <path|url>]
+      An MCP server on stdio, for Claude Code, Cursor and other agents. Tools: list_components,
+      get_component, search, get_tokens, validate_code (the gates above, on code the agent just
+      wrote), check_contrast, get_add_command, get_review_checklist. Register it once:
+        claude mcp add division-ds -- npx -y division-ds mcp
 
   division-ds help
 `
@@ -115,27 +133,7 @@ async function check(options) {
   const findings = []
   for (const file of files) {
     const path = relative(process.cwd(), file).split('\\').join('/')
-    const text = readFileSync(file, 'utf8')
-    for (const v of tokenDiscipline(text, path, tokenNames)) {
-      findings.push({ gate: 'token-discipline', path, line: v.line, rule: v.rule, found: v.found, fix: v.fix, text: formatTokenDiscipline(v) })
-    }
-    if (/\.[jt]sx$/.test(path)) {
-      for (const v of buttonSpacing(text, path)) {
-        findings.push({
-          gate: 'button-spacing',
-          path,
-          line: v.line,
-          column: v.column,
-          rule: 'touching-buttons',
-          found: `<${v.tag}> with ${v.count} button-like children`,
-          fix: 'Wrap the buttons in one parent with a flex/grid class and a gap- utility (flex flex-wrap items-center gap-3), and move any margin from the buttons onto it.',
-          text: formatButtonSpacing({ ...v, file: path }),
-        })
-      }
-    }
-    for (const v of findPropViolations(text, path, index)) {
-      findings.push({ gate: 'props', path, line: v.line, column: v.column, rule: v.rule, found: v.found, fix: v.fix, text: formatPropViolation(v) })
-    }
+    findings.push(...checkText(readFileSync(file, 'utf8'), path, index, tokenNames))
   }
 
   if (options.json) {
@@ -143,7 +141,7 @@ async function check(options) {
     console.log(JSON.stringify({ files: files.length, manifest: manifestSource, findings: out }, null, 2))
   } else if (findings.length > 0) {
     console.error(`\ndivision-ds check FAILED: ${findings.length} finding(s) in ${files.length} file(s).\n`)
-    for (const gate of ['token-discipline', 'button-spacing', 'props']) {
+    for (const gate of ['token-discipline', 'button-spacing', 'host-inline', 'props', 'ai-copy']) {
       const ofGate = findings.filter(finding => finding.gate === gate)
       if (ofGate.length === 0) continue
       console.error(`${gate} (${ofGate.length})`)
@@ -156,36 +154,74 @@ async function check(options) {
     console.log(`division-ds check passed: ${files.length} file(s), ${index.size} components, ${tokenNames.length} tokens, 0 findings.`)
     // It reads code, not the running page: say so, or a pass reads as "the screen works" (the
     // 2026-10-20 outside test shipped three runtime bugs past a clean check).
-    console.log('Checked: colours, tokens, button spacing and props. Not checked: how the screen behaves; run the review checklist (commands/review.md) in a browser.')
+    console.log('Checked: colours, tokens, button spacing, inline host cards, props and AI copy. Not checked: how the screen behaves; run the review checklist (commands/review.md) in a browser.')
   }
   process.exit(findings.length > 0 ? 1 : 0)
 }
 
-function rules(options) {
-  const only = options.only ? options.only.split(',').map(target => target.trim()) : TARGETS
-  const unknown = only.filter(target => !TARGETS.includes(target))
-  if (unknown.length) usage(`--only takes ${TARGETS.join(', ')}; not ${unknown.join(', ')}.`)
+async function mcp(options) {
+  const manifestSource = options.manifest ?? DEFAULT_MANIFEST
+  const tokensSource = options.tokens ?? manifestSource.replace(/components\.json$/, 'tokens.json')
+  const [manifest, tokens] = await Promise.all([load(manifestSource), load(tokensSource)])
+  const version = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version
+  const readIfThere = path => (existsSync(path) ? readFileSync(path, 'utf8') : undefined)
+  const tools = createTools({
+    manifest,
+    tokens,
+    version,
+    // Shipped beside the manifests in the npm package (build-cli-package.mjs); a slug comes from
+    // the manifest, never from the agent, so it cannot reach outside the docs folder.
+    readDoc: slug => readIfThere(join(ROOT, 'public/docs/components', `${slug}.md`)),
+    readChecklist: () => readIfThere(join(ROOT, 'skills/division-ds/commands/review.md')),
+  })
+  createServer({ tools, version }).listen(process.stdin, process.stdout)
+  // stdout is the protocol channel: this goes to stderr, where MCP clients put server logs.
+  console.error(`division-ds ${version} MCP server on stdio: ${tools.length} tools, ${manifest.components.length} components.`)
+}
+
+/** --only and --target, checked the same way for `rules` and `skill`. */
+function targetsOf(options, all) {
+  const only = options.only ? options.only.split(',').map(target => target.trim()) : all
+  const unknown = only.filter(target => !all.includes(target))
+  if (unknown.length) usage(`--only takes ${all.join(', ')}; not ${unknown.join(', ')}.`)
   const targetDir = resolve(options.target ?? '.')
   if (!existsSync(targetDir) || !statSync(targetDir).isDirectory()) usage(`--target is not a directory: ${targetDir}`)
-  // This repository's AGENTS.md is the source; a block of its own rules appended to it would be
-  // read twice by every agent here, and regenerated nowhere.
+  // This repository's AGENTS.md and skills/ are the source; a copy of its own rules beside them
+  // would be read twice by every agent here, and regenerated nowhere.
   if (resolve(targetDir) === resolve(ROOT)) usage('--target is Division DS itself. Point it at the project that uses the components.')
-  const source = readFileSync(join(ROOT, 'AGENTS.md'), 'utf8').replace(/\r\n/g, '\n')
-  const plan = planRules({ targetDir, rules: extractRules(source), only, remove: Boolean(options.remove) })
+  return { only, targetDir }
+}
 
+function rules(options) {
+  const { only, targetDir } = targetsOf(options, TARGETS)
+  const source = readFileSync(join(ROOT, 'AGENTS.md'), 'utf8').replace(/\r\n/g, '\n')
+  report(planRules({ targetDir, rules: extractRules(source), only, remove: Boolean(options.remove) }), options)
+}
+
+function skill(options) {
+  const { only, targetDir } = targetsOf(options, SKILL_TARGETS)
+  const plan = planSkill({ targetDir, sourceDir: join(ROOT, 'skills/division-ds'), only, remove: Boolean(options.remove) })
+  // A diff of every skill file is pages long; the list of files is the review.
+  report(plan, { ...options, quiet: true }, targetDir)
+}
+
+/** Prints a plan (with a diff per file on --dry-run, unless quiet) and applies it unless --dry-run. */
+function report(plan, options, stopAt) {
   for (const change of plan) {
     const shown = relative(process.cwd(), change.path) || change.path
     console.log(`${options['dry-run'] ? 'would ' : ''}${change.action.padEnd(9)} ${shown}`)
-    if (options['dry-run'] && change.action !== 'unchanged' && change.action !== 'absent') {
+    if (options['dry-run'] && !options.quiet && change.action !== 'unchanged' && change.action !== 'absent') {
       console.log(diff(change.before, change.after).replace(/^/gm, '    '))
     }
   }
-  if (!options['dry-run']) applyPlan(plan)
+  if (!options['dry-run']) applyPlan(plan, stopAt)
 }
 
 const [command, ...rest] = process.argv.slice(2)
 const options = parseArgs(rest)
 if (command === 'check') await check(options)
 else if (command === 'rules') rules(options)
+else if (command === 'skill') skill(options)
+else if (command === 'mcp') await mcp(options)
 else if (command === undefined || command === 'help' || command === '--help' || command === '-h') console.log(HELP)
 else usage(`Unknown command "${command}".`)

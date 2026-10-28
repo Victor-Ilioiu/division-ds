@@ -19,6 +19,7 @@ export { AvatarGroup, type AvatarGroupPerson, type AvatarGroupProps } from './av
 export { Breadcrumbs, collapseCrumbs, type BreadcrumbsProps, type Crumb } from './breadcrumbs/Breadcrumbs'
 export { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass, type CardMediaProps, type CardProps } from './card/Card'
 export { ChatMessage, type ChatMessageProps, type ChatMessageRole } from './chat-message/ChatMessage'
+export { ResponseFeedback, type FeedbackVote, type ResponseFeedbackProps } from './chat-message/ResponseFeedback'
 export { DescriptionList, type DescriptionListItem, type DescriptionListProps } from './description-list/DescriptionList'
 export {
   DropdownMenu,

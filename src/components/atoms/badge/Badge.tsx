@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../lib/cn'
 
 export const badgeVariants = cva(
-  'inline-flex items-center shrink-0 whitespace-nowrap font-mono uppercase tracking-wider',
+  'inline-flex items-center shrink-0 whitespace-nowrap font-mono uppercase tracking-wider rounded-[var(--shape-radius,0px)]',
   {
     variants: {
       // Two steps, both from values the system already has. `sm` is the chip every badge was

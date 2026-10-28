@@ -113,6 +113,30 @@
       ]
     },
     {
+      "name": "ai-label",
+      "type": "registry:item",
+      "title": "AI label",
+      "description": "AI label. Best for: Marking a block of text, a value or a field that an AI wrote, so the person knows to check it.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/link.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/ai-label/AiLabel.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/ai-label/AiLabel.tsx"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:item",
       "title": "Avatar",
@@ -274,6 +298,11 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
       ],
       "files": [
+        {
+          "path": "src/components/atoms/input/ai-field.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/input/ai-field.tsx"
+        },
         {
           "path": "src/components/atoms/input/Input.tsx",
           "type": "registry:file",
@@ -635,7 +664,8 @@
         "@types/react@^19.2.18"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json"
       ],
       "files": [
         {
@@ -815,13 +845,18 @@
       "title": "Chat message",
       "description": "Chat message. Best for: Each turn inside a ChatThread.",
       "dependencies": [
+        "lucide-react@^1.47.0",
         "react@^19.2.8"
       ],
       "devDependencies": [
         "@types/react@^19.2.18"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/textarea.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tooltip.json"
       ],
       "files": [
         {
@@ -833,6 +868,11 @@
           "path": "src/components/molecules/chat-message/ChatMessage.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/chat-message/ChatMessage.tsx"
+        },
+        {
+          "path": "src/components/molecules/chat-message/ResponseFeedback.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/chat-message/ResponseFeedback.tsx"
         }
       ]
     },
@@ -1794,6 +1834,7 @@
       "description": "Installs the base and all components in one command.",
       "registryDependencies": [
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/ai-label.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/avatar.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
@@ -1862,6 +1903,60 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sheet.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sidebar.json"
       ],
+      "files": []
+    },
+    {
+      "name": "division-ds-theme",
+      "type": "registry:theme",
+      "title": "Division DS theme",
+      "description": "Division DS's colours for an existing shadcn app: its semantic tokens mapped onto shadcn's variables, light and dark, with square corners.",
+      "cssVars": {
+        "light": {
+          "radius": "0rem",
+          "background": "#f2f4f8",
+          "foreground": "#0b0e13",
+          "card": "rgba(255, 255, 255, 0.6)",
+          "card-foreground": "#0b0e13",
+          "popover": "#c2cddc",
+          "popover-foreground": "#0b0e13",
+          "primary": "#f2550f",
+          "primary-foreground": "#0a0602",
+          "secondary": "#c2cddc",
+          "secondary-foreground": "#0b0e13",
+          "muted": "#c2cddc",
+          "muted-foreground": "#19212c",
+          "accent": "#c2cddc",
+          "accent-foreground": "#0b0e13",
+          "destructive": "#f33636",
+          "border": "rgba(11, 14, 19, 0.12)",
+          "input": "#616874",
+          "ring": "#f2550f",
+          "chart-1": "#c6440b",
+          "chart-2": "#0063d5"
+        },
+        "dark": {
+          "background": "#07080b",
+          "foreground": "#e9eef4",
+          "card": "rgba(40, 52, 69, 0.42)",
+          "card-foreground": "#e9eef4",
+          "popover": "#0d1016",
+          "popover-foreground": "#e9eef4",
+          "primary": "#f2550f",
+          "primary-foreground": "#0a0602",
+          "secondary": "#0d1016",
+          "secondary-foreground": "#e9eef4",
+          "muted": "#0d1016",
+          "muted-foreground": "#a3adba",
+          "accent": "#0d1016",
+          "accent-foreground": "#e9eef4",
+          "destructive": "#f33636",
+          "border": "rgba(214, 226, 240, 0.16)",
+          "input": "#646b72",
+          "ring": "#f2550f",
+          "chart-1": "#f2550f",
+          "chart-2": "#1884ff"
+        }
+      },
       "files": []
     }
   ]

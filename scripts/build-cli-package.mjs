@@ -6,7 +6,7 @@
 //
 // The files keep this repository's layout (scripts/, scripts/lib/, public/manifest/, AGENTS.md),
 // so division-ds.mjs finds them beside itself exactly as it does here.
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, posix } from 'node:path'
 
 const OUT = 'cli-package'
@@ -36,7 +36,12 @@ for (const file of modules) {
   }
 }
 
-const files = [...modules, 'public/manifest/components.json', 'public/manifest/tokens.json', 'AGENTS.md']
+// Read at run time by `division-ds mcp` (get_component, get_review_checklist), so the import walk
+// above cannot find them. Without the pages it falls back to the manifest, which has no prose.
+const pages = readdirSync('public/docs/components').filter(name => name.endsWith('.md')).map(name => `public/docs/components/${name}`)
+// The whole skill folder, for `division-ds skill` (and review.md for get_review_checklist).
+const skill = readdirSync('skills/division-ds', { recursive: true }).map(name => `skills/division-ds/${String(name).split('\\').join('/')}`).filter(name => name.endsWith('.md'))
+const files = [...modules, 'public/manifest/components.json', 'public/manifest/tokens.json', 'AGENTS.md', ...pages, ...skill]
 rmSync(OUT, { recursive: true, force: true })
 for (const file of files) {
   mkdirSync(join(OUT, dirname(file)), { recursive: true })
@@ -47,7 +52,7 @@ copyFileSync('public-repo/LICENSE', join(OUT, 'LICENSE'))
 writeFileSync(join(OUT, 'package.json'), JSON.stringify({
   name: 'division-ds',
   version,
-  description: 'Checks a project that uses Division DS components: raw colours, invented tokens, touching buttons, unknown props.',
+  description: 'Checks a project that uses Division DS components (raw colours, invented tokens, touching buttons, unknown props), and serves the docs and the same checks to agents over MCP.',
   license: 'MIT',
   author: 'Victor Ilioiu',
   homepage: 'https://victor-ilioiu.vercel.app/systems/division-ds/',
@@ -78,6 +83,17 @@ instead. It exits 1 on any finding. Node 22 or newer.
 npx division-ds rules     # writes the Division DS rules into AGENTS.md / CLAUDE.md and similar
 npx division-ds help
 \`\`\`
+
+## For agents: the MCP server
+
+\`\`\`bash
+claude mcp add division-ds -- npx -y division-ds mcp
+\`\`\`
+
+Any MCP client works the same way: the command is \`npx -y division-ds mcp\`, on stdio. It gives the
+agent eight tools: \`list_components\`, \`get_component\`, \`search\`, \`get_tokens\`,
+\`validate_code\` (the checks above, on code the agent just wrote), \`check_contrast\` (WCAG 2.2 AA,
+both themes), \`get_add_command\` and \`get_review_checklist\`.
 
 The components, the docs and the agent skill: https://github.com/Victor-Ilioiu/division-ds
 `)

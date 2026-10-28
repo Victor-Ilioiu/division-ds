@@ -75,6 +75,28 @@ describe('ComponentDocs, from metadata', () => {
     )
   })
 
+  it('copies its markdown twin, fetched from the same URL the link serves', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('# Thing\n'))
+    vi.stubGlobal('fetch', fetchMock)
+    const user = userEvent.setup()
+    const writeText = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue()
+    page()
+    await user.click(screen.getByRole('button', { name: 'Copy as Markdown' }))
+    expect(fetchMock).toHaveBeenCalledWith('/docs/components/thing.md')
+    expect(writeText).toHaveBeenCalledWith('# Thing\n')
+    expect(await screen.findByText('Copied')).toBeInTheDocument()
+    vi.unstubAllGlobals()
+  })
+
+  it('says so when the markdown cannot be fetched', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('', { status: 404 })))
+    const user = userEvent.setup()
+    page()
+    await user.click(screen.getByRole('button', { name: 'Copy as Markdown' }))
+    expect(await screen.findByText(/Copying failed/)).toBeInTheDocument()
+    vi.unstubAllGlobals()
+  })
+
   it('says what it is best for and not for, under the summary', () => {
     page()
     const best = screen.getByText('Naming a thing.')

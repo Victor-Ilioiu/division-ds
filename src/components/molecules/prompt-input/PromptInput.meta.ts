@@ -19,7 +19,7 @@ export const meta: ComponentMeta = {
   ],
   anatomy: [
     { part: 'Form', description: 'Paints surface.base itself, as every form does.' },
-    { part: 'Suggestions', description: "A group of chips above the box. Clicking one submits its text. They're disabled while busy." },
+    { part: 'Suggestions', description: "A group of chips above the box. Clicking one submits its text (disabled while busy), or with editableSuggestions puts it in the box to edit." },
     { part: 'Box', description: "A Textarea with a label that's hidden on screen but read by screen readers. It grows from one line to about eight, then scrolls inside." },
     { part: 'Send / Stop', description: 'One button: a primary Send with an arrow, or, while busy, a secondary Stop with a square.' },
     { part: 'Hint', description: 'One line under the box, which is also the box\'s description: "Enter to send, Shift+Enter for a new line".' },
@@ -32,6 +32,7 @@ export const meta: ComponentMeta = {
     { name: 'busy', type: 'boolean', default: 'false', description: 'Send turns into Stop, and Enter sends nothing.' },
     { name: 'onStop', type: '() => void', description: 'Runs on Stop, and on Escape in the box while busy.' },
     { name: 'suggestions', type: 'readonly string[]', description: 'Ready-made prompts shown as chips. Clicking one submits it.' },
+    { name: 'editableSuggestions', type: 'boolean', default: 'false', description: 'Clicking a suggestion puts its text in the box to edit instead of sending it. Use it when a person will likely change the prompt first. The chips then stay usable while busy.' },
     { name: 'placeholder', type: 'string', description: 'Shown in the empty box.' },
     { name: 'disabled', type: 'boolean', default: 'false', description: "Nothing can be typed or sent. Say why somewhere nearby." },
     { name: 'hint', type: 'string', default: "'Enter to send, Shift+Enter for a new line'", description: 'The line under the box, which is also its description.' },

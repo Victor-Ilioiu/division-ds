@@ -14,10 +14,11 @@ import { cn } from '../../../lib/cn'
 import { disabledText } from '../../../lib/disabled'
 import { useMergedRefs } from '../../../lib/refs'
 import { IconButton } from '../icon-button/IconButton'
+import { AI_FILLED_CLASS, AiFieldMark, AiRevertButton, aiFieldState, setNativeValue } from './ai-field'
 
 export const inputVariants = cva(
   cn(
-    'block w-full font-body',
+    'block w-full font-body rounded-[var(--shape-radius,0px)]',
     'bg-[var(--component-control-fill-rest)] text-[var(--component-control-text-rest)]',
     'border placeholder:text-[var(--component-control-text-placeholder)]',
     // `transition-control`, not `transition-colors`: Tailwind v4's colour transition
@@ -73,6 +74,9 @@ export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'a
     onClear?: () => void
     /** The clear button's accessible name. */
     clearLabel?: string
+    /** The value an AI proposed for this field. While the field holds it, the field looks AI-filled;
+     *  once the person changes it, the field looks normal and offers a revert button. */
+    aiValue?: string
     /** Classes for the wrapper an adorned field renders. Without an adornment there is none. */
     wrapperClassName?: string
   }
@@ -87,14 +91,6 @@ function nearLimitAt(max: number) {
 function remainingMessage(remaining: number) {
   if (remaining <= 0) return 'No characters left'
   return `${remaining} character${remaining === 1 ? '' : 's'} left`
-}
-
-/** Clears through React's own change detection. React remembers the last value it saw, so a
- *  plain `node.value = ''` never reaches the caller's onChange; the prototype's setter followed by
- *  an `input` event does. One path then clears a controlled and an uncontrolled field alike. */
-function clearNativeValue(node: HTMLInputElement) {
-  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(node, '')
-  node.dispatchEvent(new Event('input', { bubbles: true }))
 }
 
 /** The adornment buttons: Search's clear button exactly (ghost, 28px inside a 40px field, no
@@ -116,6 +112,10 @@ const ADORNMENT_BUTTON = { variant: 'ghost', size: 'sm', className: 'h-7 w-7', w
  * - `clearable`: an X while there is a value, the same button as Search's. Clearing fires the
  *   caller's onChange with an empty value, then onClear, and returns focus to the input, because
  *   the button that held focus has just gone.
+ * - `aiValue`: the AI-filled state (Carbon for AI). While the value equals `aiValue` the field
+ *   takes ai.border and ai.wash and a sparkle mark that describes it as "Filled by AI"; once the
+ *   person changes it, the field looks normal and a revert button puts `aiValue` back through
+ *   onChange, the same path as clearing. An invalid field keeps its invalid border.
  *
  * The wrapper is there whenever an adornment is asked for, even while the clear button is hidden:
  * if it appeared on the first keystroke, React would remount the input and drop focus.
@@ -131,25 +131,29 @@ export function Input({
   onClear,
   clearLabel = 'Clear',
   wrapperClassName,
+  aiValue,
   ...rest
 }: InputProps) {
   const { type, maxLength, value, defaultValue, onChange, disabled, readOnly } = rest
   const generatedId = useId()
   const inputId = rest.id ?? `${generatedId}-input`
   const countId = `${generatedId}-count`
+  const aiId = `${generatedId}-ai`
   const inputRef = useRef<HTMLInputElement | null>(null)
   const setInputRef = useMergedRefs(inputRef, ref)
   const adornRef = useRef<HTMLSpanElement | null>(null)
 
   const [revealed, setRevealed] = useState(false)
-  const [uncontrolledLength, setUncontrolledLength] = useState(() => String(defaultValue ?? '').length)
+  const [uncontrolledValue, setUncontrolledValue] = useState(() => String(defaultValue ?? ''))
   const [padRight, setPadRight] = useState<number>()
-  const length = value !== undefined && value !== null ? String(value).length : uncontrolledLength
+  const current = value !== undefined && value !== null ? String(value) : uncontrolledValue
+  const length = current.length
+  const ai = aiFieldState(aiValue, current, Boolean(disabled || readOnly))
 
   const canReveal = revealable && type === 'password'
   const counting = showCount && typeof maxLength === 'number' && maxLength > 0
   const canClear = clearable && !disabled && !readOnly && length > 0
-  const adorned = canReveal || counting || clearable
+  const adorned = canReveal || counting || clearable || aiValue !== undefined
 
   useEffect(() => {
     if (!canReveal) return
@@ -167,10 +171,10 @@ export function Input({
     if (!adorned) return
     const width = adornRef.current?.offsetWidth
     setPadRight(width ? width + 8 : undefined)
-  }, [adorned, canClear, canReveal, counting, length])
+  }, [adorned, canClear, canReveal, counting, length, ai.filled, ai.canRevert])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (value === undefined) setUncontrolledLength(event.target.value.length)
+    if (value === undefined) setUncontrolledValue(event.target.value)
     onChange?.(event)
   }
 
@@ -187,7 +191,7 @@ export function Input({
   }
 
   const describedBy =
-    [rest['aria-describedby'], counting ? countId : undefined].filter(Boolean).join(' ') || undefined
+    [rest['aria-describedby'], ai.filled ? aiId : undefined, counting ? countId : undefined].filter(Boolean).join(' ') || undefined
   const remaining = counting ? maxLength - length : 0
 
   return (
@@ -195,7 +199,7 @@ export function Input({
       <input
         ref={setInputRef}
         aria-invalid={invalid ? true : undefined}
-        className={cn(inputVariants({ inputSize, invalid }), 'pr-10', className)}
+        className={cn(inputVariants({ inputSize, invalid }), ai.filled && !invalid && AI_FILLED_CLASS, 'pr-10', className)}
         {...rest}
         id={inputId}
         type={canReveal && revealed ? 'text' : type}
@@ -204,6 +208,17 @@ export function Input({
         onChange={handleChange}
       />
       <span ref={adornRef} className="absolute inset-y-0 right-1.5 flex items-center gap-0.5">
+        {ai.filled ? <AiFieldMark id={aiId} /> : null}
+        {ai.canRevert ? (
+          <AiRevertButton
+            onRevert={() => {
+              const node = inputRef.current
+              if (!node || aiValue === undefined) return
+              setNativeValue(node, aiValue)
+              node.focus()
+            }}
+          />
+        ) : null}
         {counting ? (
           <span id={countId} className="px-1 font-mono text-sm tabular-nums text-[var(--color-text-secondary)]">
             <span aria-hidden="true">{`${length}/${maxLength}`}</span>
@@ -217,7 +232,7 @@ export function Input({
             onClick={() => {
               const node = inputRef.current
               if (!node) return
-              clearNativeValue(node)
+              setNativeValue(node, '')
               onClear?.()
               node.focus()
             }}

@@ -52,6 +52,11 @@
       "numeral": {
         "pad": { "$type": "color", "$value": "#7b8592", "$description": "The dimmed leading-zero pad on a hero numeral (Overview, Progress readout, docs section index). Decorative and aria-hidden: it is a column width, never a value, so no SC 1.4.3 obligation attaches to it. 5.35:1 on surface.base, which is 31% of text.primary's 17.17:1 there -- that share, not the absolute ratio, is what makes it read as padding rather than as a digit. Holds the same value text.muted holds in this theme and is deliberately NOT an alias of it: text.muted is real secondary text with an AA floor, and the two move for different reasons." }
       },
+      "ai": {
+        "text": { "$type": "color", "$value": "{color.primitive.info.400}", "$description": "Measured by the gate: 9.55:1 on surface.base, 9.08:1 on surface.sunken, 8.32:1 on surface.raised. One step lighter than accent.info.text (info.500) so AI marks and status text do not read as the same thing." },
+        "border": { "$type": "color", "$value": "{color.primitive.info.400}", "$description": "The edge of a field an AI filled. 7.91:1 on the AI-filled field (ai.wash over the control fill), far above the 3:1 SC 1.4.11 floor. Same stop as ai.text; a separate token because a boundary and text carry different floors." },
+        "wash": { "$type": "color", "$value": "rgba(90, 167, 255, 0.1)", "$description": "Tint laid over the control fill of an AI-filled field. Text on it is text.primary and gated (composited over surface.sunken). Never a fill on its own, never under coloured text other than ai.text." }
+      },
       "focus": {
         "ring": { "$type": "color", "$value": "{color.primitive.signal.500}" }
       },

@@ -19,6 +19,9 @@ export type PromptInputProps = {
   onStop?: () => void
   /** Ready-made prompts shown as chips above the box. A click submits that text. */
   suggestions?: readonly string[]
+  /** A suggestion click puts its text in the box to edit, and sends nothing. For prompts a person
+   *  will likely change before sending (`Draft a reply to ...`). @default false */
+  editableSuggestions?: boolean
   placeholder?: string
   /** Nothing can be typed or sent. Say why nearby. @default false */
   disabled?: boolean
@@ -58,6 +61,7 @@ export function PromptInput({
   busy = false,
   onStop,
   suggestions,
+  editableSuggestions = false,
   placeholder,
   disabled = false,
   hint = 'Enter to send, Shift+Enter for a new line',
@@ -109,9 +113,10 @@ export function PromptInput({
             <button
               key={suggestion}
               type="button"
-              disabled={busy || disabled}
+              disabled={(busy && !editableSuggestions) || disabled}
               onClick={() => {
-                send(suggestion)
+                if (editableSuggestions) onValueChange(suggestion)
+                else send(suggestion)
                 boxRef.current?.focus()
               }}
               className={cn(

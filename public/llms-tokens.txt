@@ -41,6 +41,9 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | `--color-accent-warning-text` | Warning text or icon on a surface: a pending or degraded status. | `dark #ffac2a, light #804e00` |
 | `--color-accent-warning-ink` | Text and icons on accent.warning.fill. | `#0a0602` |
 | `--color-numeral-pad` | The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read. | `dark #7b8592, light #627da4` |
+| `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. | `dark #78b7ff, light #004593` |
+| `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. | `dark #78b7ff, light #004593` |
+| `--color-ai-wash` | The faint tint inside a field an AI filled, laid over the control fill. Input and Textarea paint it; nothing else should. | `dark rgba(90, 167, 255, 0.1), light rgba(0, 99, 213, 0.08)` |
 | `--color-focus-ring` | The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset. | `#f2550f` |
 | `--color-chart-series-1` | The first data series in a chart. A graphic colour, never text. ChartPanel applies it. | `dark #f2550f, light #c6440b` |
 | `--color-chart-series-2` | The second data series in a chart. A graphic colour, never text. There is no third: split the chart. | `dark #1884ff, light #0063d5` |

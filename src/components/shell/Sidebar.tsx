@@ -24,6 +24,7 @@ export const NAV: NavGroup[] = [
       { to: '/', label: 'Overview' },
       { to: '/guidelines/install', label: 'Install' },
       { to: '/guidelines/color', label: 'Color' },
+      { to: '/guidelines/theme', label: 'Theme builder' },
       { to: '/guidelines/typography', label: 'Typography' },
       { to: '/guidelines/spacing', label: 'Spacing & layout' },
       { to: '/guidelines/shape', label: 'Shape' },
@@ -32,12 +33,14 @@ export const NAV: NavGroup[] = [
       { to: '/guidelines/motion', label: 'Motion' },
       { to: '/guidelines/tokens', label: 'Tokens browser' },
       { to: '/guidelines/accessibility', label: 'Accessibility' },
+      { to: '/guidelines/host-apps', label: 'Host apps' },
     ],
   },
   {
     title: 'Atoms',
     icon: <Atom />,
     items: [
+      { to: '/components/ai-label', label: 'AI label' },
       { to: '/components/avatar', label: 'Avatar' },
       { to: '/components/badge', label: 'Badge' },
       { to: '/components/button', label: 'Button' },

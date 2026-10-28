@@ -30,7 +30,7 @@ describe('the generated agent docs', () => {
 
   it('give every component a page with an import line, props and at least one example', () => {
     const pages = Object.entries(files).filter(([path]) => path.startsWith('public/docs/components/'))
-    expect(pages).toHaveLength(67)
+    expect(pages).toHaveLength(68)
     for (const [path, text] of pages) {
       expect(text, path).toMatch(/## Import\n\n```tsx\nimport \{ \w/)
       expect(text, path).toContain('## Props')
@@ -49,6 +49,7 @@ describe('the generated agent docs', () => {
       'commands/build.md',
       'commands/fix.md',
       'commands/review.md',
+      'topics/ai.md',
       'topics/colour.md',
       'topics/feedback.md',
       'topics/forms.md',
@@ -66,10 +67,24 @@ describe('the generated agent docs', () => {
     for (const line of lines) expect(line).toMatch(/ Best for: .+ Not for: .+\.$/)
   })
 
+  it('write DESIGN.md as one short file that links every component page and nothing missing', () => {
+    const design = files['public/DESIGN.md']
+    const links = [...design.matchAll(/\]\(([^)]+)\)/g)].map(match => `public/${match[1]}`)
+    expect(links.filter(link => !(link in files))).toEqual([])
+    expect(links.filter(link => link.startsWith('public/docs/components/'))).toHaveLength(
+      Object.keys(files).filter(path => path.startsWith('public/docs/components/')).length,
+    )
+    expect(design).toMatch(/`font-display`: `"Oxanium"/)
+    expect(design).toContain('`--color-surface-base`')
+    // 18.1 kB when written (2026-10-26). It links the pages rather than inlining them.
+    expect(design.length).toBeLessThan(20_000)
+  })
+
   it('keep the index small enough to read whole', () => {
     // 20 kB held 58 components; the nine added on 2026-10-15 (monitoring and assistant) brought it
     // to about 22 kB after their index lines were trimmed, so the cap moved with the count.
     expect(files['public/llms.txt'].length).toBeLessThan(24_000)
-    expect(files['public/llms-guidelines.txt'].length).toBeLessThan(8_000)
+    // 8 kB until the Assistant copy rule (2026-10-26) took it just over, trimmed to three lines.
+    expect(files['public/llms-guidelines.txt'].length).toBeLessThan(8_500)
   })
 })

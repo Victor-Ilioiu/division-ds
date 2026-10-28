@@ -5,6 +5,8 @@
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border-hairline);
   backdrop-filter: blur(6px);
+  /* The theme builder's shape switch; unset, it is the square panel. See bevel.css. */
+  border-radius: var(--shape-radius, 0px);
 }
 
 /* The crosshair, split out of `.panel` so a surface can take the motif without also taking the

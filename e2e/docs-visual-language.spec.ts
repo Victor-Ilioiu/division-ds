@@ -137,7 +137,8 @@ test.describe('the motifs are on the components, not only in the docs', () => {
     // Retried, not hovered once: the first example sits below a 720px fold since the "Best for"
     // block landed, the shell may still scroll right after load, and Radix closes a tooltip on
     // scroll. A hover that lands during that scroll shows nothing; the next one does.
-    const trigger = page.locator('#main button').first()
+    // By name, not "the first button": the page's own Copy as Markdown button comes first.
+    const trigger = page.getByRole('button', { name: 'Dispatch' })
     const panel = page.locator('[role="tooltip"]').first()
     await expect(async () => {
       await trigger.hover()

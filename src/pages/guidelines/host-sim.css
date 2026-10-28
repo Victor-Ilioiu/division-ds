@@ -1,0 +1,41 @@
+/* A stand-in for a host, for the Host apps guideline page only. Inside Claude, the host writes
+   these variables onto <html>; here they sit on a wrapper so the page can show both looks side
+   by side. Values: Claude's published style variables (claude.com/docs, MCP Apps design
+   guidelines, "Style variables"), the ones tokens/host/mcp-apps.json reads plus the two text
+   colours both vocabularies share. Literals are the point of this file, so it is exempt from the
+   token-discipline gate. */
+.host-sim {
+  --color-background-primary: #30302e;
+  --color-background-secondary: #262624;
+  --color-background-tertiary: #141413;
+  --color-text-primary: #faf9f5;
+  --color-text-secondary: #c2c0b6;
+  --color-text-tertiary: #9c9a92;
+  --color-text-danger: #ee8884;
+  --color-text-success: #7ab948;
+  --color-text-info: #80aadd;
+  --color-text-warning: #d1a041;
+  --color-border-primary: rgba(222, 220, 209, 0.4);
+  --color-border-secondary: rgba(222, 220, 209, 0.3);
+  --color-border-tertiary: rgba(222, 220, 209, 0.15);
+  --color-ring-primary: rgba(250, 249, 245, 0.7);
+  --font-sans: "Anthropic Sans", system-ui, sans-serif;
+  background: var(--color-background-primary);
+}
+
+[data-theme="light"] .host-sim {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f4ed;
+  --color-background-tertiary: #faf9f5;
+  --color-text-primary: #141413;
+  --color-text-secondary: #3d3d3a;
+  --color-text-tertiary: #73726c;
+  --color-text-danger: #7f2c28;
+  --color-text-success: #265b19;
+  --color-text-info: #3266ad;
+  --color-text-warning: #5a4815;
+  --color-border-primary: rgba(31, 30, 29, 0.4);
+  --color-border-secondary: rgba(31, 30, 29, 0.3);
+  --color-border-tertiary: rgba(31, 30, 29, 0.15);
+  --color-ring-primary: rgba(20, 20, 19, 0.7);
+}

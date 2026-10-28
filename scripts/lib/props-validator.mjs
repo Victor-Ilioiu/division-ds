@@ -218,7 +218,7 @@ function literalValues(initializer) {
   return collect(initializer.expression)
 }
 
-function scriptKind(path) {
+export function scriptKind(path) {
   if (/\.tsx$/.test(path)) return ts.ScriptKind.TSX
   if (/\.jsx$/.test(path)) return ts.ScriptKind.JSX
   if (/\.[cm]?js$/.test(path)) return ts.ScriptKind.JSX

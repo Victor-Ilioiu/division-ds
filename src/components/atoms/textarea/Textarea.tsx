@@ -1,13 +1,15 @@
-import type { Ref, TextareaHTMLAttributes } from 'react'
+import { useId, useRef, useState, type ChangeEvent, type Ref, type TextareaHTMLAttributes } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../../lib/cn'
 import { disabledText } from '../../../lib/disabled'
+import { useMergedRefs } from '../../../lib/refs'
+import { AI_FILLED_CLASS, AiFieldMark, AiRevertButton, aiFieldState, setNativeValue } from '../input/ai-field'
 
 // Deliberately not sharing inputVariants: its variants are fixed heights, which are exactly wrong
 // for a multi-line box. Repeating six class strings is cheaper than a variant that fits neither.
 export const textareaVariants = cva(
   cn(
-    'block w-full font-body text-sm px-3 py-2 resize-y min-h-[88px]',
+    'block w-full font-body text-sm px-3 py-2 resize-y min-h-[88px] rounded-[var(--shape-radius,0px)]',
     'bg-[var(--component-control-fill-rest)] text-[var(--component-control-text-rest)]',
     'border placeholder:text-[var(--component-control-text-placeholder)]',
     // `transition-control`, not `transition-colors`: Tailwind v4's colour transition
@@ -51,16 +53,65 @@ export type TextareaProps = Omit<
   VariantProps<typeof textareaVariants> & {
     ref?: Ref<HTMLTextAreaElement>
     'aria-invalid'?: never
+    /** The value an AI proposed. Same contract as Input's `aiValue`. */
+    aiValue?: string
   }
 
-export function Textarea({ invalid, className, rows = 4, ref, ...rest }: TextareaProps) {
+/**
+ * Bare, exactly one `<textarea>`. With `aiValue` it gains Input's AI-filled state: a wrapper, and
+ * the sparkle mark or the revert button in the top right corner, where a growing box never moves
+ * them. The wrapper is there for as long as `aiValue` is set, so the mark swapping for the button
+ * on the first keystroke never remounts the textarea and drops focus.
+ */
+export function Textarea({ invalid, className, rows = 4, ref, aiValue, ...rest }: TextareaProps) {
+  const { value, defaultValue, onChange, disabled, readOnly } = rest
+  const aiId = `${useId()}-ai`
+  const node = useRef<HTMLTextAreaElement | null>(null)
+  const setRef = useMergedRefs(node, ref)
+  const [uncontrolledValue, setUncontrolledValue] = useState(() => String(defaultValue ?? ''))
+
+  if (aiValue === undefined) {
+    return (
+      <textarea
+        ref={ref}
+        rows={rows}
+        aria-invalid={invalid ? true : undefined}
+        className={cn(textareaVariants({ invalid }), className)}
+        {...rest}
+      />
+    )
+  }
+
+  const current = value !== undefined && value !== null ? String(value) : uncontrolledValue
+  const ai = aiFieldState(aiValue, current, Boolean(disabled || readOnly))
+  const describedBy = [rest['aria-describedby'], ai.filled ? aiId : undefined].filter(Boolean).join(' ') || undefined
+
   return (
-    <textarea
-      ref={ref}
-      rows={rows}
-      aria-invalid={invalid ? true : undefined}
-      className={cn(textareaVariants({ invalid }), className)}
-      {...rest}
-    />
+    <div className="relative w-full">
+      <textarea
+        ref={setRef}
+        rows={rows}
+        aria-invalid={invalid ? true : undefined}
+        className={cn(textareaVariants({ invalid }), ai.filled && !invalid && AI_FILLED_CLASS, 'pr-10', className)}
+        {...rest}
+        aria-describedby={describedBy}
+        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+          if (value === undefined) setUncontrolledValue(event.target.value)
+          onChange?.(event)
+        }}
+      />
+      <span className="absolute top-1.5 right-1.5 flex">
+        {ai.filled ? <AiFieldMark id={aiId} /> : null}
+        {ai.canRevert ? (
+          <AiRevertButton
+            onRevert={() => {
+              if (!node.current) return
+              setNativeValue(node.current, aiValue)
+              node.current.focus()
+            }}
+          />
+        ) : null}
+      </span>
+    </div>
   )
 }

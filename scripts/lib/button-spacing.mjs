@@ -91,7 +91,7 @@ function scanAttrs(text, start) {
 
 /** Every JSX tag token in `text`, in source order: `{ type: 'open' | 'close' | 'self', name,
  *  attrsText, start }`. `start` is the index of the tag's leading `<`. */
-function tokenizeTags(text) {
+export function tokenizeTags(text) {
   const tokens = []
   let i = 0
   while (i < text.length) {
@@ -306,7 +306,7 @@ function hasWorkingGap(className) {
  * on the stack, otherwise it is ignored -- real TSX is always balanced; this only has to not throw
  * on the odd case this scanner misreads.
  */
-function buildTree(tokens) {
+export function buildTree(tokens) {
   const root = { name: null, attrsText: '', attrs: new Map(), start: -1, children: [] }
   const stack = [root]
   for (const token of tokens) {
@@ -343,7 +343,7 @@ function buildTree(tokens) {
  *  only child element is a button -- the `SheetClose asChild><Button/></SheetClose>` shape that is
  *  exactly what shipped broken. Only one level of unwrapping: an `asChild` wrapper around an
  *  `asChild` wrapper is not chased further. */
-function isButtonLike(node) {
+export function isButtonLike(node) {
   if (BUTTON_TAGS.has(node.name)) return true
   if (node.attrs.get('asChild') === 'true' && node.children.length === 1) {
     return BUTTON_TAGS.has(node.children[0].name)
@@ -351,7 +351,7 @@ function isButtonLike(node) {
   return false
 }
 
-function lineIndex(text) {
+export function lineIndex(text) {
   const offsets = [0]
   for (let i = 0; i < text.length; i++) {
     if (text[i] === '\n') offsets.push(i + 1)
@@ -359,7 +359,7 @@ function lineIndex(text) {
   return offsets
 }
 
-function lineColAt(offsets, index) {
+export function lineColAt(offsets, index) {
   let lo = 0
   let hi = offsets.length - 1
   while (lo < hi) {

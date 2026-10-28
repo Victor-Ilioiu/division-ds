@@ -52,18 +52,18 @@ import { CONSOLE_PAGES } from '../console/routes'
  *  than how many assertions ran. */
 export const OVERVIEW_COUNTS = {
   /** Folders under src/components/atoms, each with a component, a test file and a docs page. */
-  atoms: 22,
+  atoms: 23,
   /** Folders under src/components/molecules, each with a component, a test file and a docs page. */
   molecules: 28,
   /** Folders under src/components/organisms, each with a component, a test file and a docs page. */
   organisms: 17,
-  /** Routed, sidebar-listed pages: the ten guidelines (Install among them), this one, the twenty-two atom pages,
-   *  the molecule pages and the organism pages. */
-  pages: 78,
+  /** Routed, sidebar-listed pages: the twelve guidelines (Install, the theme builder and host apps among them), this one,
+   *  the twenty-three atom pages, the molecule pages and the organism pages. */
+  pages: 81,
   /** tokens/semantic/color.{dark,light}.json. */
   themes: 2,
-  /** Rows the contrast gate runs: 82 token pairs, each measured once per theme. */
-  contrastChecks: 164,
+  /** Rows the contrast gate runs: 89 token pairs, each measured once per theme. */
+  contrastChecks: 178,
   /** src/demo/routes.ts's DEMO_PAGES, the one place a Hexline route is registered. Imported
    *  rather than typed, so a page added to or removed from the demo store moves this figure
    *  without anyone remembering to update it. */
@@ -131,7 +131,7 @@ const GATES: { value: number; body: ReactNode; to: string; linkLabel: string }[]
     body: (
       <>
         contrast measurements, taken every time the site is built. A contrast measurement checks
-        how clearly one colour stands out from another. There are 82 token pairs (a token is a
+        how clearly one colour stands out from another. There are 89 token pairs (a token is a
         named colour, and each pair is a colour and the background it sits on), each one measured
         in both themes.{' '}
         <code className="font-mono text-[0.8125rem]">npm run build</code>, the command that builds
@@ -321,7 +321,7 @@ export function Overview() {
       <div className="max-w-4xl">
         <SectionHeading>Live, from source</SectionHeading>
         <p className={`${docsProse} max-w-[62ch] mb-6`}>
-          Nothing below is a screenshot. These are seven of the twenty-two building blocks, drawn
+          Nothing below is a screenshot. These are seven of the twenty-three building blocks, drawn
           from the same code a developer would use, inside the system&apos;s own panel frame. Press
           Tab to move through them. Each one draws its own focus ring (the outline that shows
           where the keyboard is), and the ones with cut corners draw it outside the cut.
@@ -339,7 +339,7 @@ export function Overview() {
           <Progress label="Sync" value={64} showValue className="w-44" />
         </Panel>
         <p className={`${docsProse} mt-5`}>
-          Every one of the twenty-two has its own page.{' '}
+          Every one of the twenty-three has its own page.{' '}
           <Route to="/components/select">Start with Select</Route>, the most complex of them, or{' '}
           <Route to="/components/progress">Progress</Route>, where the big-number style this page
           borrows comes from.

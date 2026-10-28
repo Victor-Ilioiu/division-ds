@@ -1,0 +1,22 @@
+{
+  "$description": "The MCP Apps host adapter: which host style variable each Division token takes inside an element with data-host=\"mcp\". Host names are the McpUiStyleVariableKey set of @modelcontextprotocol/ext-apps (Claude's design guidelines list the same 76). Division's own value is the fallback, so a host that omits a variable changes nothing. Emitted into src/styles/tokens.css by scripts/build-tokens.mjs; see scripts/lib/host-tokens.mjs for the checks.",
+  "map": {
+    "--color-surface-base": "--color-background-primary",
+    "--color-surface-raised": "--color-background-secondary",
+    "--color-surface-sunken": "--color-background-tertiary",
+    "--color-border-hairline": "--color-border-tertiary",
+    "--color-border-hairline-strong": "--color-border-secondary",
+    "--color-border-control": "--color-border-primary",
+    "--color-border-selection": "--color-border-primary",
+    "--color-text-muted": "--color-text-tertiary",
+    "--color-text-placeholder": "--color-text-tertiary",
+    "--color-text-label": "--color-text-tertiary",
+    "--color-accent-hostile-text": "--color-text-danger",
+    "--color-accent-ok-text": "--color-text-success",
+    "--color-accent-info-text": "--color-text-info",
+    "--color-accent-warning-text": "--color-text-warning",
+    "--color-focus-ring": "--color-ring-primary",
+    "--font-body": "--font-sans",
+    "--font-display": "--font-sans"
+  }
+}

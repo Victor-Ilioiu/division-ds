@@ -27,7 +27,7 @@ export const meta: ComponentMeta = {
     {
       part: 'Adornments',
       description:
-        "Optional extras inside the right edge, in this order: the count in mono (a fixed-width typeface), the clear button and the reveal toggle. Turning on any of them wraps the input in a relative box (wrapperClassName styles it) and sizes the right padding to fit them, so text never runs underneath. With none on, the input is bare, with no wrapper.",
+        "Optional extras inside the right edge, in this order: the AI mark or its revert button, the count in mono (a fixed-width typeface), the clear button and the reveal toggle. Turning on any of them wraps the input in a relative box (wrapperClassName styles it) and sizes the right padding to fit them, so text never runs underneath. With none on, the input is bare, with no wrapper.",
     },
     {
       part: 'Placeholder',
@@ -79,6 +79,12 @@ export const meta: ComponentMeta = {
       description: "The clear button’s name. If the page has more than one, say what it clears: ‘Clear call sign’.",
     },
     {
+      name: 'aiValue',
+      type: 'string',
+      description:
+        "The value an AI proposed. While the field holds exactly this value it shows the AI-filled state: an ai.border edge, a faint ai.wash tint and a sparkle mark that describes the field as Filled by AI. Once the person changes it, the field looks normal again and a Revert to suggestion button puts the value back through onChange (no button on a disabled or read-only field). An invalid field keeps its invalid border.",
+    },
+    {
       name: 'wrapperClassName',
       type: 'string',
       description:
@@ -99,7 +105,7 @@ export const meta: ComponentMeta = {
     },
   ],
   keyboard: [
-    { keys: ['Tab'], does: 'Moves focus to the input, then to its clear button and reveal toggle if they are there.' },
+    { keys: ['Tab'], does: 'Moves focus to the input, then to its revert, clear and reveal buttons if they are there.' },
     {
       keys: ['Esc'],
       does: "Nothing by default, even with clearable. Clearing on Escape is a search behaviour, and it lives in the Search molecule.",
@@ -126,5 +132,6 @@ export const meta: ComponentMeta = {
     "Don't disable a field to make it read-only. Use readOnly, which you can still focus and copy from.",
     "Don't add clearable to a search field. Search already has its own clear button and the Escape key.",
     "Don't build your own show-password button next to a revealable field. You'll end up with two.",
+    "Don't set aiValue on a field the person filled in themselves. The AI look says the machine wrote it.",
   ],
 }

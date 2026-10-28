@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { extractRules } from './agent-docs.mjs'
-import { applyPlan, cursorRule, diff, END, planRules, removeBlock, START, upsertBlock } from './rules-installer.mjs'
+import { applyPlan, cursorRule, diff, END, planRules, planSkill, removeBlock, START, upsertBlock } from './rules-installer.mjs'
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const CLI = join(REPO_ROOT, 'scripts/division-ds.mjs')
@@ -147,5 +147,41 @@ describe('the CLI', () => {
 
     expect(cli('check', 'src/Good.tsx').status).toBe(0)
     expect(cli('check', 'missing.tsx').status).toBe(2)
+  })
+
+  it('skill --dry-run writes nothing; skill refuses this repository', () => {
+    const dry = cli('skill', '--dry-run')
+    expect(dry.status).toBe(0)
+    expect(dry.stdout).toMatch(/would create\s+\S*SKILL\.md/)
+    expect(existsSync(at('.agents'))).toBe(false)
+    expect(cli('skill', '--target', REPO_ROOT).status).toBe(2)
+  })
+})
+
+describe('the skill installer', () => {
+  const SOURCE = join(REPO_ROOT, 'skills/division-ds')
+  const skill = options => planSkill({ targetDir: dir, sourceDir: SOURCE, ...options })
+
+  it('copies the skill folder into both agent paths, then reports it unchanged', () => {
+    applyPlan(skill(), dir)
+    for (const base of ['.agents/skills/division-ds', '.claude/skills/division-ds']) {
+      expect(readFileSync(at(`${base}/SKILL.md`), 'utf8')).toBe(readFileSync(join(SOURCE, 'SKILL.md'), 'utf8'))
+      expect(existsSync(at(`${base}/topics/forms.md`))).toBe(true)
+      expect(existsSync(at(`${base}/commands/review.md`))).toBe(true)
+    }
+    expect(skill().every(change => change.action === 'unchanged')).toBe(true)
+  })
+
+  it('deletes a file the skill no longer ships, and --remove leaves the project as it was', () => {
+    mkdirSync(at('.claude'))
+    writeFileSync(at('.claude/settings.json'), '{}')
+    applyPlan(skill({ only: ['claude'] }), dir)
+    writeFileSync(at('.claude/skills/division-ds/topics/old.md'), 'stale')
+    const deleted = skill({ only: ['claude'] }).filter(change => change.action === 'delete')
+    expect(deleted.map(change => change.path)).toEqual([at('.claude/skills/division-ds/topics/old.md')])
+    applyPlan(skill({ remove: true }), dir)
+    expect(existsSync(at('.claude/skills'))).toBe(false)
+    expect(existsSync(at('.agents'))).toBe(false)
+    expect(readFileSync(at('.claude/settings.json'), 'utf8')).toBe('{}')
   })
 })

@@ -16,6 +16,7 @@ export type DocsPage = {
 export const DOCS_PAGES: DocsPage[] = [
   { path: '/guidelines/install', Component: lazy(() => import('./pages/guidelines/InstallGuideline').then(module => ({ default: module.InstallGuideline }))) },
   { path: '/guidelines/color', Component: lazy(() => import('./pages/guidelines/ColorGuideline').then(module => ({ default: module.ColorGuideline }))) },
+  { path: '/guidelines/theme', Component: lazy(() => import('./pages/guidelines/ThemeGuideline').then(module => ({ default: module.ThemeGuideline }))) },
   { path: '/guidelines/typography', Component: lazy(() => import('./pages/guidelines/TypographyGuideline').then(module => ({ default: module.TypographyGuideline }))) },
   { path: '/guidelines/spacing', Component: lazy(() => import('./pages/guidelines/SpacingGuideline').then(module => ({ default: module.SpacingGuideline }))) },
   { path: '/guidelines/shape', Component: lazy(() => import('./pages/guidelines/ShapeGuideline').then(module => ({ default: module.ShapeGuideline }))) },
@@ -23,8 +24,10 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/guidelines/iconography', Component: lazy(() => import('./pages/guidelines/IconographyGuideline').then(module => ({ default: module.IconographyGuideline }))) },
   { path: '/guidelines/motion', Component: lazy(() => import('./pages/guidelines/MotionGuideline').then(module => ({ default: module.MotionGuideline }))) },
   { path: '/guidelines/tokens', Component: lazy(() => import('./pages/guidelines/TokensBrowser').then(module => ({ default: module.TokensBrowser }))) },
+  { path: '/guidelines/host-apps', Component: lazy(() => import('./pages/guidelines/HostAppsGuideline').then(module => ({ default: module.HostAppsGuideline }))) },
   { path: '/guidelines/accessibility', Component: lazy(() => import('./pages/guidelines/AccessibilityGuideline').then(module => ({ default: module.AccessibilityGuideline }))) },
   { path: '/components/avatar', Component: lazy(() => import('./components/atoms/avatar/AvatarDocs').then(module => ({ default: module.AvatarDocs }))) },
+  { path: '/components/ai-label', Component: lazy(() => import('./components/atoms/ai-label/AiLabelDocs').then(module => ({ default: module.AiLabelDocs }))) },
   { path: '/components/badge', Component: lazy(() => import('./components/atoms/badge/BadgeDocs').then(module => ({ default: module.BadgeDocs }))) },
   { path: '/components/button', Component: lazy(() => import('./components/atoms/button/ButtonDocs').then(module => ({ default: module.ButtonDocs }))) },
   { path: '/components/checkbox', Component: lazy(() => import('./components/atoms/checkbox/CheckboxDocs').then(module => ({ default: module.CheckboxDocs }))) },

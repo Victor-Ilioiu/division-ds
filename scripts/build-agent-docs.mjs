@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url'
 import {
   componentMarkdown,
   componentsBundle,
+  designFile,
   extractRules,
   helpersPage,
   guidelinesFile,
@@ -90,8 +91,14 @@ export async function buildAgentDocs(root = REPO_ROOT) {
       api: exportedApi(readFileSync(join(root, 'src/lib', file), 'utf8'), file),
     }))
 
+  // The three font stacks, read from the theme rather than copied, so DESIGN.md follows a change.
+  const fonts = [...readFileSync(join(root, 'src/styles/tailwind.css'), 'utf8').matchAll(/--font-([a-z]+):\s*([^;]+);/g)].map(
+    ([, name, stack]) => ({ name, stack: stack.trim() })
+  )
+
   const files = {
     'public/llms.txt': llmsIndex(entries, { rules }),
+    'public/DESIGN.md': designFile(entries, tokens, { fonts, rules }),
     'public/docs/helpers.md': helpersPage(helpers),
     'public/llms-components.txt': componentsBundle(entries),
     'public/llms-tokens.txt': tokensBundle(tokens),

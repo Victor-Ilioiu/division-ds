@@ -18,6 +18,12 @@ export const meta: ComponentMeta = {
   props: [
     { name: 'invalid', type: 'boolean', default: 'false', description: "Sets aria-invalid and the invalid border. aria-invalid is an ARIA (Accessible Rich Internet Applications) attribute that tells screen readers the value has a problem. It doesn't render error text." },
     { name: 'rows', type: 'number', default: '4', description: "The browser's own rows attribute. Size it to the answer you expect." },
+    {
+      name: 'aiValue',
+      type: 'string',
+      description:
+        "The value an AI proposed, with the same contract as Input. The mark and the revert button sit in the top right corner. While the field holds exactly this value it shows the AI-filled state: an ai.border edge, a faint ai.wash tint and a sparkle mark that describes the field as Filled by AI. Once the person changes it, the field looks normal again and a Revert to suggestion button puts the value back through onChange (no button on a disabled or read-only field). An invalid field keeps its invalid border.",
+    },
     { name: 'className', type: 'string', description: "Merged with the control's classes. Later Tailwind utilities (the small styling classes this system uses) win." },
     { name: 'ref', type: 'Ref<HTMLTextAreaElement>', description: 'Forwarded to the textarea element.' },
     {

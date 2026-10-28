@@ -1,6 +1,6 @@
 ---
 name: division-ds
-description: Use when building or changing UI with Division DS (React 19, Tailwind 4, Radix; 67 components). Covers which component and token to use, the composition rules prop types cannot express (providers, FormField, button gaps, card borders), planning a screen's states, and how to check the result. Load it before writing any screen or component in a project that has Division DS components.
+description: Use when building or changing UI with Division DS (React 19, Tailwind 4, Radix; 68 components). Covers which component and token to use, the composition rules prop types cannot express (providers, FormField, button gaps, card borders), planning a screen's states, and how to check the result. Load it before writing any screen or component in a project that has Division DS components.
 ---
 
 # Division DS
@@ -40,6 +40,7 @@ A finding says what to write instead. `commands/fix.md` explains each one.
 - `topics/overlays.md`: adding a Dialog, an AlertDialog or a Sheet.
 - `topics/feedback.md`: a screen reports a result or a wait: a toast, an alert, progress, a spinner.
 - `topics/motion.md`: animating anything yourself.
+- `topics/ai.md`: wording a chat.
 
 ## Commands: load when
 

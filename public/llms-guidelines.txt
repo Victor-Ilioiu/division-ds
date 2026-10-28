@@ -113,3 +113,7 @@ element arriving, `anim-draw-on` for a hairline) and the motion tokens (`--durat
 hover, `--duration-base` by default, `--duration-slow` for a larger change, `--ease-snap`).
 Anything you animate yourself stops under `prefers-reduced-motion` (`motion-reduce:` in
 Tailwind), and nothing moves on its own: no autoplay.
+
+**Assistant copy.** A button names the action ("Summarize"), never "AI". Say "response", not
+"answer". No "please" or "!" in assistant labels. The interface says "Assistant"; only its own
+messages say "I".

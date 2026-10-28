@@ -40,6 +40,10 @@
   "--color-accent-warning-ink": "Text and icons on accent.warning.fill.",
 
   "--color-numeral-pad": "The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read.",
+  "--color-ai-text": "Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone.",
+  "--color-ai-border": "The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand.",
+  "--color-ai-wash": "The faint tint inside a field an AI filled, laid over the control fill. Input and Textarea paint it; nothing else should.",
+
   "--color-focus-ring": "The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset.",
   "--color-chart-series-1": "The first data series in a chart. A graphic colour, never text. ChartPanel applies it.",
   "--color-chart-series-2": "The second data series in a chart. A graphic colour, never text. There is no third: split the chart.",

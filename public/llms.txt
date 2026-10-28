@@ -1,6 +1,6 @@
 # Division DS
 
-> A React 19, Tailwind 4 and Radix design system: 67 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
+> A React 19, Tailwind 4 and Radix design system: 68 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
 
 Links below are relative to this file, so they work wherever the site is served. In the repository the same files are under `public/`.
 Read a component page before using the component: it has the props, working examples and the rules.
@@ -8,6 +8,7 @@ Read a component page before using the component: it has the props, working exam
 ## Start here
 
 - [Rules](llms-guidelines.txt): imports, colour, providers, forms. Short. Read it first.
+- [DESIGN.md](DESIGN.md): the system in one file (colour, type, spacing, motion, every component in a line, the rules), for a tool that takes a single design file.
 - [Tokens](llms-tokens.txt): every semantic and component token with when to use it.
 - [Helpers](docs/helpers.md): the shared functions and types under src/lib (form errors, money, links, theme, streamed text).
 - [All components, compact](llms-components.txt): every prop signature in one file.
@@ -15,6 +16,7 @@ Read a component page before using the component: it has the props, working exam
 
 ## Atoms
 
+- [AiLabel](docs/components/ai-label.md): Marks content as made by AI, and on request says why. Best for: Marking a block of text, a value or a field that an AI wrote, so the person knows to check it. Not for: A status or a category: use Badge. A field the AI filled: give the field aiValue, which marks it itself.
 - [Avatar](docs/components/avatar.md): A small square that shows who someone is. Best for: Showing who a person is, next to their name, as in a roster row, a comment or an account menu. Not for: Several people in one spot: use AvatarGroup.
 - [Badge](docs/components/badge.md): A small chip that shows a status. Best for: You need to label a status with a word and a tone, like an order state or a sync result. Not for: A filter or selection someone can remove. Use Tag for that.
 - [Button](docs/components/button.md): The main control for taking an action. Best for: An action on this page, like submit, save or open a dialog. Not for: Going somewhere (use Link, or Button asChild around an anchor), or an action with no visible word (use IconButton).
@@ -92,18 +94,18 @@ Read a component page before using the component: it has the props, working exam
 ## The rules in brief
 
 - **Imports.** Import a component from its own file, by relative path.
-- **Colour.** Every colour is a semantic token inside a Tailwind arbitrary value:
+- **Colour.** Every colour is a semantic token inside a Tailwind arbitrary value: `text-[var(--color-text-primary)]`, `bg-[var(--color-surface-base)]`.
 - **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`, `DemoLayout` in this repository).
 - **Focus.** Anything focusable that you style yourself gets `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.
 - **Page title, empty, loading.** Plan these before writing a screen.
-- **What the system does not have.** No Popover, no Combobox (single value:
+- **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several: `MultiSelect`), no date picker.
 - **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`, `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the docs).
 - **Fill, text, ink.** Each accent has three roles.
 - **Status tones.** `ok` done or healthy; `warning` degraded or needs attention; `hostile` failed or destructive; `info` in progress or neutral news; `signal` brand emphasis (a sale, the selected thing); `neutral` inactive.
 - **Themes.** The theme is `data-theme="light"` or `"dark"` on `<html>` (`src/lib/theme.ts`); dark is the default.
-- **Type.** Three families, as utilities:
+- **Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the default, set by the shell), `font-mono` (labels, code, tabular numbers).
 - **Text size.** Secondary text is 14px or larger.
-- **Cards.** To highlight or select a `Card`, set the border inline with a token:
+- **Cards.** To highlight or select a `Card`, set the border inline with a token: `style={{ border: '2px solid var(--color-accent-signal-fill)' }}`.
 - **Links.** Components that render links take `renderLink`, defaulting to a plain `<a>`.
 - **Charts and bundle size.** `ChartPanel` and `Sparkline` bring in recharts, a few hundred kB.
 - **Forms.** In a form, `Input`, `Textarea`, `Select`, `MultiSelect` and `QuantityStepper` go inside a `FormField`, which supplies the label, help and error and keeps an `id` you pass to the control.
@@ -112,3 +114,4 @@ Read a component page before using the component: it has the props, working exam
 - **Overlays.** A task on top of the page is a `Dialog`; a destructive confirm is `AlertDialog`, not `Dialog`; filters, navigation on a narrow screen or one item's detail beside a list is a `Sheet`.
 - **Feedback.** A `Toast` confirms something the person just did and then leaves, so it never holds the only copy of anything; a message that must stay is an `Alert` in the page.
 - **Motion.** The components animate themselves, and the shell animates a route change.
+- **Assistant copy.** A button names the action ("Summarize"), never "AI".

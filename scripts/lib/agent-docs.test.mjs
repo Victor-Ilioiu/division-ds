@@ -98,7 +98,7 @@ describe('the index and the bundles', () => {
   })
 
   it('ruleHeadlines takes the first sentence of each rule and skips other paragraphs', () => {
-    expect(ruleHeadlines(RULES)).toEqual(['**Imports.** Import from the file.', '**Colour.** Tokens only:'])
+    expect(ruleHeadlines(RULES)).toEqual(['**Imports.** Import from the file.', '**Colour.** Tokens only: `var(--x)`.'])
   })
 
   it('componentsBundle writes each prop as a signature', () => {

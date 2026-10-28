@@ -17,6 +17,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, posix } from 'node:path'
 import { execFileSync } from 'node:child_process'
+import { resolveTokens } from './lib/resolve-tokens.mjs'
+import { contrastRatio } from './lib/contrast.mjs'
 
 const REGISTRY_URL = (process.env.REGISTRY_URL ?? 'https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r').replace(/\/+$/, '')
 const OUT = 'public/r'
@@ -191,6 +193,51 @@ items.push({
   title: 'Division DS, every component',
   description: 'Installs the base and all components in one command.',
   registryDependencies: items.map(item => `${REGISTRY_URL}/${item.name}.json`),
+  files: [],
+})
+
+// The look without the components: a registry:theme whose cssVars map Division's semantic tokens
+// onto shadcn's own variable names, so `shadcn add .../division-ds-theme.json` restyles an
+// existing shadcn app. shadcn writes `light` to :root and `dark` to .dark. Not in
+// division-ds-all: Division's own components read --color-*, which division-ds-base already ships.
+const themeTokens = Object.fromEntries(['light', 'dark'].map(theme => [theme, resolveTokens(
+  JSON.parse(read('tokens/primitive/color.json')), JSON.parse(read(`tokens/semantic/color.${theme}.json`)))]))
+const SHADCN_VARS = {
+  background: 'surface-base', foreground: 'text-primary',
+  card: 'surface-raised', 'card-foreground': 'text-primary',
+  popover: 'surface-sunken', 'popover-foreground': 'text-primary',
+  primary: 'accent-signal-fill', 'primary-foreground': 'accent-signal-ink',
+  secondary: 'surface-sunken', 'secondary-foreground': 'text-primary',
+  muted: 'surface-sunken', 'muted-foreground': 'text-secondary',
+  // shadcn's accent is the quiet hover/selected background (menu items, ghost buttons), not the brand.
+  accent: 'surface-sunken', 'accent-foreground': 'text-primary',
+  destructive: 'accent-hostile-fill',
+  border: 'border-hairline', input: 'border-control', ring: 'focus-ring',
+  'chart-1': 'chart-series-1', 'chart-2': 'chart-series-2',
+}
+const shadcnVars = theme => Object.fromEntries(Object.entries(SHADCN_VARS).map(([name, token]) => [name, themeTokens[theme][`--color-${token}`]]))
+const cssVars = { light: { radius: '0rem', ...shadcnVars('light') }, dark: shadcnVars('dark') }
+// The mapping is new pairs of the same values, so measure the ones shadcn components paint
+// together. A mapping that fails here fails the build (and check:registry), not a consumer's app.
+for (const theme of ['light', 'dark']) {
+  const v = cssVars[theme]
+  const pairs = [
+    ['foreground', 'background', 4.5], ['card-foreground', 'card', 4.5], ['popover-foreground', 'popover', 4.5],
+    ['primary-foreground', 'primary', 4.5], ['secondary-foreground', 'secondary', 4.5],
+    ['muted-foreground', 'muted', 4.5], ['muted-foreground', 'background', 4.5],
+    ['accent-foreground', 'accent', 4.5], ['ring', 'background', 3], ['input', 'background', 3],
+  ]
+  for (const [fg, bg, min] of pairs) {
+    const ratio = contrastRatio(v[fg], v[bg], v.background)
+    if (ratio < min) throw new Error(`division-ds-theme (${theme}): --${fg} on --${bg} is ${ratio.toFixed(2)}:1, needs ${min}:1`)
+  }
+}
+items.push({
+  name: 'division-ds-theme',
+  type: 'registry:theme',
+  title: 'Division DS theme',
+  description: "Division DS's colours for an existing shadcn app: its semantic tokens mapped onto shadcn's variables, light and dark, with square corners.",
+  cssVars,
   files: [],
 })
 

@@ -18,6 +18,8 @@ comment and no ALLOWED_IDIOMS entry to get past one.
 | `[unknown-prop]` "has no prop" | The prop does not exist. Open the page the message names and use a prop from its table. |
 | `[unknown-prop]` "types X away on purpose" | The component sets that attribute itself. Use the prop it names (`label` for a name, `invalid` for an error state). |
 | `[invalid-value]` | The value is not in the prop's union. The message lists the allowed values. |
+| `[ai-in-cta]` | A button says "AI". Name what it does instead: "Summarize", "Draft a reply". |
+| `[assistant-copy]` | An assistant component's label says "answer", "please" or "!". Write "response", drop "please", drop the exclamation point. |
 | "Vocabulary gate FAILED" (this repository only) | Reword the line. If it is an ordinary idiom, ask before adding it to ALLOWED_IDIOMS. |
 | "Agent docs are stale" (this repository only) | Run `npm run agent-docs`, then `npm run verify`. |
 | A props-table test fails in `meta.test.ts` (this repository only) | The `<Name>.meta.ts` table and the real props disagree. Change the table to match the code, both ways. |

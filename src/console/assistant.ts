@@ -26,6 +26,9 @@ export type ToolOutput =
   | { type: 'email'; to: string; at: string }
   | { type: 'counts'; rows: { siteId: string; site: string; total: number; critical: number }[] }
 
+/** What an MCP app shows inline in the conversation. Dockline is an invented dock-scheduling app. */
+export type DockSchedule = { app: string; dock: string; deliveries: { time: string; load: string }[] }
+
 export type EmailDraft = { to: string; toName: string; subject: string; body: string; note: string }
 
 export type Step =
@@ -33,6 +36,7 @@ export type Step =
   | { kind: 'say'; text: string }
   | { kind: 'tool'; name: string; title: string; input: string; duration: string; ms: number; output: ToolOutput }
   | { kind: 'links'; links: { label: string; href: string }[] }
+  | { kind: 'app'; schedule: DockSchedule }
   | { kind: 'approval'; title: string; draft: EmailDraft; onApprove: number; onReject: number }
   | { kind: 'effect'; effect: 'acknowledge'; alertId: string; note: string }
   | { kind: 'jump'; to: number }
@@ -44,6 +48,7 @@ export type Part =
   | { id: string; kind: 'text'; text: string }
   | { id: string; kind: 'tool'; name: string; title: string; input: string; status: 'running' | 'done' | 'failed'; duration?: string; output: ToolOutput }
   | { id: string; kind: 'links'; links: { label: string; href: string }[] }
+  | { id: string; kind: 'app'; schedule: DockSchedule }
   | { id: string; kind: 'approval'; title: string; draft: EmailDraft; state: 'pending' | 'approved' | 'rejected' }
 
 export type Message = {
@@ -171,6 +176,19 @@ export function brennickScript(readings: Readings, userText = SUGGESTIONS[0]): S
         { label: 'The Cold room 2 alert', href: `/console/alerts?alert=${SCRIPTED_ALERT_ID}` },
         { label: `${site.name}, site readings`, href: `/console/sites/${site.id}` },
       ],
+    },
+    { kind: 'say', text: 'Dockline, the dock-scheduling app, has three more deliveries to that dock today:' },
+    {
+      kind: 'app',
+      schedule: {
+        app: 'Dockline',
+        dock: `${site.name}, dock 2`,
+        deliveries: [
+          { time: '11:30', load: 'Vaccines, 6 pallets' },
+          { time: '14:15', load: 'Biologics, 3 pallets' },
+          { time: '16:40', load: 'Lab reagents, 4 pallets' },
+        ],
+      },
     },
     {
       kind: 'say',
@@ -382,6 +400,10 @@ function tick(conv: Conversation, time: string, whole: boolean): Conversation {
     }
     case 'links': {
       const added = addPart(openAssistant(conv, time), { kind: 'links', links: step.links })
+      return setRun(added.conv, { step: run.step + 1 })
+    }
+    case 'app': {
+      const added = addPart(openAssistant(conv, time), { kind: 'app', schedule: step.schedule })
       return setRun(added.conv, { step: run.step + 1 })
     }
     case 'approval': {
