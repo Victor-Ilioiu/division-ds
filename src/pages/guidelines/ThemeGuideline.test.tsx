@@ -31,7 +31,7 @@ describe('ThemeGuideline', () => {
 
   it('says which accent shades it moved to pass', () => {
     renderAt('/guidelines/theme?preset=1-16a34a-283445')
-    expect(screen.getByText(/Light theme: accent fill darkened from 500 to 600/)).toBeInTheDocument()
+    expect(screen.getByText(/Light theme: accent state colour darkened from 500 to 600/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Copy the theme CSS' })).toBeInTheDocument()
   })
 

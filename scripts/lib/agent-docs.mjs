@@ -8,6 +8,8 @@ const TIER_NOUN = { atoms: 'Atom', molecules: 'Molecule', organisms: 'Organism' 
 export const DOCS_SITE = 'https://victor-ilioiu.vercel.app/systems/division-ds/'
 /** Where shadcn downloads the components from: public/r/ in the public GitHub repository. */
 export const REGISTRY = 'https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r'
+/** The skill's files in the public repository, for a reader who has the package but not the skill. */
+export const SKILL_SOURCE = 'https://github.com/Victor-Ilioiu/division-ds/blob/main/skills/division-ds/'
 
 /** A table cell: one line, with the pipes that would end the cell escaped. */
 const cell = text => String(text ?? '').replace(/\s*\n\s*/g, ' ').replace(/\|/g, '\\|')
@@ -19,14 +21,29 @@ export function importLines(entry) {
   return entry.imports.map(({ names, from }) => `import { ${names.join(', ')} } from '${from}'`).join('\n')
 }
 
+/** The other components a page documents, by export name: ChatMessage's ResponseFeedback,
+ *  ProductCard's ProductGrid. Parts named after the component (CardBody, RadioGroup) and helpers
+ *  (lower case) are left out. The 2026-10-29 outside test could not find ResponseFeedback because
+ *  only its parent was listed anywhere an agent looks first. */
+export function alsoExports(entry) {
+  return entry.imports
+    .flatMap(({ names }) => names)
+    .filter(name => /^[A-Z][a-z]/.test(name) && !name.startsWith(entry.name) && !name.endsWith('Provider'))
+}
+
+/** Said under every Import block: the paths are the repository's, not an installed project's. */
+export const INSTALLED_PATHS = 'Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.'
+
 /** One component as a markdown page. `entry` is a manifest entry (see `manifestEntry`). */
 export function componentMarkdown(entry) {
   const out = [`# ${entry.name}`, '', `> ${entry.summary}`, '']
   out.push(`- **Best for:** ${entry.useWhen}`, `- **Not for:** ${entry.notFor}`)
+  const also = alsoExports(entry)
+  if (also.length) out.push(`- **Also on this page:** ${also.map(code).join(', ')}`)
   out.push(`- ${TIER_NOUN[entry.tier]}. Source: \`${entry.source}\``)
   out.push(`- Rendered docs page: \`/components/${entry.slug}\``, '')
 
-  out.push('## Import', '', fence(importLines(entry)), '')
+  out.push('## Import', '', fence(importLines(entry)), '', INSTALLED_PATHS, '')
 
   if (entry.requires?.length) {
     out.push('## Requires', '', ...entry.requires.map(item => `- ${item}`), '')
@@ -108,8 +125,10 @@ const byTier = entries =>
 export const firstSentence = text => text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text
 
 /** One component's line in llms.txt: what it is, then best for and not for. */
-export const indexLine = entry =>
-  `- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)} Best for: ${entry.useWhen} Not for: ${entry.notFor}`
+export const indexLine = entry => {
+  const also = alsoExports(entry)
+  return `- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)} Best for: ${entry.useWhen} Not for: ${entry.notFor}${also.length ? ` Also: ${also.join(', ')}.` : ''}`
+}
 
 /** llms.txt, in the llmstxt.org shape: a title, a summary, then sections of links. */
 export function llmsIndex(entries, { rules }) {
@@ -245,7 +264,10 @@ export function designFile(entries, manifest, { fonts, rules }) {
   ]
   for (const [tier, group] of byTier(entries)) {
     out.push(`## ${tier[0].toUpperCase()}${tier.slice(1)}`, '')
-    for (const entry of group) out.push(`- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)}`)
+    for (const entry of group) {
+      const also = alsoExports(entry)
+      out.push(`- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)}${also.length ? ` Also: ${also.join(', ')}.` : ''}`)
+    }
     out.push('')
   }
   out.push('## Rules', '', 'In full: [llms-guidelines.txt](llms-guidelines.txt).', '', ...ruleHeadlines(rules).map(line => `- ${line}`), '')
@@ -462,7 +484,7 @@ const SKILL_COMMANDS = {
     body: [
       'Go through every line. A line that does not hold is a change to make, not a note to leave.',
       '',
-      '- [ ] **States.** Every region has its empty, loading, error, success and disabled or no-permission state, as planned in `commands/build.md`. An empty list says what is empty and offers the action that fills it.',
+      '- [ ] **States.** Every region has its empty, loading, error, success and disabled or no-permission state, as planned before the code (the regions-and-states plan of `commands/build.md`). An empty list says what is empty and offers the action that fills it.',
       '- [ ] **Headings.** One `PageHeader`, so one `h1`. Section headings continue the outline: `h2` under the `h1`, `h3` inside an `h2`, no level skipped. `SectionHeading` is given the level.',
       '- [ ] **Tokens only.** No hex, `rgb()`, palette class or invented token name. `division-ds check` passes.',
       '- [ ] **Buttons.** Two or more side by side share a parent with a gap. One primary button per view. A busy button takes `loading`; a disabled one says why nearby. Icon-only actions are `IconButton` with a `label`.',
@@ -557,7 +579,7 @@ export function skillFiles(split, componentCount) {
       '',
       // A project that installed the components has no public/ folder of ours (the 2026-10-20
       // outside test followed these steps to files that did not exist).
-      `Paths starting \`public/\` are in the Division DS repository. In a project that uses the components, read them online: \`public/llms.txt\` is \`${DOCS_SITE}llms.txt\`, and so on.`,
+      `Paths starting \`public/\` are in the Division DS repository. In a project that uses the components, read them online: \`public/llms.txt\` is \`${DOCS_SITE}llms.txt\`, and so on. The other procedures named here (\`commands/build.md\` and the rest) are in the skill: \`${SKILL_SOURCE}commands/<name>.md\`, or \`npx division-ds skill\` to install them.`,
       '',
       ...command.body,
       '',

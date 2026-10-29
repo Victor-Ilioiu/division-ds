@@ -62,7 +62,7 @@ export function pairsForTokens(t, control) {
     // DropdownMenuItem's shortcut hint, when its row is highlighted,
     // inherits the row's own ink colour (`group-data-[highlighted]:text-inherit`) instead of a
     // separately-painted colour, so the two rows this generates for `signal` and `hostile` --
-    // "accent.signal.ink on accent.signal.fill" and "accent.hostile.ink on accent.hostile.fill"
+    // "accent.signal.ink on accent.signal.indicator" and "accent.hostile.ink on accent.hostile.fill"
     // -- already cover it too. Reused rather than duplicated, the same shape as the two rows
     // above it in this file.
     ...['signal', 'hostile', 'ok', 'info', 'warning'].map(state => ({
@@ -71,6 +71,8 @@ export function pairsForTokens(t, control) {
       bg: t[`--color-accent-${state}-fill`],
       minRatio: 4.5,
     })),
+    // Text on a selected item: the indicator's own ink, picked with it by the theme builder.
+    { name: 'accent.signal.indicator-ink on accent.signal.indicator', fg: t['--color-accent-signal-indicator-ink'], bg: t['--color-accent-signal-indicator'], minRatio: 4.5 },
     { name: 'focus.ring on surface.base', fg: t['--color-focus-ring'], bg: page, minRatio: 3 },
     // The one BANDED pair in the gate, and the only one with a ceiling. `numeral.pad` is the
     // dimmed leading zero on a hero numeral: the Overview's hero and gate ledger, Progress's
@@ -80,7 +82,7 @@ export function pairsForTokens(t, control) {
     // ceiling is the rule that matters and the one that was broken. Light theme pointed this at
     // text.muted (neutral.500), which measures 11.44:1 on the light page -- 65% of ink, against
     // dark's 31% -- so the "dimmed" zero rendered as a second numeral competing with the
-    // signal.fill digits it was padding (3.14:1 on that surface). Repointing text.muted itself
+    // signal.indicator digits it was padding (3.14:1 on that surface). Repointing text.muted itself
     // was the wrong fix and is refused by the same reasoning design.md records for border.control:
     // text.muted is real secondary text with an AA floor, and lightening it to suit one
     // decorative numeral drags body-adjacent copy toward 4.5:1. A dedicated token instead, gated
@@ -111,10 +113,10 @@ export function pairsForTokens(t, control) {
     // text.muted passed its own gated pair at 4.59:1 while rendering at 4.37:1 in dark theme.
     { name: 'control placeholder text on control fill', fg: componentColor(t, '--component-control-text-placeholder'), bg: controlFill, minRatio: 4.5 },
     // Checkbox's checked box, Radio's checked border and Switch's on border are all this fill.
-    { name: 'checked/on fill (accent.signal.fill) on surface.base', fg: t['--color-accent-signal-fill'], bg: page, minRatio: 3 },
+    { name: 'checked/on fill (accent.signal.indicator) on surface.base', fg: t['--color-accent-signal-indicator'], bg: page, minRatio: 3 },
     // Radio's inner square is the only thing that says "selected", and it sits on the control's
     // own fill, so that — not the page — is the colour adjacent to it. Since 2026-09-23 it paints
-    // `accent.signal.fill` (Victor's call, to match the border and Checkbox's checked fill) rather
+    // `accent.signal.indicator` (Victor's call, to match the border and Checkbox's checked fill) rather
     // than the theme-adaptive `component.control.indicator.checked`: 5.51:1 in dark, 2.15:1 in
     // light — below SC 1.4.11's 3:1. Accepted knowingly, same shape as Progress's signal-tone
     // exception below: measured against the colour actually rendered, with a 2:1 floor, so the
@@ -124,8 +126,8 @@ export function pairsForTokens(t, control) {
     // a track that stays dark). It replaced an ink thumb on an accent track, so in the light
     // theme the on state now rests on this accepted exception where it used not to.
     {
-      name: 'checked indicator (accent.signal.fill) on control fill -- ACCEPTED BELOW SC 1.4.11 in light theme',
-      fg: t['--color-accent-signal-fill'],
+      name: 'checked indicator (accent.signal.indicator) on control fill -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
       minRatio: 2,
     },
@@ -136,10 +138,10 @@ export function pairsForTokens(t, control) {
     // the obligation is per-USE, not per-token, and a use that nothing names is a use nothing
     // re-measures when a token moves. The label is text on the fill; the fill is the only thing
     // that marks the current page to a sighted reader, so it is measured against the page too.
-    { name: 'sidebar active item ink on signal fill', fg: t['--color-accent-signal-ink'], bg: t['--color-accent-signal-fill'], minRatio: 4.5 },
-    { name: 'sidebar active item fill on surface.base', fg: t['--color-accent-signal-fill'], bg: page, minRatio: 3 },
+    { name: 'sidebar active item ink on signal indicator', fg: t['--color-accent-signal-indicator-ink'], bg: t['--color-accent-signal-indicator'], minRatio: 4.5 },
+    { name: 'sidebar active item fill on surface.base', fg: t['--color-accent-signal-indicator'], bg: page, minRatio: 3 },
     // The docs section index ("01 EXAMPLES" and its four siblings on every component page) is
-    // the numerals motif applied to the chrome: the significant digit is `accent.signal.fill`,
+    // the numerals motif applied to the chrome: the significant digit is `accent.signal.indicator`,
     // the theme-INVARIANT step, not the theme-adaptive `.text` one every other piece of orange
     // type on the surface uses. That is only legitimate because the digit renders at 28px and
     // WCAG's large-text threshold (24px, or 18.66px bold) lowers the requirement from 4.5:1 to
@@ -147,9 +149,9 @@ export function pairsForTokens(t, control) {
     // here is therefore a deliberate statement about the SIZE the token is used at, and moving
     // this heading below 24px silently invalidates the pair rather than failing it, so the size
     // is pinned by an e2e assertion as well (e2e/docs-visual-language.spec.ts).
-    { name: 'docs section index (accent.signal.fill, 28px) on surface.base', fg: t['--color-accent-signal-fill'], bg: page, minRatio: 3 },
+    { name: 'docs section index (accent.signal.indicator, 28px) on surface.base', fg: t['--color-accent-signal-indicator'], bg: page, minRatio: 3 },
     // The Overview's numerals are the same motif at the size the brand register permits: the
-    // hero at clamp(4.5rem, 15vw, 13rem) and the gate ledger at 52px, both `accent.signal.fill`
+    // hero at clamp(4.5rem, 15vw, 13rem) and the gate ledger at 52px, both `accent.signal.indicator`
     // straight on the page. Same token and same backdrop as the docs section index above, so the
     // measured ratio is identical and this row adds no new colour -- it adds a NAME. The
     // obligation is per-use, exactly as it is for the sidebar's two fill pairs: the front door is
@@ -158,7 +160,7 @@ export function pairsForTokens(t, control) {
     // by a wide margin, which is what licenses minRatio 3 rather than 4.5, and both are pinned by
     // e2e/docs-visual-language.spec.ts so a future shrink fails a test instead of silently
     // invalidating this row.
-    { name: 'overview hero and ledger numerals (accent.signal.fill, 52px and up) on surface.base', fg: t['--color-accent-signal-fill'], bg: page, minRatio: 3 },
+    { name: 'overview hero and ledger numerals (accent.signal.indicator, 52px and up) on surface.base', fg: t['--color-accent-signal-indicator'], bg: page, minRatio: 3 },
     // A secondary Button is bg-transparent, so its boundary sits straight on whatever it's
     // painted over. On the page (a Button loose in a page or a guideline sample) that backdrop
     // is surface.base; on a raised surface (a Card footer's secondary action, Alert's own
@@ -235,7 +237,7 @@ export function pairsForTokens(t, control) {
     // theme on all four tones; `component.control.progress.fill.<tone>` (theme-adaptive `.text`
     // step) is what Progress now renders.
     //
-    // Signal is the exception. Since 2026-09-22 Progress paints `accent.signal.fill` for its
+    // Signal is the exception. Since 2026-09-22 Progress paints `accent.signal.indicator` for its
     // signal tone (Victor's call, to match Slider's range): 5.51:1 in dark, 2.15:1 in light.
     // Measured against the colour actually rendered, with a 2:1 floor, so the pair is still
     // re-measured whenever a token moves and a further drop still fails. The name says it is
@@ -244,12 +246,12 @@ export function pairsForTokens(t, control) {
     // DropdownMenu/Select rows just below, the focus-ring row near Toast's own rows below, and
     // the nested-raised button border row further down -- all held below the WCAG floor they cite.
     {
-      name: 'progress fill (signal, accent.signal.fill) on progress track (surface.sunken) -- ACCEPTED BELOW SC 1.4.11 in light theme',
-      fg: t['--color-accent-signal-fill'],
+      name: 'progress fill (signal, accent.signal.indicator) on progress track (surface.sunken) -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
       minRatio: 2,
     },
-    // The highlighted menu/listbox row's FILL, in light theme: signal.fill on surface.sunken
+    // The highlighted menu/listbox row's FILL, in light theme: signal.indicator on surface.sunken
     // measures 2.15:1, hostile.fill on surface.sunken 2.42:1 -- both below SC 1.4.11's 3:1.
     // DropdownMenu inherits this from Select's own listbox (styled identically by design),
     // which has had the identical shortfall since it shipped, unnamed. Accepted knowingly
@@ -261,8 +263,8 @@ export function pairsForTokens(t, control) {
     // re-measured. Accepted by Victor, 2026-09-24: both rows stay below SC 1.4.11 in light
     // theme, exactly as they shipped.
     {
-      name: 'highlighted menu/listbox row (signal.fill) on surface.sunken, Select and DropdownMenu -- ACCEPTED BELOW SC 1.4.11 in light theme',
-      fg: t['--color-accent-signal-fill'],
+      name: 'highlighted menu/listbox row (signal.indicator) on surface.sunken, Select and DropdownMenu -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
       minRatio: 2,
     },
@@ -389,15 +391,15 @@ export function pairsForTokens(t, control) {
     // 50%, so they need no row of their own. Both pairs clear 3:1 in both themes, but headroom is
     // not even: the empty star (border.selection) clears with real margin everywhere -- 5.10:1
     // light / 6.44:1 dark on the page, 5.42:1 light / 5.60:1 dark on surface.raised -- while the
-    // filled star (accent.signal.fill) is comfortable in dark (5.80:1 page, 5.05:1 raised) but
+    // filled star (accent.signal.indicator) is comfortable in dark (5.80:1 page, 5.05:1 raised) but
     // MARGINAL in light theme: 3.14:1 on the page and 3.33:1 on surface.raised, both only barely
     // over the 3:1 floor. Not an ACCEPTED-BELOW exception (both stay >= 3:1), but a token move in
     // light theme has far less room before this pair actually fails than the dark-theme numbers
     // suggest. Hover only relights stars up to the hovered value with the same filled colour, so
     // it introduces no third colour to gate; the focus ring is per star and reuses the
     // already-gated `focus.ring` rows above (on surface.base and on surface.raised).
-    { name: 'rating filled star (accent.signal.fill) on surface.base', fg: t['--color-accent-signal-fill'], bg: page, minRatio: 3 },
-    { name: 'rating filled star (accent.signal.fill) on surface.raised (over surface.base)', fg: t['--color-accent-signal-fill'], bg: t['--color-surface-raised'], backdrop: page, minRatio: 3 },
+    { name: 'rating filled star (accent.signal.indicator) on surface.base', fg: t['--color-accent-signal-indicator'], bg: page, minRatio: 3 },
+    { name: 'rating filled star (accent.signal.indicator) on surface.raised (over surface.base)', fg: t['--color-accent-signal-indicator'], bg: t['--color-surface-raised'], backdrop: page, minRatio: 3 },
     { name: 'rating empty star (border.selection) on surface.base', fg: t['--color-border-selection'], bg: page, minRatio: 3 },
     { name: 'rating empty star (border.selection) on surface.raised (over surface.base)', fg: t['--color-border-selection'], bg: t['--color-surface-raised'], backdrop: page, minRatio: 3 },
 
@@ -426,8 +428,9 @@ export function pairsForTokens(t, control) {
     // The hover wash (accent.signal.wash) under a nav item or an inactive tab. Text turns
     // text.primary on hover, so that is the pair, measured on both surfaces a wash lands on: the page,
     // and a raised panel (every docs Example). The wash itself is decoration. Nothing that owes 3:1
-    // may be drawn on it: focus.ring and a checked control's accent.signal.fill measure 2.73:1 over
-    // surface.base and 2.88:1 over surface.raised in light theme (pinned in contrast-pairs.test.mjs).
+    // may be drawn on it: a checked control's accent.signal.indicator measures 2.73:1 over
+    // surface.base and 2.88:1 over surface.raised in light theme. focus.ring is not gated on it either,
+    // so the rule holds for the ring too.
     // So nav items draw their ring outside themselves, a focused inactive tab drops the wash, and a
     // data table never tints a row.
     {
@@ -471,8 +474,8 @@ export function pairsForTokens(t, control) {
       minRatio: 3,
     },
     {
-      name: 'rating filled star (accent.signal.fill) on surface.raised nested in surface.raised (over surface.base)',
-      fg: t['--color-accent-signal-fill'],
+      name: 'rating filled star (accent.signal.indicator) on surface.raised nested in surface.raised (over surface.base)',
+      fg: t['--color-accent-signal-indicator'],
       bg: t['--color-surface-raised'],
       backdrop: composite(t['--color-surface-raised'], page),
       minRatio: 3,

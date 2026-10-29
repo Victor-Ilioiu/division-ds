@@ -13,6 +13,8 @@
 import { StatusTracker, statusTrackerText } from 'src/components/molecules/status-tracker/StatusTracker'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - The root TooltipProvider (AppShell and DemoLayout mount it).

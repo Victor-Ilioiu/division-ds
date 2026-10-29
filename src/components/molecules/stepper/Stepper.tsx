@@ -39,7 +39,7 @@ const STATUS = { done: 'completed', current: 'current', upcoming: 'not started' 
  * The leading-zero pad: every other hero numeral in this system (Progress, Stat, the Overview)
  * dims its pad with `text.numeral-pad` against `surface.base` or `surface.raised`, both banded
  * rows already gated in contrast-pairs.mjs at a 3:1 floor. The CURRENT step's marker sits on
- * `accent.signal.fill`, not the page, and `numeral.pad` measures only ~1.08:1 (dark) / ~1.22:1
+ * `accent.signal.indicator`, not the page, and `numeral.pad` measures only ~1.08:1 (dark) / ~1.22:1
  * (light) there -- nowhere near that floor, and nothing like the "dimmed but present" relationship
  * the token exists for. So the pad is dropped on the filled (current) marker only: it shows its
  * bare digit ("2"), never a padded one ("02"). Logged in BUILD-LOG.md. The upcoming marker's pad
@@ -47,9 +47,9 @@ const STATUS = { done: 'completed', current: 'current', upcoming: 'not started' 
  * every other use, so it keeps the pad and reuses those two existing rows unchanged.
  *
  * Every colour painted here is an existing, reused pair in contrast-pairs.mjs:
- * - "accent.signal.ink on accent.signal.fill" -- the current step's digit and the done check icon.
- * - "checked/on fill (accent.signal.fill) on surface.base" and "rating filled star
- *   (accent.signal.fill) on surface.raised (over surface.base)" -- the done/current marker's fill
+ * - "accent.signal.indicator-ink on accent.signal.indicator" -- the current step's digit and the done check icon.
+ * - "checked/on fill (accent.signal.indicator) on surface.base" and "rating filled star
+ *   (accent.signal.indicator) on surface.raised (over surface.base)" -- the done/current marker's fill
  *   and the connector once the step before it is done, on both surfaces the docs render on.
  * - "rating empty star (border.selection) on surface.base" and "rating empty star
  *   (border.selection) on surface.raised (over surface.base)" -- the upcoming marker's outline.
@@ -155,7 +155,7 @@ function Connector({ done, className }: { done: boolean; className: string }) {
       data-part="connector"
       className={cn(
         className,
-        done ? 'bg-[var(--color-accent-signal-fill)]' : 'bg-[var(--color-border-hairline-strong)]'
+        done ? 'bg-[var(--color-accent-signal-indicator)]' : 'bg-[var(--color-border-hairline-strong)]'
       )}
     />
   )
@@ -174,7 +174,7 @@ function Marker({ state, index }: { state: StepState; index: number }) {
       className={cn(
         'inline-flex items-center justify-center w-7 h-7 shrink-0 font-display font-bold text-sm tabular-nums',
         filled
-          ? 'bg-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-ink)]'
+          ? 'bg-[var(--color-accent-signal-indicator)] text-[var(--color-accent-signal-indicator-ink)]'
           : 'border border-[var(--color-border-selection)] text-[var(--color-text-secondary)]'
       )}
     >

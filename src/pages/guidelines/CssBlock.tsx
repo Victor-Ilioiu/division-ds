@@ -33,14 +33,18 @@ export function CssBlock({ code, file, label }: { code: string; file: string; la
   const { copied, copy } = useCopy(code, label)
   const lines = code.replace(/\n$/, '').split('\n')
   return (
-    <div className="max-w-3xl border border-[var(--color-border-hairline)] bg-[var(--color-surface-sunken)]">
+    // On surface.base, not sunken: the syntax colours are accent.*.text, which the contrast gate
+    // measures on surface.base only. min-w-0 lets a grid or flex column shrink it, so long lines
+    // scroll inside the <pre> instead of widening the page.
+    <div className="min-w-0 max-w-3xl border border-[var(--color-border-hairline)] bg-[var(--color-surface-base)]">
       <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border-hairline)] py-1 pl-4 pr-1">
         <span className="font-mono text-xs uppercase tracking-wider text-[var(--color-text-secondary)]">{file}</span>
         <IconButton label={`Copy ${label}`} variant="ghost" size="sm" onClick={copy}>
           {copied ? <Check /> : <Copy />}
         </IconButton>
       </div>
-      <pre className="max-h-[32rem] overflow-auto py-3 font-mono text-sm leading-relaxed text-[var(--color-text-primary)]">
+      {/* Focusable and named, so a keyboard can scroll it (axe: scrollable-region-focusable). */}
+      <pre tabIndex={0} aria-label={`${file}, ${label}`} className="max-h-[32rem] overflow-auto py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)] font-mono text-sm leading-relaxed text-[var(--color-text-primary)]">
         <code>
           {lines.map((line, i) => (
             <span key={i} className="flex">

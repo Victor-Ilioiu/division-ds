@@ -13,6 +13,8 @@
 import { PromptInput } from 'src/components/molecules/prompt-input/PromptInput'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A parent that keeps the draft in state and clears it in onSubmit.

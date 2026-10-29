@@ -10,10 +10,23 @@ import { findViolations as tokenDiscipline, formatViolation as formatTokenDiscip
 export const BUTTON_SPACING_FIX =
   'Wrap the buttons in one parent with a flex/grid class and a gap- utility (flex flex-wrap items-center gap-3), and move any margin from the buttons onto it.'
 
+/** A stylesheet with the value of every declaration of a real token blanked, newlines kept so line
+ *  numbers hold. Setting a token is how a project themes the system (the theme builder writes
+ *  exactly that into index.css), so a literal colour there is the point; anywhere else in the file,
+ *  or on a custom property the system does not have, it is reported as in any other file. */
+export function blankTokenOverrides(text, tokenNames) {
+  const known = new Set(tokenNames)
+  return text.replace(/(--[a-z0-9-]+)(\s*:)([^;}]*)/g, (match, name, colon, value) =>
+    // The var() references stay, so a token set from a name that does not exist is still caught.
+    known.has(name) ? name + colon + value.replace(/var\([^)]*\)|[^\n]/g, part => (part.length > 1 ? part : ' ')) : match
+  )
+}
+
 /** Every finding in `text`. `path` decides which gates apply (button spacing and AI copy need JSX) and is
  *  echoed into each finding. `index` is buildIndex(manifest); `tokenNames` the token names. */
 export function checkText(text, path, index, tokenNames) {
   const findings = []
+  if (/\.css$/.test(path)) text = blankTokenOverrides(text, tokenNames)
   for (const v of tokenDiscipline(text, path, tokenNames)) {
     findings.push({ gate: 'token-discipline', path, line: v.line, rule: v.rule, found: v.found, fix: v.fix, text: formatTokenDiscipline(v) })
   }

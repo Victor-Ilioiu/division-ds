@@ -13,6 +13,8 @@
 import { Radio, RadioGroup } from 'src/components/atoms/radio/Radio'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -123,7 +125,7 @@ const SPEEDS = ['standard', 'priority', 'overnight'] as const
 
 ## Do
 
-- Name the group with aria-label or a FormField legend.
+- Name the group: in a form, a fieldset legend that the RadioGroup points at with aria-labelledby; elsewhere, aria-label.
 - Offer a default when one option really is the norm.
 - Keep the set short. Past about seven options, use a Select.
 
@@ -132,6 +134,41 @@ const SPEEDS = ['standard', 'priority', 'overnight'] as const
 - Don't use radios for a yes/no. That's a Checkbox or a Switch.
 - Don't put a radio outside a RadioGroup. Both the roving focus and the value come from the group.
 - Don't make choosing an option perform the action. Put a button after the group.
+
+## Common mistakes
+
+Wrong:
+
+```tsx
+<FormField label="Difficulty" error={error}>
+  <RadioGroup>
+    <Radio value="easy" />
+  </RadioGroup>
+</FormField>
+```
+
+Right:
+
+```tsx
+<fieldset aria-describedby={error ? 'difficulty-error' : undefined}>
+  <legend id="difficulty-label" className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-primary)]">
+    Difficulty
+  </legend>
+  <RadioGroup aria-labelledby="difficulty-label" aria-required="true" value={value} onValueChange={setValue} className="mt-2">
+    {['easy', 'moderate', 'hard'].map(option => (
+      <div key={option} className="flex items-center gap-2">
+        <Radio id={`difficulty-${option}`} value={option} invalid={Boolean(error)} />
+        <label htmlFor={`difficulty-${option}`} className="font-body text-sm">{option}</label>
+      </div>
+    ))}
+  </RadioGroup>
+  {error ? (
+    <p id="difficulty-error" className="mt-1.5 font-body text-sm text-[var(--color-accent-hostile-text)]">{error}</p>
+  ) : null}
+</fieldset>
+```
+
+FormField clones one control and gives it an id and a label; a group of radios has neither. The fieldset and legend name the group, the label styles match FormField, and the error is linked through aria-describedby. Give ErrorSummary the id of the first Radio so its link lands in the group.
 
 ## Anatomy
 

@@ -10,7 +10,7 @@ export const meta: ComponentMeta = {
   anatomy: [
     { part: 'Label and readout', description: 'An 11px (pixel) mono label, in a monospaced font, and a 24px Oxanium readout with tabular figures, digits that all take the same width. Unlike Progress, there are no dimmed leading zeros. min and max belong to the caller and formatValue can return anything, so a fixed digit width would be one the value doesn’t actually have.' },
     { part: 'Track', description: '4px tall, sunken, no border.' },
-    { part: 'Range', description: 'The filled span, in signal.fill.' },
+    { part: 'Range', description: 'The filled span, in accent.signal.indicator.' },
     { part: 'Thumb', description: 'A 20px square inside a 24px hit area, the region that responds to a click or tap. There’s one per value.' },
   ],
   props: [

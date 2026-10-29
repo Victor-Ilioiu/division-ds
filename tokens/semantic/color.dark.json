@@ -22,9 +22,11 @@
       },
       "accent": {
         "signal": {
-          "fill": { "$type": "color", "$value": "{color.primitive.signal.500}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "The brand colour, exactly as chosen: Button, IconButton and solid Badge backgrounds, and brand decoration. Text on it is accent.signal.ink. Never the only sign of a state; that is accent.signal.indicator. The theme builder never moves it." },
           "text": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "5.80:1 on surface.base" },
           "ink": { "$type": "color", "$value": "#0a0602", "$description": "5.85:1 on accent.signal.fill" },
+          "indicator": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "The accent where colour alone marks a state or a value: checked controls, Switch on, Progress, Slider, Rating stars, the current item of Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows, and the hero numerals. 5.80:1 on surface.base. Same stop as accent.signal.fill here; the theme builder moves it to a nearby stop when a chosen accent is too pale or too dark to reach 3:1, and leaves accent.signal.fill alone." },
+          "indicator-ink": { "$type": "color", "$value": "#0a0602", "$description": "Text and icons on accent.signal.indicator. 5.85:1. The theme builder picks white or this dark ink, whichever reaches 4.5:1." },
           "wash": { "$type": "color", "$value": "rgba(242, 85, 15, 0.12)", "$description": "Hover wash under a nav item or an inactive tab. Text on it is text.primary and gated. The focus ring and a checked control's fill drop under 3:1 on it in light theme, so neither is ever drawn on it." },
           "glow": { "$type": "color", "$value": "rgba(242, 85, 15, 0.38)", "$description": "The colour of the faint shadow an interactive Card casts on hover and on keyboard focus inside it (.card-interactive, src/styles/elevation.css): signal.500 at part strength, on the near-black page a shadow this strong reads as a soft halo. A shadow, never a fill, a border or text: it bounds nothing and carries no state on its own (the border beside it does, in accent.signal.fill), so it owes no ratio and has no pair in the gate." }
         },

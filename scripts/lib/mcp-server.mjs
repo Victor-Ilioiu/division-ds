@@ -12,7 +12,8 @@ export const PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '202
 
 const INSTRUCTIONS = `Division DS: a React 19, Tailwind 4 and Radix design system.
 Before writing a component, call get_component for its props and examples. Use only tokens from get_tokens or search, as var(--name).
-Before saying a screen is done, call validate_code on each file you wrote and fix every finding, then go through get_review_checklist.`
+Before saying a screen is done, call validate_code on each file you wrote (.css too) and fix every finding, then go through get_review_checklist.
+Shared helpers (theme toggle, form errors, money, links): https://victor-ilioiu.vercel.app/systems/division-ds/docs/helpers.md`
 
 /** A JSON-RPC error reply. */
 const failure = (id, code, message) => ({ jsonrpc: '2.0', id, error: { code, message } })

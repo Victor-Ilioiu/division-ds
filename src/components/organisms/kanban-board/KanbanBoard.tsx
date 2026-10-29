@@ -266,7 +266,7 @@ const SIDE = 'flex flex-col items-center justify-between gap-2 self-stretch shri
  * surface.base" and "alert body and ghost dismiss (text.secondary) on surface.raised (over
  * surface.base)". Card text: "text.primary on surface.raised (over surface.base)" and "text.primary
  * on surface.raised nested in surface.raised (over surface.base)". The lifted card's border and an
- * empty column's border while a card is over it: "checked/on fill (accent.signal.fill) on
+ * empty column's border while a card is over it: "checked/on fill (accent.signal.indicator) on
  * surface.base". The placeholder's dashed outline: "rating empty star (border.selection) on
  * surface.base". The hairlines are decorative dividers, not gated, as everywhere else.
  */
@@ -494,7 +494,7 @@ export function KanbanBoard<T>({
                     aria-hidden="true"
                     inert
                     className={cn(FRAME, 'cursor-grabbing w-full h-full')}
-                    style={{ border: '2px solid var(--color-accent-signal-fill)' }}
+                    style={{ border: '2px solid var(--color-accent-signal-indicator)' }}
                   >
                     <div className="min-w-0 grow">{renderCard(activeItem)}</div>
                     <div className={SIDE}>
@@ -560,7 +560,7 @@ function KanbanColumnView({
           {count === 0 ? (
             <p
               className="grow flex items-center justify-center p-4 text-center font-body text-sm text-[var(--color-text-secondary)] border border-dashed"
-              style={{ borderColor: isOver ? 'var(--color-accent-signal-fill)' : 'var(--color-border-hairline-strong)' }}
+              style={{ borderColor: isOver ? 'var(--color-accent-signal-indicator)' : 'var(--color-border-hairline-strong)' }}
             >
               {emptyMessage}
             </p>

@@ -57,8 +57,8 @@ const rgbOf = hex => [0, 2, 4].map(i => parseInt(hex.replace('#', '').slice(i, i
 /** The two semantic themes a preset produces, each run through the full AA pair gate. The text
  *  colour on the accent fill is picked per theme by `inkFor`.
  *
- *  Each token aliased to a signal ramp stop is checked against the gate pairs it reaches; if one
- *  fails, it moves to the nearest stop that passes them all (`adjustments`, per theme). When no
+ *  Each token aliased to a signal ramp stop, except the brand fill, is checked against the gate
+ *  pairs it reaches; if one fails, it moves to the nearest stop that passes them all (`adjustments`, per theme). When no
  *  stop passes, it stays put and the failures are reported as before.
  *
  *  `wash` and `glow` are the only signal-derived values written as literals (rgba of the default
@@ -86,6 +86,7 @@ export function buildTheme(preset, { primitives, dark, light, control }) {
     const to = `rgba(${rgbOf(raw['--color-accent-signal-fill']).join(', ')}, `
     const tokens = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, value.startsWith(from) ? to + value.slice(from.length) : value]))
     tokens['--color-accent-signal-ink'] = inkFor(tokens['--color-accent-signal-fill'], shippedInk[name])
+    tokens['--color-accent-signal-indicator-ink'] = inkFor(tokens['--color-accent-signal-indicator'], shippedInk[name])
     return tokens
   }
 
@@ -97,6 +98,9 @@ export function buildTheme(preset, { primitives, dark, light, control }) {
     const pairsAt = s => pairsForTokens(resolve(name, semantic, s), control)
     adjustments[name] = []
     for (const [token, stop] of Object.entries(shipped)) {
+      // The brand colour stays exactly as chosen; only its ink adapts. States that rely on the
+      // accent read accent.signal.indicator, which is free to move.
+      if (FIXED.has(token)) continue
       // The pairs this token reaches: those whose colours move when only this token moves.
       const lo = pairsAt({ ...stops, [token]: RAMP_STOPS[0] })
       const hi = pairsAt({ ...stops, [token]: RAMP_STOPS.at(-1) })
@@ -122,6 +126,7 @@ export function buildTheme(preset, { primitives, dark, light, control }) {
   return { themes, failures, adjustments }
 }
 
+const FIXED = new Set(['accent.signal.fill'])
 const RAMP_STOPS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
 const SIGNAL_ALIAS = /^\{color\.primitive\.signal\.(\d+)\}$/
 

@@ -113,7 +113,7 @@ function Preview({ theme, tokens, radius }: { theme: 'dark' | 'light'; tokens: R
 
 // Plain names for the tokens the solver can move (buildTheme's adjustments).
 const TOKEN_LABELS: Record<string, string> = {
-  'accent.signal.fill': 'accent fill',
+  'accent.signal.indicator': 'accent state colour',
   'accent.signal.text': 'accent text',
   'focus.ring': 'focus ring',
   'chart.series-1': 'first chart colour',
@@ -144,7 +144,7 @@ export function ThemeGuideline() {
   return (
     // From xl up the contrast gate is a sticky right-hand column, so its result stays in view while
     // the inputs change. Below xl it falls back into the flow after the preview.
-    <div className="grid max-w-7xl gap-x-10 xl:grid-cols-[minmax(0,1fr)_22rem] [&>*]:xl:col-start-1">
+    <div className="grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-x-10 xl:grid-cols-[minmax(0,1fr)_22rem] [&>*]:xl:col-start-1">
       <PageHeader
         eyebrow={
           <>
@@ -158,7 +158,7 @@ export function ThemeGuideline() {
       <section>
         <SectionHeading>Inputs</SectionHeading>
         <div className="flex flex-col gap-5">
-          <ColorInput id="preset-signal" label="Accent" hint="Buttons, checked controls, links, the focus ring and charts, in both themes." value={preset.signal} onChange={signal => set({ signal })} />
+          <ColorInput id="preset-signal" label="Accent" hint="Used exactly as chosen for buttons and badges, in both themes. Checked controls, selected items, the focus ring, links and charts use it too, moved to a nearby shade only where it would be too faint to see." value={preset.signal} onChange={signal => set({ signal })} />
           <p className="text-sm text-[var(--color-text-secondary)]">
             Text on the accent: <strong className="text-[var(--color-text-primary)]">{themes.dark.tokens['--color-accent-signal-ink'] === WHITE_INK ? 'white' : 'dark'}</strong>,
             chosen automatically. White when it reaches 4.5:1 on the accent ({contrastRatio(WHITE_INK, themes.dark.tokens['--color-accent-signal-fill']).toFixed(2)}:1 here), dark when it does not.

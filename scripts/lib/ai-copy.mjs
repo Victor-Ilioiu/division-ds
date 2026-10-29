@@ -16,7 +16,9 @@
 // - `assistant-copy`: "answer", "please" or "!" in the interface text of the assistant components
 //   (ChatThread, ChatMessage, PromptInput, ApprovalRequest, ToolCall): their label-like string
 //   props only. Message bodies, a ToolCall's input and output and PromptInput's suggestions are
-//   content written by the person or the model, not the interface, and are never read.
+//   content written by the person or the model, not the interface, and are never read. A button
+//   placed inside one of them (a Button in ChatMessage's `actions`) is its interface too: its label
+//   and aria-label are checked the same way (missed by the 2026-10-29 outside test's probe).
 // Only literals are read (a string attribute, JSX text, a ternary of two literals). A variable is
 // not judged, the same as the props gate.
 import ts from 'typescript'
@@ -63,11 +65,22 @@ export function findAiCopyViolations(text, path) {
     const at = source.getLineAndCharacterOfPosition(node.getStart(source))
     violations.push({ path, line: at.line + 1, column: at.character + 1, rule, found, fix })
   }
+  // How many assistant components the walk is inside: a button in there speaks for the assistant.
+  let insideAssistant = 0
   const checkCta = (node, value, where) => {
     if (AI_WORD.test(value)) add(node, 'ai-in-cta', `${where}: "${value.trim()}"`, AI_FIX)
+    if (insideAssistant > 0) {
+      for (const word of ASSISTANT_WORDS) {
+        if (word.pattern.test(value)) add(node, 'assistant-copy', `${where} in an assistant component: "${value.trim()}"`, word.fix)
+      }
+    }
   }
+  const tagOf = node =>
+    ts.isJsxElement(node) ? node.openingElement.tagName.getText(source) : ts.isJsxSelfClosingElement(node) ? node.tagName.getText(source) : undefined
 
   const visit = node => {
+    const opensAssistant = tagOf(node) in ASSISTANT_COPY
+    if (opensAssistant) insideAssistant++
     if (ts.isJsxSelfClosingElement(node) || ts.isJsxOpeningElement(node)) {
       const tag = node.tagName.getText(source)
       for (const attribute of node.attributes.properties) {
@@ -96,6 +109,7 @@ export function findAiCopyViolations(text, path) {
       if (label.trim()) checkCta(node, label, `<${tag}> label`)
     }
     ts.forEachChild(node, visit)
+    if (opensAssistant) insideAssistant--
   }
   visit(source)
   return violations.sort((a, b) => a.line - b.line || a.column - b.column)

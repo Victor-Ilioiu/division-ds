@@ -13,6 +13,8 @@
 import { Toaster, useToast } from 'src/components/molecules/toast/Toast'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - One <Toaster> near the root of the app, wrapped around everything that calls useToast(). AppShell and the demo layout each mount one. Outside it, useToast() throws an error.

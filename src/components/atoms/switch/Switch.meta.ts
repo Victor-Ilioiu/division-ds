@@ -27,12 +27,12 @@ export const meta: ComponentMeta = {
     {
       part: 'Thumb',
       description:
-        "A 16px (pixel) square, 3px from the track edge in both states, travelling 22px. Its position is the state signal. It's text.primary when off and accent.signal.fill when on. Held down, it stretches 4px away from the edge it rests on: to the right when off, to the left when on, so it never leaves the track. Flipped, it speeds up across the track, gets a little longer in flight and a little shorter against the far edge, then goes back to its own shape. One give, no bounce.",
+        "A 16px (pixel) square, 3px from the track edge in both states, travelling 22px. Its position is the state signal. It's text.primary when off and accent.signal.indicator when on. Held down, it stretches 4px away from the edge it rests on: to the right when off, to the left when on, so it never leaves the track. Flipped, it speeds up across the track, gets a little longer in flight and a little shorter against the far edge, then goes back to its own shape. One give, no bounce.",
     },
     {
       part: 'Track fill',
       description:
-        "The control fill, on and off. When it's on, only the border turns to signal.fill. The track doesn't fill with the accent, so the thumb is the one thing that changes colour during a flip.",
+        "The control fill, on and off. When it's on, only the border turns to accent.signal.indicator. The track doesn't fill with the accent, so the thumb is the one thing that changes colour during a flip.",
     },
   ],
   props: [

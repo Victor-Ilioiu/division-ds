@@ -67,16 +67,16 @@ export function FormField({
         ...(children.props.label !== undefined ? { label } : {}),
       })}
       {help ? (
-        <p id={helpId} className="font-body text-xs text-[var(--color-text-secondary)]">
+        <p id={helpId} className="font-body text-sm text-[var(--color-text-secondary)]">
           {help}
         </p>
       ) : null}
       {error ? (
         <p
           id={errorId}
-          className="flex items-start gap-1.5 font-body text-xs text-[var(--color-accent-hostile-text)]"
+          className="flex items-start gap-1.5 font-body text-sm text-[var(--color-accent-hostile-text)]"
         >
-          <CircleAlert aria-hidden="true" className="w-3.5 h-3.5 mt-px shrink-0" />
+          <CircleAlert aria-hidden="true" className="w-4 h-4 mt-0.5 shrink-0" />
           {error}
         </p>
       ) : null}

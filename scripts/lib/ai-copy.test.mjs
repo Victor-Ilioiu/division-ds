@@ -42,6 +42,13 @@ describe('assistant-copy', () => {
     expect(rules('<PromptInput label="Ask" suggestions={["Please summarise this!"]} />')).toEqual([])
     expect(rules('<Alert title="Please try again" />')).toEqual([])
   })
+
+  it('flags a button placed inside an assistant component, and only there', () => {
+    expect(rules('<ChatMessage role="assistant" actions={<Button>Please answer!</Button>}>Hi</ChatMessage>')).toEqual(['assistant-copy', 'assistant-copy', 'assistant-copy'])
+    expect(rules('<ChatThread label="Chat"><IconButton label="Answer again" /></ChatThread>')).toEqual(['assistant-copy'])
+    expect(rules('<Card><Button>Please continue!</Button></Card>')).toEqual([])
+    expect(rules('<ChatMessage role="assistant" actions={<Button>Copy</Button>}>Hi</ChatMessage>')).toEqual([])
+  })
 })
 
 describe('checkText', () => {

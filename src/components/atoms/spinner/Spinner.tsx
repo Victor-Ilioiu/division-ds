@@ -5,7 +5,7 @@ import { cn } from '../../../lib/cn'
 export const spinnerVariants = cva(
   // The arc takes `currentColor`, so a caller can recolour it with one text utility: Button does
   // exactly that, so the arc matches whatever ink the button label is set in.
-  'inline-block shrink-0 text-[var(--color-accent-signal-fill)]',
+  'inline-block shrink-0 text-[var(--color-accent-signal-indicator)]',
   {
     variants: {
       size: { sm: 'w-3.5 h-3.5', md: 'w-5 h-5', lg: 'w-6 h-6' },
@@ -58,7 +58,7 @@ export function Spinner({ size, variant = 'ring', label, className, style, ref, 
           // A fixed row of `CONVEYOR_COLUMNS` 1ch cells, clipped, so the blocks enter from the left
           // edge and leave past the right one. Text colour is the blocks; the track is dimmed.
           'spinner-conveyor relative inline-flex h-[1em] items-center overflow-hidden',
-          'font-mono leading-none select-none text-[var(--color-accent-signal-fill)]',
+          'font-mono leading-none select-none text-[var(--color-accent-signal-indicator)]',
           CONVEYOR_SIZE[size ?? 'md'],
           className
         )}

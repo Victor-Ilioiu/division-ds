@@ -4,6 +4,7 @@
 
 - **Best for:** The label, help and error for an Input, Textarea, Select, MultiSelect or QuantityStepper.
 - **Not for:** Search or RatingInput, which name themselves. Switch, Checkbox and Radio take an id and a label with htmlFor instead.
+- **Also on this page:** `ErrorSummary`
 - Molecule. Source: `src/components/molecules/form-field/FormField.tsx`
 - Rendered docs page: `/components/form-field`
 
@@ -14,6 +15,8 @@ import { FormField } from 'src/components/molecules/form-field/FormField'
 import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -22,7 +25,7 @@ import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
 | `help` | `string` |  | Instruction text, read out before any error. |
 | `error` | `string` |  | Sets invalid on the control and adds the error line. |
 | `required` | `boolean` | `false` | Adds the asterisk (hidden from screen readers) and the built-in required attribute on the control. That attribute is what assistive technology actually announces. |
-| `children` | `ReactElement` |  | Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. |
+| `children` | `ReactElement` |  | Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up. |
 | `className` | `string` |  | Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the outer element. |
 | `errors (ErrorSummary)` | `{ fieldId: string; message: string }[]` |  | What stopped the form from submitting, in the order of the fields. Each entry links to its field and moves focus there. An empty list shows nothing. |

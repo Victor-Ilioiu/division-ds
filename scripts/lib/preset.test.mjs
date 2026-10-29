@@ -71,19 +71,22 @@ describe('buildTheme', () => {
     const { failures, adjustments, themes } = buildTheme({ ...DEFAULT_PRESET, signal: '#16a34a' }, docs)
     expect(failures).toEqual([])
     expect(adjustments.dark).toEqual([])
-    const fill = adjustments.light.find(a => a.token === 'accent.signal.fill')
-    expect(fill).toMatchObject({ from: '500', to: '600' })
-    expect(fill.fixed).toContain('checked/on fill (accent.signal.fill) on surface.base')
-    // The dark theme keeps the user's own colour as the fill.
-    expect(themes.dark.tokens['--color-accent-signal-fill']).toBe('#16a34a')
+    const indicator = adjustments.light.find(a => a.token === 'accent.signal.indicator')
+    expect(indicator).toMatchObject({ from: '500', to: '600' })
+    expect(indicator.fixed).toContain('checked/on fill (accent.signal.indicator) on surface.base')
+    // The dark theme keeps the user's own colour as the indicator.
+    expect(themes.dark.tokens['--color-accent-signal-indicator']).toBe('#16a34a')
   })
 
-  it('re-tints the wash and picks the ink from the moved fill', () => {
-    const { themes } = buildTheme({ ...DEFAULT_PRESET, signal: '#eab308' }, docs)
-    const fill = themes.light.tokens['--color-accent-signal-fill']
-    expect(fill).not.toBe('#eab308')
-    expect(themes.light.tokens['--color-accent-signal-glow']).toBe(`rgba(${[0, 2, 4].map(i => parseInt(fill.slice(1 + i, 3 + i), 16)).join(', ')}, 0.3)`)
-    expect(themes.light.tokens['--color-accent-signal-ink']).toBe(inkFor(fill, '#0a0602'))
+  it('never moves the brand fill, and picks each ink from the colour under it', () => {
+    const { themes, adjustments } = buildTheme({ ...DEFAULT_PRESET, signal: '#eab308' }, docs)
+    const t = themes.light.tokens
+    expect(adjustments.light.map(a => a.token)).not.toContain('accent.signal.fill')
+    expect(t['--color-accent-signal-fill']).toBe('#eab308')
+    expect(t['--color-accent-signal-glow']).toBe('rgba(234, 179, 8, 0.3)')
+    expect(t['--color-accent-signal-ink']).toBe(inkFor('#eab308', '#0a0602'))
+    expect(t['--color-accent-signal-indicator']).not.toBe('#eab308')
+    expect(t['--color-accent-signal-indicator-ink']).toBe(inkFor(t['--color-accent-signal-indicator'], '#0a0602'))
   })
 
   it('still names the failing pairs when no stop can fix them', () => {

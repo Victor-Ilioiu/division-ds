@@ -9,6 +9,12 @@
 // Colour only, on purpose. Spacing is not gated: enforcing it before the scale is complete makes
 // an author (or an agent) invent a token name to satisfy the rule, which is the worse failure.
 
+import { DOCS_SITE } from './agent-docs.mjs'
+
+/** Where a token list lives for whoever reads the finding: the MCP tool, or the docs site. A
+ *  repository path meant nothing in a project that installed the components (2026-10-29 test). */
+const TOKEN_LIST = `get_tokens over MCP, or ${DOCS_SITE}llms-tokens.txt`
+
 export const SCANNED_ROOTS = ['src']
 export const SCANNED_EXTENSIONS = /\.(tsx?|css)$/
 
@@ -16,6 +22,7 @@ export const SCANNED_EXTENSIONS = /\.(tsx?|css)$/
  *  A new entry needs a reason as good as these; "it was easier" is the case the gate exists for. */
 export const EXEMPT = [
   { pattern: /^src\/styles\/tokens\.css$/, why: 'generated from tokens/: this is where the literals are meant to be' },
+  { pattern: /(^|\/)division-ds\/styles\/tokens\.css$/, why: 'the same file, installed into a project by shadcn; it also names the MCP Apps host\'s own variables' },
   { pattern: /\.test\.tsx?$/, why: 'tests assert on literal values and on deliberately wrong input' },
   { pattern: /^src\/demo\/(scene|blob|terrain)\//, why: 'WebGL materials: three.js takes colours as numbers, not CSS variables' },
   { pattern: /^src\/components\/atoms\/loading-animation\/(palette|scene|kit|variants)\.ts$/, why: 'WebGL materials, read from the tokens at runtime where they can be' },
@@ -98,9 +105,9 @@ export function findViolations(text, path, tokenNames) {
       if (name.endsWith('-')) continue
       if (!known.has(name)) {
         const near = suggest(name, tokenNames)
-        add('unknown-token', `var(${name})`, near.length ? `No such token. Did you mean ${near.join(', ')}?` : 'No such token. The full list is public/manifest/tokens.json.')
+        add('unknown-token', `var(${name})`, near.length ? `No such token. Did you mean ${near.join(', ')}?` : `No such token. The full list: ${TOKEN_LIST}.`)
       } else if (PRIMITIVE_RAMP.test(name) && inComponents(path)) {
-        add('primitive-in-component', `var(${name})`, 'A component reads semantic tokens, not a ramp step. Pick one by intent from public/manifest/tokens.json (accent.<state>.text, .fill or .ink).')
+        add('primitive-in-component', `var(${name})`, `A component reads semantic tokens, not a ramp step. Pick one by intent (accent.<state>.text, .fill or .ink): ${TOKEN_LIST}.`)
       }
     }
 
@@ -108,7 +115,7 @@ export function findViolations(text, path, tokenNames) {
     // where a literal colour would be.
     const rest = line.replace(/var\([^)]*\)/g, '')
     for (const match of rest.matchAll(HEX)) {
-      add('raw-colour', match[0], 'Use a semantic token: text-[var(--color-text-primary)], bg-[var(--color-surface-base)]. Tokens and what each is for: public/manifest/tokens.json.')
+      add('raw-colour', match[0], `Use a semantic token: text-[var(--color-text-primary)], bg-[var(--color-surface-base)]. Tokens and what each is for: ${TOKEN_LIST}.`)
     }
     for (const match of rest.matchAll(COLOR_FUNCTION)) {
       add('raw-colour', match[0] + '…)', 'Use a semantic token. If no token fits, the colour is a change to the system: add it under tokens/ with a contrast pair.')

@@ -9,7 +9,7 @@ export const meta: ComponentMeta = {
     "A busy indicator for an indeterminate wait, meaning one with no known end or percentage. It comes in two forms. The ring has a lit arc that grows and slides as it turns. The conveyor is a row of shaded blocks, for a wait that sits inside a line of text.",
   anatomy: [
     { part: 'span', description: "The root. It gets role=\"status\" only when it's labelled." },
-    { part: 'Ring (ring)', description: "An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.fill by default." },
+    { part: 'Ring (ring)', description: "An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.indicator by default." },
     { part: 'Blocks (conveyor)', description: "Three block glyphs, from full to half shade, running over a ten-cell track in border.control." },
     { part: 'sr-only label', description: "The text a screen reader announces. sr-only means it's hidden on screen but still read aloud. It's only there when label is passed." },
   ],

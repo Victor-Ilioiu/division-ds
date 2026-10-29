@@ -10,7 +10,7 @@ import { cn } from '../../../lib/cn'
 // on every tone. Dark theme is unchanged visually — dark's `.text` and `.fill` are the same
 // primitive stop for every tone.
 //
-// EXCEPT signal, by Victor's decision on 2026-09-22: it paints `accent.signal.fill` so the bar is
+// EXCEPT signal, by Victor's decision on 2026-09-22: it paints `accent.signal.indicator` so the bar is
 // the same orange as Slider's range in both themes. In light theme that measures 2.15:1 on the
 // track, BELOW SC 1.4.11's 3:1, and this was accepted knowingly over two passing alternatives (a
 // dark light-theme track, or keeping the darker `.text` step). The contrast gate records it as a
@@ -20,7 +20,7 @@ import { cn } from '../../../lib/cn'
 // so `component.control.indicator.checked` is unread by any component now, same as this file
 // reads no `component.control.progress.fill.signal`.
 const TONE_FILL = {
-  signal: 'bg-[var(--color-accent-signal-fill)]',
+  signal: 'bg-[var(--color-accent-signal-indicator)]',
   ok: 'bg-[var(--component-control-progress-fill-ok)]',
   warning: 'bg-[var(--component-control-progress-fill-warning)]',
   hostile: 'bg-[var(--component-control-progress-fill-hostile)]',

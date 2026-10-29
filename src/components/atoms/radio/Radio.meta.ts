@@ -58,7 +58,7 @@ export const meta: ComponentMeta = {
   useWhen: 'One choice from a short set, up to about seven, all shown at once.',
   notFor: 'A yes/no question: use Checkbox or Switch. A longer list: use Select.',
   dos: [
-    'Name the group with aria-label or a FormField legend.',
+    'Name the group: in a form, a fieldset legend that the RadioGroup points at with aria-labelledby; elsewhere, aria-label.',
     'Offer a default when one option really is the norm.',
     'Keep the set short. Past about seven options, use a Select.',
   ],
@@ -66,5 +66,31 @@ export const meta: ComponentMeta = {
     "Don't use radios for a yes/no. That's a Checkbox or a Switch.",
     "Don't put a radio outside a RadioGroup. Both the roving focus and the value come from the group.",
     "Don't make choosing an option perform the action. Put a button after the group.",
+  ],
+  pitfalls: [
+    {
+      wrong: `<FormField label="Difficulty" error={error}>
+  <RadioGroup>
+    <Radio value="easy" />
+  </RadioGroup>
+</FormField>`,
+      right: `<fieldset aria-describedby={error ? 'difficulty-error' : undefined}>
+  <legend id="difficulty-label" className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-primary)]">
+    Difficulty
+  </legend>
+  <RadioGroup aria-labelledby="difficulty-label" aria-required="true" value={value} onValueChange={setValue} className="mt-2">
+    {['easy', 'moderate', 'hard'].map(option => (
+      <div key={option} className="flex items-center gap-2">
+        <Radio id={\`difficulty-\${option}\`} value={option} invalid={Boolean(error)} />
+        <label htmlFor={\`difficulty-\${option}\`} className="font-body text-sm">{option}</label>
+      </div>
+    ))}
+  </RadioGroup>
+  {error ? (
+    <p id="difficulty-error" className="mt-1.5 font-body text-sm text-[var(--color-accent-hostile-text)]">{error}</p>
+  ) : null}
+</fieldset>`,
+      why: 'FormField clones one control and gives it an id and a label; a group of radios has neither. The fieldset and legend name the group, the label styles match FormField, and the error is linked through aria-describedby. Give ErrorSummary the id of the first Radio so its link lands in the group.',
+    },
   ],
 }

@@ -49,7 +49,7 @@ export function Radio({ invalid, className, ref, ...rest }: RadioProps) {
         // control.css, which also owns the reduced-motion case.
         'transition-control',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',
-        'data-[state=checked]:border-[var(--color-accent-signal-fill)]',
+        'data-[state=checked]:border-[var(--color-accent-signal-indicator)]',
         // Object half of the one disabled-state rule (src/lib/disabled.ts, design.md): the whole
         // control — checked or not — dims to 50% opacity.
         disabledObject,
@@ -61,17 +61,17 @@ export function Radio({ invalid, className, ref, ...rest }: RadioProps) {
       {...rest}
     >
       {/* Bright orange in both themes, by Victor's decision (2026-09-23): the inner square paints
-          `accent.signal.fill` straight, matching the border above and Checkbox's own checked
+          `accent.signal.indicator` straight, matching the border above and Checkbox's own checked
           fill, instead of the theme-adaptive `component.control.indicator.checked`
           (`accent.signal.text`) it used before. The inner square is the ONLY thing that says
           "selected" (unlike Checkbox, whose whole box flips to the signal fill), so SC 1.4.11
           measures it against the colour adjacent to it — the control's own fill, not the page —
-          and `accent.signal.fill` there measures 2.15:1 in light theme, below the 3:1 floor.
+          and `accent.signal.indicator` there measures 2.15:1 in light theme, below the 3:1 floor.
           Accepted knowingly, same as Progress's signal tone; gated at a 2:1 floor instead of
           removed from the gate (see contrast-pairs.mjs). Dark theme is visually unchanged: its
           signal.text and signal.fill are the same primitive stop. `component.control.indicator.
           checked` itself is left in place, unread by any component now. */}
-      <RadixRadioGroup.Indicator className="w-2.5 h-2.5 bg-[var(--color-accent-signal-fill)]" />
+      <RadixRadioGroup.Indicator className="w-2.5 h-2.5 bg-[var(--color-accent-signal-indicator)]" />
     </RadixRadioGroup.Item>
   )
 }

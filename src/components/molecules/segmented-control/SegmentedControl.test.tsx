@@ -31,7 +31,7 @@ describe('SegmentedControl', () => {
     render(<Controlled />)
     const selected = screen.getByRole('radio', { name: '24 h' })
     expect(selected).toBeChecked()
-    expect(selected.className).toContain('data-[state=checked]:bg-[var(--color-accent-signal-fill)]')
+    expect(selected.className).toContain('data-[state=checked]:bg-[var(--color-accent-signal-indicator)]')
     expect(selected.className).toContain('data-[state=checked]:font-semibold')
     expect(selected).toHaveAttribute('data-state', 'checked')
   })

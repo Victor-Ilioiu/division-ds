@@ -13,6 +13,8 @@
 import { Spinner, spinnerVariants } from 'src/components/atoms/spinner/Spinner'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -32,7 +34,7 @@ Exported beside the component, from the same file. Import a type with `import ty
 export const spinnerVariants = cva(
   // The arc takes `currentColor`, so a caller can recolour it with one text utility: Button does
   // exactly that, so the arc matches whatever ink the button label is set in.
-  'inline-block shrink-0 text-[var(--color-accent-signal-fill)]',
+  'inline-block shrink-0 text-[var(--color-accent-signal-indicator)]',
   {
     variants: {
       size: { sm: 'w-3.5 h-3.5', md: 'w-5 h-5', lg: 'w-6 h-6' },
@@ -91,6 +93,6 @@ Not focusable. No keyboard behaviour of its own.
 ## Anatomy
 
 - **span**: The root. It gets role="status" only when it's labelled.
-- **Ring (ring)**: An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.fill by default.
+- **Ring (ring)**: An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.indicator by default.
 - **Blocks (conveyor)**: Three block glyphs, from full to half shade, running over a ten-cell track in border.control.
 - **sr-only label**: The text a screen reader announces. sr-only means it's hidden on screen but still read aloud. It's only there when label is passed.

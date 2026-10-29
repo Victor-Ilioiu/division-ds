@@ -102,7 +102,38 @@ describe('createTools', () => {
   it('passes clean code and says what it did not check', () => {
     const code = "export const X = () => <p className=\"text-[var(--color-text-primary)]\">Hi</p>"
     expect(t.validate_code.run({ code })).toMatch(/^No findings in Screen\.tsx[\s\S]*Not checked: how the screen behaves/)
-    expect(() => t.validate_code.run({ code, filename: 'a.css' })).toThrow(ToolError)
+    expect(() => t.validate_code.run({ code, filename: 'a.md' })).toThrow(ToolError)
+  })
+
+  it('checks a stylesheet for colours, allowing a real token to be set', () => {
+    const css = [':root {', '  --color-surface-base: #101010;', '  --color-brand: #ff0000;', '  --color-text-primary: var(--color-nope);', '}', '.x { color: #abc; }'].join('\n')
+    const out = t.validate_code.run({ code: css, filename: 'src/index.css' })
+    expect(out).toContain('3 finding(s)')
+    expect(out).toContain('line 3: #ff0000')
+    expect(out).toContain('line 4: var(--color-nope)')
+    expect(out).toContain('line 6: #abc')
+    expect(out).not.toContain('line 2')
+  })
+
+  it('finds a component documented on another page, by its name and by what it does', () => {
+    expect(t.get_component.run({ name: 'ResponseFeedback', section: 'props' })).toMatch(/^# ChatMessage/)
+    expect(t.list_components.run({})).toMatch(/- ChatMessage .*Also on its page: ResponseFeedback\./)
+    for (const query of ['response feedback', 'helpful', 'thumbs up']) {
+      expect(t.search.run({ query, limit: 3 })).toContain('- ChatMessage (component)')
+    }
+  })
+
+  it('ranks a match on every word above one word matched in a name', () => {
+    expect(t.search.run({ query: 'page background' }).split('\n')[0]).toContain('--color-surface-base')
+    expect(t.search.run({ query: 'AI filled field' })).toContain('- Input (component)')
+  })
+
+  it('points fix hints at places a consumer project can reach', () => {
+    const code = "import { Badge } from '../components/atoms/badge/Badge'\nexport const X = () => <Badge colour=\"red\" className=\"text-[var(--color-nope)]\">x</Badge>"
+    const out = t.validate_code.run({ code })
+    expect(out).toContain('https://victor-ilioiu.vercel.app/systems/division-ds/docs/components/badge.md')
+    expect(out).toContain('get_tokens over MCP')
+    expect(out).not.toContain('public/manifest')
   })
 
   it('measures contrast in both themes, following component tokens to their colour', () => {

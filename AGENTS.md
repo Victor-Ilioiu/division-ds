@@ -51,7 +51,7 @@ installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rul
 `.claude/skills/` (Claude Code).
 
 An agent that supports MCP can have the docs and the same checks as tools instead:
-`claude mcp add division-ds -- npx -y division-ds mcp` (`list_components`, `get_component`,
+`claude mcp add division-ds -- npx -y division-ds@0.2.1 mcp` (`list_components`, `get_component`,
 `search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
 `get_review_checklist`).
 
@@ -116,7 +116,9 @@ The shell paints the page background (`surface.base`) and supplies the gutter; a
 own `max-w-*` and vertical spacing, and no page background. A form or an overlay is the
 exception: it paints `surface.base` on itself, so its field colours never depend on what is
 behind it. In a project that uses the components, your own root does this
-(step 4 of `install.md`).
+(step 4 of `install.md`). Toggle it with `setTheme()` from `src/lib/theme.ts`.
+
+**App navigation.** A few views: `Navbar` (`current: true` on the open one). Many: `Sidebar`.
 
 **Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the
 default, set by the shell), `font-mono` (labels, code, tabular numbers). A page title is
@@ -150,6 +152,9 @@ bare and name it through its own `label` prop ("Role for Ilse Varga"). `Switch`,
 `Radio` are not `FormField` children: give them an `id` and a `<label htmlFor>`. A failed submit
 renders `ErrorSummary` at the top and focuses it; `useFieldErrors` holds the state (signature in
 `public/docs/helpers.md`).
+
+A `RadioGroup` in a form sits in a `<fieldset>` whose `<legend>` names it (code on the Radio
+page). A date is `<Input type="date">` in a `FormField`.
 
 **Buttons.** Two or more buttons side by side need a parent with a gap
 (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one. A `Button` is
@@ -188,7 +193,8 @@ Tailwind), and nothing moves on its own: no autoplay.
 
 **Assistant copy.** A button names the action ("Summarize"), never "AI". Say "response", not
 "answer". No "please" or "!" in assistant labels. The interface says "Assistant"; only its own
-messages say "I".
+messages say "I". Response feedback: `ResponseFeedback` in `actions`.
+A value the assistant filled is `aiValue` on that `Input` or `Textarea` only; leaving it accepts it.
 <!-- rules:end -->
 
 ## Changing the system itself

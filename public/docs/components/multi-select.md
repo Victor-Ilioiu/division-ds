@@ -13,6 +13,8 @@
 import { MultiSelect } from 'src/components/molecules/multi-select/MultiSelect'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A <FormField> around it. FormField supplies the visible label, the help and the error, and replaces the label prop with its own.

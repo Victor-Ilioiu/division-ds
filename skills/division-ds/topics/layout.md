@@ -8,7 +8,9 @@ The shell paints the page background (`surface.base`) and supplies the gutter; a
 own `max-w-*` and vertical spacing, and no page background. A form or an overlay is the
 exception: it paints `surface.base` on itself, so its field colours never depend on what is
 behind it. In a project that uses the components, your own root does this
-(step 4 of `install.md`).
+(step 4 of `install.md`). Toggle it with `setTheme()` from `src/lib/theme.ts`.
+
+**App navigation.** A few views: `Navbar` (`current: true` on the open one). Many: `Sidebar`.
 
 **Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the
 default, set by the shell), `font-mono` (labels, code, tabular numbers). A page title is

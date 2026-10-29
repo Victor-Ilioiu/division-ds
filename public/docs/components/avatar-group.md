@@ -13,6 +13,8 @@
 import { AvatarGroup } from 'src/components/molecules/avatar-group/AvatarGroup'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - With overflowTooltip, the root <TooltipProvider>. AppShell and the demo layout each include one.

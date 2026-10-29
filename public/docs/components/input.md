@@ -13,6 +13,8 @@
 import { Input, inputVariants } from 'src/components/atoms/input/Input'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A <FormField> around it. On its own the control has no label. FormField adds the label, the help text and the error, and connects their ids.

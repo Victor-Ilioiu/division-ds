@@ -288,8 +288,8 @@ export function MultiSelect({
                     SIZES[inputSize].row,
                     'font-body text-[var(--color-text-primary)]',
                     SIZES[inputSize].text,
-                    'data-[highlighted]:bg-[var(--color-accent-signal-fill)]',
-                    'data-[highlighted]:text-[var(--color-accent-signal-ink)]',
+                    'data-[highlighted]:bg-[var(--color-accent-signal-indicator)]',
+                    'data-[highlighted]:text-[var(--color-accent-signal-indicator-ink)]',
                     'aria-disabled:cursor-not-allowed aria-disabled:text-[var(--component-control-text-disabled)]'
                   )}
                 >

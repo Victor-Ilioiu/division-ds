@@ -1537,7 +1537,7 @@
           "name": "tone",
           "type": "'signal' | 'ok' | 'warning' | 'hostile'",
           "default": "'signal'",
-          "description": "The fill colour. signal paints accent.signal.fill to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there."
+          "description": "The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there."
         },
         {
           "name": "className",
@@ -1738,7 +1738,7 @@
         }
       ],
       "dos": [
-        "Name the group with aria-label or a FormField legend.",
+        "Name the group: in a form, a fieldset legend that the RadioGroup points at with aria-labelledby; elsewhere, aria-label.",
         "Offer a default when one option really is the norm.",
         "Keep the set short. Past about seven options, use a Select."
       ],
@@ -1746,6 +1746,13 @@
         "Don't use radios for a yes/no. That's a Checkbox or a Switch.",
         "Don't put a radio outside a RadioGroup. Both the roving focus and the value come from the group.",
         "Don't make choosing an option perform the action. Put a button after the group."
+      ],
+      "pitfalls": [
+        {
+          "wrong": "<FormField label=\"Difficulty\" error={error}>\n  <RadioGroup>\n    <Radio value=\"easy\" />\n  </RadioGroup>\n</FormField>",
+          "right": "<fieldset aria-describedby={error ? 'difficulty-error' : undefined}>\n  <legend id=\"difficulty-label\" className=\"font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-primary)]\">\n    Difficulty\n  </legend>\n  <RadioGroup aria-labelledby=\"difficulty-label\" aria-required=\"true\" value={value} onValueChange={setValue} className=\"mt-2\">\n    {['easy', 'moderate', 'hard'].map(option => (\n      <div key={option} className=\"flex items-center gap-2\">\n        <Radio id={`difficulty-${option}`} value={option} invalid={Boolean(error)} />\n        <label htmlFor={`difficulty-${option}`} className=\"font-body text-sm\">{option}</label>\n      </div>\n    ))}\n  </RadioGroup>\n  {error ? (\n    <p id=\"difficulty-error\" className=\"mt-1.5 font-body text-sm text-[var(--color-accent-hostile-text)]\">{error}</p>\n  ) : null}\n</fieldset>",
+          "why": "FormField clones one control and gives it an id and a label; a group of radios has neither. The fieldset and legend name the group, the label styles match FormField, and the error is linked through aria-describedby. Give ErrorSummary the id of the first Radio so its link lands in the group."
+        }
       ],
       "anatomy": [
         {
@@ -2114,7 +2121,7 @@
         },
         {
           "part": "Item",
-          "description": "Highlighted rows use signal.fill with signal.ink. That’s the fill-selection grammar, the system’s rule for how a selection looks."
+          "description": "Highlighted rows use accent.signal.indicator with accent.signal.indicator-ink. That’s the fill-selection grammar, the system’s rule for how a selection looks."
         },
         {
           "part": "ItemIndicator",
@@ -2446,7 +2453,7 @@
         },
         {
           "part": "Range",
-          "description": "The filled span, in signal.fill."
+          "description": "The filled span, in accent.signal.indicator."
         },
         {
           "part": "Thumb",
@@ -2669,7 +2676,7 @@
         {
           "name": "spinnerVariants",
           "kind": "const",
-          "code": "export const spinnerVariants = cva(\n  // The arc takes `currentColor`, so a caller can recolour it with one text utility: Button does\n  // exactly that, so the arc matches whatever ink the button label is set in.\n  'inline-block shrink-0 text-[var(--color-accent-signal-fill)]',\n  {\n    variants: {\n      size: { sm: 'w-3.5 h-3.5', md: 'w-5 h-5', lg: 'w-6 h-6' },\n    },\n    defaultVariants: { size: 'md' },\n  }\n)",
+          "code": "export const spinnerVariants = cva(\n  // The arc takes `currentColor`, so a caller can recolour it with one text utility: Button does\n  // exactly that, so the arc matches whatever ink the button label is set in.\n  'inline-block shrink-0 text-[var(--color-accent-signal-indicator)]',\n  {\n    variants: {\n      size: { sm: 'w-3.5 h-3.5', md: 'w-5 h-5', lg: 'w-6 h-6' },\n    },\n    defaultVariants: { size: 'md' },\n  }\n)",
           "from": "src/components/atoms/spinner/Spinner"
         }
       ],
@@ -2692,7 +2699,7 @@
         },
         {
           "part": "Ring (ring)",
-          "description": "An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.fill by default."
+          "description": "An SVG (Scalable Vector Graphics) track at 20% of currentColor, which is the surrounding text colour, plus an arc in currentColor. That's accent.signal.indicator by default."
         },
         {
           "part": "Blocks (conveyor)",
@@ -2843,11 +2850,11 @@
         },
         {
           "part": "Thumb",
-          "description": "A 16px (pixel) square, 3px from the track edge in both states, travelling 22px. Its position is the state signal. It's text.primary when off and accent.signal.fill when on. Held down, it stretches 4px away from the edge it rests on: to the right when off, to the left when on, so it never leaves the track. Flipped, it speeds up across the track, gets a little longer in flight and a little shorter against the far edge, then goes back to its own shape. One give, no bounce."
+          "description": "A 16px (pixel) square, 3px from the track edge in both states, travelling 22px. Its position is the state signal. It's text.primary when off and accent.signal.indicator when on. Held down, it stretches 4px away from the edge it rests on: to the right when off, to the left when on, so it never leaves the track. Flipped, it speeds up across the track, gets a little longer in flight and a little shorter against the far edge, then goes back to its own shape. One give, no bounce."
         },
         {
           "part": "Track fill",
-          "description": "The control fill, on and off. When it's on, only the border turns to signal.fill. The track doesn't fill with the accent, so the thumb is the one thing that changes colour during a flip."
+          "description": "The control fill, on and off. When it's on, only the border turns to accent.signal.indicator. The track doesn't fill with the accent, so the thumb is the one thing that changes colour during a flip."
         }
       ],
       "examples": [
@@ -4917,7 +4924,7 @@
         {
           "name": "children",
           "type": "ReactElement",
-          "description": "Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label."
+          "description": "Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up."
         },
         {
           "name": "className",

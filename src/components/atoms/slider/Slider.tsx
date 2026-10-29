@@ -114,7 +114,7 @@ export function Slider({
         {...rest}
       >
         <RadixSlider.Track className="relative grow h-1 bg-[var(--color-surface-sunken)]">
-          <RadixSlider.Range className="absolute h-full bg-[var(--color-accent-signal-fill)]" />
+          <RadixSlider.Range className="absolute h-full bg-[var(--color-accent-signal-indicator)]" />
         </RadixSlider.Track>
         {values.map((v, index) => (
           <RadixSlider.Thumb
@@ -123,7 +123,7 @@ export function Slider({
             aria-valuetext={formatValue ? formatValue(v) : undefined}
             className={cn(
               // 20px square, painted; a 24px hit area via the ::before below (WCAG 2.2 SC 2.5.8).
-              'relative block w-5 h-5 shrink-0 bg-[var(--color-accent-signal-fill)]',
+              'relative block w-5 h-5 shrink-0 bg-[var(--color-accent-signal-indicator)]',
               'before:absolute before:-inset-0.5 before:content-[""]',
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',
               // The thumb is a Radix `Primitive.span`, which never carries a native `disabled`

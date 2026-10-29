@@ -95,14 +95,14 @@ describe('Radio', () => {
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
-  it('paints the checked indicator in accent.signal.fill, not indicator.checked', () => {
+  it('paints the checked indicator in accent.signal.indicator, not indicator.checked', () => {
     render(
       <RadioGroup aria-label="Dispatch speed" defaultValue="standard">
         <Radio value="standard" aria-label="standard" />
       </RadioGroup>
     )
     const indicator = screen.getByRole('radio').querySelector('span')
-    expect(indicator).toHaveClass('bg-[var(--color-accent-signal-fill)]')
+    expect(indicator).toHaveClass('bg-[var(--color-accent-signal-indicator)]')
   })
 
   // Type-only assertion, enforced by `tsc -b` (run as part of `npm run build`), not by vitest at

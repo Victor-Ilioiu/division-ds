@@ -28,6 +28,7 @@
 //   accepted; one the rest type names in its Omit<> is not. With a `...rest` row of a Radix
 //   component's props, any other prop is accepted (the Radix surface is not in the manifest).
 import ts from 'typescript'
+import { DOCS_SITE } from './agent-docs.mjs'
 import { parseRowName, resolvePart } from './component-props.mjs'
 
 /** Always accepted on any component: React's own props, and attributes every DOM wrapper takes. */
@@ -125,7 +126,7 @@ export function buildIndex(manifest) {
     if (exportNames.length === 0) continue
     const components = Object.fromEntries(exportNames.map(name => [name, true]))
     const specs = Object.fromEntries(
-      exportNames.map(name => [name, { entry: entry.name, docs: entry.docs, props: new Map(), rest: null }])
+      exportNames.map(name => [name, { entry: entry.name, docs: entry.docs && `${DOCS_SITE}${entry.docs.replace(/^\//, '')}`, props: new Map(), rest: null }])
     )
     let unresolved = false
     for (const row of entry.props ?? []) {

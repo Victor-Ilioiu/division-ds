@@ -13,6 +13,8 @@
 import { Tooltip, TooltipProvider } from 'src/components/atoms/tooltip/Tooltip'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - One <TooltipProvider> near the root of the app. AppShell and the demo layout each mount one, so a screen doesn't add its own.

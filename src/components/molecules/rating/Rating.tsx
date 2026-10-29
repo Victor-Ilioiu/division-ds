@@ -4,17 +4,17 @@ import { Star } from 'lucide-react'
 import { cn } from '../../../lib/cn'
 import { disabledObject } from '../../../lib/disabled'
 
-// Named pairs in scripts/lib/contrast-pairs.mjs: "rating filled star (accent.signal.fill) on
+// Named pairs in scripts/lib/contrast-pairs.mjs: "rating filled star (accent.signal.indicator) on
 // surface.base", "...on surface.raised (over surface.base)", "rating empty star
 // (border.selection) on surface.base" and "...on surface.raised (over surface.base)". The stars
 // are graphical objects that carry the value (SC 1.4.11), so both colours are gated against both
 // surfaces a Rating can sit on: the page, and a Panel (surface.raised, the docs Example's own
 // chrome and any card or panel a consumer drops one into).
-const FILLED = 'fill-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-fill)]'
+const FILLED = 'fill-[var(--color-accent-signal-indicator)] text-[var(--color-accent-signal-indicator)]'
 const EMPTY = 'fill-transparent text-[var(--color-border-selection)]'
 // Hover preview: the filled star's colour as an outline only, so it reads "this would be set"
 // without looking set. Same colour as FILLED, so it needs no pair of its own.
-const PREVIEW = 'fill-transparent text-[var(--color-accent-signal-fill)]'
+const PREVIEW = 'fill-transparent text-[var(--color-accent-signal-indicator)]'
 
 /** One star in one of three states. Half is a filled star clipped to 50% over an empty one. */
 function StarGlyph({ state, className }: { state: 'full' | 'half' | 'empty' | 'hover'; className: string }) {

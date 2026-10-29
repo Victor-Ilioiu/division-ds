@@ -25,9 +25,11 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 | `--color-text-muted` | The quietest readable text: captions, timestamps, disabled-looking labels. Not for anything the user must read to act. | `dark #7b8592, light #283445` |
 | `--color-text-placeholder` | Placeholder text inside a control, on surface.sunken. Only there. | `dark #747f8d, light #283445` |
 | `--color-text-label` | Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text. | `dark #6f7a88, light #445875` |
-| `--color-accent-signal-fill` | A solid block in the brand orange: the primary Button, a solid signal Badge. Put accent.signal.ink on it, never text.primary. | `#f2550f` |
+| `--color-accent-signal-fill` | A solid block in the brand colour, exactly as chosen: the primary Button, IconButton, a solid signal Badge. Put accent.signal.ink on it, never text.primary. Never use it as the only sign of a state; use accent.signal.indicator. | `#f2550f` |
 | `--color-accent-signal-text` | Orange text or icon on a surface: a current nav item, an emphasised figure, a link accent. | `dark #f2550f, light #983508` |
 | `--color-accent-signal-ink` | Text and icons on accent.signal.fill. | `#0a0602` |
+| `--color-accent-signal-indicator` | The accent where colour alone shows a state or value: a checked control, Switch on, Progress, Slider, Rating stars, the current item in Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows. Put accent.signal.indicator-ink on it. | `#f2550f` |
+| `--color-accent-signal-indicator-ink` | Text and icons on accent.signal.indicator. | `#0a0602` |
 | `--color-accent-signal-wash` | The faint orange hover wash under a nav item or an inactive tab. | `rgba(242, 85, 15, 0.12)` |
 | `--color-accent-signal-glow` | The faint shadow of an interactive Card on hover and focus. Used by the Card component only. | `dark rgba(242, 85, 15, 0.38), light rgba(242, 85, 15, 0.3)` |
 | `--color-accent-hostile-fill` | A solid block for danger or failure: the danger Button, a solid hostile Badge. Put accent.hostile.ink on it. | `#f33636` |
@@ -46,7 +48,7 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 | `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. | `dark #78b7ff, light #004593` |
 | `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. | `dark #78b7ff, light #004593` |
 | `--color-ai-wash` | The faint tint inside a field an AI filled, laid over the control fill. Input and Textarea paint it; nothing else should. | `dark rgba(90, 167, 255, 0.1), light rgba(0, 99, 213, 0.08)` |
-| `--color-focus-ring` | The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset. | `#f2550f` |
+| `--color-focus-ring` | The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset. | `dark #f2550f, light #c6440b` |
 | `--color-chart-series-1` | The first data series in a chart. A graphic colour, never text. ChartPanel applies it. | `dark #f2550f, light #c6440b` |
 | `--color-chart-series-2` | The second data series in a chart. A graphic colour, never text. There is no third: split the chart. | `dark #1884ff, light #0063d5` |
 
@@ -114,12 +116,12 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 - [AvatarGroup](docs/components/avatar-group.md): Overlapping avatars (small profile pictures) with a “+N” for the rest.
 - [Breadcrumbs](docs/components/breadcrumbs.md): Shows where this page sits among the pages above it.
 - [Card](docs/components/card.md): A surface that groups related content.
-- [ChatMessage](docs/components/chat-message.md): One turn in a conversation with an assistant: the person's words in a bubble, the reply at full width, or a centred system line.
+- [ChatMessage](docs/components/chat-message.md): One turn in a conversation with an assistant: the person's words in a bubble, the reply at full width, or a centred system line. Also: ResponseFeedback.
 - [DescriptionList](docs/components/description-list.md): Pairs of a term and its value, all about one thing, in one to three columns.
 - [DropdownMenu](docs/components/dropdown-menu.md): A short list of actions behind a button.
 - [EmptyState](docs/components/empty-state.md): What a list, a table or a page region shows when it has nothing in it: an icon, a title that names what is empty, a sentence on why, and the action that fills it.
-- [FormField](docs/components/form-field.md): The label, help text and error text for one form control.
-- [ListItem](docs/components/list-item.md): One row of a list: something at the start (a picture or icon), a title and description, extra details on the right, and actions at the end.
+- [FormField](docs/components/form-field.md): The label, help text and error text for one form control. Also: ErrorSummary.
+- [ListItem](docs/components/list-item.md): One row of a list: something at the start (a picture or icon), a title and description, extra details on the right, and actions at the end. Also: List.
 - [MultiSelect](docs/components/multi-select.md): Pick several choices from a list.
 - [PageHeader](docs/components/page-header.md): The top of a screen.
 - [Pagination](docs/components/pagination.md): Moves through a long list one page at a time.
@@ -153,7 +155,7 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 - [KanbanBoard](docs/components/kanban-board.md): Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu.
 - [Navbar](docs/components/navbar.md): The top of a page: the brand, the main links and a few actions.
 - [NewsletterForm](docs/components/newsletter-form.md): An email field, a line saying what you're agreeing to, and a button.
-- [ProductCard](docs/components/product-card.md): One product as one link.
+- [ProductCard](docs/components/product-card.md): One product as one link. Also: ProductGrid.
 - [Sheet](docs/components/sheet.md): A dialog that slides in from the side and runs the full height of the screen.
 - [Sidebar](docs/components/sidebar.md): The navigation down the side of an app.
 
@@ -171,6 +173,7 @@ In full: [llms-guidelines.txt](llms-guidelines.txt).
 - **Fill, text, ink.** Each accent has three roles.
 - **Status tones.** `ok` done or healthy; `warning` degraded or needs attention; `hostile` failed or destructive; `info` in progress or neutral news; `signal` brand emphasis (a sale, the selected thing); `neutral` inactive.
 - **Themes.** The theme is `data-theme="light"` or `"dark"` on `<html>` (`src/lib/theme.ts`); dark is the default.
+- **App navigation.** A few views: `Navbar` (`current: true` on the open one).
 - **Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the default, set by the shell), `font-mono` (labels, code, tabular numbers).
 - **Text size.** Secondary text is 14px or larger.
 - **Cards.** To highlight or select a `Card`, set the border inline with a token: `style={{ border: '2px solid var(--color-accent-signal-fill)' }}`.

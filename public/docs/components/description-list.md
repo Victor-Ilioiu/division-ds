@@ -13,6 +13,8 @@
 import { DescriptionList } from 'src/components/molecules/description-list/DescriptionList'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Props
 
 | Prop | Type | Default | Description |

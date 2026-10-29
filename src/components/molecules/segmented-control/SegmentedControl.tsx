@@ -37,7 +37,7 @@ const SIZE = {
  * of content with `role="tabpanel"`); this is for a setting that filters or re-renders the same
  * content, which has no panel to point at.
  *
- * Selection is a block of `accent.signal.fill` with `accent.signal.ink` text in semibold, the
+ * Selection is a block of `accent.signal.indicator` with `accent.signal.indicator-ink` text in semibold, the
  * same grammar as the Tabs fill variant and Select's highlighted row, so the state is a change of
  * shape and weight as well as hue. The frame is `border.control`, the informational hairline,
  * because the frame is what tells a reader the options belong together.
@@ -46,8 +46,8 @@ const SIZE = {
  * the buttons beside it in a toolbar. The row scrolls sideways inside itself rather than pushing
  * the page wide at 320px.
  *
- * Contrast rows, by exact name. Selected: "accent.signal.ink on accent.signal.fill", "checked/on
- * fill (accent.signal.fill) on surface.base" and "rating filled star (accent.signal.fill) on
+ * Contrast rows, by exact name. Selected: "accent.signal.indicator-ink on accent.signal.indicator", "checked/on
+ * fill (accent.signal.indicator) on surface.base" and "rating filled star (accent.signal.indicator) on
  * surface.raised (over surface.base)". Unselected text: "text.secondary on surface.base" and
  * "alert body and ghost dismiss (text.secondary) on surface.raised (over surface.base)". Frame:
  * "control border (over control fill) on surface.base" and "button secondary border
@@ -103,13 +103,13 @@ export function SegmentedControl({
             'inline-flex shrink-0 items-center justify-center whitespace-nowrap',
             'font-mono text-xs uppercase tracking-[0.12em]',
             'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-control',
-            'data-[state=checked]:bg-[var(--color-accent-signal-fill)] data-[state=checked]:font-semibold',
-            'data-[state=checked]:text-[var(--color-accent-signal-ink)]',
+            'data-[state=checked]:bg-[var(--color-accent-signal-indicator)] data-[state=checked]:font-semibold',
+            'data-[state=checked]:text-[var(--color-accent-signal-indicator-ink)]',
             // Inset, so the ring stays inside the frame and inside the scrolling row. On the
             // selected option the signal ring would vanish into the signal fill, so it is drawn in
             // ink there, as the active Tabs trigger does.
             'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',
-            'data-[state=checked]:focus-visible:outline-[var(--color-accent-signal-ink)]',
+            'data-[state=checked]:focus-visible:outline-[var(--color-accent-signal-indicator-ink)]',
             SIZE[size]
           )}
         >

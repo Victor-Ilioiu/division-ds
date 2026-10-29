@@ -232,7 +232,7 @@ import { Progress } from 'src/components/atoms/progress/Progress'
 - `value: number \| null` null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.
 - `max: number = 100` The value at which the bar is complete.
 - `showValue: boolean = false` Shows the percentage (or "In progress") as a readout.
-- `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.fill to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
+- `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
 - `className: string` Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.
 - `ref: Ref<HTMLDivElement>` Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.
 - `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning.
@@ -713,7 +713,7 @@ import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
 - `help: string` Instruction text, read out before any error.
 - `error: string` Sets invalid on the control and adds the error line.
 - `required: boolean = false` Adds the asterisk (hidden from screen readers) and the built-in required attribute on the control. That attribute is what assistive technology actually announces.
-- `children: ReactElement` Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label.
+- `children: ReactElement` Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up.
 - `className: string` Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins.
 - `ref: Ref<HTMLDivElement>` Passed through to the outer element.
 - `errors (ErrorSummary): { fieldId: string; message: string }[]` What stopped the form from submitting, in the order of the fields. Each entry links to its field and moves focus there. An empty list shows nothing.

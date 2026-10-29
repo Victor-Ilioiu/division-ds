@@ -13,6 +13,8 @@
 import { ChatThread } from 'src/components/organisms/chat-thread/ChatThread'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A height, because the thread scrolls and the page doesn't. Use h-[28rem], or flex-1 min-h-0 inside a column.

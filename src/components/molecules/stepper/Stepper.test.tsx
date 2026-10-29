@@ -70,7 +70,7 @@ describe('Stepper', () => {
     // Each gap is drawn as two halves meeting at the column line; done-coloured up to the current step.
     const connectors = [...container.querySelectorAll('[data-part="connector"]')]
     expect(connectors).toHaveLength(6)
-    const done = connectors.map(c => c.className.includes('accent-signal-fill'))
+    const done = connectors.map(c => c.className.includes('accent-signal-indicator'))
     expect(done).toEqual([true, true, true, true, false, false])
   })
 

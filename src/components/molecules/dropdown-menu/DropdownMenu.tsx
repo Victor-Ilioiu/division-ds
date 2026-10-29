@@ -26,7 +26,7 @@ const ITEM_CLASSES = cn(
   'group relative flex items-center gap-2 min-h-[36px] px-2.5 font-body text-sm select-none outline-none cursor-default',
   'text-[var(--color-text-primary)]',
   // Selection is fill, as on Select's highlighted row.
-  'data-[highlighted]:bg-[var(--color-accent-signal-fill)] data-[highlighted]:text-[var(--color-accent-signal-ink)]',
+  'data-[highlighted]:bg-[var(--color-accent-signal-indicator)] data-[highlighted]:text-[var(--color-accent-signal-indicator-ink)]',
   disabledText
 )
 
@@ -99,8 +99,8 @@ export function DropdownMenuItem({
         // hostile item text on surface.sunken", chosen over text.secondary so the shortcut still
         // reads as hostile, not neutral). `group-data-[highlighted]:text-inherit` (the Item itself
         // carries `group` and is what `data-[highlighted]` toggles) then picks up whatever ink
-        // colour the highlighted row already painted the Item text with — `accent.signal.ink on
-        // accent.signal.fill` or `accent.hostile.ink on accent.hostile.fill`, both already gated
+        // colour the highlighted row already painted the Item text with — `accent.signal.indicator-ink on
+        // accent.signal.indicator` or `accent.hostile.ink on accent.hostile.fill`, both already gated
         // at 4.5:1 above — rather than a third, separately-measured colour.
         <span
           aria-hidden="true"

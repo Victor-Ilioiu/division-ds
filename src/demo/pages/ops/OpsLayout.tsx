@@ -16,7 +16,7 @@ const RING =
   'outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]'
 const TAB =
   'inline-flex shrink-0 items-center min-h-10 px-1 font-mono text-xs font-semibold uppercase tracking-[0.12em] border-b-2 border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-const TAB_ACTIVE = 'border-[var(--color-accent-signal-fill)] text-[var(--color-text-primary)]'
+const TAB_ACTIVE = 'border-[var(--color-accent-signal-indicator)] text-[var(--color-text-primary)]'
 
 /**
  * The frame for the Hexline back office: the store's own `Sidebar` organism down the side from

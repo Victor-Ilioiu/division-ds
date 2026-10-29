@@ -13,6 +13,8 @@
 import { ApprovalRequest } from 'src/components/molecules/approval-request/ApprovalRequest'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A parent that holds the state and sets it to approved or rejected in onApprove and onReject.

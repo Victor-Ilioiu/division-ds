@@ -62,8 +62,8 @@ export const OVERVIEW_COUNTS = {
   pages: 81,
   /** tokens/semantic/color.{dark,light}.json. */
   themes: 2,
-  /** Rows the contrast gate runs: 89 token pairs, each measured once per theme. */
-  contrastChecks: 178,
+  /** Rows the contrast gate runs: 90 token pairs, each measured once per theme. */
+  contrastChecks: 180,
   /** src/demo/routes.ts's DEMO_PAGES, the one place a Hexline route is registered. Imported
    *  rather than typed, so a page added to or removed from the demo store moves this figure
    *  without anyone remembering to update it. */
@@ -109,7 +109,7 @@ function Numeral({
           {pad}
         </span>
       ) : null}
-      <span className="text-[var(--color-accent-signal-fill)]">{digits}</span>
+      <span className="text-[var(--color-accent-signal-indicator)]">{digits}</span>
     </span>
   )
 }
@@ -131,7 +131,7 @@ const GATES: { value: number; body: ReactNode; to: string; linkLabel: string }[]
     body: (
       <>
         contrast measurements, taken every time the site is built. A contrast measurement checks
-        how clearly one colour stands out from another. There are 89 token pairs (a token is a
+        how clearly one colour stands out from another. There are 90 token pairs (a token is a
         named colour, and each pair is a colour and the background it sits on), each one measured
         in both themes.{' '}
         <code className="font-mono text-[0.8125rem]">npm run build</code>, the command that builds

@@ -4,6 +4,7 @@
 
 - **Best for:** Each turn inside a ChatThread.
 - **Not for:** Comments or an activity history between people: use Timeline.
+- **Also on this page:** `ResponseFeedback`
 - Molecule. Source: `src/components/molecules/chat-message/ChatMessage.tsx`
 - Rendered docs page: `/components/chat-message`
 
@@ -13,6 +14,8 @@
 import { ChatMessage } from 'src/components/molecules/chat-message/ChatMessage'
 import { ResponseFeedback } from 'src/components/molecules/chat-message/ResponseFeedback'
 ```
+
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
 
 ## Requires
 

@@ -24,16 +24,6 @@ describe('the hover wash', () => {
       }
     })
   }
-
-  it('keeps the focus ring off the wash, because it measures under 3:1 there in light theme', () => {
-    const primitives = JSON.parse(readFileSync('tokens/primitive/color.json', 'utf8'))
-    const t = resolveTokens(primitives, JSON.parse(readFileSync(THEMES.light, 'utf8')))
-    const page = t['--color-surface-base']
-    const raised = composite(t['--color-surface-raised'], page)
-    const wash = t['--color-accent-signal-wash']
-    expect(contrastRatio(t['--color-focus-ring'], wash, page)).toBeLessThan(3)
-    expect(contrastRatio(t['--color-focus-ring'], wash, raised)).toBeLessThan(3)
-  })
 })
 
 describe('field errors', () => {

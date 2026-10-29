@@ -13,6 +13,8 @@
 import { KanbanBoard, applyKanbanMove, groupKanbanItems, kanbanDragOver, kanbanDrop, kanbanMessages, kanbanPosition } from 'src/components/organisms/kanban-board/KanbanBoard'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A parent that holds items in state and applies each onMove (applyKanbanMove does the update).

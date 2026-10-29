@@ -154,7 +154,7 @@ function StageLadder({ stages }: { stages: StageRollup[] }) {
             </span>
             <span className="font-mono text-sm tabular-nums text-[var(--color-text-primary)]">{formatEuros(s.value)}</span>
           </div>
-          <div aria-hidden="true" className="anim-draw-on h-1.5 bg-[var(--color-accent-signal-fill)]" style={{ width: `${(s.value / max) * 100}%` }} />
+          <div aria-hidden="true" className="anim-draw-on h-1.5 bg-[var(--color-accent-signal-indicator)]" style={{ width: `${(s.value / max) * 100}%` }} />
           <p className="font-body text-sm text-[var(--color-text-secondary)]">
             {deals(s.count)}, {formatEuros(s.weighted)} weighted
           </p>

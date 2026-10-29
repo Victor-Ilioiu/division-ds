@@ -41,11 +41,11 @@ const TabsContext = createContext<TabsShape>({ variant: 'fill', vertical: false 
  *
  * `variant="line"` is the exception for a tab row that sits inside a panel already full of
  * fills (a settings page, a card header), where a block of signal would out-shout the content.
- * The active tab keeps its text in `text.primary`, semibold, and a 2px `accent.signal.fill` bar
+ * The active tab keeps its text in `text.primary`, semibold, and a 2px `accent.signal.indicator` bar
  * slides under it, drawn inside the list's padding box rather than as a border: the list scrolls
  * sideways (`overflow-x-auto` forces `overflow-y` too), so a bar pulled over the list's hairline
- * with a negative margin would be clipped. The bar reuses the gated pairs "checked/on fill (accent.signal.fill) on
- * surface.base" and "rating filled star (accent.signal.fill) on surface.raised (over
+ * with a negative margin would be clipped. The bar reuses the gated pairs "checked/on fill (accent.signal.indicator) on
+ * surface.base" and "rating filled star (accent.signal.indicator) on surface.raised (over
  * surface.base)", so it holds 3:1 as a UI component (SC 1.4.11) on both surfaces.
  *
  * `orientation="vertical"` is Radix's own: Up and Down replace Left and Right. Here it also lays
@@ -160,7 +160,7 @@ export function TabsList({ className, ref, children, ...rest }: TabsListProps) {
         data-ready={ready && box ? '' : undefined}
         className={cn(
           'tabs-indicator pointer-events-none absolute left-0 top-0 z-0 motion-reduce:transition-none',
-          'bg-[var(--color-accent-signal-fill)]',
+          'bg-[var(--color-accent-signal-indicator)]',
           // The bar sits on the list's inner edge, exactly where the old inset shadow drew it.
           line && (vertical ? 'left-auto right-0 w-[2px]' : 'top-auto bottom-0 h-[2px]')
         )}
@@ -179,7 +179,7 @@ const FILL_TRIGGER = cn(
   // Selection is fill: the grammar Select's highlighted row and the sidebar already speak. The
   // fill itself is the list's sliding indicator behind the trigger, so the trigger only switches
   // its text to the ink colour (and drops the hover wash, which would paint over the indicator).
-  'data-[state=active]:font-semibold data-[state=active]:text-[var(--color-accent-signal-ink)] data-[state=active]:hover:bg-transparent'
+  'data-[state=active]:font-semibold data-[state=active]:text-[var(--color-accent-signal-indicator-ink)] data-[state=active]:hover:bg-transparent'
 )
 
 // No hover wash and no fill: the line variant exists for rows that must stay quiet, and the
@@ -209,7 +209,7 @@ export function TabsTrigger({ className, icon, count, children, ref, ...rest }: 
         // The active fill tab is already a signal fill, so the default focus-ring colour (also
         // signal) is invisible against it — checked in the browser, both themes. The ink colour
         // reads against the fill instead; only the active tab needs the override. See BUILD-LOG.
-        !line && 'data-[state=active]:focus-visible:outline-[var(--color-accent-signal-ink)]',
+        !line && 'data-[state=active]:focus-visible:outline-[var(--color-accent-signal-indicator-ink)]',
         disabledText,
         !line && 'disabled:hover:bg-transparent',
         className

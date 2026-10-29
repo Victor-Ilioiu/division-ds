@@ -13,6 +13,8 @@
 import { Slider } from 'src/components/atoms/slider/Slider'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -108,5 +110,5 @@ function SingleValueLive() {
 
 - **Label and readout**: An 11px (pixel) mono label, in a monospaced font, and a 24px Oxanium readout with tabular figures, digits that all take the same width. Unlike Progress, there are no dimmed leading zeros. min and max belong to the caller and formatValue can return anything, so a fixed digit width would be one the value doesn’t actually have.
 - **Track**: 4px tall, sunken, no border.
-- **Range**: The filled span, in signal.fill.
+- **Range**: The filled span, in accent.signal.indicator.
 - **Thumb**: A 20px square inside a 24px hit area, the region that responds to a click or tap. There’s one per value.

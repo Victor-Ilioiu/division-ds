@@ -150,8 +150,8 @@ export type SelectProps = Omit<ComponentPropsWithoutRef<typeof RadixSelect.Root>
 const ITEM_CLASSES = cn(
   'relative flex items-center gap-2 h-8 px-2 pr-8 select-none outline-none',
   'font-body text-sm text-[var(--color-text-primary)]',
-  'data-[highlighted]:bg-[var(--color-accent-signal-fill)]',
-  'data-[highlighted]:text-[var(--color-accent-signal-ink)]',
+  'data-[highlighted]:bg-[var(--color-accent-signal-indicator)]',
+  'data-[highlighted]:text-[var(--color-accent-signal-indicator-ink)]',
   disabledText,
   'data-[disabled]:pointer-events-none'
 )

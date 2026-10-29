@@ -17,9 +17,11 @@
   "--color-text-placeholder": "Placeholder text inside a control, on surface.sunken. Only there.",
   "--color-text-label": "Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text.",
 
-  "--color-accent-signal-fill": "A solid block in the brand orange: the primary Button, a solid signal Badge. Put accent.signal.ink on it, never text.primary.",
+  "--color-accent-signal-fill": "A solid block in the brand colour, exactly as chosen: the primary Button, IconButton, a solid signal Badge. Put accent.signal.ink on it, never text.primary. Never use it as the only sign of a state; use accent.signal.indicator.",
   "--color-accent-signal-text": "Orange text or icon on a surface: a current nav item, an emphasised figure, a link accent.",
   "--color-accent-signal-ink": "Text and icons on accent.signal.fill.",
+  "--color-accent-signal-indicator": "The accent where colour alone shows a state or value: a checked control, Switch on, Progress, Slider, Rating stars, the current item in Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows. Put accent.signal.indicator-ink on it.",
+  "--color-accent-signal-indicator-ink": "Text and icons on accent.signal.indicator.",
   "--color-accent-signal-wash": "The faint orange hover wash under a nav item or an inactive tab.",
   "--color-accent-signal-glow": "The faint shadow of an interactive Card on hover and focus. Used by the Card component only.",
 

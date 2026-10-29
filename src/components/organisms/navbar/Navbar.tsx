@@ -33,8 +33,8 @@ export type NavbarProps = {
  * dismiss (text.secondary) on surface.raised (over surface.base)" inside a docs Example. Hovered:
  * "hover wash text (text.primary) on accent.signal.wash over surface.base" and "hover wash text
  * (text.primary) on accent.signal.wash over surface.raised (over surface.base)". Current: "accent.
- * signal.ink on accent.signal.fill", the fill itself "sidebar active item fill on surface.base" and
- * "rating filled star (accent.signal.fill) on surface.raised (over surface.base)". Focus: "focus.ring
+ * signal.ink on accent.signal.indicator", the fill itself "sidebar active item fill on surface.base" and
+ * "rating filled star (accent.signal.indicator) on surface.raised (over surface.base)". Focus: "focus.ring
  * on surface.base" and "focus ring (focus.ring) on surface.raised (over surface.base)".
  */
 const LINK = cn(
@@ -45,7 +45,7 @@ const LINK = cn(
 )
 const LINK_REST =
   'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-accent-signal-wash)]'
-const LINK_CURRENT = 'font-semibold bg-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-ink)]'
+const LINK_CURRENT = 'font-semibold bg-[var(--color-accent-signal-indicator)] text-[var(--color-accent-signal-indicator-ink)]'
 
 export function Navbar({
   label,

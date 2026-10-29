@@ -19,7 +19,7 @@
 import { existsSync, globSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { extractRules } from './lib/agent-docs.mjs'
+import { DOCS_SITE, extractRules, SKILL_SOURCE } from './lib/agent-docs.mjs'
 import { checkText } from './lib/check-text.mjs'
 import { createServer } from './lib/mcp-server.mjs'
 import { createTools } from './lib/mcp-tools.mjs'
@@ -28,14 +28,14 @@ import { applyPlan, diff, planRules, planSkill, SKILL_TARGETS, TARGETS } from '.
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DEFAULT_MANIFEST = join(ROOT, 'public/manifest/components.json')
-const CHECKED = /\.(tsx|jsx|ts)$/
+const CHECKED = /\.(tsx|jsx|ts|css)$/
 const SKIPPED_DIRS = new Set(['node_modules', '.git', 'dist', 'build', '.next', 'coverage'])
 
 const HELP = `division-ds: Division DS gates and agent rules for a project that uses the components.
 
 Usage:
   division-ds check [paths...] [--manifest <path|url>] [--tokens <path|url>] [--json]
-      Checks .tsx, .jsx and .ts files (default: ./src). A path may be a file, a directory or a
+      Checks .tsx, .jsx, .ts and .css files (default: ./src; a .css file gets the colour gate only). A path may be a file, a directory or a
       glob ("src/**/*.tsx"). Runs five gates and exits 1 on any finding:
         token-discipline   raw colours, Tailwind palette classes, token names that do not exist
         button-spacing     two Buttons/IconButtons side by side with no gap on their parent
@@ -149,12 +149,12 @@ async function check(options) {
       if (gate === 'button-spacing') console.error(`      ${ofGate[0].fix}`)
       console.error('')
     }
-    console.error('Each component\'s props, values and examples: /docs/components/<slug>.md. Tokens: public/manifest/tokens.json.')
+    console.error(`Each component's props, values and examples: ${DOCS_SITE}docs/components/<slug>.md. Tokens: ${DOCS_SITE}llms-tokens.txt.`)
   } else {
     console.log(`division-ds check passed: ${files.length} file(s), ${index.size} components, ${tokenNames.length} tokens, 0 findings.`)
     // It reads code, not the running page: say so, or a pass reads as "the screen works" (the
     // 2026-10-20 outside test shipped three runtime bugs past a clean check).
-    console.log('Checked: colours, tokens, button spacing, inline host cards, props and AI copy. Not checked: how the screen behaves; run the review checklist (commands/review.md) in a browser.')
+    console.log(`Checked: colours, tokens, button spacing, inline host cards, props and AI copy. Not checked: how the screen behaves; run the review checklist in a browser (commands/review.md from \`npx division-ds skill\`, or ${SKILL_SOURCE}commands/review.md).`)
   }
   process.exit(findings.length > 0 ? 1 : 0)
 }

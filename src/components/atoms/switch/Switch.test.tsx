@@ -63,7 +63,7 @@ describe('Switch', () => {
     const thumb = screen.getByRole('switch').firstElementChild!
     expect(thumb.className).not.toMatch(/(^| )bg-/)
     expect(thumb.firstElementChild?.className).toContain('bg-[var(--color-text-primary)]')
-    expect(thumb.firstElementChild?.className).toContain('group-data-[state=checked]:bg-[var(--color-accent-signal-fill)]')
+    expect(thumb.firstElementChild?.className).toContain('group-data-[state=checked]:bg-[var(--color-accent-signal-indicator)]')
   })
 
   it('toggles with Space', async () => {

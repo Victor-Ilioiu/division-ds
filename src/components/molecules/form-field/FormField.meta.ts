@@ -46,7 +46,7 @@ export const meta: ComponentMeta = {
       name: 'children',
       type: 'ReactElement',
       description:
-        'Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label.',
+        'Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up.',
     },
     { name: 'className', type: 'string', description: 'Extra CSS classes, merged with the outer element\'s own. When two Tailwind classes clash, the later one wins.' },
     { name: 'ref', type: 'Ref<HTMLDivElement>', description: 'Passed through to the outer element.' },

@@ -61,8 +61,8 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
         // On, the border is the accent, and stays the accent under the pointer: the hover rule
         // above is more specific than a bare data-state rule and would otherwise turn an on
         // switch's border grey for as long as it was hovered.
-        'data-[state=checked]:border-[var(--color-accent-signal-fill)]',
-        'data-[state=checked]:enabled:hover:border-[var(--color-accent-signal-fill)]',
+        'data-[state=checked]:border-[var(--color-accent-signal-indicator)]',
+        'data-[state=checked]:enabled:hover:border-[var(--color-accent-signal-indicator)]',
         // Object half of the one disabled-state rule (src/lib/disabled.ts, design.md): the whole
         // control — checked or not — dims to 50% opacity.
         disabledObject,
@@ -80,8 +80,8 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
           borderless bright field read as a smaller one; a thumb grown to 18px to compensate was
           tried and replaced by this, which needs no compensation.
 
-          COLOUR. text.primary off, accent.signal.fill on, on the same dark track. It was
-          accent.signal.ink on an accent track: thumb and track both changed colour at the
+          COLOUR. text.primary off, accent.signal.indicator on, on the same dark track. It was
+          accent.signal.indicator-ink on an accent track: thumb and track both changed colour at the
           instant of the flip, mid-flight, and the motion read as a twitch. Now one thing changes
           colour, and it fades over the travel. On the control fill the accent measures 5.51:1 in
           the dark theme and 2.15:1 in the light one, under SC 1.4.11's 3:1; that is the pair
@@ -123,7 +123,7 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
           ref={body}
           className={cn(
             'block h-full w-full bg-[var(--color-text-primary)]',
-            'group-data-[state=checked]:bg-[var(--color-accent-signal-fill)]',
+            'group-data-[state=checked]:bg-[var(--color-accent-signal-indicator)]',
             'transition-[background-color] [transition-duration:var(--duration-base)] motion-reduce:transition-none'
           )}
         />

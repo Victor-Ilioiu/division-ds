@@ -13,6 +13,8 @@
 import { Select } from 'src/components/atoms/select/Select'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and connects their ids so assistive tech (screen readers and similar tools) reads them together.
@@ -216,7 +218,7 @@ const TERRAIN_OPTIONS = [
 - **Trigger**: Uses exactly the same frame and styling as Input, so a select and a text field line up in a form.
 - **Value**: Shows the placeholder until something’s chosen.
 - **Content**: Portalled and positioned by Radix, the library of accessible building blocks this sits on. It slides down out of the trigger as it opens (M7; Radix’s Select closes at once, with no exit animation). It’s the one atom that carries the corner crosshair, because it’s a surface framing other content, and that’s what the crosshair marks. It’s also the shape that can’t be cut, since clip-path would clip the crosshair’s arms and the last row’s selection fill along with them.
-- **Item**: Highlighted rows use signal.fill with signal.ink. That’s the fill-selection grammar, the system’s rule for how a selection looks.
+- **Item**: Highlighted rows use accent.signal.indicator with accent.signal.indicator-ink. That’s the fill-selection grammar, the system’s rule for how a selection looks.
 - **ItemIndicator**: A tick on the selected row, so selection isn’t shown by the highlight alone.
 - **Item icon**: Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger.
 - **Group label**: Used with groups: a mono (monospaced font) heading over its rows that names the group for screen readers. It can’t be selected. A hairline separates the groups.

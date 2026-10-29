@@ -77,10 +77,10 @@ export function Checkbox({ invalid, className, checked, ref, ...rest }: Checkbox
         // control.css, which also owns the reduced-motion case.
         'transition-control',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',
-        'data-[state=checked]:bg-[var(--color-accent-signal-fill)]',
-        'data-[state=checked]:border-[var(--color-accent-signal-fill)]',
-        'data-[state=indeterminate]:bg-[var(--color-accent-signal-fill)]',
-        'data-[state=indeterminate]:border-[var(--color-accent-signal-fill)]',
+        'data-[state=checked]:bg-[var(--color-accent-signal-indicator)]',
+        'data-[state=checked]:border-[var(--color-accent-signal-indicator)]',
+        'data-[state=indeterminate]:bg-[var(--color-accent-signal-indicator)]',
+        'data-[state=indeterminate]:border-[var(--color-accent-signal-indicator)]',
         // Object half of the one disabled-state rule (src/lib/disabled.ts, design.md): the whole
         // control — checked or not — dims to 50% opacity.
         disabledObject,
@@ -91,7 +91,7 @@ export function Checkbox({ invalid, className, checked, ref, ...rest }: Checkbox
       )}
       {...rest}
     >
-      <RadixCheckbox.Indicator className="text-[var(--color-accent-signal-ink)]">
+      <RadixCheckbox.Indicator className="text-[var(--color-accent-signal-indicator-ink)]">
         {checked === 'indeterminate' ? (
           <Minus data-glyph="indeterminate" aria-hidden="true" className="w-3.5 h-3.5" />
         ) : (

@@ -66,7 +66,7 @@
 }
 .card-interactive:hover,
 .card-interactive:has(:focus-visible) {
-  border-color: var(--color-accent-signal-fill);
+  border-color: var(--color-accent-signal-indicator);
   transform: translateY(-4px);
 }
 @media (prefers-reduced-motion: reduce) {

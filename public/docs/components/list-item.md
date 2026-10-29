@@ -4,6 +4,7 @@
 
 - **Best for:** A row people scan in a List: media, a title, meta and one or two actions.
 - **Not for:** Data in a table that people compare across columns: use DataTable.
+- **Also on this page:** `List`
 - Molecule. Source: `src/components/molecules/list-item/ListItem.tsx`
 - Rendered docs page: `/components/list-item`
 
@@ -12,6 +13,8 @@
 ```tsx
 import { List, ListItem } from 'src/components/molecules/list-item/ListItem'
 ```
+
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
 
 ## Requires
 

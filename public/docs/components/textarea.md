@@ -13,6 +13,8 @@
 import { Textarea, textareaVariants } from 'src/components/atoms/textarea/Textarea'
 ```
 
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+
 ## Requires
 
 - A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and links up their ids.

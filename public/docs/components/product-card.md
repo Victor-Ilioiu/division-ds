@@ -4,6 +4,7 @@
 
 - **Best for:** One product in a shop grid, where the whole card opens it and Add to cart sits on it.
 - **Not for:** A general content panel: use Card.
+- **Also on this page:** `ProductGrid`
 - Organism. Source: `src/components/organisms/product-card/ProductCard.tsx`
 - Rendered docs page: `/components/product-card`
 
@@ -12,6 +13,8 @@
 ```tsx
 import { ProductCard, ProductGrid } from 'src/components/organisms/product-card/ProductCard'
 ```
+
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
 
 ## Props
 

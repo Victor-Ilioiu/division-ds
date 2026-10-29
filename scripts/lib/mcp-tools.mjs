@@ -5,6 +5,7 @@
 // Most design-system MCP servers stop at list / search / get docs (shadcn, Chakra, Dialtone,
 // Blade, Vibe; surveyed 2026-10-25). `validate_code` is the one they lack: it runs the same gates
 // as `division-ds check` on the code the agent has just written, before the agent says it is done.
+import { alsoExports, INSTALLED_PATHS } from './agent-docs.mjs'
 import { checkText } from './check-text.mjs'
 import { contrastRatio } from './contrast.mjs'
 import { buildIndex, closest } from './props-validator.mjs'
@@ -30,7 +31,11 @@ export function createTools(context) {
 
   function findComponent(name) {
     const wanted = String(name ?? '').trim().toLowerCase()
-    return components.find(c => c.name.toLowerCase() === wanted || c.slug === wanted)
+    return (
+      components.find(c => c.name.toLowerCase() === wanted || c.slug === wanted) ??
+      // A component documented on another's page (ResponseFeedback on ChatMessage's) opens that page.
+      components.find(c => alsoExports(c).some(other => other.toLowerCase() === wanted))
+    )
   }
 
   function unknownComponent(name) {
@@ -66,7 +71,12 @@ export function createTools(context) {
       run({ tier } = {}) {
         if (tier !== undefined && !TIERS.includes(tier)) throw new ToolError(`tier is one of ${TIERS.join(', ')}.`)
         const rows = components.filter(c => !tier || c.tier === tier)
-        return rows.map(c => `- ${c.name} (${c.tier}): ${c.useWhen}${c.notFor ? ` Not for: ${c.notFor}` : ''}`).join('\n')
+        return rows
+          .map(c => {
+            const also = alsoExports(c)
+            return `- ${c.name} (${c.tier}): ${c.useWhen}${c.notFor ? ` Not for: ${c.notFor}` : ''}${also.length ? ` Also on its page: ${also.join(', ')}.` : ''}`
+          })
+          .join('\n')
       },
     },
     {
@@ -85,7 +95,7 @@ export function createTools(context) {
         const c = findComponent(name) ?? unknownComponent(name)
         const imports = c.imports.map(i => `import { ${i.names.join(', ')} } from '${i.from}'`).join('\n')
         const props = c.props.map(p => `- ${p.name}: ${p.type}${p.default ? ` = ${p.default}` : ''}. ${p.description ?? ''}`.trimEnd()).join('\n')
-        const head = `# ${c.name} (${c.tier})\n\n${c.summary}\n\n${imports}\n\nPaths are from the Division DS repository root; installed with shadcn they start src/division-ds/.\n\n## Props\n\n${props}`
+        const head = `# ${c.name} (${c.tier})\n\n${c.summary}\n\n${imports}\n\n${INSTALLED_PATHS}\n\n## Props\n\n${props}`
         if (section === 'props') return head
         const page = context.readDoc?.(c.slug)
         // The page is the full contract (examples, keyboard, do and don't, written for agents).
@@ -112,13 +122,28 @@ export function createTools(context) {
       run({ query, limit = 10 }) {
         const terms = words(query)
         if (terms.length === 0) throw new ToolError('query has no words to search for.')
-        const score = (title, body) => {
+        // `props` is the prop descriptions: a word found there counts once, as a hint, so a long
+        // prop table does not outrank a component or token whose own summary is about the query.
+        const score = (title, body, props = '', propNames = '') => {
           const t = words(title).join(' ')
           const b = words(body)
-          return terms.reduce((sum, term) => sum + (t.includes(term) ? 3 : 0) + b.filter(w => w.startsWith(term)).length, 0)
+          const p = words(props)
+          const n = words(propNames)
+          const inMain = term => t.includes(term) || b.some(w => w.startsWith(term))
+          // Every word of the query in the name or summary beats one word found often: "page
+          // background" is the surface token, not PageHeader, whose name matches "page" alone.
+          const all = terms.length > 1 && terms.every(inMain) ? 5 : 0
+          return all + terms.reduce((sum, term) => sum + (t.includes(term) ? 3 : 0) + Math.min(b.filter(w => w.startsWith(term)).length, 3) + (inMain(term) ? 0 : n.some(w => w.startsWith(term)) ? 2 : p.some(w => w.startsWith(term)) ? 1 : 0), 0)
         }
         const hits = [
-          ...components.map(c => ({ kind: 'component', name: c.name, line: c.useWhen, score: score(c.name, `${c.summary} ${c.useWhen}`) })),
+          // The title holds every name on the page (ChatMessage and ResponseFeedback); the body adds
+          // the prop descriptions, where what a part does is written ("helpful", "thumbs up").
+          ...components.map(c => {
+            const also = alsoExports(c)
+            const props = c.props.map(p => `${p.name} ${p.description ?? ''}`).join(' ')
+            const line = `${c.useWhen}${also.length ? ` Also on its page: ${also.join(', ')}.` : ''}`
+            return { kind: 'component', name: c.name, line, score: score(`${c.name} ${also.join(' ')}`, `${c.summary} ${c.useWhen}`, props, c.props.map(p => p.name).join(' ')) }
+          }),
           // Primitives are not for screens (tokens.json's rule), so they never come up as an answer.
           ...tokens.tokens.filter(t => t.layer !== 'primitive').map(t => ({ kind: `${t.layer} token`, name: t.name, line: t.use ?? '', score: score(t.name, t.use ?? '') })),
         ]
@@ -158,13 +183,13 @@ export function createTools(context) {
         type: 'object',
         properties: {
           code: { type: 'string', description: 'The whole file, imports included: props are matched through the imports.' },
-          filename: { type: 'string', description: 'Its name, e.g. "src/pages/Settings.tsx". The extension decides which gates run. Default "Screen.tsx".' },
+          filename: { type: 'string', description: 'Its name, e.g. "src/pages/Settings.tsx". The extension decides which gates run: a .css file gets the colour and token checks, and setting a real token (--color-surface-base: ...) is allowed there, since that is how a project themes the system. Default "Screen.tsx".' },
         },
         required: ['code'],
         additionalProperties: false,
       },
       run({ code, filename = 'Screen.tsx' }) {
-        if (!/\.(tsx|jsx|ts)$/.test(filename)) throw new ToolError('filename ends in .tsx, .jsx or .ts.')
+        if (!/\.(tsx|jsx|ts|css)$/.test(filename)) throw new ToolError('filename ends in .tsx, .jsx, .ts or .css.')
         const findings = checkText(String(code), filename, index, tokenNames)
         if (findings.length === 0) {
           return `No findings in ${filename}: colours, tokens, button spacing, props and AI copy are clean.\nNot checked: how the screen behaves. Run get_review_checklist, in a browser.`

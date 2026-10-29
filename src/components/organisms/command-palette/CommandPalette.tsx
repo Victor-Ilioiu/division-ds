@@ -82,7 +82,7 @@ export type CommandPaletteProps = {
 
 /**
  * Contrast rows, by exact name. Field text and option labels: "text.primary on surface.base". The active
- * option: "accent.signal.ink on accent.signal.fill", its fill "sidebar active item fill on
+ * option: "accent.signal.indicator-ink on accent.signal.indicator", its fill "sidebar active item fill on
  * surface.base". Group headings: "text.label on surface.base" (the palette is always surface.base,
  * the one surface text.label holds on). The search glyph: "text.muted on surface.base". The empty
  * message: "text.secondary on surface.base". Shortcut hints: "dropdown menu label (text.secondary) on
@@ -221,7 +221,7 @@ function PaletteBody({ commands, searchLabel, placeholder, emptyMessage, inputRe
                         className={cn(
                           'flex items-center gap-3 min-h-10 px-2 font-body text-sm cursor-default select-none',
                           isActive
-                            ? 'bg-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-ink)]'
+                            ? 'bg-[var(--color-accent-signal-indicator)] text-[var(--color-accent-signal-indicator-ink)]'
                             : 'text-[var(--color-text-primary)]'
                         )}
                       >
