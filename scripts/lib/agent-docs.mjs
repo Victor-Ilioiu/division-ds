@@ -31,6 +31,27 @@ export function alsoExports(entry) {
     .filter(name => /^[A-Z][a-z]/.test(name) && !name.startsWith(entry.name) && !name.endsWith('Provider'))
 }
 
+/** The docs site's top-bar search reads this, fetched the first time search opens. Slim on purpose:
+ *  the names, the one-line summaries and the prop names and descriptions the shared scorer
+ *  (search-score.mjs) ranks on, and the screen-facing tokens. Primitives are left out, as in the
+ *  MCP search: they are never the answer for a screen. */
+export function searchIndex(entries, tokens) {
+  const index = {
+    generatedBy: 'scripts/build-agent-docs.mjs',
+    components: entries.map(entry => ({
+      name: entry.name,
+      slug: entry.slug,
+      tier: entry.tier,
+      summary: entry.summary,
+      useWhen: entry.useWhen,
+      also: alsoExports(entry),
+      props: entry.props.map(prop => ({ name: prop.name, description: prop.description ?? '' })),
+    })),
+    tokens: tokens.tokens.filter(token => token.layer !== 'primitive').map(token => ({ name: token.name, layer: token.layer, use: token.use ?? '' })),
+  }
+  return JSON.stringify(index) + '\n'
+}
+
 /** Said under every Import block: the paths are the repository's, not an installed project's. */
 export const INSTALLED_PATHS = 'Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.'
 

@@ -11,7 +11,7 @@ renders `ErrorSummary` at the top and focuses it; `useFieldErrors` holds the sta
 `public/docs/helpers.md`).
 
 A `RadioGroup` in a form sits in a `<fieldset>` whose `<legend>` names it (code on the Radio
-page). A date is `<Input type="date">` in a `FormField`.
+page). A date is `DatePicker` in a `FormField`; its value is 'YYYY-MM-DD'.
 
 **Buttons.** Two or more buttons side by side need a parent with a gap
 (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one. A `Button` is

@@ -21,6 +21,8 @@ import { OverlayFrame } from '../dialog/OverlayFrame'
 export type Command = {
   id: string
   label: string
+  /** A second, quieter line under the label, e.g. what a search result is for. */
+  description?: string
   /** Commands with the same group are drawn together under its heading. */
   group?: string
   /** Extra words a search matches on. */
@@ -76,6 +78,10 @@ export type CommandPaletteProps = {
   placeholder?: string
   /** @default 'No matching commands' */
   emptyMessage?: string
+  /** Replaces the built-in match (every word in the label, group or keywords): takes every command
+   *  and the query, returns the ones to show in the order to show them. Groups follow that order.
+   *  @default filterCommands */
+  filter?: (commands: readonly Command[], query: string) => Command[]
   /** The search field, while the palette is open. */
   ref?: Ref<HTMLInputElement>
 }
@@ -95,6 +101,7 @@ type BodyProps = {
   searchLabel: string
   placeholder: string
   emptyMessage: string
+  filter: (commands: readonly Command[], query: string) => Command[]
   inputRef?: Ref<HTMLInputElement>
   /** A keydown in the field -- other than one that's part of an IME composition -- means the user
    *  moved on from whatever was selected before. */
@@ -103,10 +110,10 @@ type BodyProps = {
 }
 
 /** Mounts with the dialog content, so every open starts with an empty query. */
-function PaletteBody({ commands, searchLabel, placeholder, emptyMessage, inputRef, onUserAction, onRun }: BodyProps) {
+function PaletteBody({ commands, searchLabel, placeholder, emptyMessage, filter, inputRef, onUserAction, onRun }: BodyProps) {
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
-  const groups = useMemo(() => groupCommands(filterCommands(commands, query)), [commands, query])
+  const groups = useMemo(() => groupCommands(filter(commands, query)), [filter, commands, query])
   // The order the options are drawn in, which is the order the arrow keys walk.
   const ordered = useMemo(() => groups.flatMap(group => group.commands), [groups])
   const id = useId()
@@ -230,7 +237,21 @@ function PaletteBody({ commands, searchLabel, placeholder, emptyMessage, inputRe
                             {command.icon}
                           </span>
                         ) : null}
-                        <span className="truncate">{command.label}</span>
+                        {command.description ? (
+                          <span className="flex min-w-0 flex-col py-1.5">
+                            <span className="truncate">{command.label}</span>
+                            <span
+                              className={cn(
+                                'truncate text-xs',
+                                isActive ? 'text-[var(--color-accent-signal-indicator-ink)]' : 'text-[var(--color-text-secondary)]'
+                              )}
+                            >
+                              {command.description}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="truncate">{command.label}</span>
+                        )}
                         {command.shortcut ? (
                           <Kbd aria-hidden="true" className="ml-auto">
                             {command.shortcut}
@@ -304,6 +325,7 @@ export function CommandPalette({
   searchLabel = 'Search commands',
   placeholder = 'Type a command or search',
   emptyMessage = 'No matching commands',
+  filter = filterCommands,
   ref,
 }: CommandPaletteProps) {
   const [internal, setInternal] = useState(defaultOpen)
@@ -358,6 +380,7 @@ export function CommandPalette({
         searchLabel={searchLabel}
         placeholder={placeholder}
         emptyMessage={emptyMessage}
+        filter={filter}
         inputRef={ref}
         close={() => setOpen(false)}
       />

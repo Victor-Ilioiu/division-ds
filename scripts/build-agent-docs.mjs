@@ -11,6 +11,7 @@ import {
   llmsIndex,
   manifestEntry,
   rulesByTopic,
+  searchIndex,
   skillFiles,
   tokensBundle,
 } from './lib/agent-docs.mjs'
@@ -102,6 +103,7 @@ export async function buildAgentDocs(root = REPO_ROOT) {
     'public/docs/helpers.md': helpersPage(helpers),
     'public/llms-components.txt': componentsBundle(entries),
     'public/llms-tokens.txt': tokensBundle(tokens),
+    'public/search-index.json': searchIndex(entries, tokens),
     'public/llms-guidelines.txt': guidelinesFile(rules),
     'public/manifest/components.json':
       JSON.stringify({ generatedBy: 'scripts/build-agent-docs.mjs', components: entries }, null, 2) + '\n',

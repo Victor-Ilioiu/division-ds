@@ -1,6 +1,6 @@
 # Division DS: instructions for coding agents
 
-A React 19 + Tailwind 4 + Radix design system: 68 components, tokens in three layers, light and
+A React 19 + Tailwind 4 + Radix design system: 72 components, tokens in three layers, light and
 dark themes, WCAG 2.2 AA. This file is the entry point. It is short on purpose; everything it
 points to is generated from the code, so it is current.
 
@@ -51,7 +51,7 @@ installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rul
 `.claude/skills/` (Claude Code).
 
 An agent that supports MCP can have the docs and the same checks as tools instead:
-`claude mcp add division-ds -- npx -y division-ds@0.2.1 mcp` (`list_components`, `get_component`,
+`claude mcp add division-ds -- npx -y division-ds@0.3.0 mcp` (`list_components`, `get_component`,
 `search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
 `get_review_checklist`).
 
@@ -91,7 +91,7 @@ provider. A project that uses the components mounts both itself (step 4 of `inst
 `src/demo/states/` files are not part of the system.
 
 **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several:
-`MultiSelect`), no date picker. Do not reach into `src/demo/` from a component.
+`MultiSelect`). Do not reach into `src/demo/` from a component.
 
 **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`,
 `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the
@@ -154,7 +154,7 @@ renders `ErrorSummary` at the top and focuses it; `useFieldErrors` holds the sta
 `public/docs/helpers.md`).
 
 A `RadioGroup` in a form sits in a `<fieldset>` whose `<legend>` names it (code on the Radio
-page). A date is `<Input type="date">` in a `FormField`.
+page). A date is `DatePicker` in a `FormField`; its value is 'YYYY-MM-DD'.
 
 **Buttons.** Two or more buttons side by side need a parent with a gap
 (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one. A `Button` is

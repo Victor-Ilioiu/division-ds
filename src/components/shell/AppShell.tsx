@@ -2,6 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { ThemeToggle } from './ThemeToggle'
+import { DocsSearch } from '../../search/DocsSearch'
 import { Spinner } from '../atoms/spinner/Spinner'
 import { TooltipProvider } from '../atoms/tooltip/Tooltip'
 import { Toaster } from '../molecules/toast/Toast'
@@ -24,11 +25,11 @@ export function AppShell({ title = 'Division DS' }: { title?: string } = {}) {
   return (
     <TooltipProvider>
       <Toaster>
-        <div className="min-h-screen bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
+        <div data-docs-shell="" className="min-h-screen bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
           <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:bg-[var(--color-accent-signal-fill)] focus:text-[var(--color-accent-signal-ink)] focus:px-3 focus:py-2" href="#main">
             Skip to content
           </a>
-          <header className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-[var(--color-border-hairline)]">
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 px-4 md:px-6 border-b border-[var(--color-border-hairline)] bg-[var(--color-surface-base)]">
             {/* The wordmark sat at 14px semibold, the same step as the old section headings and
                 barely above the 12px sidebar. It is the only thing in the top bar and it names the
                 product, so it takes weight and tracking rather than colour: the accent is reserved
@@ -36,7 +37,10 @@ export function AppShell({ title = 'Division DS' }: { title?: string } = {}) {
             <span className="font-display font-bold uppercase tracking-[0.14em] text-base leading-none">
               Division DS
             </span>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <DocsSearch />
+              <ThemeToggle />
+            </div>
           </header>
           {/* Column on a phone, row from md up — the sidebar switches to a disclosure below that
               breakpoint (see Sidebar.tsx). `min-w-0` on <main> is not cosmetic: a flex item

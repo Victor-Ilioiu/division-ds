@@ -66,7 +66,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 
 const MCP_CONFIG = `{
   "mcpServers": {
-    "division-ds": { "command": "npx", "args": ["-y", "division-ds@0.2.1", "mcp"] }
+    "division-ds": { "command": "npx", "args": ["-y", "division-ds@0.3.0", "mcp"] }
   }
 }`
 
@@ -260,7 +260,7 @@ export function InstallGuideline() {
             </TabsList>
             <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
               <p className={prose}>Run this once in a terminal. It is ready the next time you start Claude Code.</p>
-              <CopyCommand label="the MCP add command" command="claude mcp add division-ds -- npx -y division-ds@0.2.1 mcp" />
+              <CopyCommand label="the MCP add command" command="claude mcp add division-ds -- npx -y division-ds@0.3.0 mcp" />
             </TabsContent>
             <TabsContent value="other" className="flex flex-col gap-4 pt-6">
               <p className={prose}>

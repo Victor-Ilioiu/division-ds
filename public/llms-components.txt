@@ -629,6 +629,97 @@ Requires: A ChatThread around it. Outside one, a message still shows, but nothin
 
 Page: /docs/components/chat-message.md
 
+### DatePicker
+
+One date, typed or picked. The field has a segment for the day, the month and the year, in the order your language writes them: type the digits and it moves on by itself, or use the arrow keys. The button inside it opens a calendar. The value is a plain 'YYYY-MM-DD' string with no time zone, so it means the same day for everyone. Calendar and DateField are exported too, for building your own.
+
+```tsx
+import { Calendar } from 'src/components/molecules/date-picker/Calendar'
+import { DateField } from 'src/components/molecules/date-picker/DateField'
+import { DatePicker } from 'src/components/molecules/date-picker/DatePicker'
+```
+
+- `label: string` Required. Names the field. Inside a FormField, FormField sets it from its own label.
+- `value: string ('YYYY-MM-DD' \| '')` Controlled value (your page holds it).
+- `defaultValue: string = ''` Starting value when the picker holds the value itself.
+- `onValueChange: (value: string) => void` Fires with a whole, real date, or '' when the field is emptied. A half-typed date does not fire.
+- `min: string` Earliest date, 'YYYY-MM-DD'. Earlier days are struck through; typing one marks the field invalid.
+- `max: string` Latest date, 'YYYY-MM-DD'.
+- `isDateDisabled: (date: string) => boolean` Days that cannot be picked, such as weekends or holidays.
+- `locale: string` A language tag such as 'en-GB' or 'de'. Sets the segment order, the separator, the month and day names and the first day of the week. Defaults to the browser's.
+- `weekStartsOn: number` 0 Sunday to 6 Saturday. Defaults to the locale's.
+- `showToday: boolean = true` Shows the Today button under the calendar when today can be picked.
+- `disabled: boolean = false` Disables the field and the calendar button.
+- `name: string` Submits the 'YYYY-MM-DD' value with a form, through a hidden input.
+- `invalid: boolean` Marks the field invalid. FormField sets it when there is an error.
+- `required: boolean` Marks the field required. FormField sets it.
+- `id: string` The field's id, so a FormField's error text can point at it. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text. FormField sets it.
+- `className: string` Combined with the field's classes.
+- `ref: Ref<HTMLDivElement>` The field's group element.
+- `trailing (DateField): ReactNode` Something inside the field after the segments. DatePicker puts its calendar button here.
+- `bare (DateField): boolean = false` No border, fill or ring of its own, for two dates inside one border (DateRangePicker draws them).
+- `onSelect (Calendar): (date: string) => void` A day was picked with a click, Enter or Space.
+- `value (Calendar): string \| null` The picked day. Ignored when dayState is given.
+- `month (Calendar): string` Any day in the first month shown. Controlled with onMonthChange.
+- `defaultMonth (Calendar): string` The first month shown when the calendar holds it itself. Defaults to the value's month, or today's.
+- `onMonthChange (Calendar): (month: string) => void` Fires with the new first month's 1st day.
+- `dayState (Calendar): (date: string) => 'single' \| 'start' \| 'end' \| 'start-end' \| 'middle' \| undefined` Draws each day yourself, for a range or any other selection.
+- `onDayEnter (Calendar): (date: string) => void` The keyboard or the pointer moved onto a day. A range uses it to preview the band.
+- `numberOfMonths (Calendar): 1 \| 2 = 1` Months side by side, stacked on narrow screens.
+- `autoFocus (Calendar): boolean = false` Moves focus to the picked day, or today, when the calendar appears.
+
+Page: /docs/components/date-picker.md
+
+### DatePresets
+
+Named periods such as Last 7 days, one click each. The defaults: Today, Yesterday, Last 7 days, Last 30 days, This month, Last month, This year, or your own. An add-on: put it in a DateRangePicker's aside and it reads and sets the picker's range by itself, then closes it. On its own it is a list you give a value and an onSelect. Installs DateRangePicker and DatePicker with it.
+
+```tsx
+import { DatePresets, defaultPresets } from 'src/components/molecules/date-presets/DatePresets'
+```
+
+- `presets: DatePreset[] = defaultPresets()` Each { label, range }. Make your own, or start from defaultPresets(today).
+- `value: { start: string; end: string }` The current range. Inside a DateRangePicker it comes from the picker.
+- `onSelect: (range: DateRange) => void` A preset was chosen. Inside a DateRangePicker the picker also takes it and closes.
+- `label: string = 'Presets'` The list's accessible name.
+- `className: string` Combined with the list's classes.
+- `ref: Ref<HTMLDivElement>` The list element.
+- `defaultPresets(): (today?: string) => DatePreset[]` The seven usual periods counted back from today ('YYYY-MM-DD'; defaults to the reader's today). Every one includes today.
+
+Page: /docs/components/date-presets.md
+
+### DateRangePicker
+
+A start and an end date in one field, an add-on to DatePicker. Type both, or open two months side by side: the first day you pick is the start, the band follows you to the second, which sets the end and closes the calendar. Put DatePresets in `aside` for one-click periods like Last 7 days. Installs DatePicker with it.
+
+```tsx
+import { DateRangePicker, EMPTY_RANGE, useDateRangePicker } from 'src/components/molecules/date-range-picker/DateRangePicker'
+```
+
+- `label: string` Required. Names the field. Inside a FormField, FormField sets it.
+- `value: { start: string; end: string }` Controlled range. Each end is 'YYYY-MM-DD' or ''.
+- `defaultValue: { start: string; end: string } = { start: '', end: '' }` Starting range when the picker holds it itself.
+- `onValueChange: (range: DateRange) => void` Fires when either end changes. Days picked in the calendar always arrive in order.
+- `min: string` Earliest date, 'YYYY-MM-DD'.
+- `max: string` Latest date, 'YYYY-MM-DD'.
+- `isDateDisabled: (date: string) => boolean` Days that cannot be picked.
+- `locale: string` Segment order, names and first day of the week. Defaults to the browser's.
+- `weekStartsOn: number` 0 Sunday to 6 Saturday. Defaults to the locale's.
+- `aside: ReactNode` Beside the months, in the popover. DatePresets reads and sets the range by itself here.
+- `partLabels: [string, string] = ['Start date', 'End date']` The names of the two dates.
+- `disabled: boolean = false` Disables both dates and the button.
+- `invalid: boolean` Marks the field invalid. FormField sets it.
+- `required: boolean` Marks both dates required. FormField sets it.
+- `name: string` Submits name-start and name-end with a form.
+- `id: string` The field's id. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text. FormField sets it.
+- `className: string` Combined with the field's classes.
+- `ref: Ref<HTMLDivElement>` The field's group element.
+- `useDateRangePicker(): () => { value: DateRange; select: (range: DateRange) => void } \| null` Inside the popover: the range, and a way to set it and close. For your own aside content.
+
+Page: /docs/components/date-range-picker.md
+
 ### DescriptionList
 
 Pairs of a term and its value, all about one thing, in one to three columns. The columns drop away as the space they get narrows. It's a real dl (the HTML description list element): a label in a monospaced font over each value, and a thin line above each pair.
@@ -1044,6 +1135,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/molecul
 
 Page: /docs/components/tabs.md
 
+### TimeField
+
+A time of day, an add-on to the date pickers. Hours and minutes are segments you type into or step with the arrow keys, like DateField; the clock button opens a list of times every step minutes. With a 12-hour clock there is an AM/PM segment. The value is 'HH:MM' on a 24-hour clock whatever is shown. Put it next to a DatePicker for a date and a time.
+
+```tsx
+import { TimeField, hourCycleFor } from 'src/components/molecules/time-field/TimeField'
+```
+
+- `label: string` Required. Names the field. Inside a FormField, FormField sets it.
+- `value: string ('HH:MM' \| '')` Controlled value, 24-hour.
+- `defaultValue: string = ''` Starting value when the field holds it itself.
+- `onValueChange: (value: string) => void` Fires with a whole time, or '' when emptied.
+- `hourCycle: 12 \| 24` 12 adds an AM/PM segment. The value stays 24-hour. Defaults to the locale's clock.
+- `step: number = 30` Minutes between the times in the list.
+- `min: string` Earliest time, 'HH:MM'. Earlier times are left out of the list; typing one marks the field invalid.
+- `max: string` Latest time, 'HH:MM'.
+- `showSlots: boolean = true` Shows the clock button and its list.
+- `locale: string` Decides the default clock. Defaults to the browser's.
+- `disabled: boolean = false` Disables the field and the button.
+- `invalid: boolean` Marks the field invalid. FormField sets it.
+- `required: boolean` Marks the field required. FormField sets it.
+- `name: string` Submits the 'HH:MM' value with a form.
+- `id: string` The field's id. FormField sets it.
+- `aria-describedby: string` The ids of the help and error text. FormField sets it.
+- `className: string` Combined with the field's classes.
+- `ref: Ref<HTMLDivElement>` The field's group element.
+- `hourCycleFor(): (locale?: string) => 12 \| 24` The locale's own clock.
+
+Page: /docs/components/time-field.md
+
 ### Timeline
 
 Events in time order down a vertical line. Each one has a square marker with an icon, a title line, a time and an optional body. You can group them by day, or not.
@@ -1275,7 +1396,7 @@ Every action in one place. Press Ctrl+K anywhere, type a few letters, move with 
 import { CommandPalette, filterCommands, groupCommands } from 'src/components/organisms/command-palette/CommandPalette'
 ```
 
-- `commands: Command[]` Required. Each has id, label, group, keywords, shortcut, icon and onSelect.
+- `commands: Command[]` Required. Each has id, label, description (a quieter second line), group, keywords, shortcut, icon and onSelect.
 - `open: boolean` Open state when controlled, meaning your code decides whether it is open.
 - `defaultOpen: boolean = false` Starting open state when uncontrolled, meaning the palette keeps track of it itself.
 - `onOpenChange: (open: boolean) => void` Called on every open and close, including Escape and a click on the scrim (the dimmed backdrop). If you refuse the close, the chosen command stays ready to run until the user does anything else in the palette. Closing it yourself later counts as accepting it.
@@ -1284,6 +1405,7 @@ import { CommandPalette, filterCommands, groupCommands } from 'src/components/or
 - `searchLabel: string = 'Search commands'` The search field's accessible name.
 - `placeholder: string = 'Type a command or search'` Shown in the empty search field.
 - `emptyMessage: string = 'No matching commands'` Shown when nothing matches the search.
+- `filter: (commands: readonly Command[], query: string) => Command[] = filterCommands` Your own matching and ranking. Gets every command and the query, returns the ones to show in order; groups follow that order. The docs site search uses it to rank with the same scorer as the MCP server.
 - `ref: Ref<HTMLInputElement>` The search field, while the palette is open.
 
 Page: /docs/components/command-palette.md

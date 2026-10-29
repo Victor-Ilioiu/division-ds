@@ -1,6 +1,6 @@
 ---
 name: division-ds
-description: Use when building or changing UI with Division DS (React 19, Tailwind 4, Radix; 68 components). Covers which component and token to use, the composition rules prop types cannot express (providers, FormField, button gaps, card borders), planning a screen's states, and how to check the result. Load it before writing any screen or component in a project that has Division DS components.
+description: Use when building or changing UI with Division DS (React 19, Tailwind 4, Radix; 72 components). Covers which component and token to use, the composition rules prop types cannot express (providers, FormField, button gaps, card borders), planning a screen's states, and how to check the result. Load it before writing any screen or component in a project that has Division DS components.
 ---
 
 # Division DS
@@ -82,7 +82,7 @@ provider. A project that uses the components mounts both itself (step 4 of `inst
 `src/demo/states/` files are not part of the system.
 
 **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several:
-`MultiSelect`), no date picker. Do not reach into `src/demo/` from a component.
+`MultiSelect`). Do not reach into `src/demo/` from a component.
 
 **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`,
 `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the

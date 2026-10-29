@@ -9,6 +9,7 @@ import { alsoExports, INSTALLED_PATHS } from './agent-docs.mjs'
 import { checkText } from './check-text.mjs'
 import { contrastRatio } from './contrast.mjs'
 import { buildIndex, closest } from './props-validator.mjs'
+import { scorer, words } from './search-score.mjs'
 
 export const REGISTRY_BASE = 'https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r'
 const TIERS = ['atoms', 'molecules', 'organisms']
@@ -16,7 +17,6 @@ const LAYERS = ['primitive', 'spacing', 'motion', 'semantic', 'component']
 // WCAG 2.2 minimums: SC 1.4.3 for text, SC 1.4.11 for the boundary of a control or a graphic.
 const MINIMUMS = { normal: 4.5, large: 3, ui: 3 }
 
-const words = text => String(text).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
 
 /** `context`: { manifest, tokens, version, readDoc(slug) -> string|undefined, readChecklist() -> string|undefined } */
 export function createTools(context) {
@@ -122,19 +122,7 @@ export function createTools(context) {
       run({ query, limit = 10 }) {
         const terms = words(query)
         if (terms.length === 0) throw new ToolError('query has no words to search for.')
-        // `props` is the prop descriptions: a word found there counts once, as a hint, so a long
-        // prop table does not outrank a component or token whose own summary is about the query.
-        const score = (title, body, props = '', propNames = '') => {
-          const t = words(title).join(' ')
-          const b = words(body)
-          const p = words(props)
-          const n = words(propNames)
-          const inMain = term => t.includes(term) || b.some(w => w.startsWith(term))
-          // Every word of the query in the name or summary beats one word found often: "page
-          // background" is the surface token, not PageHeader, whose name matches "page" alone.
-          const all = terms.length > 1 && terms.every(inMain) ? 5 : 0
-          return all + terms.reduce((sum, term) => sum + (t.includes(term) ? 3 : 0) + Math.min(b.filter(w => w.startsWith(term)).length, 3) + (inMain(term) ? 0 : n.some(w => w.startsWith(term)) ? 2 : p.some(w => w.startsWith(term)) ? 1 : 0), 0)
-        }
+        const score = scorer(query)
         const hits = [
           // The title holds every name on the page (ChatMessage and ResponseFeedback); the body adds
           // the prop descriptions, where what a part does is written ("helpful", "thumbs up").

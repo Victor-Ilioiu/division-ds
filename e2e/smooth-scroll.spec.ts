@@ -276,6 +276,10 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
     // group starts collapsed (and inert), so a component link here would not be clickable.
     await sidebar.getByRole('link', { name: 'Color', exact: true }).click()
     await expect(page).toHaveURL(/\/guidelines\/color$/)
+    // The page is a lazy chunk: until its content replaces the loading spinner it is too short to
+    // scroll, so the next hop's scrollTo(600) would silently stay at 0. Its own heading, by name:
+    // during the navigation the previous page's h1 is still on screen.
+    await expect(page.getByRole('heading', { level: 1, name: 'Every colour, and what it is for' })).toBeVisible()
     await expect
       .poll(() => page.evaluate(() => window.scrollY <= document.getElementById('main')!.offsetTop))
       .toBe(true)

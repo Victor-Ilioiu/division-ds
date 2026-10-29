@@ -33,7 +33,7 @@ provider. A project that uses the components mounts both itself (step 4 of `inst
 `src/demo/states/` files are not part of the system.
 
 **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several:
-`MultiSelect`), no date picker. Do not reach into `src/demo/` from a component.
+`MultiSelect`). Do not reach into `src/demo/` from a component.
 
 **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`,
 `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the
@@ -90,7 +90,7 @@ renders `ErrorSummary` at the top and focuses it; `useFieldErrors` holds the sta
 `public/docs/helpers.md`).
 
 A `RadioGroup` in a form sits in a `<fieldset>` whose `<legend>` names it (code on the Radio
-page). A date is `<Input type="date">` in a `FormField`.
+page). A date is `DatePicker` in a `FormField`; its value is 'YYYY-MM-DD'.
 
 **Buttons.** Two or more buttons side by side need a parent with a gap
 (`flex flex-wrap gap-3`); `DialogFooter` and `CardFooter` already are one. A `Button` is

@@ -54,12 +54,12 @@ export const OVERVIEW_COUNTS = {
   /** Folders under src/components/atoms, each with a component, a test file and a docs page. */
   atoms: 23,
   /** Folders under src/components/molecules, each with a component, a test file and a docs page. */
-  molecules: 28,
+  molecules: 32,
   /** Folders under src/components/organisms, each with a component, a test file and a docs page. */
   organisms: 17,
   /** Routed, sidebar-listed pages: the twelve guidelines (Install, the theme builder and host apps among them), this one,
    *  the twenty-three atom pages, the molecule pages and the organism pages. */
-  pages: 81,
+  pages: 85,
   /** tokens/semantic/color.{dark,light}.json. */
   themes: 2,
   /** Rows the contrast gate runs: 90 token pairs, each measured once per theme. */
@@ -267,7 +267,7 @@ export function Overview() {
               title="Enforce, don't just document"
               lede={
                 <>
-                  Twenty-two atoms, twenty-eight molecules and seventeen organisms in two themes, built from
+                  Twenty-three atoms, thirty-two molecules and seventeen organisms in two themes, built from
                   scratch. Atoms are the smallest building blocks, molecules are made from atoms,
                   and organisms are full sections made from those. A rule that isn&apos;t a gate (an
                   automatic check) is only a suggestion. So every rule these pages state is checked
@@ -307,7 +307,7 @@ export function Overview() {
                 right edge, but ragged-left body copy is harder to read than the alignment is
                 worth. */}
             <p className={`${docsProse} text-left mt-5 max-w-[36ch] lg:ml-auto`}>
-              Twenty-two small building blocks, twenty-eight pieces made from them, and seventeen
+              Twenty-three small building blocks, thirty-two pieces made from them, and seventeen
               full sections made from those. Every one comes with its own page of documentation and
               its own automatic tests. One of those tests uses a free tool called axe-core. It opens
               the component the way a browser would and checks it against the public accessibility

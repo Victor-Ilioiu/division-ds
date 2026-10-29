@@ -1,0 +1,55 @@
+import type { ComponentMeta } from '../../docs/meta'
+
+export const meta: ComponentMeta = {
+  name: 'DateRangePicker',
+  title: 'Date range picker',
+  tier: 'molecules',
+  slug: 'date-range-picker',
+  summary:
+    "A start and an end date in one field, an add-on to DatePicker. Type both, or open two months side by side: the first day you pick is the start, the band follows you to the second, which sets the end and closes the calendar. Put DatePresets in `aside` for one-click periods like Last 7 days. Installs DatePicker with it.",
+  anatomy: [
+    { part: 'Field', description: 'A group named by the label, holding two segmented dates (Start date, End date) and the calendar button. A typed end before the start marks it invalid.' },
+    { part: 'Calendar', description: 'Two months, stacked on narrow screens. The ends are solid accent squares, the days between a light accent band.' },
+    { part: 'Hint', description: '"Pick the first day." or "Pick the last day.", under the months, announced when it changes.' },
+    { part: 'Aside', description: 'An optional column beside the months, for DatePresets.' },
+  ],
+  props: [
+    { name: 'label', type: 'string', description: 'Required. Names the field. Inside a FormField, FormField sets it.' },
+    { name: 'value', type: '{ start: string; end: string }', description: "Controlled range. Each end is 'YYYY-MM-DD' or ''." },
+    { name: 'defaultValue', type: '{ start: string; end: string }', default: "{ start: '', end: '' }", description: 'Starting range when the picker holds it itself.' },
+    { name: 'onValueChange', type: '(range: DateRange) => void', description: 'Fires when either end changes. Days picked in the calendar always arrive in order.' },
+    { name: 'min', type: 'string', description: "Earliest date, 'YYYY-MM-DD'." },
+    { name: 'max', type: 'string', description: "Latest date, 'YYYY-MM-DD'." },
+    { name: 'isDateDisabled', type: '(date: string) => boolean', description: 'Days that cannot be picked.' },
+    { name: 'locale', type: 'string', description: "Segment order, names and first day of the week. Defaults to the browser's." },
+    { name: 'weekStartsOn', type: 'number', description: "0 Sunday to 6 Saturday. Defaults to the locale's." },
+    { name: 'aside', type: 'ReactNode', description: 'Beside the months, in the popover. DatePresets reads and sets the range by itself here.' },
+    { name: 'partLabels', type: '[string, string]', default: "['Start date', 'End date']", description: 'The names of the two dates.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables both dates and the button.' },
+    { name: 'invalid', type: 'boolean', description: 'Marks the field invalid. FormField sets it.' },
+    { name: 'required', type: 'boolean', description: 'Marks both dates required. FormField sets it.' },
+    { name: 'name', type: 'string', description: 'Submits name-start and name-end with a form.' },
+    { name: 'id', type: 'string', description: "The field's id. FormField sets it." },
+    { name: 'aria-describedby', type: 'string', description: 'The ids of the help and error text. FormField sets it.' },
+    { name: 'className', type: 'string', description: "Combined with the field's classes." },
+    { name: 'ref', type: 'Ref<HTMLDivElement>', description: "The field's group element." },
+    { name: 'useDateRangePicker()', type: '() => { value: DateRange; select: (range: DateRange) => void } | null', description: "Inside the popover: the range, and a way to set it and close. For your own aside content." },
+  ],
+  keyboard: [
+    { keys: ['0–9', '↑', '↓'], does: 'Types or steps the focused segment of either date.' },
+    { keys: ['←', '→'], does: 'In the field: the next segment, across both dates. In the calendar: the day before or after, moving the band.' },
+    { keys: ['Page Up', 'Page Down'], does: 'A month earlier or later. With Shift, a year.' },
+    { keys: ['Enter', 'Space'], does: 'Picks the start, then the end, which closes the calendar.' },
+    { keys: ['Esc'], does: 'Closes the calendar. A start picked without an end stays as the start.' },
+  ],
+  useWhen: 'A booking, a report window, a leave request.',
+  notFor: 'One day: DatePicker.',
+  dos: [
+    'Add DatePresets in aside when people mostly want the usual periods.',
+    'Validate the length yourself if a range has a limit (a 30-day report), and say so in help text.',
+  ],
+  donts: [
+    "Don't use two separate DatePickers for a start and an end: nobody sees the band.",
+    "Don't reorder a typed range for the user; the field marks it invalid so they can see what they typed.",
+  ],
+}

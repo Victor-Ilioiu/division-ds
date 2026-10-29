@@ -1,5 +1,5 @@
 // Division DS — molecules barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Twenty-eight folders under
+// the component(s) and their exported types and helpers. Thirty-two folders under
 // src/components/molecules/ — verify the folder count still matches before trusting either.
 
 export {
@@ -20,6 +20,11 @@ export { Breadcrumbs, collapseCrumbs, type BreadcrumbsProps, type Crumb } from '
 export { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass, type CardMediaProps, type CardProps } from './card/Card'
 export { ChatMessage, type ChatMessageProps, type ChatMessageRole } from './chat-message/ChatMessage'
 export { ResponseFeedback, type FeedbackVote, type ResponseFeedbackProps } from './chat-message/ResponseFeedback'
+export { Calendar, type CalendarProps, type DayState } from './date-picker/Calendar'
+export { DateField, type DateFieldProps } from './date-picker/DateField'
+export { DatePicker, type DatePickerProps } from './date-picker/DatePicker'
+export { DatePresets, defaultPresets, type DatePreset, type DatePresetsProps } from './date-presets/DatePresets'
+export { DateRangePicker, EMPTY_RANGE, useDateRangePicker, type DateRange, type DateRangePickerProps } from './date-range-picker/DateRangePicker'
 export { DescriptionList, type DescriptionListItem, type DescriptionListProps } from './description-list/DescriptionList'
 export {
   DropdownMenu,
@@ -77,6 +82,7 @@ export {
   type TabsProps,
   type TabsTriggerProps,
 } from './tabs/Tabs'
+export { TimeField, hourCycleFor, type TimeFieldProps, type TimeValue } from './time-field/TimeField'
 export {
   Timeline,
   TimelineGroup,

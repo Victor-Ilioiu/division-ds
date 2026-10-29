@@ -20,7 +20,7 @@ export const meta: ComponentMeta = {
     { part: 'Shortcut hint', description: "A Kbd that's hidden from assistive technology (screen readers and similar tools). It's for display only." },
   ],
   props: [
-    { name: 'commands', type: 'Command[]', description: 'Required. Each has id, label, group, keywords, shortcut, icon and onSelect.' },
+    { name: 'commands', type: 'Command[]', description: 'Required. Each has id, label, description (a quieter second line), group, keywords, shortcut, icon and onSelect.' },
     { name: 'open', type: 'boolean', description: 'Open state when controlled, meaning your code decides whether it is open.' },
     { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Starting open state when uncontrolled, meaning the palette keeps track of it itself.' },
     {
@@ -39,6 +39,12 @@ export const meta: ComponentMeta = {
     { name: 'searchLabel', type: 'string', default: "'Search commands'", description: "The search field's accessible name." },
     { name: 'placeholder', type: 'string', default: "'Type a command or search'", description: 'Shown in the empty search field.' },
     { name: 'emptyMessage', type: 'string', default: "'No matching commands'", description: 'Shown when nothing matches the search.' },
+    {
+      name: 'filter',
+      type: '(commands: readonly Command[], query: string) => Command[]',
+      default: 'filterCommands',
+      description: 'Your own matching and ranking. Gets every command and the query, returns the ones to show in order; groups follow that order. The docs site search uses it to rank with the same scorer as the MCP server.',
+    },
     { name: 'ref', type: 'Ref<HTMLInputElement>', description: 'The search field, while the palette is open.' },
   ],
   keyboard: [

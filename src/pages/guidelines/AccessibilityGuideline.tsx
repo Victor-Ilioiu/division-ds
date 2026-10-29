@@ -21,20 +21,20 @@ const COMMITMENTS = [
   {
     id: '2.5.7',
     title: 'Dragging movements',
-    status: 'commitment' as const,
-    body: "Nothing in G2 (the foundations stage, the second of the project's approval steps) needs dragging, so there's nothing to check yet. When something does, such as a slider or a list you reorder in Phase 4, it'll come with a way to do the same thing without dragging from day one. That alternative won't be added later as an afterthought.",
+    status: 'shipped' as const,
+    body: "Two components can be dragged, and both work without dragging. KanbanBoard: every card has a Move menu that sends it to another column, and Space lifts a card so the arrow keys can carry it. Slider: click or tap anywhere on the track and the thumb jumps there, or use the arrow keys. The Move menu is covered by browser tests in both themes.",
   },
   {
     id: '3.3.7',
     title: 'Redundant entry',
-    status: 'commitment' as const,
-    body: "There's no multi-step form yet. Those arrive with the checkout and sign-in (authentication) flows in Phase 5. The promise: anything a person has already typed once in a flow gets carried forward, and they're never asked for it again, unless it's a security-sensitive field.",
+    status: 'shipped' as const,
+    body: "CheckoutForm keeps everything you typed in one place for the whole flow, so going Back never loses an answer, and the billing address starts as \"same as shipping\" instead of asking for it again. AuthForm keeps your email when you switch between signing in and creating an account. Unit tests check both.",
   },
   {
     id: '3.3.8',
     title: 'Accessible authentication',
-    status: 'commitment' as const,
-    body: "There's no sign-in flow yet (it comes in Phase 5). The promise: pasting and password managers will always work, and a memory or thinking test, such as a puzzle CAPTCHA (the \"prove you're human\" challenge), will never be the only way to sign in.",
+    status: 'shipped' as const,
+    body: "AuthForm never blocks pasting (a unit test pastes into every field), tells password managers what each field is with autocomplete, and accepts a one-time code pasted with a space in it. There is no CAPTCHA or puzzle, and its docs tell you not to add one.",
   },
 ]
 
@@ -52,9 +52,8 @@ export function AccessibilityGuideline() {
           <>
             WCAG 2.2 is the Web Content Accessibility Guidelines, version 2.2: the public rulebook
             for making websites usable by people with disabilities. Each rule has a number. These
-            are six of them. Three are shipped and you can check them today. The other three are
-            promises for flows that don't exist yet in G2, the foundations stage, and they're
-            labelled as promises, not passed off as already verified.
+            are six of them, and all six are shipped: each one says how it is checked, so you can
+            check it yourself.
           </>
         }
       />

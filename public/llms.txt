@@ -1,6 +1,6 @@
 # Division DS
 
-> A React 19, Tailwind 4 and Radix design system: 68 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
+> A React 19, Tailwind 4 and Radix design system: 72 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
 
 Links below are relative to this file, so they work wherever the site is served. In the repository the same files are under `public/`.
 Read a component page before using the component: it has the props, working examples and the rules.
@@ -49,6 +49,9 @@ Read a component page before using the component: it has the props, working exam
 - [Breadcrumbs](docs/components/breadcrumbs.md): Shows where this page sits among the pages above it. Best for: Showing where a page sits in a hierarchy more than one level deep. Not for: Steps in a sequence: use Stepper.
 - [Card](docs/components/card.md): A surface that groups related content. Best for: Grouping related content on one surface, or one item in a grid whose whole surface is one link. Not for: A card inside another card: cards don't nest.
 - [ChatMessage](docs/components/chat-message.md): One turn in a conversation with an assistant: the person's words in a bubble, the reply at full width, or a centred system line. Best for: Each turn inside a ChatThread. Not for: Comments or an activity history between people: use Timeline. Also: ResponseFeedback.
+- [DatePicker](docs/components/date-picker.md): One date, typed or picked. Best for: One date: a delivery day, a deadline, a birthday. Not for: A range: DateRangePicker. A time: TimeField. Also: Calendar, DateField.
+- [DatePresets](docs/components/date-presets.md): Named periods such as Last 7 days, one click each. Best for: Reports and logs, where people want the usual periods. Not for: Exact dates: DateRangePicker alone.
+- [DateRangePicker](docs/components/date-range-picker.md): A start and an end date in one field, an add-on to DatePicker. Best for: A booking, a report window, a leave request. Not for: One day: DatePicker.
 - [DescriptionList](docs/components/description-list.md): Pairs of a term and its value, all about one thing, in one to three columns. Best for: The fixed fields of one record: serial, firmware, owner, dates. Not for: Many records: use DataTable; one headline number: use Stat.
 - [DropdownMenu](docs/components/dropdown-menu.md): A short list of actions behind a button. Best for: A short list of actions, under about eight, behind a button. Not for: Picking a value for a form: use Select.
 - [EmptyState](docs/components/empty-state.md): What a list, a table or a page region shows when it has nothing in it: an icon, a title that names what is empty, a sentence on why, and the action that fills it. Best for: A list, table or region with nothing in it, along with the action that fills it. Not for: A list that's still loading: use Skeleton or Spinner. A failed load: use Alert in the hostile tone.
@@ -67,6 +70,7 @@ Read a component page before using the component: it has the props, working exam
 - [StatusTracker](docs/components/status-tracker.md): Health over time, drawn as a row of thin bars with one bar per period. Best for: The health history of one service or device, such as uptime over 30 or 90 days. Not for: A current status: use Badge. A measured value: use Sparkline.
 - [Stepper](docs/components/stepper.md): Shows where someone is in a flow of several steps. Best for: Showing where someone is in a flow of two to five steps. Not for: Sections that are equally important: use Tabs. Also not for a single step.
 - [Tabs](docs/components/tabs.md): Sections of one view, with only one visible at a time. Best for: Switching between equally important sections of one view. Not for: Steps in a sequence: use Stepper. Moving between pages: use links (Navbar, Sidebar).
+- [TimeField](docs/components/time-field.md): A time of day, an add-on to the date pickers. Best for: A pickup slot, a meeting start, a shift. Not for: A duration: Input with a unit.
 - [Timeline](docs/components/timeline.md): Events in time order down a vertical line. Best for: A record of what happened to one thing, newest or oldest first: a shipment, a depot, an account. Not for: Steps of a flow someone is going through: use Stepper. Rows people sort and compare: use DataTable.
 - [Toast](docs/components/toast.md): A short message that pops up, stays a few seconds and goes away. Best for: Confirming something the person just did, for a few seconds. Not for: The only copy of important information: use Alert. Also not for a change the page already shows.
 - [ToolCall](docs/components/tool-call.md): A tool the assistant ran, shown right where it ran. Best for: An assistant reply that ran a tool, such as a query, a lookup or a calculation. Not for: An action with side effects that needs a yes first: use ApprovalRequest.
@@ -98,7 +102,7 @@ Read a component page before using the component: it has the props, working exam
 - **Providers.** One `<Toaster>` and one `<TooltipProvider>` sit at the root of the app (`AppShell`, `DemoLayout` in this repository).
 - **Focus.** Anything focusable that you style yourself gets `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.
 - **Page title, empty, loading.** Plan these before writing a screen.
-- **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several: `MultiSelect`), no date picker.
+- **What the system does not have.** No Popover, no Combobox (single value: use `Select`; several: `MultiSelect`).
 - **Vocabulary.** Inside this repository, `npm run check:vocabulary` bans a list of words in `src/`, `scripts/` and `e2e/` (the list is `scripts/lib/vocabulary.mjs`; it is not published with the docs).
 - **Fill, text, ink.** Each accent has three roles.
 - **Status tones.** `ok` done or healthy; `warning` degraded or needs attention; `hostile` failed or destructive; `info` in progress or neutral news; `signal` brand emphasis (a sale, the selected thing); `neutral` inactive.

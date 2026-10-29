@@ -19,7 +19,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `commands` | `Command[]` |  | Required. Each has id, label, group, keywords, shortcut, icon and onSelect. |
+| `commands` | `Command[]` |  | Required. Each has id, label, description (a quieter second line), group, keywords, shortcut, icon and onSelect. |
 | `open` | `boolean` |  | Open state when controlled, meaning your code decides whether it is open. |
 | `defaultOpen` | `boolean` | `false` | Starting open state when uncontrolled, meaning the palette keeps track of it itself. |
 | `onOpenChange` | `(open: boolean) => void` |  | Called on every open and close, including Escape and a click on the scrim (the dimmed backdrop). If you refuse the close, the chosen command stays ready to run until the user does anything else in the palette. Closing it yourself later counts as accepting it. |
@@ -28,6 +28,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `searchLabel` | `string` | `'Search commands'` | The search field's accessible name. |
 | `placeholder` | `string` | `'Type a command or search'` | Shown in the empty search field. |
 | `emptyMessage` | `string` | `'No matching commands'` | Shown when nothing matches the search. |
+| `filter` | `(commands: readonly Command[], query: string) => Command[]` | `filterCommands` | Your own matching and ranking. Gets every command and the query, returns the ones to show in order; groups follow that order. The docs site search uses it to rank with the same scorer as the MCP server. |
 | `ref` | `Ref<HTMLInputElement>` |  | The search field, while the palette is open. |
 
 ## Types and helpers
@@ -38,6 +39,8 @@ Exported beside the component, from the same file. Import a type with `import ty
 export type Command = {
   id: string
   label: string
+  /** A second, quieter line under the label, e.g. what a search result is for. */
+  description?: string
   /** Commands with the same group are drawn together under its heading. */
   group?: string
   /** Extra words a search matches on. */

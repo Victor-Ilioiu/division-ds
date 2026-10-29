@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-presets",
+  "type": "registry:item",
+  "title": "Date presets",
+  "description": "Date presets. Best for: Reports and logs, where people want the usual periods.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-picker.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-range-picker.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/molecules/date-presets/DatePresets.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/molecules/date-presets/DatePresets.tsx",
+      "content": "import { type Ref } from 'react'\nimport { cn } from '../../../lib/cn'\nimport { addDays, addMonths, daysInMonth, firstOfMonth, makeDate, parts, today as todayIso, type IsoDate } from '../date-picker/date-utils'\nimport { useDateRangePicker, type DateRange } from '../date-range-picker/DateRangePicker'\n\nexport type DatePreset = { label: string; range: DateRange }\n\nconst lastOfMonth = (iso: IsoDate) => {\n  const p = parts(iso)!\n  return makeDate(p.year, p.month, daysInMonth(p.year, p.month))\n}\n\n/** The usual periods, counted back from `today` (default: the reader's today). Each includes today. */\nexport function defaultPresets(today: IsoDate = todayIso()): DatePreset[] {\n  const lastMonth = addMonths(firstOfMonth(today), -1)\n  const year = parts(today)!.year\n  return [\n    { label: 'Today', range: { start: today, end: today } },\n    { label: 'Yesterday', range: { start: addDays(today, -1), end: addDays(today, -1) } },\n    { label: 'Last 7 days', range: { start: addDays(today, -6), end: today } },\n    { label: 'Last 30 days', range: { start: addDays(today, -29), end: today } },\n    { label: 'This month', range: { start: firstOfMonth(today), end: lastOfMonth(today) } },\n    { label: 'Last month', range: { start: lastMonth, end: lastOfMonth(lastMonth) } },\n    { label: 'This year', range: { start: makeDate(year, 1, 1), end: makeDate(year, 12, 31) } },\n  ]\n}\n\nexport type DatePresetsProps = {\n  /** @default defaultPresets() */\n  presets?: DatePreset[]\n  /** The current range. Inside a DateRangePicker it comes from the picker. */\n  value?: DateRange\n  /** A preset was chosen. Inside a DateRangePicker the picker sets the range and closes; this still fires. */\n  onSelect?: (range: DateRange) => void\n  /** The list's accessible name. @default 'Presets' */\n  label?: string\n  className?: string\n  ref?: Ref<HTMLDivElement>\n}\n\n/**\n * Named periods, one click each: Today, Last 7 days, This month... Put it in a DateRangePicker's\n * `aside` and it reads and sets the picker's range by itself; on its own, give it `value` and\n * `onSelect`. The preset that matches the current range is shown pressed.\n *\n * Contrast rows: a preset \"text.primary on surface.base\"; the pressed one \"accent.signal.indicator-ink\n * on accent.signal.indicator\" and its fill \"sidebar active item fill on surface.base\"; hover \"hover\n * wash text (text.primary) on accent.signal.wash over surface.base\"; the ring \"focus.ring on surface.base\".\n */\nexport function DatePresets({ presets, value, onSelect, label = 'Presets', className, ref }: DatePresetsProps) {\n  const picker = useDateRangePicker()\n  const list = presets ?? defaultPresets()\n  const current = value ?? picker?.value\n  return (\n    <div ref={ref} role=\"group\" aria-label={label} className={cn('flex flex-col gap-0.5 font-body text-sm sm:w-36', className)}>\n      {list.map(preset => {\n        const on = !!current && current.start === preset.range.start && current.end === preset.range.end\n        return (\n          <button\n            key={preset.label}\n            type=\"button\"\n            aria-pressed={on}\n            onClick={() => {\n              onSelect?.(preset.range)\n              picker?.select(preset.range)\n            }}\n            className={cn(\n              'flex min-h-[36px] items-center px-2 text-left transition-control',\n              'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]',\n              on\n                ? 'bg-[var(--color-accent-signal-indicator)] font-semibold text-[var(--color-accent-signal-indicator-ink)] focus-visible:outline-[var(--color-accent-signal-indicator-ink)]'\n                : 'text-[var(--color-text-primary)] hover:bg-[var(--color-accent-signal-wash)]'\n            )}\n          >\n            {preset.label}\n          </button>\n        )\n      })}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

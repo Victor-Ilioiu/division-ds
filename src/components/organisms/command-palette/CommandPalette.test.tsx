@@ -417,3 +417,15 @@ describe('CommandPalette', () => {
     expect(await axeClean(document.body)).toHaveNoViolations()
   })
 })
+
+describe('CommandPalette filter and description', () => {
+  it('shows what a custom filter returns, in its order, with each description', async () => {
+    const reversed = (list: readonly Command[], query: string) => (query ? [...list].reverse().slice(0, 2) : [...list])
+    const withDescription = commands().map(command => ({ ...command, description: `About ${command.label}` }))
+    render(<CommandPalette commands={withDescription} filter={reversed} defaultOpen />)
+    await userEvent.type(screen.getByRole('combobox'), 'x')
+    const options = screen.getAllByRole('option')
+    expect(options.map(option => option.textContent)).toEqual(['Invite a teammateAbout Invite a teammate', 'New shipmentAbout New shipmentN'])
+    expect(options[0]).toHaveAttribute('aria-selected', 'true')
+  })
+})

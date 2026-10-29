@@ -35,3 +35,9 @@
 @utility mx-gutter {
   margin-inline: var(--page-gutter, 1rem);
 }
+
+/* The docs top bar is sticky (AppShell, 57px). Keyboard focus and in-page jumps land below it, not
+   under it: WCAG 2.4.11, Focus not obscured. Docs only: the demo sites have their own headers. */
+html:has([data-docs-shell]) {
+  scroll-padding-top: 4.5rem;
+}

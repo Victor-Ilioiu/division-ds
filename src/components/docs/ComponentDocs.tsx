@@ -264,6 +264,8 @@ export function ComponentDocs({ meta, children }: { meta: ComponentMeta; childre
         ))}
       </Table>
 
+      {/* The docs search jumps here from a prop result. */}
+      <div id="props" />
       <SectionHeading index={3}>Props</SectionHeading>
       <PropsList rows={props} />
 

@@ -877,6 +877,97 @@
       ]
     },
     {
+      "name": "date-picker",
+      "type": "registry:item",
+      "title": "Date picker",
+      "description": "Date picker. Best for: One date: a delivery day, a deadline, a birthday.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/date-picker/Calendar.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-picker/Calendar.tsx"
+        },
+        {
+          "path": "src/components/molecules/date-picker/date-utils.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-picker/date-utils.ts"
+        },
+        {
+          "path": "src/components/molecules/date-picker/DateField.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-picker/DateField.tsx"
+        },
+        {
+          "path": "src/components/molecules/date-picker/DatePicker.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-picker/DatePicker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-presets",
+      "type": "registry:item",
+      "title": "Date presets",
+      "description": "Date presets. Best for: Reports and logs, where people want the usual periods.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-range-picker.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/date-presets/DatePresets.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-presets/DatePresets.tsx"
+        }
+      ]
+    },
+    {
+      "name": "date-range-picker",
+      "type": "registry:item",
+      "title": "Date range picker",
+      "description": "Date range picker. Best for: A booking, a report window, a leave request.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/date-range-picker/DateRangePicker.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-range-picker/DateRangePicker.tsx"
+        }
+      ]
+    },
+    {
       "name": "description-list",
       "type": "registry:item",
       "title": "Description list",
@@ -1304,6 +1395,31 @@
           "path": "src/components/molecules/tabs/Tabs.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/tabs/Tabs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "time-field",
+      "type": "registry:item",
+      "title": "Time field",
+      "description": "Time field. Best for: A pickup slot, a meeting start, a shift.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "radix-ui@^1.6.7",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/time-field/TimeField.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/time-field/TimeField.tsx"
         }
       ]
     },
@@ -1864,6 +1980,9 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/breadcrumbs.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/card.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/chat-message.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-picker.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-presets.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/date-range-picker.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/description-list.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dropdown-menu.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/empty-state.json",
@@ -1882,6 +2001,7 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/status-tracker.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/stepper.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tabs.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/time-field.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/timeline.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/toast.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tool-call.json",

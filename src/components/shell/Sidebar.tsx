@@ -76,6 +76,9 @@ export const NAV: NavGroup[] = [
       { to: '/components/breadcrumbs', label: 'Breadcrumbs' },
       { to: '/components/card', label: 'Card' },
       { to: '/components/chat-message', label: 'Chat message' },
+      { to: '/components/date-picker', label: 'Date picker' },
+      { to: '/components/date-presets', label: 'Date presets' },
+      { to: '/components/date-range-picker', label: 'Date range picker' },
       { to: '/components/description-list', label: 'Description list' },
       { to: '/components/dropdown-menu', label: 'Dropdown menu' },
       { to: '/components/empty-state', label: 'Empty state' },
@@ -94,6 +97,7 @@ export const NAV: NavGroup[] = [
       { to: '/components/status-tracker', label: 'Status tracker' },
       { to: '/components/stepper', label: 'Stepper' },
       { to: '/components/tabs', label: 'Tabs' },
+      { to: '/components/time-field', label: 'Time field' },
       { to: '/components/timeline', label: 'Timeline' },
       { to: '/components/toast', label: 'Toast' },
       { to: '/components/tool-call', label: 'Tool call' },
@@ -199,7 +203,7 @@ export function Sidebar() {
         'md:border-b-0 md:border-r md:min-w-[220px] md:max-h-[calc(100vh-57px)]',
         // A stable gutter: collapsing a group can drop the column below its max height, and
         // without the reserved lane the scrollbar vanishing would shift every item sideways.
-        'md:overflow-y-auto md:[scrollbar-gutter:stable] md:sticky md:top-0',
+        'md:overflow-y-auto md:[scrollbar-gutter:stable] md:sticky md:top-[57px]',
       ].join(' ')}
     >
       <button

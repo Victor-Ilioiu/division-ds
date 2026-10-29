@@ -1,0 +1,81 @@
+import type { ComponentMeta } from '../../docs/meta'
+
+export const meta: ComponentMeta = {
+  name: 'DatePicker',
+  title: 'Date picker',
+  tier: 'molecules',
+  slug: 'date-picker',
+  summary:
+    "One date, typed or picked. The field has a segment for the day, the month and the year, in the order your language writes them: type the digits and it moves on by itself, or use the arrow keys. The button inside it opens a calendar. The value is a plain 'YYYY-MM-DD' string with no time zone, so it means the same day for everyone. Calendar and DateField are exported too, for building your own.",
+  anatomy: [
+    {
+      part: 'Field (DateField)',
+      description:
+        'A group named by the label, holding three spinbuttons (Day, Month, Year). Each says its value or "Empty". A date that does not exist (31 February) or falls outside min and max marks the field invalid.',
+    },
+    { part: 'Calendar button', description: 'A ghost IconButton inside the field. Its name includes the picked date: "Choose date, Saturday, 14 November 2026".' },
+    {
+      part: 'Calendar',
+      description:
+        "A grid with one tab stop. Each day is a button named with the full date. The picked day is a solid accent square with a cut corner; today has aria-current and a short bar under its number. Days that can't be picked stay visible, struck through and announced as unavailable.",
+    },
+    { part: 'Today', description: 'A secondary Button under the calendar, shown only when today can be picked.' },
+  ],
+  props: [
+    { name: 'label', type: 'string', description: 'Required. Names the field. Inside a FormField, FormField sets it from its own label.' },
+    { name: 'value', type: "string ('YYYY-MM-DD' | '')", description: 'Controlled value (your page holds it).' },
+    { name: 'defaultValue', type: 'string', default: "''", description: 'Starting value when the picker holds the value itself.' },
+    {
+      name: 'onValueChange',
+      type: "(value: string) => void",
+      description: "Fires with a whole, real date, or '' when the field is emptied. A half-typed date does not fire.",
+    },
+    { name: 'min', type: 'string', description: "Earliest date, 'YYYY-MM-DD'. Earlier days are struck through; typing one marks the field invalid." },
+    { name: 'max', type: 'string', description: "Latest date, 'YYYY-MM-DD'." },
+    { name: 'isDateDisabled', type: '(date: string) => boolean', description: 'Days that cannot be picked, such as weekends or holidays.' },
+    { name: 'locale', type: 'string', description: "A language tag such as 'en-GB' or 'de'. Sets the segment order, the separator, the month and day names and the first day of the week. Defaults to the browser's." },
+    { name: 'weekStartsOn', type: 'number', description: "0 Sunday to 6 Saturday. Defaults to the locale's." },
+    { name: 'showToday', type: 'boolean', default: 'true', description: 'Shows the Today button under the calendar when today can be picked.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field and the calendar button.' },
+    { name: 'name', type: 'string', description: "Submits the 'YYYY-MM-DD' value with a form, through a hidden input." },
+    { name: 'invalid', type: 'boolean', description: 'Marks the field invalid. FormField sets it when there is an error.' },
+    { name: 'required', type: 'boolean', description: 'Marks the field required. FormField sets it.' },
+    { name: 'id', type: 'string', description: "The field's id, so a FormField's error text can point at it. FormField sets it." },
+    { name: 'aria-describedby', type: 'string', description: 'The ids of the help and error text. FormField sets it.' },
+    { name: 'className', type: 'string', description: "Combined with the field's classes." },
+    { name: 'ref', type: 'Ref<HTMLDivElement>', description: "The field's group element." },
+    { name: 'trailing (DateField)', type: 'ReactNode', description: 'Something inside the field after the segments. DatePicker puts its calendar button here.' },
+    { name: 'bare (DateField)', type: 'boolean', default: 'false', description: 'No border, fill or ring of its own, for two dates inside one border (DateRangePicker draws them).' },
+    { name: 'onSelect (Calendar)', type: '(date: string) => void', description: 'A day was picked with a click, Enter or Space.' },
+    { name: 'value (Calendar)', type: 'string | null', description: 'The picked day. Ignored when dayState is given.' },
+    { name: 'month (Calendar)', type: 'string', description: 'Any day in the first month shown. Controlled with onMonthChange.' },
+    { name: 'defaultMonth (Calendar)', type: 'string', description: "The first month shown when the calendar holds it itself. Defaults to the value's month, or today's." },
+    { name: 'onMonthChange (Calendar)', type: '(month: string) => void', description: "Fires with the new first month's 1st day." },
+    { name: 'dayState (Calendar)', type: "(date: string) => 'single' | 'start' | 'end' | 'start-end' | 'middle' | undefined", description: 'Draws each day yourself, for a range or any other selection.' },
+    { name: 'onDayEnter (Calendar)', type: '(date: string) => void', description: 'The keyboard or the pointer moved onto a day. A range uses it to preview the band.' },
+    { name: 'numberOfMonths (Calendar)', type: '1 | 2', default: '1', description: 'Months side by side, stacked on narrow screens.' },
+    { name: 'autoFocus (Calendar)', type: 'boolean', default: 'false', description: 'Moves focus to the picked day, or today, when the calendar appears.' },
+  ],
+  keyboard: [
+    { keys: ['0–9'], does: 'Types into the focused segment and moves on once it is full.' },
+    { keys: ['↑', '↓'], does: 'In the field: one more or one less in the segment. In the calendar: a week earlier or later.' },
+    { keys: ['←', '→'], does: 'In the field: the previous or next segment. In the calendar: the day before or after.' },
+    { keys: ['Backspace'], does: 'Clears the segment, or moves back when it is already empty.' },
+    { keys: ['Page Up', 'Page Down'], does: 'The same day a month earlier or later. With Shift, a year.' },
+    { keys: ['Home', 'End'], does: 'The first or last day of the week.' },
+    { keys: ['Enter', 'Space'], does: 'Picks the focused day and closes the calendar.' },
+    { keys: ['Esc'], does: 'Closes the calendar without a change.' },
+  ],
+  useWhen: 'One date: a delivery day, a deadline, a birthday.',
+  notFor: 'A range: DateRangePicker. A time: TimeField.',
+  dos: [
+    "Store and send the 'YYYY-MM-DD' value as it is. It has no time zone, so it can't shift by a day.",
+    'Set min and max to the real limits, so days nobody can book are struck through rather than refused after the fact.',
+    'Wrap it in a FormField for a visible label, help text and errors.',
+  ],
+  donts: [
+    "Don't convert the value with new Date('2026-11-14'): that reads it as midnight UTC and can show the day before in the Americas.",
+    "Don't hide unavailable days. Struck through and announced, they explain themselves.",
+    "Don't use it for a date of birth without setting max to today.",
+  ],
+}
