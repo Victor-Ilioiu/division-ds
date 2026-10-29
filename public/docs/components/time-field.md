@@ -13,18 +13,18 @@
 import { TimeField, hourCycleFor } from 'src/components/molecules/time-field/TimeField'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. Names the field. Inside a FormField, FormField sets it. |
+| `label` | `string` |  | Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `value` | `string ('HH:MM' \| '')` |  | Controlled value, 24-hour. |
 | `defaultValue` | `string` | `''` | Starting value when the field holds it itself. |
 | `onValueChange` | `(value: string) => void` |  | Fires with a whole time, or '' when emptied. |
 | `hourCycle` | `12 \| 24` |  | 12 adds an AM/PM segment. The value stays 24-hour. Defaults to the locale's clock. |
-| `step` | `number` | `30` | Minutes between the times in the list. |
+| `step` | `number` | `30` | Minutes between the times in the list. It only spaces the list: a typed time between steps (09:07) is kept as typed. Check it yourself if it must fall on a step. |
 | `min` | `string` |  | Earliest time, 'HH:MM'. Earlier times are left out of the list; typing one marks the field invalid. |
 | `max` | `string` |  | Latest time, 'HH:MM'. |
 | `showSlots` | `boolean` | `true` | Shows the clock button and its list. |
@@ -83,10 +83,10 @@ function DateAndTime() {
     <div className="flex w-full max-w-md flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
         <FormField label="Pickup date">
-          <DatePicker label="Pickup date" value={date} onValueChange={setDate} />
+          <DatePicker value={date} onValueChange={setDate} />
         </FormField>
         <FormField label="Pickup time">
-          <TimeField label="Pickup time" value={time} onValueChange={setTime} step={15} min="08:00" max="18:00" />
+          <TimeField value={time} onValueChange={setTime} step={15} min="08:00" max="18:00" />
         </FormField>
       </div>
       <span className="font-mono text-xs text-[var(--color-text-secondary)]">

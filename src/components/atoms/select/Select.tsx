@@ -131,7 +131,7 @@ export type SelectProps = Omit<ComponentPropsWithoutRef<typeof RadixSelect.Root>
   'data-testid'?: never
   children?: never
   /** Required: the trigger's accessible name. */
-  label: string
+  label?: string
   placeholder?: string
   inputSize?: 'sm' | 'md' | 'lg'
   invalid?: boolean
@@ -262,3 +262,7 @@ export function Select({
     </RadixSelect.Root>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a Select inside a FormField needs no label of its own.
+Select.namedByFormField = true

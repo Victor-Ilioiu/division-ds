@@ -53,7 +53,7 @@ export function searchIndex(entries, tokens) {
 }
 
 /** Said under every Import block: the paths are the repository's, not an installed project's. */
-export const INSTALLED_PATHS = 'Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.'
+export const INSTALLED_PATHS = 'Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.'
 
 /** One component as a markdown page. `entry` is a manifest entry (see `manifestEntry`). */
 export function componentMarkdown(entry) {

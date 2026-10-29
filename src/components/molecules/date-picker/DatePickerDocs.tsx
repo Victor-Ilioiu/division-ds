@@ -43,7 +43,7 @@ export function DatePickerDocs() {
       <Example caption="In a FormField, with help text">
         <div className="w-full max-w-xs">
           <FormField label="Trip date" help="Type it, or open the calendar.">
-            <DatePicker label="Trip date" />
+            <DatePicker />
           </FormField>
         </div>
       </Example>

@@ -716,10 +716,9 @@ test('ChartPanel: the chart is hidden and has no tab stop, two series have two c
 test('ChartPanel: the second line series is dashed, with no draw-in animation to poll for under reduced motion', async ({
   page,
 }) => {
-  // Recharts' own isAnimationActive default is 'auto': it reads prefers-reduced-motion itself
-  // (usePrefersReducedMotion, recharts/es6/util) and skips the draw-in animation when it is
-  // reduced, landing straight on the settled dasharray -- so this asserts it directly, with no
-  // expect.poll, proving the real value independent of the animation the test above waits out.
+  // Under reduced motion ChartPanel turns the draw-in off itself (Recharts does not check the
+  // setting: this test failed for weeks on the assumption that it did), so the settled dasharray
+  // is there at once -- asserted directly, with no expect.poll.
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/components/chart-panel')
   const panel = page.getByRole('region', { name: 'Weekly orders', exact: true })

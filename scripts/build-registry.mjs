@@ -211,7 +211,9 @@ const SHADCN_VARS = {
   muted: 'surface-sunken', 'muted-foreground': 'text-secondary',
   // shadcn's accent is the quiet hover/selected background (menu items, ghost buttons), not the brand.
   accent: 'surface-sunken', 'accent-foreground': 'text-primary',
-  destructive: 'accent-hostile-fill',
+  // shadcn's destructive Button paints this as TEXT on a 10% tint of itself (20% in dark), so it
+  // is the text red, not the fill red: the fill measured 3.09:1 there in a real install.
+  destructive: 'accent-hostile-text',
   border: 'border-hairline', input: 'border-control', ring: 'focus-ring',
   'chart-1': 'chart-series-1', 'chart-2': 'chart-series-2',
 }
@@ -230,6 +232,12 @@ for (const theme of ['light', 'dark']) {
   for (const [fg, bg, min] of pairs) {
     const ratio = contrastRatio(v[fg], v[bg], v.background)
     if (ratio < min) throw new Error(`division-ds-theme (${theme}): --${fg} on --${bg} is ${ratio.toFixed(2)}:1, needs ${min}:1`)
+  }
+  // The destructive Button: text-destructive on bg-destructive/10 (dark: /20), over the page.
+  const tint = `rgba(${[1, 3, 5].map(i => parseInt(v.destructive.slice(i, i + 2), 16)).join(', ')}, ${theme === 'light' ? 0.1 : 0.2})`
+  for (const [bg, name] of [[v.background, '--background'], [tint, 'its own tint']]) {
+    const ratio = contrastRatio(v.destructive, bg, v.background)
+    if (ratio < 4.5) throw new Error(`division-ds-theme (${theme}): --destructive on ${name} is ${ratio.toFixed(2)}:1, needs 4.5:1`)
   }
 }
 items.push({

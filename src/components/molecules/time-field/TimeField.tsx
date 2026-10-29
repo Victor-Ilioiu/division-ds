@@ -49,7 +49,7 @@ const display = (time: string, cycle: 12 | 24) => {
 
 export type TimeFieldProps = {
   /** Required. The field's accessible name. Inside a FormField, FormField sets it. */
-  label: string
+  label?: string
   /** 'HH:MM', 24-hour, or ''. Controlled with `onValueChange`. */
   value?: TimeValue
   defaultValue?: TimeValue
@@ -282,7 +282,7 @@ export function TimeField({
                 size="sm"
                 disabled={disabled}
                 aria-haspopup="listbox"
-                className="-mr-2 ml-auto"
+                wrapperClassName="-mr-2 ml-auto"
               >
                 <Clock />
               </IconButton>
@@ -299,7 +299,7 @@ export function TimeField({
           onOpenAutoFocus={event => event.preventDefault()}
           className="z-50 border border-[var(--color-border-hairline-strong)] bg-[var(--color-surface-base)] p-1 crosshair anim-popover"
         >
-          <SlotList id={listId} label={`${label}, times`} slots={slots} value={time} cycle={cycle} onChoose={choose} />
+          <SlotList id={listId} label={`${label ?? 'Time'}, times`} slots={slots} value={time} cycle={cycle} onChoose={choose} />
         </RadixPopover.Content>
       </RadixPopover.Portal>
     </RadixPopover.Root>
@@ -356,3 +356,7 @@ function SlotList({ id, label, slots, value, cycle, onChoose }: { id: string; la
     </ul>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a TimeField inside a FormField needs no label of its own.
+TimeField.namedByFormField = true

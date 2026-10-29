@@ -125,6 +125,16 @@ describe('DatePicker', () => {
     expect(group).toHaveAccessibleDescription('Any day this year.')
   })
 
+  it('needs no label of its own inside a FormField', () => {
+    render(
+      <FormField label="Due date">
+        <DatePicker />
+      </FormField>
+    )
+    expect(screen.getByRole('group', { name: 'Due date' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Choose date' })).toBeInTheDocument()
+  })
+
   it('forwards ref to the field', () => {
     const ref = createRef<HTMLDivElement>()
     render(<DatePicker label="Date" ref={ref} />)

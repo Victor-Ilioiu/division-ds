@@ -13,13 +13,13 @@
 import { DateRangePicker, EMPTY_RANGE, useDateRangePicker } from 'src/components/molecules/date-range-picker/DateRangePicker'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. Names the field. Inside a FormField, FormField sets it. |
+| `label` | `string` |  | Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `value` | `{ start: string; end: string }` |  | Controlled range. Each end is 'YYYY-MM-DD' or ''. |
 | `defaultValue` | `{ start: string; end: string }` | `{ start: '', end: '' }` | Starting range when the picker holds it itself. |
 | `onValueChange` | `(range: DateRange) => void` |  | Fires when either end changes. Days picked in the calendar always arrive in order. |
@@ -76,7 +76,7 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 ```tsx
 <div className="w-full max-w-sm">
   <FormField label="Report period" help="Pick a preset, or two days.">
-    <DateRangePicker label="Report period" aside={<DatePresets />} />
+    <DateRangePicker aside={<DatePresets />} />
   </FormField>
 </div>
 ```

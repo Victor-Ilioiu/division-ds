@@ -21,7 +21,7 @@ export const useDateRangePicker = () => useContext(Context)
 
 export type DateRangePickerProps = {
   /** Required. Names the whole field. Inside a FormField, FormField sets it. */
-  label: string
+  label?: string
   value?: DateRange
   defaultValue?: DateRange
   /** Fires when either end changes. Two days picked in the calendar arrive in order; a typed end
@@ -176,7 +176,7 @@ export function DateRangePicker({
                 variant="ghost"
                 size="sm"
                 disabled={disabled}
-                className="-mr-2 ml-auto"
+                wrapperClassName="-mr-2 ml-auto"
               >
                 <CalendarRange />
               </IconButton>
@@ -189,7 +189,7 @@ export function DateRangePicker({
             align="start"
             sideOffset={6}
             collisionPadding={8}
-            aria-label={`${label}, calendar`}
+            aria-label={`${label ?? 'Dates'}, calendar`}
             onOpenAutoFocus={event => event.preventDefault()}
             className="z-50 flex flex-col gap-4 border border-[var(--color-border-hairline-strong)] bg-[var(--color-surface-base)] p-3 crosshair anim-popover sm:flex-row"
           >
@@ -220,3 +220,7 @@ export function DateRangePicker({
     </Context.Provider>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a DateRangePicker inside a FormField needs no label of its own.
+DateRangePicker.namedByFormField = true

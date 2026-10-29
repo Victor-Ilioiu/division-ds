@@ -13,13 +13,13 @@
 import { QuantityStepper, clampQuantity, gridMax } from 'src/components/molecules/quantity-stepper/QuantityStepper'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. Names the field and both buttons ("Decrease Speed loader quantity"). |
+| `label` | `string` |  | Names the field and both buttons ("Decrease Speed loader quantity"). Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `value` | `number` |  | Controlled value (your page holds it). |
 | `defaultValue` | `number` | `min` | Starting value when the component holds the value itself (uncontrolled). |
 | `onValueChange` | `(value: number) => void` |  | Fires with the final value, pulled inside the limits: after a button click, an arrow key, Home/End, or when typing is finished by leaving the field or pressing Enter. |

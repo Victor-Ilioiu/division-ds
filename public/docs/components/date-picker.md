@@ -16,13 +16,13 @@ import { DateField } from 'src/components/molecules/date-picker/DateField'
 import { DatePicker } from 'src/components/molecules/date-picker/DatePicker'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. Names the field. Inside a FormField, FormField sets it from its own label. |
+| `label` | `string` |  | Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `value` | `string ('YYYY-MM-DD' \| '')` |  | Controlled value (your page holds it). |
 | `defaultValue` | `string` | `''` | Starting value when the picker holds the value itself. |
 | `onValueChange` | `(value: string) => void` |  | Fires with a whole, real date, or '' when the field is emptied. A half-typed date does not fire. |
@@ -78,7 +78,7 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 ```tsx
 <div className="w-full max-w-xs">
   <FormField label="Trip date" help="Type it, or open the calendar.">
-    <DatePicker label="Trip date" />
+    <DatePicker />
   </FormField>
 </div>
 ```

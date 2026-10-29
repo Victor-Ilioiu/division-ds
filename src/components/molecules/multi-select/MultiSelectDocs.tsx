@@ -22,7 +22,7 @@ function ControlledExample() {
   return (
     <div className="flex flex-col gap-2 w-full max-w-md">
       <FormField label="Loadout" help="Remove a tag and watch the others close the gap.">
-        <MultiSelect label="Loadout" options={LOADOUT} value={kit} onValueChange={setKit} />
+        <MultiSelect options={LOADOUT} value={kit} onValueChange={setKit} />
       </FormField>
       <span className="font-mono text-xs text-[var(--color-text-secondary)]">value: [{kit.join(', ')}]</span>
     </div>
@@ -35,7 +35,7 @@ export function MultiSelectDocs() {
       <Example caption="Default">
         <div className="w-full max-w-md">
           <FormField label="Loadout">
-            <MultiSelect label="Loadout" options={LOADOUT} placeholder="Choose your kit…" />
+            <MultiSelect options={LOADOUT} placeholder="Choose your kit…" />
           </FormField>
         </div>
       </Example>
@@ -47,7 +47,7 @@ export function MultiSelectDocs() {
       <Example caption="Invalid">
         <div className="w-full max-w-md">
           <FormField label="Loadout" error="Pick eye protection.">
-            <MultiSelect label="Loadout" options={LOADOUT} defaultValue={['mags']} />
+            <MultiSelect options={LOADOUT} defaultValue={['mags']} />
           </FormField>
         </div>
       </Example>

@@ -22,7 +22,7 @@ export const meta: ComponentMeta = {
     { part: 'Today', description: 'A secondary Button under the calendar, shown only when today can be picked.' },
   ],
   props: [
-    { name: 'label', type: 'string', description: 'Required. Names the field. Inside a FormField, FormField sets it from its own label.' },
+    { name: 'label', type: 'string', description: 'Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.' },
     { name: 'value', type: "string ('YYYY-MM-DD' | '')", description: 'Controlled value (your page holds it).' },
     { name: 'defaultValue', type: 'string', default: "''", description: 'Starting value when the picker holds the value itself.' },
     {

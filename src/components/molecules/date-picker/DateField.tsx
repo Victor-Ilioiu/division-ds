@@ -36,7 +36,7 @@ export type DateFieldProps = {
   /** A BCP 47 language tag. Sets the order of day, month and year and the separator. @default the browser's */
   locale?: string
   /** Required. The field's accessible name. Inside a FormField, FormField sets it. */
-  label: string
+  label?: string
   disabled?: boolean
   invalid?: boolean
   required?: boolean
@@ -255,3 +255,7 @@ export function DateField({
     </div>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a DateField inside a FormField needs no label of its own.
+DateField.namedByFormField = true

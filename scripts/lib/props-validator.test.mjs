@@ -133,9 +133,54 @@ describe('enum values', () => {
     expect(violations[0].fix).toMatch(/Write tone="signal"\./)
   })
 
+  it('judges the main component of a compound page when its props are closed, never its parts', () => {
+    const manifest = {
+      components: [
+        {
+          name: 'DatePicker',
+          docs: '/docs/components/date-picker.md',
+          closed: true,
+          imports: [{ names: ['DatePicker', 'Calendar'], from: 'src/components/molecules/date-picker/DatePicker' }],
+          props: [{ name: 'label', type: 'string' }, { name: 'onSelect (Calendar)', type: '(date: string) => void' }],
+        },
+      ],
+    }
+    const imports = "import { DatePicker, Calendar } from '../components/molecules/date-picker/DatePicker'"
+    const found = findPropViolations(
+      `${imports}
+export const S = () => <><DatePicker label="Due" lable="x" /><Calendar anything /></>
+`,
+      'src/S.tsx',
+      buildIndex(manifest)
+    )
+    expect(found.map(v => `${v.component} ${v.prop}`)).toEqual(['DatePicker lable'])
+    expect(found[0].fix).toMatch(/Did you mean "label"\?/)
+  })
+
   it('checks enum values on compound parts too, where unknown props are not judged', () => {
     const violations = scan('<Tabs orientation="sideways" loop dir="rtl"><TabsList>x</TabsList></Tabs>')
     expect(violations.map(v => v.found)).toEqual(['orientation="sideways"'])
+  })
+})
+
+describe('missing labels', () => {
+  const manifest = {
+    components: [
+      { name: 'Select', docs: '/docs/components/select.md', closed: true, namedByFormField: ['Select'], imports: [{ names: ['Select'], from: 'src/components/atoms/select/Select' }], props: [{ name: 'label', type: 'string' }, { name: 'options', type: 'SelectOption[]' }] },
+      { name: 'FormField', docs: '/docs/components/form-field.md', imports: [{ names: ['FormField'], from: 'src/components/molecules/form-field/FormField' }], props: [{ name: 'label', type: 'string' }] },
+    ],
+  }
+  const imports = "import { Select } from '../components/atoms/select/Select'\nimport { FormField } from '../components/molecules/form-field/FormField'"
+  const find = jsx => findPropViolations(`${imports}\nexport const S = () => (\n${jsx}\n)\n`, 'src/S.tsx', buildIndex(manifest)).map(v => v.rule)
+
+  it('flags a control FormField names when it has neither a label nor a FormField', () => {
+    expect(find('<Select options={[]} />')).toEqual(['missing-label'])
+  })
+
+  it('accepts one with a label, inside a FormField, or with props spread in', () => {
+    expect(find('<Select options={[]} label="Kit" />')).toEqual([])
+    expect(find('<FormField label="Kit"><div><Select options={[]} /></div></FormField>')).toEqual([])
+    expect(find('<Select {...props} />')).toEqual([])
   })
 })
 

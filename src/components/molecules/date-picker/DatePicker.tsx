@@ -72,7 +72,7 @@ export function DatePicker({
                 variant="ghost"
                 size="sm"
                 disabled={disabled}
-                className="-mr-2"
+                wrapperClassName="-mr-2"
               >
                 <CalendarDays />
               </IconButton>
@@ -86,7 +86,7 @@ export function DatePicker({
           align="start"
           sideOffset={6}
           collisionPadding={8}
-          aria-label={`${label}, calendar`}
+          aria-label={`${label ?? 'Date'}, calendar`}
           // The calendar puts focus on the picked day (or today) itself.
           onOpenAutoFocus={event => event.preventDefault()}
           className={cn(
@@ -116,3 +116,7 @@ export function DatePicker({
     </RadixPopover.Root>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a DatePicker inside a FormField needs no label of its own.
+DatePicker.namedByFormField = true

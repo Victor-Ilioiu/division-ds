@@ -118,7 +118,8 @@
           "caption": "With an explanation and sources",
           "source": "<div className=\"flex flex-col gap-2 max-w-md\">\n  <AiLabel\n    label=\"AI summary\"\n    explanation=\"Summarised from the three most recent reviews of this replica. It can miss details or get them wrong: verify before you rely on it.\"\n    sources={[\n      { label: 'Review by Ilse Varga', href: '#review-1' },\n      { label: 'Review by Tomas Brandt', href: '#review-2' },\n    ]}\n  />\n  <p className=\"text-sm text-[var(--color-text-primary)]\">\n    Reviewers find the gearbox quiet and the hop-up easy to tune; two mention a loose stock.\n  </p>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Avatar",
@@ -256,7 +257,8 @@
           "caption": "A row",
           "source": "const FIELD_TEAM = [\n  { name: 'Dana Iverson', role: 'Route Lead' },\n  { name: 'Ravi Okonkwo', role: 'Comms' },\n  { name: 'Mei Tanaka', role: 'Medic' },\n  { name: 'Sana Idrissi', role: 'Logistics' },\n]\n\n<div className=\"flex flex-col gap-3\">\n  {FIELD_TEAM.map(member => (\n    <div key={member.name} className=\"flex items-center gap-3\">\n      <Avatar name={member.name} size=\"md\" />\n      <div>\n        <p className=\"text-sm\">{member.name}</p>\n        <p className=\"text-xs text-[var(--color-text-muted)]\">{member.role}</p>\n      </div>\n    </div>\n  ))}\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Badge",
@@ -395,7 +397,8 @@
           "caption": "In a row",
           "source": "<div className=\"flex flex-col gap-2 w-full max-w-xs\">\n  <div className=\"flex items-center justify-between\">\n    <span className=\"text-sm\">Depot Relay</span>\n    <Badge tone=\"ok\" emphasis=\"subtle\">\n      Nominal\n    </Badge>\n  </div>\n  <div className=\"flex items-center justify-between\">\n    <span className=\"text-sm\">North Sensor Array</span>\n    <Badge tone=\"warning\" emphasis=\"subtle\">\n      Degraded\n    </Badge>\n  </div>\n  <div className=\"flex items-center justify-between\">\n    <span className=\"text-sm\">Northgate Beacon</span>\n    <Badge tone=\"hostile\" emphasis=\"solid\">\n      Offline\n    </Badge>\n  </div>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Button",
@@ -604,7 +607,8 @@
           "caption": "Focus ring is never clipped",
           "source": "<div className=\"flex flex-col gap-4\">\n  <p className=\"text-sm text-[var(--color-text-secondary)] max-w-md\">\n    Press Tab to focus the button below, in either theme. The focus ring (the outline\n    that shows which element the keyboard is on) draws a clean rectangle around the whole\n    bevelled shape. You'll never see it cut off, because the component draws it on the\n    outer wrapper, which isn't clipped, and not on the bevelled button itself.\n  </p>\n  <Button variant=\"primary\">Dispatch team</Button>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Checkbox",
@@ -744,7 +748,8 @@
           "caption": "Invalid",
           "source": "<div className=\"flex items-center gap-2\">\n  <Checkbox id=\"state-invalid\" invalid />\n  <label htmlFor=\"state-invalid\">Confirm waiver on file</label>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Divider",
@@ -835,7 +840,8 @@
           "caption": "Drawing on",
           "source": "<div className=\"flex flex-col gap-4 w-full max-w-sm\">\n  {/* The Button atom, not a bare <button>: a hand-rolled one here had no system focus\n      ring at all (the UA default, rgb(16, 16, 16) auto 1px) and no type, so it defaulted\n      to submit. */}\n  <Button variant=\"secondary\" size=\"sm\" wrapperClassName=\"w-fit\" onClick={() => setReplayKey(k => k + 1)}>\n    Replay\n  </Button>\n  <Divider key={replayKey} className=\"anim-draw-on\" />\n  <p className=\"text-xs text-[var(--color-text-muted)]\">\n    This animation is switched off completely when someone has asked their device for\n    less motion (the prefers-reduced-motion: reduce setting).\n  </p>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "IconButton",
@@ -1000,7 +1006,8 @@
           "caption": "Disabled",
           "source": "<IconButton label=\"Next step\" disabled>\n  <ChevronRight aria-hidden=\"true\" />\n</IconButton>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Input",
@@ -1197,7 +1204,8 @@
           "caption": "Labelled the manual way",
           "source": "<div className=\"flex flex-col gap-1 text-sm max-w-xs\">\n  <label htmlFor=\"input-docs-callsign\">Call sign</label>\n  <Input id=\"input-docs-callsign\" aria-describedby=\"input-docs-callsign-help\" />\n  <p id=\"input-docs-callsign-help\" className=\"text-xs text-[var(--color-text-secondary)]\">\n    Letters, numbers and a hyphen. FormField will set this pattern up for you.\n  </p>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Kbd",
@@ -1273,7 +1281,8 @@
           "caption": "A chord: one cap per key",
           "source": "<span className=\"flex items-center gap-1\">\n  <Kbd>Ctrl</Kbd>\n  <span className=\"text-[var(--color-text-muted)] text-sm\">+</span>\n  <Kbd>K</Kbd>\n</span>\n<span className=\"text-sm text-[var(--color-text-secondary)]\">Open the command palette</span>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Link",
@@ -1393,7 +1402,8 @@
           "caption": "External",
           "source": "<Link href=\"https://example.com\" external>\n  Supplier\n</Link>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "LoadingAnimation",
@@ -1490,7 +1500,8 @@
           "caption": "Aperture, three sizes",
           "source": "<LoadingAnimation variant=\"aperture\" size=\"sm\" label=\"Loading field kits\" />\n<LoadingAnimation variant=\"aperture\" size=\"md\" label=\"Loading field kits\" />\n<LoadingAnimation variant=\"aperture\" size=\"lg\" label=\"Loading field kits\" />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Progress",
@@ -1610,7 +1621,8 @@
           "caption": "Tones",
           "source": "<div className=\"flex flex-col gap-4 w-full max-w-sm\">\n  <Progress label=\"Signal supply run\" value={40} tone=\"signal\" showValue />\n  <Progress label=\"BB reserves\" value={82} tone=\"ok\" showValue />\n  <Progress label=\"Gas reserves\" value={22} tone=\"warning\" showValue />\n  <Progress label=\"Battery reserves\" value={6} tone=\"hostile\" showValue />\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Radio",
@@ -1785,7 +1797,8 @@
           "caption": "Disabled option",
           "source": "const SPEEDS = ['standard', 'priority', 'overnight'] as const\n\n<RadioGroup aria-label=\"Dispatch speed, one option disabled\" defaultValue=\"standard\">\n  {SPEEDS.map(speed => (\n    <div key={speed} className=\"flex items-center gap-2\">\n      <Radio value={speed} id={`disabled-${speed}`} disabled={speed === 'overnight'} />\n      <label htmlFor={`disabled-${speed}`} className=\"capitalize\">\n        {speed}\n      </label>\n    </div>\n  ))}\n</RadioGroup>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "ScoreRing",
@@ -1903,7 +1916,8 @@
           "caption": "The band boundaries: 49, 50, 89 and 90",
           "source": "<ScoreRing label=\"Depot A\" value={49} size=\"sm\" />\n<ScoreRing label=\"Depot B\" value={50} size=\"sm\" />\n<ScoreRing label=\"Depot C\" value={89} size=\"sm\" />\n<ScoreRing label=\"Depot D\" value={90} size=\"sm\" />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Select",
@@ -1930,7 +1944,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. The trigger’s accessible name, the name a screen reader announces for it."
+          "description": "The trigger’s accessible name, the name a screen reader announces for it. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "options",
@@ -2165,6 +2179,10 @@
           "caption": "Beside an Input",
           "source": "const TERRAIN_OPTIONS = [\n  { value: 'woodland', label: 'Woodland' },\n  { value: 'urban', label: 'Urban' },\n  { value: 'desert', label: 'Desert' },\n  { value: 'indoor', label: 'Indoor' },\n]\n\n<label className=\"flex flex-col gap-1 text-sm\">\n  Call sign\n  <Input placeholder=\"Anvil-3\" />\n</label>\n{/* Deliberately NOT a <label>. A <label> associates with a labelable element — input,\n    select, textarea, button among them — but Radix's trigger is a <button>, and a\n    <label> wrapping a button is inert: it neither names it nor forwards a click. The\n    Select's accessible name comes from its required `label` prop, and the visible text\n    here matches it exactly (SC 2.5.3, label in name). Wrapping it in a <label> would\n    have looked correct and done nothing. */}\n<div className=\"flex flex-col gap-1 text-sm\">\n  <span>Terrain</span>\n  <Select label=\"Terrain\" options={TERRAIN_OPTIONS} placeholder=\"Choose terrain\" />\n</div>"
         }
+      ],
+      "closed": false,
+      "namedByFormField": [
+        "Select"
       ]
     },
     {
@@ -2301,7 +2319,8 @@
           "caption": "A profile row loading",
           "source": "<SkeletonGroup label=\"Loading the squad roster\" className=\"flex w-full max-w-sm items-center gap-3\">\n  <Skeleton shape=\"avatar\" size=\"md\" />\n  <div className=\"flex flex-1 flex-col gap-2\">\n    <Skeleton shape=\"text\" className=\"w-1/2\" />\n    <Skeleton shape=\"text\" className=\"w-1/3\" />\n  </div>\n</SkeletonGroup>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Slider",
@@ -2477,7 +2496,8 @@
           "caption": "Disabled",
           "source": "<div className=\"w-full max-w-sm\">\n  <Slider label=\"Locked ration\" defaultValue={[8]} max={20} disabled />\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Sparkline",
@@ -2617,7 +2637,8 @@
           "caption": "No values, one value, a flat run",
           "source": "<Sparkline values={[]} label=\"No readings yet\" />\n<Sparkline values={[12]} label=\"One reading: 12\" showLast />\n<Sparkline values={[7, 7, 7, 7]} label=\"Flat at 7\" showLast />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Spinner",
@@ -2723,7 +2744,8 @@
           "caption": "Decorative, inside a control",
           "source": "<span className=\"inline-flex items-center gap-2 border border-[var(--color-border-hairline-strong)] px-3 py-2\">\n  <Spinner aria-hidden=\"true\" />\n  <span className=\"text-sm\">Dispatching…</span>\n</span>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Switch",
@@ -2874,7 +2896,8 @@
           "caption": "A settings row",
           "source": "<div className=\"flex w-full items-start justify-between gap-4\">\n  <div>\n    <label htmlFor=\"settings-offline-maps\" className=\"font-medium\">\n      Offline maps\n    </label>\n    <p className=\"text-sm text-[var(--color-text-secondary)]\">\n      Download the current route area before you lose signal.\n    </p>\n  </div>\n  <Switch id=\"settings-offline-maps\" defaultChecked />\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Tag",
@@ -2985,7 +3008,8 @@
           "caption": "Long text",
           "source": "<Tag onDismiss={() => {}}>Stick battery 11.1 V, 1300 mAh, lithium polymer</Tag>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Textarea",
@@ -3111,7 +3135,8 @@
           "caption": "With a counter",
           "source": "function CounterExample() {\n  const max = 140\n  const [value, setValue] = useState('')\n  return (\n    <label className=\"flex flex-col gap-1 text-sm w-full max-w-xs\">\n      Field day summary\n      <Textarea\n        value={value}\n        onChange={e => setValue(e.target.value)}\n        maxLength={max}\n        aria-describedby=\"textarea-docs-counter\"\n      />\n      <span id=\"textarea-docs-counter\" className=\"text-xs text-[var(--color-text-secondary)]\">\n        {value.length} / {max}\n      </span>\n    </label>\n  )\n}\n\n<CounterExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Tooltip",
@@ -3215,7 +3240,8 @@
           "caption": "Keyboard",
           "source": "<p className=\"text-sm text-[var(--color-text-secondary)] max-w-md\">\n  Press Tab to move to the trigger and the tooltip appears. Press Escape and it goes away,\n  without you moving the pointer. That's a rule in WCAG 2.2 (the Web Content Accessibility\n  Guidelines, the public rulebook for making websites usable by people with disabilities).\n  Its success criterion (SC) 1.4.13 says this kind of content has to stay dismissible (you\n  can close it), hoverable (you can move the pointer onto it) and persistent (it stays\n  until you do).\n</p>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Accordion",
@@ -3396,7 +3422,8 @@
           "caption": "Controlled: the page keeps track of which sections are open",
           "source": "function ControlledExample() {\n  const [open, setOpen] = useState<string[]>(['battery'])\n  return (\n    <div className=\"w-full max-w-lg\">\n      <p className=\"mb-3 font-mono text-xs uppercase tracking-[0.18em] text-[var(--color-text-secondary)]\">\n        Open: {open.length ? open.join(', ') : 'none'}\n      </p>\n      <Accordion type=\"multiple\" value={open} onValueChange={setOpen}>\n        <AccordionItem value=\"battery\">\n          <AccordionTrigger>Battery</AccordionTrigger>\n          <AccordionContent>11.1V LiPo, 1450mAh, with a deans connector.</AccordionContent>\n        </AccordionItem>\n        <AccordionItem value=\"hop-up\">\n          <AccordionTrigger>Hop-up</AccordionTrigger>\n          <AccordionContent>Rotary adjustment, 60 degree bucking.</AccordionContent>\n        </AccordionItem>\n      </Accordion>\n    </div>\n  )\n}\n\n<ControlledExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Alert",
@@ -3553,7 +3580,8 @@
           "caption": "Live: it appears after a click, and a screen reader announces it straight away",
           "source": "function LiveExample() {\n  const [shown, setShown] = useState(false)\n\n  return (\n    <div className=\"flex flex-col gap-3 w-full\">\n      <Button\n        variant=\"secondary\"\n        size=\"sm\"\n        wrapperClassName=\"self-start\"\n        onClick={() => setShown(true)}\n      >\n        Trigger a live alert\n      </Button>\n      {shown ? (\n        <Alert live tone=\"hostile\" title=\"Sync failed\" onDismiss={() => setShown(false)}>\n          The last manifest sync could not reach the server.\n        </Alert>\n      ) : null}\n    </div>\n  )\n}\n\n<LiveExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "ApprovalRequest",
@@ -3707,7 +3735,8 @@
           "caption": "Resolved",
           "source": "<div className=\"flex w-full max-w-xl flex-col gap-3\">\n  <ApprovalRequest title=\"Move the Friday pickup to Thursday?\" state=\"approved\" onApprove={() => {}} onReject={() => {}}>\n    Pickup at Depot 4, Thursday 08:00 instead of Friday 08:00.\n  </ApprovalRequest>\n  <ApprovalRequest title=\"Cancel order ORD-1182?\" state=\"rejected\" onApprove={() => {}} onReject={() => {}}>\n    Two replicas, already packed.\n  </ApprovalRequest>\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "AvatarGroup",
@@ -3858,7 +3887,8 @@
           "caption": "In a row, beside the words it summarises",
           "source": "const ALPHA: AvatarGroupPerson[] = [\n  { name: 'Ilse Varga', status: 'online' },\n  { name: 'Ravi Okonkwo', status: 'away' },\n  { name: 'Mei Tanaka', status: 'busy' },\n  { name: 'Sana Idrissi', status: 'online' },\n  { name: 'Dana Iverson', status: 'offline' },\n  { name: 'Lin Moreau', status: 'online' },\n  { name: 'Tomas Reyes', status: 'offline' },\n]\n\n<div className=\"flex items-center gap-3\">\n  <AvatarGroup people={ALPHA} max={3} size=\"sm\" label=\"Watching this replica\" />\n  <p className=\"text-sm text-[var(--color-text-secondary)]\">7 people are watching this replica</p>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Breadcrumbs",
@@ -3984,7 +4014,8 @@
           "caption": "A level that is not a page",
           "source": "const MID_LEVEL_TRAIL = [\n  { label: 'Catalogue', href: '/catalogue' },\n  { label: 'Optics' },\n  { label: 'Holo sights', href: '/catalogue/optics/holo-sights' },\n]\n\n<Breadcrumbs items={MID_LEVEL_TRAIL} label=\"Breadcrumb, mid-level example\" />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Card",
@@ -4172,7 +4203,8 @@
           "caption": "As a section",
           "source": "<div className=\"max-w-sm w-full\">\n  <Card as=\"section\">\n    <CardHeader>\n      <CardTitle level={2}>Totals</CardTitle>\n      <CardDescription>This week, all depots.</CardDescription>\n    </CardHeader>\n    <CardBody>128 kits collected, 6 outstanding.</CardBody>\n  </Card>\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "ChatMessage",
@@ -4338,7 +4370,8 @@
           "caption": "Feedback on a reply: thumbs up or down, one vote, and an optional detail step after Not helpful",
           "source": "const pretendSend = () => new Promise<void>(resolve => setTimeout(resolve, 800))\n\n<div className=\"flex w-full max-w-xl flex-col gap-6\">\n  <ChatMessage\n    role=\"assistant\"\n    author=\"Assistant\"\n    actions={<ResponseFeedback onSubmit={pretendSend} onDetail={() => {}} />}\n  >\n    Depot 4 holds 1,240 replicas. Eleven are below their reorder point.\n  </ChatMessage>\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "DatePicker",
@@ -4374,7 +4407,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. Names the field. Inside a FormField, FormField sets it from its own label."
+          "description": "Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "value",
@@ -4621,7 +4654,7 @@
         },
         {
           "caption": "In a FormField, with help text",
-          "source": "<div className=\"w-full max-w-xs\">\n  <FormField label=\"Trip date\" help=\"Type it, or open the calendar.\">\n    <DatePicker label=\"Trip date\" />\n  </FormField>\n</div>"
+          "source": "<div className=\"w-full max-w-xs\">\n  <FormField label=\"Trip date\" help=\"Type it, or open the calendar.\">\n    <DatePicker />\n  </FormField>\n</div>"
         },
         {
           "caption": "Controlled: the page holds the value",
@@ -4639,6 +4672,11 @@
           "caption": "The calendar on its own",
           "source": "function InlineCalendar() {\n  const [date, setDate] = useState<string | null>(null)\n  return (\n    <div className=\"flex flex-col gap-2\">\n      <Calendar value={date} onSelect={setDate} />\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">{date ? formatLong(date) : 'No day picked'}</span>\n    </div>\n  )\n}\n\n<InlineCalendar />"
         }
+      ],
+      "closed": true,
+      "namedByFormField": [
+        "DateField",
+        "DatePicker"
       ]
     },
     {
@@ -4754,7 +4792,8 @@
           "caption": "Your own periods",
           "source": "<div className=\"w-full max-w-sm\">\n  <DateRangePicker\n    label=\"Season\"\n    aside={\n      <DatePresets\n        label=\"Seasons\"\n        presets={[\n          { label: 'Winter 2026', range: { start: '2026-01-01', end: '2026-03-31' } },\n          { label: 'Spring 2026', range: { start: '2026-04-01', end: '2026-06-30' } },\n          { label: 'Summer 2026', range: { start: '2026-07-01', end: '2026-09-30' } },\n        ]}\n      />\n    }\n  />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "DateRangePicker",
@@ -4780,7 +4819,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. Names the field. Inside a FormField, FormField sets it."
+          "description": "Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "value",
@@ -4971,7 +5010,7 @@
         },
         {
           "caption": "With DatePresets beside the months",
-          "source": "<div className=\"w-full max-w-sm\">\n  <FormField label=\"Report period\" help=\"Pick a preset, or two days.\">\n    <DateRangePicker label=\"Report period\" aside={<DatePresets />} />\n  </FormField>\n</div>"
+          "source": "<div className=\"w-full max-w-sm\">\n  <FormField label=\"Report period\" help=\"Pick a preset, or two days.\">\n    <DateRangePicker aside={<DatePresets />} />\n  </FormField>\n</div>"
         },
         {
           "caption": "Controlled: the page holds the range",
@@ -4981,6 +5020,10 @@
           "caption": "Limits: November and December only",
           "source": "<div className=\"w-full max-w-sm\">\n  <DateRangePicker label=\"Rental\" min=\"2026-11-01\" max=\"2026-12-30\" defaultValue={{ start: '2026-11-20', end: '2026-11-23' }} />\n</div>"
         }
+      ],
+      "closed": true,
+      "namedByFormField": [
+        "DateRangePicker"
       ]
     },
     {
@@ -5091,7 +5134,8 @@
           "caption": "Three columns, fewer as the container narrows",
           "source": "<div className=\"w-full\">\n  <DescriptionList\n    columns={3}\n    items={[\n      { term: 'Order', description: 'ORD-2291' },\n      { term: 'Placed', description: '12 Oct 2026' },\n      { term: 'Ships', description: '16 Oct 2026' },\n      { term: 'Depot', description: 'Cluj, bay 4' },\n      { term: 'Carrier', description: 'Regular courier' },\n      { term: 'Weight', description: '22.1 kg' },\n    ]}\n  />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "DropdownMenu",
@@ -5371,7 +5415,8 @@
           "caption": "From an icon button",
           "source": "function IconButtonTriggerExample() {\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <IconButton label=\"Depot actions\" variant=\"secondary\">\n          <MoreHorizontal aria-hidden=\"true\" />\n        </IconButton>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent align=\"end\">\n        <DropdownMenuItem>View manifest</DropdownMenuItem>\n        <DropdownMenuItem>Reassign</DropdownMenuItem>\n        <DropdownMenuSeparator />\n        <DropdownMenuItem tone=\"hostile\">Decommission</DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  )\n}\n\n<IconButtonTriggerExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "EmptyState",
@@ -5516,7 +5561,8 @@
           "caption": "Title only",
           "source": "<EmptyState level={4} size=\"sm\" title=\"No returns yet\" />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "FormField",
@@ -5567,7 +5613,7 @@
         {
           "name": "children",
           "type": "ReactElement",
-          "description": "Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up."
+          "description": "Exactly one control: Input, Textarea, Select, MultiSelect, QuantityStepper, DatePicker, DateRangePicker or TimeField. The controls that name themselves (all but Input and Textarea) take the FormField label, so leave their own label out. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up."
         },
         {
           "name": "className",
@@ -5679,7 +5725,8 @@
           "caption": "A form with an error summary",
           "source": "const RESERVE_COUNTRIES = [\n  { value: 'ro', label: 'Romania' },\n  { value: 'ie', label: 'Ireland' },\n  { value: 'de', label: 'Germany' },\n]\n\nfunction ReserveExample() {\n  const [country, setCountry] = useState('')\n  const [magazines, setMagazines] = useState(0)\n  const [errors, setErrors] = useState<FormError[]>([])\n  const [attempt, setAttempt] = useState(0)\n  const summary = useRef<HTMLDivElement>(null)\n\n  useEffect(() => {\n    if (attempt > 0) summary.current?.focus()\n  }, [attempt])\n\n  const countryError = errors.find(current => current.fieldId === 'reserve-country')?.message\n  const magazinesError = errors.find(current => current.fieldId === 'reserve-magazines')?.message\n\n  return (\n    <form\n      noValidate\n      onSubmit={event => {\n        event.preventDefault()\n        const next: FormError[] = []\n        if (!country) next.push({ fieldId: 'reserve-country', message: 'Choose a country.' })\n        if (magazines < 4) next.push({ fieldId: 'reserve-magazines', message: 'Order at least 4 spare magazines.' })\n        setErrors(next)\n        if (next.length > 0) setAttempt(value => value + 1)\n      }}\n      className=\"flex flex-col gap-4 w-full max-w-sm p-5 bg-[var(--color-surface-base)]\"\n    >\n      <ErrorSummary ref={summary} errors={errors} headingLevel={4} />\n      <FormField label=\"Country\" required error={countryError}>\n        <Select\n          id=\"reserve-country\"\n          label=\"Country\"\n          options={RESERVE_COUNTRIES}\n          value={country}\n          onValueChange={value => {\n            setCountry(value)\n            if (value) setErrors(current => current.filter(item => item.fieldId !== 'reserve-country'))\n          }}\n        />\n      </FormField>\n      <FormField label=\"Spare magazines\" help=\"Four per replica.\" error={magazinesError}>\n        <QuantityStepper\n          id=\"reserve-magazines\"\n          label=\"Spare magazines\"\n          max={40}\n          value={magazines}\n          onValueChange={value => {\n            setMagazines(value)\n            if (value >= 4) setErrors(current => current.filter(item => item.fieldId !== 'reserve-magazines'))\n          }}\n        />\n      </FormField>\n      <Button type=\"submit\">Reserve</Button>\n    </form>\n  )\n}\n\n<ReserveExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "ListItem",
@@ -5851,7 +5898,8 @@
           "caption": "A standalone row, outside a List",
           "source": "<div className=\"w-full max-w-xl\">\n  <ListItem as=\"div\" title=\"Spare magazine, 120 rounds\" description=\"Mid-cap, steel\" meta=\"€14.90\" />\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "MultiSelect",
@@ -5878,7 +5926,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. The name screen readers give the text field and the list. FormField replaces it with its own label."
+          "description": "The name screen readers give the text field and the list. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "options",
@@ -6034,15 +6082,15 @@
       "examples": [
         {
           "caption": "Default",
-          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\n<div className=\"w-full max-w-md\">\n  <FormField label=\"Loadout\">\n    <MultiSelect label=\"Loadout\" options={LOADOUT} placeholder=\"Choose your kit…\" />\n  </FormField>\n</div>"
+          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\n<div className=\"w-full max-w-md\">\n  <FormField label=\"Loadout\">\n    <MultiSelect options={LOADOUT} placeholder=\"Choose your kit…\" />\n  </FormField>\n</div>"
         },
         {
           "caption": "Controlled: the page holds the chosen options",
-          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\nfunction ControlledExample() {\n  const [kit, setKit] = useState<string[]>(['mags', 'goggles', 'gloves'])\n  return (\n    <div className=\"flex flex-col gap-2 w-full max-w-md\">\n      <FormField label=\"Loadout\" help=\"Remove a tag and watch the others close the gap.\">\n        <MultiSelect label=\"Loadout\" options={LOADOUT} value={kit} onValueChange={setKit} />\n      </FormField>\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">value: [{kit.join(', ')}]</span>\n    </div>\n  )\n}\n\n<ControlledExample />"
+          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\nfunction ControlledExample() {\n  const [kit, setKit] = useState<string[]>(['mags', 'goggles', 'gloves'])\n  return (\n    <div className=\"flex flex-col gap-2 w-full max-w-md\">\n      <FormField label=\"Loadout\" help=\"Remove a tag and watch the others close the gap.\">\n        <MultiSelect options={LOADOUT} value={kit} onValueChange={setKit} />\n      </FormField>\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">value: [{kit.join(', ')}]</span>\n    </div>\n  )\n}\n\n<ControlledExample />"
         },
         {
           "caption": "Invalid",
-          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\n<div className=\"w-full max-w-md\">\n  <FormField label=\"Loadout\" error=\"Pick eye protection.\">\n    <MultiSelect label=\"Loadout\" options={LOADOUT} defaultValue={['mags']} />\n  </FormField>\n</div>"
+          "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\n<div className=\"w-full max-w-md\">\n  <FormField label=\"Loadout\" error=\"Pick eye protection.\">\n    <MultiSelect options={LOADOUT} defaultValue={['mags']} />\n  </FormField>\n</div>"
         },
         {
           "caption": "Sizes",
@@ -6052,6 +6100,10 @@
           "caption": "Disabled",
           "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\n<div className=\"w-full max-w-md\">\n  <MultiSelect label=\"Locked loadout\" options={LOADOUT} defaultValue={['mags', 'gloves']} disabled />\n</div>"
         }
+      ],
+      "closed": true,
+      "namedByFormField": [
+        "MultiSelect"
       ]
     },
     {
@@ -6192,7 +6244,8 @@
           "caption": "Under a breadcrumb trail",
           "source": "<PageHeader\n  level={2}\n  breadcrumbs={\n    <Breadcrumbs\n      items={[\n        { label: 'Account', href: '#account' },\n        { label: 'Settings', href: '#settings' },\n        { label: 'Notifications' },\n      ]}\n    />\n  }\n  title=\"Notifications\"\n  description=\"What we send, and where.\"\n  actions={<Button variant=\"secondary\">Reset to defaults</Button>}\n/>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Pagination",
@@ -6415,7 +6468,8 @@
           "caption": "Table footer",
           "source": "function TableFooterExample() {\n  const total = 397\n  const [page, setPage] = useState(2)\n  const [pageSize, setPageSize] = useState(20)\n  return (\n    <div className=\"w-full\">\n      <Pagination\n        page={page}\n        pageCount={Math.ceil(total / pageSize)}\n        onPageChange={setPage}\n        totalItems={total}\n        pageSize={pageSize}\n        onPageSizeChange={size => {\n          setPageSize(size)\n          setPage(1)\n        }}\n        showFirstLast\n        label=\"Pagination, table footer\"\n      />\n    </div>\n  )\n}\n\n<TableFooterExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "PromptInput",
@@ -6577,7 +6631,8 @@
           "caption": "Disabled",
           "source": "<div className=\"flex w-full max-w-xl flex-col gap-2\">\n  <PromptInput label=\"Message the assistant (disabled)\" value=\"\" onValueChange={() => {}} onSubmit={() => {}} disabled />\n  <p className=\"font-body text-sm text-[var(--color-text-secondary)]\">The assistant is offline until 14:00.</p>\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "QuantityStepper",
@@ -6603,7 +6658,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. Names the field and both buttons (\"Decrease Speed loader quantity\")."
+          "description": "Names the field and both buttons (\"Decrease Speed loader quantity\"). Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "value",
@@ -6768,6 +6823,10 @@
           "caption": "In a cart line",
           "source": "function CartLine() {\n  const price = 38\n  const [qty, setQty] = useState(2)\n  return (\n    <div className=\"flex items-center gap-4 w-full\">\n      <span className=\"flex-1 font-body text-sm text-[var(--color-text-primary)]\">Speed loader</span>\n      <QuantityStepper\n        label=\"Speed loader quantity\"\n        defaultValue={2}\n        min={1}\n        max={9}\n        onValueChange={setQty}\n      />\n      <span className=\"w-16 text-right font-display font-semibold tabular-nums text-[var(--color-text-primary)]\">\n        €{price * qty}\n      </span>\n    </div>\n  )\n}\n\n<CartLine />"
         }
+      ],
+      "closed": true,
+      "namedByFormField": [
+        "QuantityStepper"
       ]
     },
     {
@@ -6938,7 +6997,8 @@
           "caption": "Input",
           "source": "function LiveInput() {\n  const [value, setValue] = useState(4)\n  return (\n    <div className=\"flex items-center gap-3\">\n      <RatingInput label=\"Rate the Prism holo sight\" value={value} onValueChange={setValue} />\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">\n        You rated it {value} {value === 1 ? 'star' : 'stars'}\n      </span>\n    </div>\n  )\n}\n\n<LiveInput />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "Search",
@@ -7088,7 +7148,8 @@
           "caption": "Sizes",
           "source": "<div className=\"max-w-xs w-full\">\n  <Search label=\"Search, small\" placeholder=\"Small\" inputSize=\"sm\" />\n</div>\n<div className=\"max-w-xs w-full\">\n  <Search label=\"Search, medium\" placeholder=\"Medium\" inputSize=\"md\" />\n</div>\n<div className=\"max-w-xs w-full\">\n  <Search label=\"Search, large\" placeholder=\"Large\" inputSize=\"lg\" />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "SectionHeading",
@@ -7209,7 +7270,8 @@
           "caption": "Naming its section",
           "source": "<section aria-labelledby=\"section-heading-docs-care\">\n  <SectionHeading\n    level={4}\n    id=\"section-heading-docs-care\"\n    title=\"Care plans\"\n    description=\"The section below is a region named “Care plans”. It takes that name from this heading, which carries the id.\"\n  />\n  <p className=\"mt-4 font-body text-sm text-[var(--color-text-primary)]\">\n    A chrono check, a tune and upgrade fitting, billed monthly.\n  </p>\n</section>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "SegmentedControl",
@@ -7351,7 +7413,8 @@
           "caption": "Small, with icons, lined up with a small Button",
           "source": "function ToolbarExample() {\n  const [view, setView] = useState('board')\n  return (\n    <div className=\"flex flex-wrap items-center gap-3\">\n      <SegmentedControl\n        label=\"View\"\n        size=\"sm\"\n        options={[\n          { value: 'board', label: 'Board', icon: <Columns3 /> },\n          { value: 'table', label: 'Table', icon: <Table /> },\n        ]}\n        value={view}\n        onValueChange={setView}\n      />\n      <Button size=\"sm\" variant=\"secondary\">\n        Export\n      </Button>\n    </div>\n  )\n}\n\n<ToolbarExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Stat",
@@ -7464,7 +7527,8 @@
           "caption": "Without a delta",
           "source": "<div className=\"max-w-[10rem] w-full\">\n  <Stat label=\"Kits dispatched\" value={18} padTo={3} />\n</div>"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "StatusTracker",
@@ -7629,7 +7693,8 @@
           "caption": "Other status words",
           "source": "<div className=\"w-full max-w-xs\">\n  <StatusTracker\n    label=\"Door sensor, last 8 hours\"\n    statusLabels={{ ok: 'Closed', warning: 'Left open', hostile: 'Forced', neutral: 'Offline' }}\n    items={[\n      { id: 'h1', status: 'ok', label: '02:00 to 03:00' },\n      { id: 'h2', status: 'ok', label: '03:00 to 04:00' },\n      { id: 'h3', status: 'warning', label: '04:00 to 05:00, open 9 min' },\n      { id: 'h4', status: 'ok', label: '05:00 to 06:00' },\n      { id: 'h5', status: 'neutral', label: '06:00 to 07:00' },\n      { id: 'h6', status: 'ok', label: '07:00 to 08:00' },\n      { id: 'h7', status: 'ok', label: '08:00 to 09:00' },\n      { id: 'h8', status: 'ok', label: '09:00 to 10:00' },\n    ]}\n  />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Stepper",
@@ -7747,7 +7812,8 @@
           "caption": "Live: move through the steps with Back and Continue",
           "source": "const CHECKOUT_STEPS: Step[] = [\n  { label: 'Shipping' },\n  { label: 'Payment' },\n  { label: 'Review', description: 'Check the manifest' },\n]\n\nfunction LiveStepper() {\n  const [current, setCurrent] = useState(0)\n  return (\n    <div className=\"flex flex-col gap-6 w-full\">\n      <Stepper steps={CHECKOUT_STEPS} current={current} label=\"Checkout progress\" />\n      <div className=\"flex gap-3\">\n        <Button\n          variant=\"secondary\"\n          size=\"sm\"\n          disabled={current === 0}\n          onClick={() => setCurrent(c => Math.max(0, c - 1))}\n        >\n          Back\n        </Button>\n        <Button\n          size=\"sm\"\n          disabled={current >= CHECKOUT_STEPS.length}\n          onClick={() => setCurrent(c => Math.min(CHECKOUT_STEPS.length, c + 1))}\n        >\n          Continue\n        </Button>\n      </div>\n    </div>\n  )\n}\n\n<LiveStepper />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Tabs",
@@ -7926,7 +7992,8 @@
           "caption": "Controlled: the page keeps track of which tab is open",
           "source": "function ControlledExample() {\n  const [value, setValue] = useState('replica')\n\n  return (\n    <div className=\"max-w-sm w-full\">\n      <div className=\"flex gap-2 mb-4\">\n        <Button size=\"sm\" variant=\"secondary\" onClick={() => setValue('replica')}>\n          Show replica\n        </Button>\n        <Button size=\"sm\" variant=\"secondary\" onClick={() => setValue('optics')}>\n          Show optics\n        </Button>\n      </div>\n      <Tabs value={value} onValueChange={setValue}>\n        <TabsList aria-label=\"Kit sections\">\n          <TabsTrigger value=\"replica\">Replica</TabsTrigger>\n          <TabsTrigger value=\"optics\">Optics</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"replica\">Electric carbine replica.</TabsContent>\n        <TabsContent value=\"optics\">Tube sight and holo sight.</TabsContent>\n      </Tabs>\n    </div>\n  )\n}\n\n<ControlledExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "TimeField",
@@ -7951,7 +8018,7 @@
         {
           "name": "label",
           "type": "string",
-          "description": "Required. Names the field. Inside a FormField, FormField sets it."
+          "description": "Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one."
         },
         {
           "name": "value",
@@ -7978,7 +8045,7 @@
           "name": "step",
           "type": "number",
           "default": "30",
-          "description": "Minutes between the times in the list."
+          "description": "Minutes between the times in the list. It only spaces the list: a typed time between steps (09:07) is kept as typed. Check it yourself if it must fall on a step."
         },
         {
           "name": "min",
@@ -8143,8 +8210,12 @@
         },
         {
           "caption": "With a DatePicker: a date and a time",
-          "source": "function DateAndTime() {\n  const [date, setDate] = useState('2026-11-14')\n  const [time, setTime] = useState('09:30')\n  return (\n    <div className=\"flex w-full max-w-md flex-col gap-3\">\n      <div className=\"grid gap-3 sm:grid-cols-[1fr_9rem]\">\n        <FormField label=\"Pickup date\">\n          <DatePicker label=\"Pickup date\" value={date} onValueChange={setDate} />\n        </FormField>\n        <FormField label=\"Pickup time\">\n          <TimeField label=\"Pickup time\" value={time} onValueChange={setTime} step={15} min=\"08:00\" max=\"18:00\" />\n        </FormField>\n      </div>\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">\n        {date && time ? `${date}T${time}` : 'Pick a date and a time'}\n      </span>\n    </div>\n  )\n}\n\n<DateAndTime />"
+          "source": "function DateAndTime() {\n  const [date, setDate] = useState('2026-11-14')\n  const [time, setTime] = useState('09:30')\n  return (\n    <div className=\"flex w-full max-w-md flex-col gap-3\">\n      <div className=\"grid gap-3 sm:grid-cols-[1fr_9rem]\">\n        <FormField label=\"Pickup date\">\n          <DatePicker value={date} onValueChange={setDate} />\n        </FormField>\n        <FormField label=\"Pickup time\">\n          <TimeField value={time} onValueChange={setTime} step={15} min=\"08:00\" max=\"18:00\" />\n        </FormField>\n      </div>\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">\n        {date && time ? `${date}T${time}` : 'Pick a date and a time'}\n      </span>\n    </div>\n  )\n}\n\n<DateAndTime />"
         }
+      ],
+      "closed": true,
+      "namedByFormField": [
+        "TimeField"
       ]
     },
     {
@@ -8299,7 +8370,8 @@
           "caption": "Without groups",
           "source": "<div className=\"w-full max-w-xl\">\n  <Timeline label=\"Work order WO-29\">\n    <TimelineItem icon={<Wrench />} title=\"Opened\" time=\"2026-10-09T08:00:00+03:00\" timeLabel=\"Fri 9 Oct\" />\n    <TimelineItem\n      icon={<Wrench />}\n      tone=\"signal\"\n      title=\"Assigned to Mara Lind\"\n      time=\"2026-10-12T11:20:00+03:00\"\n      timeLabel=\"Mon 12 Oct\"\n    />\n    <TimelineItem\n      icon={<CircleCheck />}\n      tone=\"ok\"\n      title=\"Closed: pallet jack serviced\"\n      time=\"2026-10-13T15:45:00+03:00\"\n      timeLabel=\"Tue 13 Oct\"\n    />\n  </Timeline>\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Toast",
@@ -8446,7 +8518,8 @@
           "caption": "With an action",
           "source": "function WithActionExample() {\n  const { toast } = useToast()\n\n  return (\n    <Button\n      variant=\"secondary\"\n      size=\"sm\"\n      onClick={() =>\n        toast({\n          title: 'Item removed',\n          action: {\n            label: 'Undo',\n            altText: 'Undo from the manifest history',\n            onAction: () => toast({ title: 'Item restored', tone: 'ok' }),\n          },\n        })\n      }\n    >\n      Remove item\n    </Button>\n  )\n}\n\n<WithActionExample />"
         }
-      ]
+      ],
+      "closed": false
     },
     {
       "name": "ToolCall",
@@ -8577,7 +8650,8 @@
           "caption": "Without a title, details open",
           "source": "<div className=\"flex w-full max-w-xl flex-col gap-3\">\n  <ToolCall\n    name=\"count_pallets\"\n    status=\"done\"\n    duration=\"0.3 s\"\n    input={'{ \"depot\": 4, \"bay\": 2 }'}\n    output=\"14 pallets\"\n    defaultOpen\n  />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "AlertDialog",
@@ -8798,7 +8872,8 @@
           "caption": "Type the name to confirm, for the costliest actions",
           "source": "const request = (fail = false) =>\n  new Promise<void>((resolve, reject) =>\n    window.setTimeout(() => (fail ? reject(new Error('The server did not answer.')) : resolve()), 1000)\n  )\n\nconst ACCOUNT = 'northfield-supply'\n\nfunction TypeToConfirmExample() {\n  const [typed, setTyped] = useState('')\n  const matches = typed.trim() === ACCOUNT\n  return (\n    <AlertDialog onOpenChange={() => setTyped('')}>\n      <AlertDialogTrigger asChild>\n        <Button variant=\"danger\">Delete account</Button>\n      </AlertDialogTrigger>\n      <AlertDialogContent\n        title=\"Delete the account?\"\n        description=\"Its 212 orders, saved kit lists and team access are removed for good.\"\n      >\n        <FormField label=\"Account name\" help={`Type ${ACCOUNT} to enable Delete account.`}>\n          <Input\n            value={typed}\n            onChange={event => setTyped(event.target.value)}\n            autoComplete=\"off\"\n            spellCheck={false}\n            className=\"font-mono\"\n          />\n        </FormField>\n        <AlertDialogFooter>\n          <AlertDialogCancel />\n          <AlertDialogAction disabled={!matches} loadingLabel=\"Deleting account\" onClick={() => request()}>\n            Delete account\n          </AlertDialogAction>\n        </AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialog>\n  )\n}\n\n<TypeToConfirmExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "AuthForm",
@@ -8952,7 +9027,8 @@
           "caption": "Two-step sign-in with a code",
           "source": "const wait = (ms: number) => new Promise(resolve => window.setTimeout(resolve, ms))\n\n<AuthForm mode=\"verify-code\" onSubmit={() => wait(600).then(() => undefined)} headingLevel={4} />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Carousel",
@@ -9079,7 +9155,8 @@
           "caption": "Three short items: both buttons do nothing while everything fits",
           "source": "<Carousel label=\"Kestrel lengths\" itemWidth=\"8rem\">\n  {['Kestrel K', 'Kestrel C', 'Kestrel L'].map(name => (\n    <div\n      key={name}\n      className=\"flex h-20 items-center justify-center border border-[var(--color-border-hairline-strong)] font-display font-semibold text-[var(--color-text-primary)]\"\n    >\n      {name}\n    </div>\n  ))}\n</Carousel>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Cart",
@@ -9257,7 +9334,8 @@
           "caption": "Empty",
           "source": "<Cart lines={[]} onQuantityChange={() => {}} onRemove={() => {}} headingLevel={4} title=\"Saved for later\" />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "ChartPanel",
@@ -9499,7 +9577,8 @@
           "caption": "Radar, two series",
           "source": "type Profile = { measure: string; m4: number; ak: number }\n\nconst PROFILES: Profile[] = [\n  { measure: 'Range', m4: 78, ak: 64 },\n  { measure: 'Accuracy', m4: 82, ak: 70 },\n  { measure: 'Rate of fire', m4: 74, ak: 86 },\n  { measure: 'Weight', m4: 58, ak: 44 },\n  { measure: 'Reliability', m4: 70, ak: 90 },\n  { measure: 'Upgrades', m4: 92, ak: 62 },\n]\n\n<ChartPanel<Profile>\n  title=\"Replica profiles\"\n  summary=\"The M4 replica leads on range, accuracy and upgrades; the AK replica on rate of fire and reliability.\"\n  kind=\"radar\"\n  data={PROFILES}\n  xKey=\"measure\"\n  xLabel=\"Measure\"\n  series={[\n    { key: 'm4', label: 'M4 replica' },\n    { key: 'ak', label: 'AK replica' },\n  ]}\n  headingLevel={4}\n/>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "ChatThread",
@@ -9625,7 +9704,8 @@
           "caption": "A live conversation: send anything, watch the reply stream in, press Stop to end it, or scroll up while it's still arriving",
           "source": "type Turn =\n  | { id: number; role: 'user'; text: string }\n  | { id: number; role: 'assistant'; text: string; tool?: ToolCallStatus; approval?: boolean }\n  | { id: number; role: 'system'; text: string }\n\nconst REPLIES = [\n  'Depot 4 holds 1,240 replicas across 38 lines. Two lines are under their reorder point: the K-41 field radio has 6 left against a reorder point of 10, and the trail pack has 3 left against 8. Everything else has at least two weeks of cover at the current rate. The reorder above covers both lines; once it is approved, the supplier confirms within a working day.',\n  'Inbound this week: one delivery from Arad on Thursday morning, 22 pallets, booked into bay 2. Outbound: nine shipments, the largest to Sibiu on Friday. Nothing is waiting on a person except the reorder above.',\n]\n\nconst HISTORY: Turn[] = [\n  { id: 1, role: 'user', text: 'Summarise stock at Depot 4.' },\n  {\n    id: 2,\n    role: 'assistant',\n    text: 'Depot 4 is in good shape: 1,240 replicas on hand and nothing overdue. Two lines are low, so I have drafted a reorder for you to check.',\n    tool: 'done',\n    approval: true,\n  },\n]\n\nfunction LiveConversation() {\n  const [turns, setTurns] = useState<Turn[]>(HISTORY)\n  const [draft, setDraft] = useState('')\n  const [phase, setPhase] = useState<'idle' | 'tool' | 'streaming'>('idle')\n  const [approval, setApproval] = useState<ApprovalState>('pending')\n  const [replyIndex, setReplyIndex] = useState(0)\n  const nextId = useRef(HISTORY.length + 1)\n  const activeId = useRef<number | null>(null)\n  const reply = useStreamedText(REPLIES[replyIndex % REPLIES.length], { active: phase === 'streaming' })\n\n  const updateActive = (change: (turn: Turn & { role: 'assistant' }) => Turn) =>\n    setTurns(list => list.map(turn => (turn.id === activeId.current && turn.role === 'assistant' ? change(turn) : turn)))\n\n  const addStopped = () => {\n    const id = nextId.current++\n    setTurns(list => [...list, { id, role: 'system', text: 'Assistant stopped' }])\n  }\n\n  // The tool \"runs\" for a moment, then the reply starts streaming.\n  useEffect(() => {\n    if (phase !== 'tool') return\n    const timer = window.setTimeout(() => {\n      updateActive(turn => ({ ...turn, tool: 'done' }))\n      setPhase('streaming')\n    }, 1200)\n    return () => window.clearTimeout(timer)\n  }, [phase])\n\n  // Finished or stopped: keep what arrived, and hand the thread a message that is no longer streaming.\n  useEffect(() => {\n    if (phase !== 'streaming' || !reply.done) return\n    updateActive(turn => ({ ...turn, text: reply.text }))\n    if (reply.stopped) addStopped()\n    setPhase('idle')\n    setReplyIndex(index => index + 1)\n  }, [phase, reply.done, reply.text, reply.stopped])\n\n  const send = (text: string) => {\n    const question = nextId.current++\n    const answer = nextId.current++\n    activeId.current = answer\n    setTurns(list => [...list, { id: question, role: 'user', text }, { id: answer, role: 'assistant', text: '', tool: 'running' }])\n    setDraft('')\n    setPhase('tool')\n  }\n\n  const stop = () => {\n    if (phase === 'streaming') {\n      reply.stop()\n      return\n    }\n    // Stopped before any text: the empty reply goes, the system line says what happened.\n    setTurns(list => list.filter(turn => turn.id !== activeId.current))\n    addStopped()\n    setPhase('idle')\n  }\n\n  const busy = phase !== 'idle'\n\n  return (\n    <div className=\"flex w-full max-w-2xl flex-col border border-[var(--color-border-hairline-strong)]\">\n      <ChatThread label=\"Conversation with the assistant\" busy={phase === 'tool'} className=\"h-[28rem]\">\n        {turns.map(turn => {\n          if (turn.role === 'user') {\n            return (\n              <ChatMessage key={turn.id} role=\"user\" author=\"You\">\n                {turn.text}\n              </ChatMessage>\n            )\n          }\n          if (turn.role === 'system') {\n            return (\n              <ChatMessage key={turn.id} role=\"system\" author=\"Status\">\n                {turn.text}\n              </ChatMessage>\n            )\n          }\n          const streaming = phase === 'streaming' && turn.id === activeId.current\n          const text = streaming ? reply.text : turn.text\n          return (\n            <ChatMessage key={turn.id} role=\"assistant\" author=\"Assistant\" streaming={streaming}>\n              {turn.tool === undefined ? null : (\n                <ToolCall\n                  name=\"query_stock_levels\"\n                  title=\"Read stock levels at Depot 4\"\n                  status={turn.tool}\n                  duration={turn.tool === 'done' ? '1.2 s' : undefined}\n                  input={'{ \"depot\": 4 }'}\n                  output={turn.tool === 'done' ? '{ \"on_hand\": 1240, \"lines\": 38, \"below_reorder_point\": 2 }' : undefined}\n                />\n              )}\n              {text === '' ? null : <p>{text}</p>}\n              {turn.approval ? (\n                <ApprovalRequest\n                  title=\"Send this reorder to the supplier?\"\n                  state={approval}\n                  onApprove={() => setApproval('approved')}\n                  onReject={() => setApproval('rejected')}\n                  approveLabel=\"Send reorder\"\n                  rejectLabel=\"Don't send\"\n                >\n                  <p>To: Arad replica supply</p>\n                  <p>10 × K-41 field radio, 8 × trail pack, to Depot 4 by Thursday 22 October.</p>\n                </ApprovalRequest>\n              ) : null}\n            </ChatMessage>\n          )\n        })}\n      </ChatThread>\n      <PromptInput\n        label=\"Message the assistant\"\n        placeholder=\"Ask about stock, orders or depots\"\n        value={draft}\n        onValueChange={setDraft}\n        onSubmit={send}\n        busy={busy}\n        onStop={stop}\n        className=\"p-4 border-t border-[var(--color-border-hairline-strong)]\"\n      />\n    </div>\n  )\n}\n\n<LiveConversation />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "CheckoutForm",
@@ -9803,7 +9883,8 @@
           "caption": "Three steps, a demo order",
           "source": "const LINES: CartLine[] = [\n  { id: 'kestrel-c', name: 'Kestrel C carbine replica', unitPrice: 13900, quantity: 1 },\n  { id: 'prism-holo-sight', name: 'Prism holo sight', unitPrice: 4900, quantity: 2 },\n  { id: 'beam-600', name: 'Beam 600 rail light', unitPrice: 2400, quantity: 1 },\n]\n\nconst COUNTRIES = [\n  { value: 'ie', label: 'Ireland' },\n  { value: 'ro', label: 'Romania' },\n  { value: 'de', label: 'Germany' },\n  { value: 'fr', label: 'France' },\n  { value: 'es', label: 'Spain' },\n]\n\nconst wait = (ms: number) => new Promise(resolve => window.setTimeout(resolve, ms))\n\n<CheckoutForm lines={LINES} countries={COUNTRIES} onPlaceOrder={() => wait(800).then(() => undefined)} headingLevel={3} />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "CommandPalette",
@@ -10005,7 +10086,8 @@
           "caption": "Store commands",
           "source": "function StoreCommands() {\n  const [open, setOpen] = useState(false)\n  const [last, setLast] = useState('none')\n  const make = (id: string, label: string, group: string, icon: ReactNode, extra: Partial<Command> = {}): Command => ({\n    id,\n    label,\n    group,\n    icon,\n    onSelect: () => setLast(label),\n    ...extra,\n  })\n  const commands = [\n    make('orders', 'Go to orders', 'Navigate', <Package />, { keywords: ['sales'] }),\n    make('shipments', 'Go to shipments', 'Navigate', <Truck />),\n    make('returns', 'Go to returns', 'Navigate', <Inbox />),\n    make('new-shipment', 'New shipment', 'Create', <Plus />, { shortcut: 'N' }),\n    make('new-product', 'New product', 'Create', <Box />),\n    make('invite', 'Invite a teammate', 'Account', <Users />, { keywords: ['team', 'people'] }),\n    make('settings', 'Open settings', 'Account', <Settings />),\n  ]\n  return (\n    <div className=\"flex flex-wrap items-center gap-3\">\n      <Button variant=\"secondary\" aria-keyshortcuts=\"Control+K Meta+K\" onClick={() => setOpen(true)}>\n        Open command palette\n      </Button>\n      <span aria-hidden=\"true\" className=\"inline-flex gap-1\">\n        <Kbd>Ctrl</Kbd>\n        <Kbd>K</Kbd>\n      </span>\n      <p role=\"status\" className=\"font-mono text-xs text-[var(--color-text-secondary)]\">\n        Last command: {last}\n      </p>\n      <CommandPalette commands={commands} open={open} onOpenChange={setOpen} />\n    </div>\n  )\n}\n\n<StoreCommands />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "DataTable",
@@ -10227,7 +10309,8 @@
           "caption": "Empty",
           "source": "type Status = 'In transit' | 'Delivered' | 'Held'\n\ntype Shipment = { ref: string; destination: string; weight: number; items: number; status: Status }\n\nconst STATUS_TONE: Record<Status, 'info' | 'ok' | 'warning'> = {\n  'In transit': 'info',\n  Delivered: 'ok',\n  Held: 'warning',\n}\n\nconst COLUMNS: DataTableColumn<Shipment>[] = [\n  { key: 'ref', header: 'Reference', cell: s => s.ref, sortValue: s => s.ref },\n  { key: 'destination', header: 'Destination', cell: s => s.destination },\n  { key: 'weight', header: 'Weight (kg)', cell: s => s.weight.toFixed(1), sortValue: s => s.weight, numeric: true },\n  { key: 'items', header: 'Items', cell: s => String(s.items), sortValue: s => s.items, numeric: true },\n  {\n    key: 'status',\n    header: 'Status',\n    cell: s => (\n      <Badge emphasis=\"solid\" tone={STATUS_TONE[s.status]}>\n        {s.status}\n      </Badge>\n    ),\n  },\n]\n\n<DataTable caption=\"Returns\" columns={COLUMNS} rows={[]} getRowId={s => s.ref} rowHeader=\"ref\" emptyMessage=\"No returns yet.\" />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Dialog",
@@ -10399,7 +10482,8 @@
           "caption": "Long content",
           "source": "function LongContentExample() {\n  const contentRef = useRef<HTMLDivElement>(null)\n  return (\n    <Dialog>\n      <DialogTrigger asChild>\n        <Button variant=\"secondary\">Read shipping terms</Button>\n      </DialogTrigger>\n      <DialogContent\n        ref={contentRef}\n        title=\"Shipping terms\"\n        size=\"lg\"\n        tabIndex={-1}\n        onOpenAutoFocus={event => {\n          event.preventDefault()\n          contentRef.current?.focus()\n        }}\n      >\n        <div className=\"flex flex-col gap-4\">\n          <p>Orders placed before 14:00 local time ship the same day; anything after ships the next business day.</p>\n          <p>Every parcel leaves in double-walled board with corner protection; ask for crate packaging on anything over 30kg.</p>\n          <p>Photograph the box before opening and report damage within 48 hours; we replace or refund, never both.</p>\n          <p>Unopened stock returns within 30 days for a full refund; opened stock returns for store credit only.</p>\n          <p>Depots outside the primary freight lanes add one to three business days and a remote-area surcharge.</p>\n          <p>A single parcel tops out at 40kg; heavier loads split automatically at checkout.</p>\n          <p>Cross-border shipments carry the recipient's own duties and taxes, billed separately by the carrier.</p>\n          <p>Reach the shipping desk at shipping@example.com for anything this page does not answer.</p>\n        </div>\n        <DialogFooter>\n          <DialogClose asChild>\n            <Button>Done</Button>\n          </DialogClose>\n        </DialogFooter>\n      </DialogContent>\n    </Dialog>\n  )\n}\n\n<LongContentExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Footer",
@@ -10613,7 +10697,8 @@
           "caption": "With a wordmark and a backdrop: a layer behind the letters, with headroom over them",
           "source": "const STORE_COLUMNS: FooterColumn[] = [\n  {\n    title: 'Shop',\n    links: [\n      { label: 'Replicas', href: '#replicas' },\n      { label: 'Optics', href: '#optics' },\n      { label: 'Parts', href: '#parts' },\n      { label: 'Care', href: '#care' },\n    ],\n  },\n  {\n    title: 'Support',\n    links: [\n      { label: 'Shipping', href: '#shipping' },\n      { label: 'Returns', href: '#returns' },\n      { label: 'Warranty', href: '#warranty' },\n      { label: 'Contact', href: '#contact' },\n    ],\n  },\n  {\n    title: 'Company',\n    links: [\n      { label: 'About', href: '#about' },\n      { label: 'Field notes', href: '#field-notes' },\n      { label: 'Careers', href: '#careers' },\n    ],\n  },\n  {\n    title: 'Elsewhere',\n    links: [\n      { label: 'Site finder', href: 'https://example.com/sites', external: true },\n      { label: 'Field guides', href: 'https://example.com/field-guides', external: true },\n    ],\n  },\n]\n\nconst LEGAL = '© 2026 Hexline. A demo brand for this design system.'\n\nconst BACKDROP = (\n  <div\n    className=\"absolute inset-0\"\n    style={{\n      backgroundImage: 'radial-gradient(var(--color-text-muted) 1px, transparent 1.5px)',\n      backgroundSize: '14px 14px',\n      maskImage: 'linear-gradient(to bottom, transparent, black 70%)',\n    }}\n  />\n)\n\n<Footer label=\"Backdrop footer\" headingLevel={4} columns={STORE_COLUMNS.slice(0, 2)} legal={LEGAL} wordmark=\"Hexline\" backdrop={BACKDROP} />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "KanbanBoard",
@@ -10864,7 +10949,8 @@
           "caption": "Work orders, with an empty column",
           "source": "type Order = { id: string; title: string; bay: string; status: 'open' | 'parts' | 'done' }\n\nconst ORDER_COLUMNS: KanbanColumn[] = [\n  { id: 'open', title: 'Open' },\n  { id: 'parts', title: 'Waiting for parts' },\n  { id: 'done', title: 'Done' },\n]\n\nconst ORDERS: Order[] = [\n  { id: 'wo-31', title: 'Replace dock door seal', bay: 'Bay 2', status: 'open' },\n  { id: 'wo-32', title: 'Recalibrate floor scale', bay: 'Bay 5', status: 'open' },\n  { id: 'wo-29', title: 'Service pallet jack', bay: 'Bay 1', status: 'done' },\n]\n\nconst orderAccessors = {\n  getItemId: (order: Order) => order.id,\n  getColumnId: (order: Order) => order.status,\n  setColumnId: (order: Order, status: string) => ({ ...order, status: status as Order['status'] }),\n}\n\nfunction WorkOrders() {\n  const [orders, setOrders] = useState(ORDERS)\n  return (\n    <div className=\"w-full min-w-0\">\n      <KanbanBoard\n        label=\"Depot work orders\"\n        columns={ORDER_COLUMNS}\n        items={orders}\n        getItemId={orderAccessors.getItemId}\n        getColumnId={orderAccessors.getColumnId}\n        getItemLabel={order => order.title}\n        renderCard={order => (\n          <div className=\"flex flex-col gap-1\">\n            <p className=\"font-semibold\">{order.title}</p>\n            <p className=\"font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)]\">{order.bay}</p>\n          </div>\n        )}\n        onMove={(id, status, index) => setOrders(current => applyKanbanMove(current, id, status, index, orderAccessors))}\n        emptyColumnMessage=\"No orders waiting\"\n        columnHeadingLevel={4}\n      />\n    </div>\n  )\n}\n\n<WorkOrders />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Navbar",
@@ -11002,7 +11088,8 @@
           "caption": "A narrow container",
           "source": "const ITEMS = [\n  { label: 'Replicas', href: '#replicas' },\n  { label: 'Optics', href: '#optics', current: true },\n  { label: 'Parts', href: '#parts' },\n  { label: 'Care', href: '#care' },\n  { label: 'Field notes', href: '#field-notes' },\n]\n\nconst BRAND = (\n  <a\n    href=\"#home\"\n    className=\"inline-flex items-center min-h-10 font-display font-bold uppercase tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]\"\n  >\n    Hexline\n  </a>\n)\n\nconst ACTIONS = (\n  <>\n    <IconButton label=\"Search\" variant=\"ghost\">\n      <Search aria-hidden=\"true\" className=\"w-5 h-5\" />\n    </IconButton>\n    <IconButton label=\"Cart, 2 items\" variant=\"ghost\" asChild>\n      <a href=\"#cart\">\n        <ShoppingBag aria-hidden=\"true\" className=\"w-5 h-5\" />\n      </a>\n    </IconButton>\n  </>\n)\n\n<div className=\"max-w-sm\">\n  <Navbar label=\"Store navigation, narrow\" brand={BRAND} items={ITEMS} actions={ACTIONS} />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "NewsletterForm",
@@ -11154,7 +11241,8 @@
           "caption": "A sign-up that fails",
           "source": "const wait = (ms: number) => new Promise(resolve => window.setTimeout(resolve, ms))\n\nasync function refuse() {\n  await wait(700)\n  throw new Error('The demo server is switched off.')\n}\n\n<div className=\"flex w-full flex-col gap-3\">\n  <p className=\"font-body text-sm text-[var(--color-text-secondary)]\">\n    Demo: this one rejects every address, so you can see the alert, and the address you typed stays in the field.\n  </p>\n  <NewsletterForm\n    label=\"Restock alerts by email\"\n    consent=\"An email when a sold-out replica is back. Nothing else.\"\n    submitLabel=\"Notify me\"\n    busyLabel=\"Signing you up\"\n    onSubmit={refuse}\n    headingLevel={4}\n  />\n</div>"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "ProductCard",
@@ -11328,7 +11416,8 @@
           "caption": "Nothing matches",
           "source": "<ProductGrid label=\"Hexline range, filtered\" products={[]} emptyMessage=\"No products match these filters.\" />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Sheet",
@@ -11483,7 +11572,8 @@
           "caption": "From the left",
           "source": "const DEPOTS = ['Brasov north', 'Brasov south', 'Sibiu', 'Cluj', 'Timisoara', 'Oradea']\n\nfunction FromTheLeftExample() {\n  return (\n    <Sheet>\n      <SheetTrigger asChild>\n        <Button variant=\"secondary\">Open depot list</Button>\n      </SheetTrigger>\n      <SheetContent side=\"left\" title=\"Depots\">\n        <ul role=\"list\" className=\"flex flex-col gap-2\">\n          {DEPOTS.map(depot => (\n            <li key={depot}>{depot}</li>\n          ))}\n        </ul>\n      </SheetContent>\n    </Sheet>\n  )\n}\n\n<FromTheLeftExample />"
         }
-      ]
+      ],
+      "closed": true
     },
     {
       "name": "Sidebar",
@@ -11616,7 +11706,8 @@
           "caption": "In a sheet on a narrow screen: picking a link closes the sheet, through renderLink",
           "source": "const GROUPS: SidebarGroup[] = [\n  {\n    title: 'Operations',\n    icon: <Warehouse />,\n    items: [\n      { label: 'Overview', href: '#overview', icon: <LayoutDashboard /> },\n      { label: 'Orders', href: '#orders', icon: <Package />, current: true, count: 12 },\n      { label: 'Shipments', href: '#shipments', icon: <Truck /> },\n      { label: 'Returns', href: '#returns', icon: <Inbox />, count: 3 },\n    ],\n  },\n  {\n    title: 'Catalogue',\n    icon: <Boxes />,\n    defaultOpen: false,\n    items: [\n      { label: 'Products', href: '#products', icon: <Box /> },\n      { label: 'Inventory', href: '#inventory', icon: <Map /> },\n    ],\n  },\n  {\n    title: 'Account',\n    icon: <UserCog />,\n    collapsible: false,\n    items: [\n      { label: 'Settings', href: '#settings', icon: <Settings /> },\n      { label: 'Team', href: '#team', icon: <Users /> },\n    ],\n  },\n]\n\nconst HEADER = <p className=\"font-display font-semibold\">Hexline ops</p>\n\nconst FOOTER = <p className=\"text-xs text-[var(--color-text-secondary)]\">Signed in as Ana Pop</p>\n\nconst closeOnChoose = ({ onClick, ...props }: LinkRenderProps) => (\n  <SheetClose asChild type={undefined}>\n    <a {...props} onClick={onClick} />\n  </SheetClose>\n)\n\n<Sheet>\n  <SheetTrigger asChild>\n    <Button variant=\"secondary\">Open navigation</Button>\n  </SheetTrigger>\n  <SheetContent side=\"left\" title=\"Navigation\">\n    <Sidebar\n      label=\"Dashboard navigation, in a sheet\"\n      groups={GROUPS}\n      header={HEADER}\n      footer={FOOTER}\n      renderLink={closeOnChoose}\n    />\n  </SheetContent>\n</Sheet>"
         }
-      ]
+      ],
+      "closed": true
     }
   ]
 }

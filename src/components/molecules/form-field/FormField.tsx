@@ -10,8 +10,9 @@ export type FieldControlProps = {
   'aria-describedby'?: string
   invalid?: boolean
   required?: boolean
-  /** A control that names itself (Select, QuantityStepper) declares `label`. FormField replaces
-   *  it with its own, so the visible label and the accessible name are one string (SC 2.5.3). */
+  /** A control that names itself (Select, QuantityStepper, DatePicker...) takes `label`. FormField
+   *  sets it to its own, so the visible label and the accessible name are one string (SC 2.5.3).
+   *  Such a control is marked `namedByFormField`, so it needs no label of its own in here. */
   label?: string
 }
 
@@ -64,7 +65,7 @@ export function FormField({
         'aria-describedby': describedBy,
         invalid: Boolean(error) || children.props.invalid,
         required: required || children.props.required,
-        ...(children.props.label !== undefined ? { label } : {}),
+        ...(children.props.label !== undefined || (children.type as { namedByFormField?: boolean }).namedByFormField ? { label } : {}),
       })}
       {help ? (
         <p id={helpId} className="font-body text-sm text-[var(--color-text-secondary)]">

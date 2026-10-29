@@ -14,7 +14,7 @@ export const meta: ComponentMeta = {
     { part: 'Aside', description: 'An optional column beside the months, for DatePresets.' },
   ],
   props: [
-    { name: 'label', type: 'string', description: 'Required. Names the field. Inside a FormField, FormField sets it.' },
+    { name: 'label', type: 'string', description: 'Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.' },
     { name: 'value', type: '{ start: string; end: string }', description: "Controlled range. Each end is 'YYYY-MM-DD' or ''." },
     { name: 'defaultValue', type: '{ start: string; end: string }', default: "{ start: '', end: '' }", description: 'Starting range when the picker holds it itself.' },
     { name: 'onValueChange', type: '(range: DateRange) => void', description: 'Fires when either end changes. Days picked in the calendar always arrive in order.' },

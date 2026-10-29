@@ -15,7 +15,7 @@ import { FormField } from 'src/components/molecules/form-field/FormField'
 import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Props
 
@@ -25,7 +25,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `help` | `string` |  | Instruction text, read out before any error. |
 | `error` | `string` |  | Sets invalid on the control and adds the error line. |
 | `required` | `boolean` | `false` | Adds the asterisk (hidden from screen readers) and the built-in required attribute on the control. That attribute is what assistive technology actually announces. |
-| `children` | `ReactElement` |  | Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up. |
+| `children` | `ReactElement` |  | Exactly one control: Input, Textarea, Select, MultiSelect, QuantityStepper, DatePicker, DateRangePicker or TimeField. The controls that name themselves (all but Input and Textarea) take the FormField label, so leave their own label out. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up. |
 | `className` | `string` |  | Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the outer element. |
 | `errors (ErrorSummary)` | `{ fieldId: string; message: string }[]` |  | What stopped the form from submitting, in the order of the fields. Each entry links to its field and moves focus there. An empty list shows nothing. |

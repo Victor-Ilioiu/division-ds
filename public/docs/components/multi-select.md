@@ -13,7 +13,7 @@
 import { MultiSelect } from 'src/components/molecules/multi-select/MultiSelect'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Requires
 
@@ -23,7 +23,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. The name screen readers give the text field and the list. FormField replaces it with its own label. |
+| `label` | `string` |  | The name screen readers give the text field and the list. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `options` | `SelectOption[]` |  | { value, label, disabled? }, the same rows Select takes. |
 | `value` | `string[]` |  | The current selection when the page keeps track of it (controlled), as option values in the order they were chosen. |
 | `defaultValue` | `string[]` |  | The starting selection when the component keeps track itself (uncontrolled). |
@@ -60,7 +60,7 @@ const LOADOUT = [
 
 <div className="w-full max-w-md">
   <FormField label="Loadout">
-    <MultiSelect label="Loadout" options={LOADOUT} placeholder="Choose your kit…" />
+    <MultiSelect options={LOADOUT} placeholder="Choose your kit…" />
   </FormField>
 </div>
 ```
@@ -84,7 +84,7 @@ function ControlledExample() {
   return (
     <div className="flex flex-col gap-2 w-full max-w-md">
       <FormField label="Loadout" help="Remove a tag and watch the others close the gap.">
-        <MultiSelect label="Loadout" options={LOADOUT} value={kit} onValueChange={setKit} />
+        <MultiSelect options={LOADOUT} value={kit} onValueChange={setKit} />
       </FormField>
       <span className="font-mono text-xs text-[var(--color-text-secondary)]">value: [{kit.join(', ')}]</span>
     </div>
@@ -110,7 +110,7 @@ const LOADOUT = [
 
 <div className="w-full max-w-md">
   <FormField label="Loadout" error="Pick eye protection.">
-    <MultiSelect label="Loadout" options={LOADOUT} defaultValue={['mags']} />
+    <MultiSelect options={LOADOUT} defaultValue={['mags']} />
   </FormField>
 </div>
 ```

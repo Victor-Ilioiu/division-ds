@@ -293,7 +293,7 @@ import { Select } from 'src/components/atoms/select/Select'
 
 Requires: A <FormField> around it. On its own the control has no label. FormField supplies the label, the help text and the error, and connects their ids so assistive tech (screen readers and similar tools) reads them together.
 
-- `label: string` Required. The trigger’s accessible name, the name a screen reader announces for it.
+- `label: string` The trigger’s accessible name, the name a screen reader announces for it. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `options: SelectOptionWithIcon[]` { value, label, disabled?, icon? } rows shown in the listbox. Pass this or groups, never both.
 - `groups: SelectGroup[]` { label, options }[]: rows under headings. Pass this or options, never both.
 - `placeholder: string = 'Select…'` Shown until a value is chosen.
@@ -639,7 +639,7 @@ import { DateField } from 'src/components/molecules/date-picker/DateField'
 import { DatePicker } from 'src/components/molecules/date-picker/DatePicker'
 ```
 
-- `label: string` Required. Names the field. Inside a FormField, FormField sets it from its own label.
+- `label: string` Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `value: string ('YYYY-MM-DD' \| '')` Controlled value (your page holds it).
 - `defaultValue: string = ''` Starting value when the picker holds the value itself.
 - `onValueChange: (value: string) => void` Fires with a whole, real date, or '' when the field is emptied. A half-typed date does not fire.
@@ -697,7 +697,7 @@ A start and an end date in one field, an add-on to DatePicker. Type both, or ope
 import { DateRangePicker, EMPTY_RANGE, useDateRangePicker } from 'src/components/molecules/date-range-picker/DateRangePicker'
 ```
 
-- `label: string` Required. Names the field. Inside a FormField, FormField sets it.
+- `label: string` Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `value: { start: string; end: string }` Controlled range. Each end is 'YYYY-MM-DD' or ''.
 - `defaultValue: { start: string; end: string } = { start: '', end: '' }` Starting range when the picker holds it itself.
 - `onValueChange: (range: DateRange) => void` Fires when either end changes. Days picked in the calendar always arrive in order.
@@ -804,7 +804,7 @@ import { ErrorSummary } from 'src/components/molecules/form-field/ErrorSummary'
 - `help: string` Instruction text, read out before any error.
 - `error: string` Sets invalid on the control and adds the error line.
 - `required: boolean = false` Adds the asterisk (hidden from screen readers) and the built-in required attribute on the control. That attribute is what assistive technology actually announces.
-- `children: ReactElement` Exactly one control: Input, Textarea, Select or QuantityStepper. A label set on a Select or QuantityStepper child is replaced by the FormField label. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up.
+- `children: ReactElement` Exactly one control: Input, Textarea, Select, MultiSelect, QuantityStepper, DatePicker, DateRangePicker or TimeField. The controls that name themselves (all but Input and Textarea) take the FormField label, so leave their own label out. An id you give the control is kept (point an ErrorSummary entry at it); without one, FormField makes one up.
 - `className: string` Extra CSS classes, merged with the outer element's own. When two Tailwind classes clash, the later one wins.
 - `ref: Ref<HTMLDivElement>` Passed through to the outer element.
 - `errors (ErrorSummary): { fieldId: string; message: string }[]` What stopped the form from submitting, in the order of the fields. Each entry links to its field and moves focus there. An empty list shows nothing.
@@ -850,7 +850,7 @@ import { MultiSelect } from 'src/components/molecules/multi-select/MultiSelect'
 
 Requires: A <FormField> around it. FormField supplies the visible label, the help and the error, and replaces the label prop with its own.
 
-- `label: string` Required. The name screen readers give the text field and the list. FormField replaces it with its own label.
+- `label: string` The name screen readers give the text field and the list. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `options: SelectOption[]` { value, label, disabled? }, the same rows Select takes.
 - `value: string[]` The current selection when the page keeps track of it (controlled), as option values in the order they were chosen.
 - `defaultValue: string[]` The starting selection when the component keeps track itself (uncontrolled).
@@ -948,7 +948,7 @@ A whole number between a lowest and a highest value, with a button on each side.
 import { QuantityStepper, clampQuantity, gridMax } from 'src/components/molecules/quantity-stepper/QuantityStepper'
 ```
 
-- `label: string` Required. Names the field and both buttons ("Decrease Speed loader quantity").
+- `label: string` Names the field and both buttons ("Decrease Speed loader quantity"). Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `value: number` Controlled value (your page holds it).
 - `defaultValue: number = min` Starting value when the component holds the value itself (uncontrolled).
 - `onValueChange: (value: number) => void` Fires with the final value, pulled inside the limits: after a button click, an arrow key, Home/End, or when typing is finished by leaving the field or pressing Enter.
@@ -1143,12 +1143,12 @@ A time of day, an add-on to the date pickers. Hours and minutes are segments you
 import { TimeField, hourCycleFor } from 'src/components/molecules/time-field/TimeField'
 ```
 
-- `label: string` Required. Names the field. Inside a FormField, FormField sets it.
+- `label: string` Names the field. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.
 - `value: string ('HH:MM' \| '')` Controlled value, 24-hour.
 - `defaultValue: string = ''` Starting value when the field holds it itself.
 - `onValueChange: (value: string) => void` Fires with a whole time, or '' when emptied.
 - `hourCycle: 12 \| 24` 12 adds an AM/PM segment. The value stays 24-hour. Defaults to the locale's clock.
-- `step: number = 30` Minutes between the times in the list.
+- `step: number = 30` Minutes between the times in the list. It only spaces the list: a typed time between steps (09:07) is kept as typed. Check it yourself if it must fall on a step.
 - `min: string` Earliest time, 'HH:MM'. Earlier times are left out of the list; typing one marks the field invalid.
 - `max: string` Latest time, 'HH:MM'.
 - `showSlots: boolean = true` Shows the clock button and its list.

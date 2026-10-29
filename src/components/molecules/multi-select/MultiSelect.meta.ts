@@ -24,7 +24,7 @@ export const meta: ComponentMeta = {
     { part: 'Listbox', description: 'The list, where several options can be chosen. It sits in a panel rendered in a portal (at the end of the page, so nothing clips it), with the same background as Select and the crosshair. It slides down out of the field and back up into it (M7). A tick marks every chosen row.' },
   ],
   props: [
-    { name: 'label', type: 'string', description: 'Required. The name screen readers give the text field and the list. FormField replaces it with its own label.' },
+    { name: 'label', type: 'string', description: 'The name screen readers give the text field and the list. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.' },
     { name: 'options', type: 'SelectOption[]', description: '{ value, label, disabled? }, the same rows Select takes.' },
     { name: 'value', type: 'string[]', description: 'The current selection when the page keeps track of it (controlled), as option values in the order they were chosen.' },
     { name: 'defaultValue', type: 'string[]', description: 'The starting selection when the component keeps track itself (uncontrolled).' },

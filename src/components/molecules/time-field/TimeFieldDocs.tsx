@@ -14,10 +14,10 @@ function DateAndTime() {
     <div className="flex w-full max-w-md flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
         <FormField label="Pickup date">
-          <DatePicker label="Pickup date" value={date} onValueChange={setDate} />
+          <DatePicker value={date} onValueChange={setDate} />
         </FormField>
         <FormField label="Pickup time">
-          <TimeField label="Pickup time" value={time} onValueChange={setTime} step={15} min="08:00" max="18:00" />
+          <TimeField value={time} onValueChange={setTime} step={15} min="08:00" max="18:00" />
         </FormField>
       </div>
       <span className="font-mono text-xs text-[var(--color-text-secondary)]">

@@ -23,7 +23,7 @@ export const meta: ComponentMeta = {
     {
       name: 'label',
       type: 'string',
-      description: 'Required. Names the field and both buttons ("Decrease Speed loader quantity").',
+      description: 'Names the field and both buttons ("Decrease Speed loader quantity"). Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.',
     },
     { name: 'value', type: 'number', description: 'Controlled value (your page holds it).' },
     { name: 'defaultValue', type: 'number', default: 'min', description: 'Starting value when the component holds the value itself (uncontrolled).' },

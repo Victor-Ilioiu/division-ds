@@ -13,7 +13,7 @@
 import { Select } from 'src/components/atoms/select/Select'
 ```
 
-Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file.
+Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
 
 ## Requires
 
@@ -23,7 +23,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` |  | Required. The trigger’s accessible name, the name a screen reader announces for it. |
+| `label` | `string` |  | The trigger’s accessible name, the name a screen reader announces for it. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one. |
 | `options` | `SelectOptionWithIcon[]` |  | { value, label, disabled?, icon? } rows shown in the listbox. Pass this or groups, never both. |
 | `groups` | `SelectGroup[]` |  | { label, options }[]: rows under headings. Pass this or options, never both. |
 | `placeholder` | `string` | `'Select…'` | Shown until a value is chosen. |

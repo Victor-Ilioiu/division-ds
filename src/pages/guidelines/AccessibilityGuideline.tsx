@@ -57,7 +57,7 @@ export function AccessibilityGuideline() {
           </>
         }
       />
-      <div className="grid gap-4">
+      <div className="mt-10 grid gap-4">
         {COMMITMENTS.map(c => (
           <div key={c.id} className="border border-[var(--color-border-hairline)] p-5">
             {/* Wraps since the criterion title moved from 14px to the scale's 19px step: at 320px the

@@ -20,7 +20,7 @@ export const meta: ComponentMeta = {
     { part: 'Group label', description: 'Used with groups: a mono (monospaced font) heading over its rows that names the group for screen readers. It can’t be selected. A hairline separates the groups.' },
   ],
   props: [
-    { name: 'label', type: 'string', description: 'Required. The trigger’s accessible name, the name a screen reader announces for it.' },
+    { name: 'label', type: 'string', description: 'The trigger’s accessible name, the name a screen reader announces for it. Leave it out inside a FormField, which sets it from its own label. Outside one it is required, and `division-ds check` flags a missing one.' },
     { name: 'options', type: 'SelectOptionWithIcon[]', description: '{ value, label, disabled?, icon? } rows shown in the listbox. Pass this or groups, never both.' },
     { name: 'groups', type: 'SelectGroup[]', description: '{ label, options }[]: rows under headings. Pass this or options, never both.' },
     { name: 'placeholder', type: 'string', default: "'Select…'", description: 'Shown until a value is chosen.' },

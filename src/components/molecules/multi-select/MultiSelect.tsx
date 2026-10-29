@@ -18,7 +18,7 @@ const SIZES = {
 
 export type MultiSelectProps = {
   /** Required: the field's accessible name, and the listbox's. FormField replaces it with its own. */
-  label: string
+  label?: string
   options: SelectOption[]
   /** The controlled selection, as option values in the order they were chosen. */
   value?: string[]
@@ -307,3 +307,7 @@ export function MultiSelect({
     </RadixPopover.Root>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a MultiSelect inside a FormField needs no label of its own.
+MultiSelect.namedByFormField = true

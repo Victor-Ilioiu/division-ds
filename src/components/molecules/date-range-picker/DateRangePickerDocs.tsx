@@ -31,7 +31,7 @@ export function DateRangePickerDocs() {
       <Example caption="With DatePresets beside the months">
         <div className="w-full max-w-sm">
           <FormField label="Report period" help="Pick a preset, or two days.">
-            <DateRangePicker label="Report period" aside={<DatePresets />} />
+            <DateRangePicker aside={<DatePresets />} />
           </FormField>
         </div>
       </Example>

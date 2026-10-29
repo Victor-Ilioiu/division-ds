@@ -31,7 +31,7 @@ export function clampQuantity(raw: string | number, min: number, max: number, st
 
 export type QuantityStepperProps = {
   /** Required: names the field and both buttons ("Decrease Speed loader quantity"). */
-  label: string
+  label?: string
   value?: number
   /** @default min */
   defaultValue?: number
@@ -168,7 +168,7 @@ export function QuantityStepper({
   return (
     <div className={cn('inline-flex items-stretch', className)}>
       <IconButton
-        label={`Decrease ${label}`}
+        label={`Decrease ${label ?? 'quantity'}`}
         variant="secondary"
         size={inputSize}
         tabIndex={-1}
@@ -215,7 +215,7 @@ export function QuantityStepper({
         )}
       />
       <IconButton
-        label={`Increase ${label}`}
+        label={`Increase ${label ?? 'quantity'}`}
         variant="secondary"
         size={inputSize}
         tabIndex={-1}
@@ -233,3 +233,7 @@ export function QuantityStepper({
     </div>
   )
 }
+
+// FormField passes its own label in. With the marker it does so even when none was written
+// here, so a QuantityStepper inside a FormField needs no label of its own.
+QuantityStepper.namedByFormField = true

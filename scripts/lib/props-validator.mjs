@@ -156,7 +156,14 @@ export function buildIndex(manifest) {
     const single = exportNames.length === 1
     for (const name of exportNames) {
       const spec = specs[name]
-      spec.checkUnknown = single && !unresolved && spec.rest?.open !== 'any'
+      // On a page that documents several components, the rows with no part tag are the main
+      // component's own. The main one is checked too when nothing passes through undocumented:
+      // its type is closed (manifest `closed`), or its only pass-through is native attributes,
+      // which the check already allows. Its parts stay unchecked: their rows list only what
+      // differs from the main component.
+      const main = name === entry.name && (entry.closed === true || spec.rest?.open === 'native')
+      spec.checkUnknown = (single || main) && !unresolved && spec.rest?.open !== 'any'
+      spec.namedByFormField = (entry.namedByFormField ?? []).includes(name)
       index.set(name, spec)
     }
   }
@@ -228,7 +235,7 @@ export function scriptKind(path) {
 
 /**
  * Every props violation in one file: `{ path, line, column, rule, component, prop, found, fix }`.
- * `rule` is 'unknown-prop' or 'invalid-value'. `index` comes from `buildIndex`.
+ * `rule` is 'unknown-prop', 'invalid-value' or 'missing-label' (a control FormField names, with no label and no FormField around it). `index` comes from `buildIndex`.
  */
 export function findPropViolations(text, path, index) {
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true, scriptKind(path))
@@ -254,11 +261,38 @@ export function findPropViolations(text, path, index) {
     return undefined
   }
 
+  // Inside a Division FormField, which names the control it holds.
+  const insideFormField = element => {
+    for (let node = element.parent; node; node = node.parent) {
+      const opening = ts.isJsxElement(node) ? node.openingElement : ts.isJsxSelfClosingElement(node) ? node : null
+      if (opening && opening !== element && resolve(opening.tagName) === 'FormField') return true
+    }
+    return false
+  }
+
   const check = element => {
     const exportName = resolve(element.tagName)
     const spec = exportName && index.get(exportName)
     if (!spec) return
     const tag = element.tagName.getText(source)
+    const attributes = element.attributes.properties
+    if (
+      spec.namedByFormField &&
+      !attributes.some(a => ts.isJsxSpreadAttribute(a) || a.name.getText(source) === 'label') &&
+      !insideFormField(element)
+    ) {
+      const at = source.getLineAndCharacterOfPosition(element.getStart(source))
+      violations.push({
+        path,
+        line: at.line + 1,
+        column: at.character + 1,
+        rule: 'missing-label',
+        component: tag,
+        prop: 'label',
+        found: `<${tag}>`,
+        fix: `${tag} has no name: give it a label, or put it in a FormField, which names it. See ${spec.docs}.`,
+      })
+    }
     const known = [...spec.props.keys()]
     for (const attribute of element.attributes.properties) {
       if (!ts.isJsxAttribute(attribute)) continue

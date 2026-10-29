@@ -304,7 +304,10 @@ export function ChartPanel<Row extends Record<string, string | number>>({
   // The draw-in plays once, on mount. A live page that rebuilds its data array on every render
   // would otherwise restart the animation before it ends, and the chart would never finish
   // drawing (the 2026-10-20 outside test). After the first draw, new data swaps in place.
-  const [firstDraw, setFirstDraw] = useState(true)
+  // Under reduced motion there is no draw-in at all: Recharts does not check the setting itself.
+  const [firstDraw, setFirstDraw] = useState(
+    () => typeof window === 'undefined' || !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  )
   useEffect(() => {
     const timer = setTimeout(() => setFirstDraw(false), DRAW_MS)
     return () => clearTimeout(timer)

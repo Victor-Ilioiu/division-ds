@@ -15,7 +15,7 @@ import {
   skillFiles,
   tokensBundle,
 } from './lib/agent-docs.mjs'
-import { componentFolders, publicExports, REPO_ROOT, TIERS } from './lib/component-props.mjs'
+import { componentFolders, createProgram, exportsOfFolder, publicExports, REPO_ROOT, TIERS } from './lib/component-props.mjs'
 import { extractExamples } from './lib/doc-examples.mjs'
 import { exportedApi } from './lib/exported-api.mjs'
 
@@ -42,6 +42,8 @@ const SKILL_DIR = 'skills/division-ds'
 export async function buildAgentDocs(root = REPO_ROOT) {
   const barrels = Object.fromEntries(TIERS.map(tier => [tier, publicExports(root, tier)]))
   const entries = []
+  // The type checker, once, to tell which components take only props declared here (closed).
+  const program = createProgram(root)
   for (const folder of componentFolders(root)) {
     const { meta } = await import(pathToFileURL(folder.metaFile).href)
     const docsFile = readdirSync(folder.dir).find(file => file.endsWith('Docs.tsx'))
@@ -70,14 +72,25 @@ export async function buildAgentDocs(root = REPO_ROOT) {
         entry => ({ ...entry, from: `src/components/${folder.tier}/${from.slice(2)}` })
       )
     })
-    entries.push(
-      manifestEntry(meta, {
+    // Closed: every prop the component's type accepts is declared in this repository, so the
+    // checker can call any other prop unknown. Radix and native props are not declared here.
+    const props = exportsOfFolder(program, root, folder.sourceFiles).components[meta.name]
+    const closed = !!props && props.all.every(prop => props.own.includes(prop) || ['key', 'ref', 'children'].includes(prop))
+    // The components FormField names (`X.namedByFormField = true` in their source): outside a
+    // FormField they need a label of their own, and the checker says so when one is missing.
+    const namedByFormField = folder.sourceFiles
+      .flatMap(file => [...readFileSync(file, 'utf8').matchAll(/^(\w+)\.namedByFormField = true$/gm)].map(match => match[1]))
+      .sort()
+    entries.push({
+      ...manifestEntry(meta, {
         imports,
         api,
         examples,
         source: posix(relative(root, join(folder.dir, `${meta.name}.tsx`))),
-      })
-    )
+      }),
+      closed,
+      ...(namedByFormField.length ? { namedByFormField } : {}),
+    })
   }
 
   const agentsMd = readFileSync(join(root, 'AGENTS.md'), 'utf8')
