@@ -91,7 +91,7 @@ An MCP server gives your assistant the documentation and the same checks as tool
 works. In Claude Code, once:
 
 ```bash
-claude mcp add division-ds -- npx -y division-ds@0.3.1 mcp
+claude mcp add division-ds -- npx -y division-ds@0.4.0 mcp
 ```
 
 The version is pinned so the tools do not change under you; raise it when you update the
@@ -103,7 +103,7 @@ In Cursor (`.cursor/mcp.json`) and other assistants' MCP settings:
 ```json
 {
   "mcpServers": {
-    "division-ds": { "command": "npx", "args": ["-y", "division-ds@0.3.1", "mcp"] }
+    "division-ds": { "command": "npx", "args": ["-y", "division-ds@0.4.0", "mcp"] }
   }
 }
 ```
