@@ -58,7 +58,7 @@ function Block({ block }: { block: JournalBlock }) {
 }
 
 /**
- * One Field note, reached at `/demo/journal/:slug`. Sets its own `document.title` (`routes.ts`
+ * One Field note, reached at `/store/journal/:slug`. Sets its own `document.title` (`routes.ts`
  * marks this route `titleFromPage`, the same reason Product.tsx does) because the real title
  * needs the post's own name, which the registry doesn't have -- and, exactly like Product.tsx,
  * the effect is keyed on `post` (not `slug`) so moving from one real article straight to another
@@ -81,7 +81,7 @@ export function Article() {
       <div className={`${DEFAULT_PAGE} py-12 flex flex-col gap-4`}>
         <h1 className="font-display font-semibold text-2xl text-[var(--color-text-primary)]">Note not found</h1>
         <p className="font-body text-sm text-[var(--color-text-secondary)]">
-          <RouterLink to="/demo/journal" className={linkVariants()}>
+          <RouterLink to="/store/journal" className={linkVariants()}>
             Back to Field notes
           </RouterLink>
         </p>
@@ -97,7 +97,7 @@ export function Article() {
       <Breadcrumbs
         items={[
           { label: 'Home', href: DEMO_HOME },
-          { label: 'Field notes', href: '/demo/journal' },
+          { label: 'Field notes', href: '/store/journal' },
           { label: post.title },
         ]}
         renderLink={routerLink}
@@ -154,7 +154,7 @@ export function Article() {
             </div>
 
             <p>
-              <RouterLink to="/demo/shop?category=parts" className={linkVariants()}>
+              <RouterLink to="/store/shop?category=parts" className={linkVariants()}>
                 Shop parts and accessories
               </RouterLink>
             </p>

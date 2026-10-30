@@ -8,7 +8,7 @@ import { ErrorState } from '../states/ErrorState'
 const DEMONSTRATION_ERROR_NAME = 'DemonstrationError'
 
 /**
- * `/demo/status/error`: a fixed reference for what this shell's error and empty states look
+ * `/store/status/error`: a fixed reference for what this shell's error and empty states look
  * like, side by side, never linked from the Navbar. Three demos: an inline `ErrorState` whose
  * retry is wired to a real counter (proving the callback actually runs, not just that the button
  * renders), a plain `EmptyState`, and a button that throws during render -- caught by

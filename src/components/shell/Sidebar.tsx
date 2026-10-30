@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react'
-import { Atom, Blocks, BookOpen, Component, Store } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { Atom, Blocks, BookOpen, Component } from 'lucide-react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { Sidebar as SidebarOrganism, type SidebarGroup } from '../organisms/sidebar/Sidebar'
 import type { LinkRenderProps } from '../../lib/render-link'
@@ -21,10 +21,9 @@ export const NAV: NavGroup[] = [
     icon: <BookOpen />,
     defaultOpen: true,
     items: [
-      { to: '/', label: 'Overview' },
+      { to: '/components', label: 'All components' },
       { to: '/guidelines/install', label: 'Install' },
       { to: '/guidelines/color', label: 'Color' },
-      { to: '/guidelines/theme', label: 'Theme builder' },
       { to: '/guidelines/typography', label: 'Typography' },
       { to: '/guidelines/spacing', label: 'Spacing & layout' },
       { to: '/guidelines/shape', label: 'Shape' },
@@ -51,6 +50,7 @@ export const NAV: NavGroup[] = [
       { to: '/components/kbd', label: 'Kbd' },
       { to: '/components/link', label: 'Link' },
       { to: '/components/loading-animation', label: 'Loading animation' },
+      { to: '/components/panel', label: 'Panel' },
       { to: '/components/progress', label: 'Progress' },
       { to: '/components/radio', label: 'Radio' },
       { to: '/components/score-ring', label: 'Score ring' },
@@ -76,6 +76,7 @@ export const NAV: NavGroup[] = [
       { to: '/components/breadcrumbs', label: 'Breadcrumbs' },
       { to: '/components/card', label: 'Card' },
       { to: '/components/chat-message', label: 'Chat message' },
+      { to: '/components/code-block', label: 'Code block' },
       { to: '/components/date-picker', label: 'Date picker' },
       { to: '/components/date-presets', label: 'Date presets' },
       { to: '/components/date-range-picker', label: 'Date range picker' },
@@ -126,15 +127,6 @@ export const NAV: NavGroup[] = [
       { to: '/components/sidebar', label: 'Sidebar' },
     ],
   },
-  {
-    title: 'Demo site',
-    icon: <Store />,
-    items: [
-      { to: '/demo', label: 'Hexline store' },
-      { to: '/crm', label: 'Corvane CRM' },
-      { to: '/console', label: 'Halden Console' },
-    ],
-  },
 ]
 
 /**
@@ -144,16 +136,16 @@ export const NAV: NavGroup[] = [
 export const SECTIONS: NavItem[] = NAV.flatMap(group => group.items)
 
 /**
- * SECTIONS minus the demo sites (Hexline at /demo, Corvane at /crm, Halden Console at /console, each with its own e2e spec): the docs guideline/reflow suites run each page in a
- * real Chrome instance with its own timing and layout assumptions, and /demo is covered by its
+ * SECTIONS minus the demo sites (Hexline at /store, Corvane at /crm, Halden Console at /console, each with its own e2e spec): the docs guideline/reflow suites run each page in a
+ * real Chrome instance with its own timing and layout assumptions, and /store is covered by its
  * own e2e/demo.spec.ts instead -- iterating it a second time under the docs spec would double-run
- * it against the wrong assumptions (no /demo page's document.title matches the docs pattern, for
+ * it against the wrong assumptions (no /store page's document.title matches the docs pattern, for
  * one). e2e/guidelines.spec.ts and e2e/reflow.spec.ts import this instead of SECTIONS;
  * e2e/keyboard.spec.ts stays on SECTIONS, since its bounded tab walk needs the sidebar's real
- * length, /demo entry included.
+ * length, /store entry included.
  */
 export const DOCS_SECTIONS: NavItem[] = SECTIONS.filter(
-  section => !section.to.startsWith('/demo') && !section.to.startsWith('/crm') && !section.to.startsWith('/console')
+  section => !section.to.startsWith('/store') && !section.to.startsWith('/crm') && !section.to.startsWith('/console')
 )
 
 /** The shell's own `renderLink`, kept separate from the demo-scoped `src/demo/routerLink.tsx`. */
@@ -161,26 +153,13 @@ function shellRouterLink({ href, ...rest }: LinkRenderProps) {
   return <RouterLink to={href} {...rest} />
 }
 
-export function Sidebar() {
-  // Below `md` the sidebar stops being a column beside `<main>` and becomes a disclosure above
-  // it. It used to be a hard `min-w-[220px]` inside a plain flex row with no responsive
-  // behaviour at all: at 320px it took 220px of the viewport and pushed `<main>` off-screen,
-  // cutting content off mid-word — SC 1.4.10 (reflow), on all 28 pages, in both themes.
-  //
-  // A disclosure rather than an always-stacked list, because every nav entry stacked above the
-  // content would put every page's heading roughly two screens down on a phone. Collapsed by
-  // default, expanded by a real <button> with aria-expanded/aria-controls — no JS beyond the
-  // toggle, and the nav stays reachable, which matters more than the failure being fixed: a nav
-  // that becomes unreachable is a worse defect than the one it replaces.
-  const [open, setOpen] = useState(false)
+/** The docs navigation itself: every NAV group, the current page marked. Rendered by the
+ *  desktop column below and by AppShell's narrow-screen menu sheet; only one is ever shown. */
+export function DocsNav() {
   const location = useLocation()
-
-  // Every NAV route is a leaf page with no children (including '/'), so an exact pathname match
-  // is `current` for all of them — no `end`/prefix special case needed, unlike the NavLink this
-  // replaces — but only once the pathname is normalized: a trailing slash (e.g.
-  // `/components/button/`) must still match `/components/button`, or nothing is ever marked
-  // current on such a URL, and the organism's own reopen-on-navigation effect (which depends on
-  // `current` too) silently stops firing along with it.
+  // Every NAV route is a leaf page, so an exact pathname match is `current` -- once the pathname
+  // is normalized: a trailing slash (`/components/button/`) must still match, or nothing is
+  // marked current and the organism's reopen-on-navigation effect stops firing with it.
   const path = location.pathname.replace(/\/+$/, '') || '/'
   const groups: SidebarGroup[] = NAV.map(group => ({
     title: group.title,
@@ -192,35 +171,27 @@ export function Sidebar() {
       current: path === item.to,
     })),
   }))
+  // The organism renders its own <nav>, named here: the one "Documentation" landmark.
+  return <SidebarOrganism label="Documentation" groups={groups} renderLink={shellRouterLink} />
+}
 
+/**
+ * The docs sidebar column, from `md` up. Below `md` it is not drawn at all: the top bar's menu
+ * button (AppShell) opens the same DocsNav in a sheet, so a phone gets the page heading first
+ * and the nav one tap away, with no 220px column pushing `<main>` off screen (SC 1.4.10).
+ */
+export function Sidebar() {
   return (
     <div
       className={[
-        'p-4 shrink-0 border-[var(--color-border-hairline)]',
-        // Stacked below md: a full-width band with a rule underneath it.
-        'border-b',
-        // Beside <main> from md up: the same left column as before, unchanged.
-        'md:border-b-0 md:border-r md:min-w-[220px] md:max-h-[calc(100vh-57px)]',
+        'hidden min-[42rem]:block p-4 shrink-0 border-[var(--color-border-hairline)]',
+        'min-[42rem]:border-r min-[42rem]:min-w-[220px] min-[42rem]:max-h-[calc(100vh-57px)]',
         // A stable gutter: collapsing a group can drop the column below its max height, and
         // without the reserved lane the scrollbar vanishing would shift every item sideways.
-        'md:overflow-y-auto md:[scrollbar-gutter:stable] md:sticky md:top-[57px]',
+        'min-[42rem]:overflow-y-auto min-[42rem]:[scrollbar-gutter:stable] min-[42rem]:sticky min-[42rem]:top-[57px]',
       ].join(' ')}
     >
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls="sidebar-nav"
-        onClick={() => setOpen(o => !o)}
-        className="md:hidden font-mono text-xs uppercase tracking-widest border border-[var(--color-border-control)] px-3 py-2 min-h-[36px] w-full text-left text-[var(--color-text-secondary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
-      >
-        {open ? 'Hide navigation' : 'Show navigation'}
-      </button>
-
-      {/* No outer <nav> here: the organism renders its own, named by `label` below, so this
-          stays the one "Documentation" landmark instead of nesting two. */}
-      <div id="sidebar-nav" className={`${open ? 'block mt-4' : 'hidden'} md:block`}>
-        <SidebarOrganism label="Documentation" groups={groups} renderLink={shellRouterLink} />
-      </div>
+      <DocsNav />
     </div>
   )
 }

@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import { HOME } from '../src/demo/content'
 import { applyTheme, expect, expectAxeClean, settleAnimations, test, THEMES, trackHeroBottom } from './fixtures'
 
-// The `/demo` hero, in a real browser. jsdom has no WebGL, so Home.test.tsx only ever sees the
+// The `/store` hero, in a real browser. jsdom has no WebGL, so Home.test.tsx only ever sees the
 // still; and e2e/fixtures.ts keeps the scene from starting everywhere else in this suite
 // (`heroScene: 'still'`). This is the one file that lets it run, and the proof that it does: the
 // canvas appears and has something drawn on it, the preloader shows for its four seconds and
@@ -70,13 +70,13 @@ async function inkCoverage(page: Page): Promise<number> {
 
 test.describe('the hero with the suite default: the scene switched off', () => {
   // The guard on the fixture itself. If the scene's entry module is ever renamed or moved, the
-  // route in e2e/fixtures.ts stops matching, the real scene starts on every `/demo` visit in the
+  // route in e2e/fixtures.ts stops matching, the real scene starts on every `/store` visit in the
   // suite, and nothing else would say so: the tests would just get slow and start to flake.
   // Mutation: change HERO_SCENE_ENTRY in fixtures.ts to a path that matches nothing -> the hero
   // reads data-hero="live" and this fails.
   test('lands on the still, with motion allowed and WebGL available', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo')
+    await page.goto('/store')
     const hero = page.locator(HERO)
     await expect(hero).toHaveAttribute('data-hero', 'still')
     const still = page.locator(`${STAGE} img`)
@@ -87,12 +87,12 @@ test.describe('the hero with the suite default: the scene switched off', () => {
     await expect(page.locator(`${STAGE} canvas`)).toHaveCount(0)
     await expect(page.locator(LOADER)).toHaveCount(0)
     await expect(page.getByRole('button', { name: HOME.hero.assemble, exact: true })).toHaveCount(0)
-    await expect(hero.getByRole('link', { name: HOME.hero.seeKit })).toHaveAttribute('href', '/demo/shop/kestrel-c-kit')
+    await expect(hero.getByRole('link', { name: HOME.hero.seeKit })).toHaveAttribute('href', '/store/shop/kestrel-c-kit')
   })
 
   test('the still picks the stacked framing below lg and the wide one from lg', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto('/demo')
+    await page.goto('/store')
     const still = page.locator(`${STAGE} img`)
     await expect.poll(() => still.evaluate((img: HTMLImageElement) => img.currentSrc)).toContain('/media/hero-poster-960.webp')
     await page.setViewportSize({ width: 1280, height: 800 })
@@ -102,13 +102,13 @@ test.describe('the hero with the suite default: the scene switched off', () => {
   // Mutation: change `quickAddToCart(add, toast, KIT.id)` in HomeHero.tsx to a no-op -> no toast,
   // and the cart button still reads 0 items.
   test('Buy kit adds the kit to the cart, and the kit link opens its product page', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     const hero = page.locator(HERO)
     await hero.getByRole('button', { name: HOME.hero.buy }).click()
     await expect(page.getByText('Added Kestrel C operator kit, carbine replica').first()).toBeVisible()
     await expect(page.getByRole('button', { name: 'Cart, 1 item' })).toBeVisible()
     await hero.getByRole('link', { name: HOME.hero.seeKit }).click()
-    await expect(page).toHaveURL(/\/demo\/shop\/kestrel-c-kit$/)
+    await expect(page).toHaveURL(/\/store\/shop\/kestrel-c-kit$/)
     await expect(page.getByRole('heading', { level: 1, name: 'Kestrel C operator kit, carbine replica' })).toBeVisible()
     // The product page shows the kit's cutout on the stage, rendered from its own model, and it has loaded.
     const photo = page.locator('main img[src="/media/products/cutout/kestrel-c-kit.webp"]').first()
@@ -128,7 +128,7 @@ test.describe('the hero with the scene allowed to start', () => {
   test('reduced motion gets the still and never fetches the scene', async ({ page }) => {
     const requests = sceneRequests(page)
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.locator(HERO)).toHaveAttribute('data-hero', 'still')
     await expect(page.locator(`${STAGE} img`)).toBeVisible()
     await expect(page.locator(LOADER)).toHaveCount(0)
@@ -152,7 +152,7 @@ test.describe('the hero with the scene allowed to start', () => {
       po.observe({ type: 'layout-shift', buffered: true })
     })
     const heroBottoms = await trackHeroBottom(page)
-    await page.goto('/demo')
+    await page.goto('/store')
 
     const hero = page.locator(HERO)
     await expect(hero).toHaveAttribute('data-hero', 'live')
@@ -239,7 +239,7 @@ test.describe('the hero with the scene allowed to start', () => {
   test('the live hero is axe clean in both themes, under ?fx=force with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo?fx=force')
+    await page.goto('/store?fx=force')
     await expect(page.locator(HERO)).toHaveAttribute('data-hero', 'live')
     await expect(page.locator(`${STAGE} canvas`)).toHaveCount(1, { timeout: 60_000 })
     await expect(page.locator(LOADER)).toHaveCount(0, { timeout: 150_000 })
@@ -254,7 +254,7 @@ test.describe('the hero with the scene allowed to start', () => {
 
   // Leaving the page gives the context back (browsers cap them) and takes the canvas with it.
   test('navigating away removes the scene canvas', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.locator(`${STAGE} canvas`)).toHaveCount(1, { timeout: 60_000 })
     await expect(page.locator(LOADER)).toHaveCount(0, { timeout: 150_000 })
     await page.getByRole('navigation', { name: 'Hexline', exact: true }).getByRole('link', { name: 'Care' }).click()

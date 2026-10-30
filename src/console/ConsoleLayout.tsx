@@ -1,18 +1,19 @@
 import { Suspense, useEffect, useMemo, useState, type ReactElement } from 'react'
 import { Link as RouterLink, matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { BellRing, Info, LayoutDashboard, Menu, Pause, Play, Search as SearchIcon, Sparkles, Warehouse } from 'lucide-react'
+import { BellRing, Info, LayoutDashboard, Menu, Pause, Play, Sparkles, Warehouse } from 'lucide-react'
 import { Avatar } from '../components/atoms/avatar/Avatar'
 import { Button } from '../components/atoms/button/Button'
 import { IconButton } from '../components/atoms/icon-button/IconButton'
-import { Kbd } from '../components/atoms/kbd/Kbd'
 import { Spinner } from '../components/atoms/spinner/Spinner'
 import { TooltipProvider } from '../components/atoms/tooltip/Tooltip'
 import { SegmentedControl } from '../components/molecules/segmented-control/SegmentedControl'
 import { Toaster } from '../components/molecules/toast/Toast'
-import { CommandPalette, type Command } from '../components/organisms/command-palette/CommandPalette'
+import type { Command } from '../components/organisms/command-palette/CommandPalette'
 import { Sheet, SheetContent } from '../components/organisms/sheet/Sheet'
 import { Sidebar, type SidebarGroup } from '../components/organisms/sidebar/Sidebar'
 import { BackToDocs } from '../components/shell/BackToDocs'
+import { DocsSearch } from '../search/DocsSearch'
+import { DivisionSymbol } from '../components/shell/DivisionSymbol'
 import { ThemeToggle } from '../components/shell/ThemeToggle'
 import { AlertSheet } from './AlertSheet'
 import { scriptFor, SUGGESTIONS } from './assistant'
@@ -48,7 +49,19 @@ function useDocumentTitle(path: string) {
 function Brand() {
   return (
     <div className="flex flex-col gap-0.5 px-1">
-      <span className="font-display text-lg font-bold uppercase tracking-[0.14em] leading-none">{PRODUCT_NAME}</span>
+      <span className="inline-flex items-center gap-2 font-display font-bold uppercase leading-none">
+        <DivisionSymbol />
+        <span className="sr-only">{PRODUCT_NAME}</span>
+        {/* One wordmark, not two lines: "Console" is set small and its letters spread to Halden's width. */}
+        <span aria-hidden="true" className="inline-grid gap-1">
+          <span className="-mr-[0.14em] text-lg tracking-[0.14em]">{PRODUCT_NAME.split(' ')[0]}</span>
+          <span className="flex justify-between text-[0.5rem] tracking-normal text-[var(--color-text-secondary)]">
+            {[...PRODUCT_NAME.split(' ')[1]].map((letter, i) => (
+              <span key={i}>{letter}</span>
+            ))}
+          </span>
+        </span>
+      </span>
       <span className="font-body text-sm text-[var(--color-text-secondary)]">{WORKSPACE}</span>
     </div>
   )
@@ -190,7 +203,6 @@ function Shell() {
   const { state } = useConsole()
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = useState(false)
-  const [paletteOpen, setPaletteOpen] = useState(false)
   const [assistantOpen, setAssistantOpen] = useState(false)
   const wide = useMediaQuery(WIDE_QUERY)
   const onAssistantPage = path === CONSOLE_ASSISTANT
@@ -229,37 +241,14 @@ function Shell() {
         </div>
         <div className="flex min-h-screen min-w-0 flex-col">
           <header className="sticky top-0 z-10 flex min-h-14 flex-wrap items-center gap-x-3 gap-y-2 border-b border-[var(--color-border-hairline)] bg-[var(--color-surface-base)] px-4 py-2 md:px-8">
-            <span className="md:hidden">
-              <Sheet open={navOpen} onOpenChange={setNavOpen}>
-                <IconButton label="Menu" variant="ghost" size="sm" onClick={() => setNavOpen(true)}>
-                  <Menu aria-hidden="true" />
-                </IconButton>
-                <SheetContent side="left" title="Menu">
-                  <ConsoleNav path={path} />
-                  <div className="mt-4 border-t border-[var(--color-border-hairline)] pt-4">
-                    <BackToDocs />
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </span>
-            <span className="hidden sm:inline md:hidden font-display font-bold uppercase tracking-[0.14em]">{PRODUCT_NAME}</span>
+            <span className="hidden sm:inline-flex md:hidden items-center gap-2 font-display font-bold uppercase tracking-[0.14em]"><DivisionSymbol />{PRODUCT_NAME}</span>
             <div className="order-last w-full md:order-none md:w-auto">
               <LiveControl />
             </div>
-            <div className="ml-auto flex items-center gap-3">
-              <Button
-                variant="secondary"
-                size="sm"
-                iconStart={<SearchIcon />}
-                onClick={() => setPaletteOpen(true)}
-                aria-label="Search sites, alerts and pages"
-                aria-keyshortcuts="Control+K Meta+K"
-              >
-                <span className="hidden sm:inline">Search</span>
-                <Kbd aria-hidden="true" className="hidden sm:inline-flex ml-2">
-                  Ctrl K
-                </Kbd>
-              </Button>
+            <div className="ml-auto flex items-center gap-2">
+              {/* One search: the console's pages, actions, sites and alerts first, then the
+                  whole site (components, guidelines, the store, the CRM). Ctrl+K or / opens it. */}
+              <DocsSearch commands={commands} />
               {onAssistantPage ? null : wide ? (
                 <Button
                   variant={assistantOpen ? 'primary' : 'secondary'}
@@ -284,6 +273,20 @@ function Shell() {
                 <BackToDocs />
               </span>
               <ThemeToggle />
+              {/* Far right, like every header's menu button: below md the nav lives in this sheet. */}
+              <span className="md:hidden">
+                <Sheet open={navOpen} onOpenChange={setNavOpen}>
+                  <IconButton label="Menu" variant="ghost" size="sm" onClick={() => setNavOpen(true)}>
+                    <Menu aria-hidden="true" className="w-5 h-5" />
+                  </IconButton>
+                  <SheetContent side="right" title="Menu">
+                    <ConsoleNav path={path} />
+                    <div className="mt-4 border-t border-[var(--color-border-hairline)] pt-4">
+                      <BackToDocs />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </span>
             </div>
           </header>
           <main id="main" tabIndex={-1} className="flex-1 min-w-0 px-4 py-6 md:px-8 md:py-8 focus:outline-none">
@@ -309,15 +312,6 @@ function Shell() {
           {state.announcement}
         </p>
         <AlertSheet />
-        <CommandPalette
-          commands={commands}
-          open={paletteOpen}
-          onOpenChange={setPaletteOpen}
-          label="Search Halden Console"
-          searchLabel="Search sites, alerts and pages"
-          placeholder="Search sites, alerts, pages"
-          emptyMessage="Nothing matches"
-        />
       </div>
     </ConsoleUiContext.Provider>
   )

@@ -14,12 +14,12 @@ function LocationProbe() {
   return <div data-testid="search">{location.search}</div>
 }
 
-function renderJournal(path = '/demo/journal') {
+function renderJournal(path = '/store/journal') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route
-          path="/demo/journal"
+          path="/store/journal"
           element={
             <>
               <Journal />
@@ -60,7 +60,7 @@ describe('Journal', () => {
   // `next.set('tag', tag)` -> the second click leaves `?tag=optics` in place, and this assertion
   // (expecting it gone) fails.
   it('clicking the active tag again clears the filter', async () => {
-    renderJournal('/demo/journal?tag=optics')
+    renderJournal('/store/journal?tag=optics')
     const toggle = screen.getByRole('button', { name: 'optics' })
     expect(toggle).toHaveAttribute('aria-pressed', 'true')
     await userEvent.click(toggle)
@@ -73,14 +73,14 @@ describe('Journal', () => {
   // "0 posts, no explanation" list branch instead of this EmptyState, and the heading below is
   // never rendered.
   it('shows an EmptyState for a tag no post carries', () => {
-    renderJournal('/demo/journal?tag=does-not-exist')
+    renderJournal('/store/journal?tag=does-not-exist')
     expect(screen.getByRole('heading', { level: 2, name: 'No field notes with that tag' })).toBeInTheDocument()
     expect(screen.getByRole('status', { name: 'Note count' })).toHaveTextContent(/^0 notes$/)
     expect(screen.queryAllByRole('article')).toHaveLength(0)
   })
 
   it('the EmptyState link clears the unknown tag', async () => {
-    renderJournal('/demo/journal?tag=does-not-exist')
+    renderJournal('/store/journal?tag=does-not-exist')
     await userEvent.click(screen.getByRole('link', { name: 'Clear the filter' }))
     expect(screen.getByTestId('search')).toHaveTextContent(/^$/)
     expect(screen.getAllByRole('article')).toHaveLength(4)
@@ -104,17 +104,17 @@ describe('Journal', () => {
 
   // Mutation: make filterJournalPosts ignore `month` -> all four notes remain.
   it('?month= and ?q= narrow the list and say so in the count', () => {
-    renderJournal('/demo/journal?month=2026-05')
+    renderJournal('/store/journal?month=2026-05')
     expect(screen.getByRole('status', { name: 'Note count' })).toHaveTextContent('2 notes from May 2026')
   })
 
   it('?q= matches titles, summaries and tags', () => {
-    renderJournal('/demo/journal?q=hop-up')
+    renderJournal('/store/journal?q=hop-up')
     expect(screen.getByRole('status', { name: 'Note count' })).toHaveTextContent(/^1 note matching/)
   })
 
   it('shows an empty state, not an empty list, when the filters match nothing', () => {
-    renderJournal('/demo/journal?q=zzzz')
+    renderJournal('/store/journal?q=zzzz')
     expect(screen.getByRole('heading', { name: 'No field notes match' })).toBeInTheDocument()
   })
 

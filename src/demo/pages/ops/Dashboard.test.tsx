@@ -15,12 +15,12 @@ function InventoryStub() {
 
 function renderDashboard() {
   return render(
-    <MemoryRouter initialEntries={['/demo/ops']}>
+    <MemoryRouter initialEntries={['/store/ops']}>
       <TooltipProvider>
         <Toaster>
           <Routes>
-            <Route path="/demo/ops" element={<Dashboard />} />
-            <Route path="/demo/ops/inventory" element={<InventoryStub />} />
+            <Route path="/store/ops" element={<Dashboard />} />
+            <Route path="/store/ops/inventory" element={<InventoryStub />} />
           </Routes>
         </Toaster>
       </TooltipProvider>

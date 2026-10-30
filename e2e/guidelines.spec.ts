@@ -28,7 +28,7 @@ for (const theme of THEMES) {
   }
 }
 
-// A mistyped path under the docs shell (never /demo -- e2e/demo.spec.ts covers that shell's own
+// A mistyped path under the docs shell (never /store -- e2e/demo.spec.ts covers that shell's own
 // NotFound) still renders the same chrome as every real docs page: the sidebar landmark, not a
 // bare fallback screen. `/components/nope` stands in for any unregistered docs path.
 test.describe('the docs 404', () => {

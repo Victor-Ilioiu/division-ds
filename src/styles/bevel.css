@@ -3,6 +3,8 @@
    as its own outline/box-shadow -- so the ring must live on an unclipped wrapper, never on the
    clipped element itself. See ShapeGuideline.tsx's focus demo and BUILD-LOG.md's Phase 2 finding
    (augmented-ui: clip-path can clip a focus ring right off the element). */
+/* xs: only for a keycap nested in a control's corner (Kbd `cut` at size sm). */
+.bevel-xs { --bevel-cut: calc(5px * var(--shape-bevel, 1)); }
 .bevel-sm { --bevel-cut: calc(8px * var(--shape-bevel, 1)); }
 .bevel-md { --bevel-cut: calc(14px * var(--shape-bevel, 1)); }
 .bevel-lg { --bevel-cut: calc(22px * var(--shape-bevel, 1)); }
@@ -12,10 +14,12 @@
    corners once the cut is gone. A zero cut makes the polygon the full box, which clips nothing a
    radius draws inside it, and makes `.bevel-edge`'s square zero-sized, so the diagonal disappears
    with the cut. */
-.bevel-sm, .bevel-md, .bevel-lg, .bevel-alert {
+.bevel-xs, .bevel-sm, .bevel-md, .bevel-lg, .bevel-alert {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--bevel-cut)), calc(100% - var(--bevel-cut)) 100%, 0 100%);
   border-radius: var(--shape-radius, 0px);
 }
+/* Surfaces stop at 24px: a "round" theme (999px) makes pills of controls, not ovals of cards. */
+.bevel-md, .bevel-lg, .bevel-alert { border-radius: min(var(--shape-radius, 0px), 24px); }
 /* Square corners on a control that is otherwise bevelled: for a control that sits flush against a
    neighbour at its bottom-right, where the cut would open a notch in the shared seam
    (QuantityStepper's Decrease button). Unlayered and after the three above, so it wins over them
@@ -109,6 +113,9 @@
   inset: calc(-1 * var(--reticle-from, 12px));
   pointer-events: none;
   opacity: 0;
+  /* At rest the bracket is not rendered: an invisible box 12px out still counts as overflow and
+     gave every scroll pane holding a Button a 7px scrollbar on both axes. */
+  display: none;
   --reticle-arm: 10px;
   --reticle-c: var(--color-accent-signal-fill);
   background:
@@ -122,13 +129,15 @@
     linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 100% / 2px var(--reticle-arm);
   background-repeat: no-repeat;
   /* Leaving: fast and flat, so a pointer sweeping across a toolbar does not leave a trail. */
-  transition: inset var(--duration-fast) linear, opacity var(--duration-fast) linear;
+  transition: inset var(--duration-fast) linear, opacity var(--duration-fast) linear, display var(--duration-fast) allow-discrete;
 }
 .bevel-focus-wrap:has(> :hover:not(:disabled):not([aria-disabled="true"]))::before {
+  display: block;
   inset: calc(-1 * var(--reticle-to, 5px));
   opacity: 1;
   /* Arriving: the M1 snap curve, over the lock-on window the mood board specifies (160-220ms). */
-  transition: inset var(--duration-base) var(--ease-snap), opacity var(--duration-base) var(--ease-snap);
+  transition: inset var(--duration-base) var(--ease-snap), opacity var(--duration-base) var(--ease-snap), display var(--duration-base) allow-discrete;
+  @starting-style { inset: calc(-1 * var(--reticle-from, 12px)); opacity: 0; }
 }
 .bevel-focus-wrap.no-reticle::before { content: none; }
 
@@ -139,3 +148,19 @@
     transition: none;
   }
 }
+
+/* Reticle reach: how far a Button's hover brackets (--reticle-to, 5px) and its focus ring
+   (outline-offset 3px + 2px width) land outside the control's box. Both are 5px.
+
+   A scroll container (overflow other than visible) clips at its padding box, so a control flush
+   with its edge loses its brackets and ring there. Any scroll container that can hold a Button at
+   its edge carries at least this much padding on that edge. `.reticle-room` does it without moving
+   the layout: padding out, the same negative margin back. `-x` / `-y` for one axis only. Do not
+   change --reticle-to or the ring without updating this. */
+:root { --reticle-reach: 5px; }
+.reticle-room   { padding: var(--reticle-reach); margin: calc(-1 * var(--reticle-reach)); }
+.reticle-room-x { padding-inline: var(--reticle-reach); margin-inline: calc(-1 * var(--reticle-reach)); }
+.reticle-room-y { padding-block: var(--reticle-reach); margin-block: calc(-1 * var(--reticle-reach)); }
+/* Inside a scroll pane the bracket fades in where it lands instead of closing in from 12px: for the
+   first frames of the snap it would sit outside the room and flash a scrollbar. */
+:is(.reticle-room, .reticle-room-x, .reticle-room-y) .bevel-focus-wrap::before { --reticle-from: var(--reticle-to, 5px); }

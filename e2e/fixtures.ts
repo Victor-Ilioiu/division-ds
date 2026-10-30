@@ -44,8 +44,8 @@ const TERRAIN_SCENE_OFF = `export function mountTerrain() {
  * thrown in an event handler reaches the console and nowhere else; axe and every other assertion
  * here would pass straight over it.
  *
- * `heroSceneGate` keeps the three.js scene on `/demo` from starting, unless a test asks for it.
- * Most of this suite passes through `/demo` on its way somewhere else, and with motion allowed
+ * `heroSceneGate` keeps the three.js scene on `/store` from starting, unless a test asks for it.
+ * Most of this suite passes through `/store` on its way somewhere else, and with motion allowed
  * (this suite's default) every one of those visits would build the scene: seconds of shader
  * compilation, a four-second preloader and a render loop on a software GPU, on each of three
  * workers. So by default the scene's entry module is answered with a stub that refuses to start,
@@ -136,7 +136,7 @@ export const test = base.extend<{
 })
 
 /**
- * Records where the `/demo` hero's bottom edge sits in the document, on every animation frame
+ * Records where the `/store` hero's bottom edge sits in the document, on every animation frame
  * from the first one the hero exists in. Call it before `goto`; the function it returns reads
  * the distinct values seen so far. One value means the hero never changed where the rest of the
  * page starts.

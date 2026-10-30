@@ -54,7 +54,7 @@ function readSceneOptions(): SceneOptions {
 }
 
 /**
- * The `/demo` hero: the Kestrel C operator kit as an offer, over a live three.js scene.
+ * The `/store` hero: the Kestrel C operator kit as an offer, over a live three.js scene.
  *
  * Everything a visitor reads or clicks is a design-system component or the system's own type and
  * colour classes. The canvas is decoration: `aria-hidden`, and nothing on the page depends on it.

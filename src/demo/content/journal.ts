@@ -266,7 +266,7 @@ export function filterJournalPosts(filters: { q?: string | null; tag?: string | 
   })
 }
 
-/** The guide `/demo/shop`'s Product page links its Guide tab to: the first post (in catalogue
+/** The guide `/store/shop`'s Product page links its Guide tab to: the first post (in catalogue
  *  order) whose `categories` include this one, or `undefined` when no guide covers it yet --
  *  Product.tsx falls back to the Field notes index itself in that case, rather than a broken or
  *  guessed link. */

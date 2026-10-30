@@ -21,11 +21,12 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 |---|---|---|---|
 | `label` | `string` |  | Required. The name screen readers give the navigation region. |
 | `brand` | `ReactNode` |  | Required. The wordmark or logo, usually a link to the home page. |
-| `items` | `NavbarItem[]` |  | Required. Each item has label, href and current. |
+| `items` | `NavbarItem[]` |  | Required. A link is { label, href, current }. A menu among the links is { label, menu, current }: menu lists { label, href, description } entries, opened from a dropdown on a wide bar and listed as a labelled group in the menu sheet on a narrow one. |
 | `actions` | `ReactNode` |  | Controls on the right: icon buttons, a cart link, an account menu. Keep them small, because they stay visible at every width. |
 | `renderLink` | `(props: LinkRenderProps) => ReactNode` | `a plain anchor` | Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through. |
 | `menuLabel` | `string` | `'Menu'` | The menu button's name for screen readers, and the sheet's title. |
-| `menuFooter` | `ReactNode` |  | Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex. |
+| `menuFooter` | `ReactNode` |  | Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex (hidden @4xl:flex when collapseBelow is '4xl'). |
+| `collapseBelow` | `'2xl' \| '4xl'` | `'2xl'` | The bar's own width below which the links fold into the menu sheet: 2xl is 42rem, 4xl is 56rem. Pick the one at which the brand, every link and the actions still fit on one row with room to spare. |
 | `className` | `string` |  | Added to the root classes. Where two Tailwind utility classes clash, the later one wins. |
 | `ref` | `Ref<HTMLElement>` |  | The header element. |
 
@@ -34,7 +35,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 Exported beside the component, from the same file. Import a type with `import type { ... }`.
 
 ```ts
-export type NavbarItem = { label: string; href: string; current?: boolean }
+export type NavbarItem = NavbarLink | NavbarMenu
 ```
 
 ## Examples
@@ -75,6 +76,56 @@ const ACTIONS = (
 )
 
 <Navbar label="Store navigation" brand={BRAND} items={ITEMS} actions={ACTIONS} />
+```
+
+### A menu among the links
+
+```tsx
+const ITEMS = [
+  { label: 'Replicas', href: '#replicas' },
+  { label: 'Optics', href: '#optics', current: true },
+  { label: 'Parts', href: '#parts' },
+  { label: 'Care', href: '#care' },
+  { label: 'Field notes', href: '#field-notes' },
+]
+
+const BRAND = (
+  <a
+    href="#home"
+    className="inline-flex items-center min-h-10 font-display font-bold uppercase tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
+  >
+    Hexline
+  </a>
+)
+
+const ACTIONS = (
+  <>
+    <IconButton label="Search" variant="ghost">
+      <Search aria-hidden="true" className="w-5 h-5" />
+    </IconButton>
+    <IconButton label="Cart, 2 items" variant="ghost" asChild>
+      <a href="#cart">
+        <ShoppingBag aria-hidden="true" className="w-5 h-5" />
+      </a>
+    </IconButton>
+  </>
+)
+
+<Navbar
+  label="Store navigation with a menu"
+  brand={BRAND}
+  items={[
+    ...ITEMS.slice(0, 3),
+    {
+      label: 'Guides',
+      menu: [
+        { label: 'Sizing', href: '#sizing', description: 'Fit charts for every replica.' },
+        { label: 'Returns', href: '#returns', description: 'Thirty days, no questions.' },
+      ],
+    },
+  ]}
+  actions={ACTIONS}
+/>
 ```
 
 ### A narrow container

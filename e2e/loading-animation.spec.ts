@@ -94,8 +94,8 @@ test.describe('LoadingAnimation, WebGL', () => {
   // Each dial holds a WebGL context and browsers cap them, so leaving the page must release them.
   test('navigating away removes every loader canvas', async ({ page }) => {
     await openDocs(page)
-    await page.getByRole('navigation', { name: 'Documentation' }).getByRole('link', { name: 'Overview', exact: true }).click()
-    await expect(page).toHaveURL(/\/$/)
+    await page.getByRole('navigation', { name: 'Documentation' }).getByRole('link', { name: 'All components', exact: true }).click()
+    await expect(page).toHaveURL(/\/components$/)
     await expect(page.locator('canvas[data-engine]')).toHaveCount(0)
   })
 })

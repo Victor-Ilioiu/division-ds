@@ -11,7 +11,7 @@ export type CaughtErrorInfo = {
  * React's own default (`defaultOnCaughtError`) routes every error a boundary catches through
  * console.error, which would fail e2e/fixtures.ts's fixture (it fails any test where
  * console.error fires) the moment DemoErrorBoundary is exercised on purpose, from
- * /demo/status/error's "Show the full-page error" button. `DemonstrationError` is that one
+ * /store/status/error's "Show the full-page error" button. `DemonstrationError` is that one
  * intentional throw's own name (see StatusError.tsx). `DemoErrorBoundary`'s own
  * `componentDidCatch` already logs every caught error (including this one) through
  * console.warn -- this stays silent for a `DemonstrationError` specifically, rather than also

@@ -7,22 +7,21 @@ import {
   Handshake,
   Info,
   Menu,
-  Search as SearchIcon,
   TrendingUp,
   UserRound,
   Users,
 } from 'lucide-react'
 import { Avatar } from '../components/atoms/avatar/Avatar'
-import { Button } from '../components/atoms/button/Button'
 import { IconButton } from '../components/atoms/icon-button/IconButton'
-import { Kbd } from '../components/atoms/kbd/Kbd'
 import { Spinner } from '../components/atoms/spinner/Spinner'
 import { TooltipProvider } from '../components/atoms/tooltip/Tooltip'
 import { Toaster } from '../components/molecules/toast/Toast'
-import { CommandPalette, type Command } from '../components/organisms/command-palette/CommandPalette'
+import type { Command } from '../components/organisms/command-palette/CommandPalette'
 import { Sheet, SheetContent } from '../components/organisms/sheet/Sheet'
 import { Sidebar, type SidebarGroup } from '../components/organisms/sidebar/Sidebar'
 import { BackToDocs } from '../components/shell/BackToDocs'
+import { DocsSearch } from '../search/DocsSearch'
+import { DivisionSymbol } from '../components/shell/DivisionSymbol'
 import { ThemeToggle } from '../components/shell/ThemeToggle'
 import { ACCOUNTS, CURRENT_REP_ID, PRODUCT_NAME, repById, WORKSPACE } from './data'
 import { DealSheet } from './DealSheet'
@@ -55,7 +54,10 @@ function useDocumentTitle(path: string) {
 function Brand() {
   return (
     <div className="flex flex-col gap-0.5 px-1">
-      <span className="font-display text-lg font-bold uppercase tracking-[0.14em] leading-none">{PRODUCT_NAME}</span>
+      <span className="inline-flex items-center gap-2 font-display text-lg font-bold uppercase tracking-[0.14em] leading-none">
+        <DivisionSymbol />
+        {PRODUCT_NAME}
+      </span>
       <span className="font-body text-sm text-[var(--color-text-secondary)]">{WORKSPACE}</span>
     </div>
   )
@@ -157,7 +159,6 @@ function Shell() {
   const path = pathname.replace(/\/+$/, '') || '/'
   useDocumentTitle(path)
   const [navOpen, setNavOpen] = useState(false)
-  const [paletteOpen, setPaletteOpen] = useState(false)
   const commands = usePaletteCommands()
 
   // A link chosen in the narrow-screen menu sheet navigates; the sheet then has nothing left to do.
@@ -176,39 +177,30 @@ function Shell() {
       </div>
       <div className="flex min-h-screen min-w-0 flex-col">
         <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-[var(--color-border-hairline)] bg-[var(--color-surface-base)] px-4 md:px-8">
-          <span className="md:hidden">
-            <Sheet open={navOpen} onOpenChange={setNavOpen}>
-              <IconButton label="Menu" variant="ghost" size="sm" onClick={() => setNavOpen(true)}>
-                <Menu aria-hidden="true" />
-              </IconButton>
-              <SheetContent side="left" title="Menu">
-                <CrmNav path={path} />
-                <div className="mt-4 border-t border-[var(--color-border-hairline)] pt-4">
-                  <BackToDocs />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </span>
-          <span className="md:hidden font-display font-bold uppercase tracking-[0.14em]">{PRODUCT_NAME}</span>
-          <div className="ml-auto flex items-center gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              iconStart={<SearchIcon />}
-              onClick={() => setPaletteOpen(true)}
-              aria-label="Search deals, accounts, contacts and pages"
-              aria-keyshortcuts="Control+K Meta+K"
-            >
-              <span className="hidden sm:inline">Search</span>
-              <Kbd aria-hidden="true" className="hidden sm:inline-flex ml-2">
-                Ctrl K
-              </Kbd>
-            </Button>
+          <span className="inline-flex md:hidden items-center gap-2 font-display font-bold uppercase tracking-[0.14em]"><DivisionSymbol />{PRODUCT_NAME}</span>
+          <div className="ml-auto flex items-center gap-2">
+            {/* One search: Corvane's deals, accounts, contacts and pages first, then the whole
+                site (components, guidelines, the store). Ctrl+K or / opens it. */}
+            <DocsSearch commands={commands} />
             {/* Below md the nav is in the menu sheet, and so is this. */}
             <span className="hidden md:inline-flex">
               <BackToDocs />
             </span>
             <ThemeToggle />
+            {/* Far right, like every header's menu button: below md the nav lives in this sheet. */}
+            <span className="md:hidden">
+              <Sheet open={navOpen} onOpenChange={setNavOpen}>
+                <IconButton label="Menu" variant="ghost" size="sm" onClick={() => setNavOpen(true)}>
+                  <Menu aria-hidden="true" className="w-5 h-5" />
+                </IconButton>
+                <SheetContent side="right" title="Menu">
+                  <CrmNav path={path} />
+                  <div className="mt-4 border-t border-[var(--color-border-hairline)] pt-4">
+                    <BackToDocs />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </span>
           </div>
         </header>
         <main id="main" tabIndex={-1} className="flex-1 min-w-0 px-4 py-6 md:px-8 md:py-8 focus:outline-none">
@@ -221,15 +213,6 @@ function Shell() {
         </p>
       </div>
       <DealSheet />
-      <CommandPalette
-        commands={commands}
-        open={paletteOpen}
-        onOpenChange={setPaletteOpen}
-        label="Search Corvane"
-        searchLabel="Search deals, accounts, contacts and pages"
-        placeholder="Search deals, accounts, contacts"
-        emptyMessage="Nothing matches"
-      />
     </div>
   )
 }

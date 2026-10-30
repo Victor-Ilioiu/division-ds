@@ -39,6 +39,8 @@ export function Radio({ invalid, className, ref, ...rest }: RadioProps) {
       className={cn(
         // Square, like everything else — the selected marker is a filled inner square, not a dot.
         'relative inline-flex items-center justify-center shrink-0 w-5 h-5',
+        // With the cut off (the theme builder's shape), a 20px box takes a third of the radius.
+        'rounded-[calc(var(--shape-radius,0px)/3)]',
         // ...but the ::before pseudo-element extends 2px past it on every side, so the actual hit
         // area is 24x24 — SC 2.5.8's floor.
         'before:absolute before:-inset-0.5 before:content-[""]',
@@ -66,12 +68,12 @@ export function Radio({ invalid, className, ref, ...rest }: RadioProps) {
           (`accent.signal.text`) it used before. The inner square is the ONLY thing that says
           "selected" (unlike Checkbox, whose whole box flips to the signal fill), so SC 1.4.11
           measures it against the colour adjacent to it — the control's own fill, not the page —
-          and `accent.signal.indicator` there measures 2.15:1 in light theme, below the 3:1 floor.
+          and `accent.signal.indicator` there measures 2.80:1 in light theme, below the 3:1 floor.
           Accepted knowingly, same as Progress's signal tone; gated at a 2:1 floor instead of
           removed from the gate (see contrast-pairs.mjs). Dark theme is visually unchanged: its
           signal.text and signal.fill are the same primitive stop. `component.control.indicator.
           checked` itself is left in place, unread by any component now. */}
-      <RadixRadioGroup.Indicator className="w-2.5 h-2.5 bg-[var(--color-accent-signal-indicator)]" />
+      <RadixRadioGroup.Indicator className="w-2.5 h-2.5 rounded-[calc(var(--shape-radius,0px)/4)] bg-[var(--color-accent-signal-indicator)]" />
     </RadixRadioGroup.Item>
   )
 }

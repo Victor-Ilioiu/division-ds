@@ -27,13 +27,13 @@ function SignOutButton() {
   return <button onClick={signOut}>Sign out</button>
 }
 
-function renderApp(initialPath = '/demo/account') {
+function renderApp(initialPath = '/store/account') {
   return render(
     <MemoryRouter initialEntries={[initialPath]}>
       <SessionProvider>
         <Routes>
           <Route
-            path="/demo/account"
+            path="/store/account"
             element={
               <RequireSession>
                 <Protected />
@@ -42,14 +42,14 @@ function renderApp(initialPath = '/demo/account') {
             }
           />
           <Route
-            path="/demo/account/orders"
+            path="/store/account/orders"
             element={
               <RequireSession>
                 <h1>Orders</h1>
               </RequireSession>
             }
           />
-          <Route path="/demo/sign-in" element={<SignInStub />} />
+          <Route path="/store/sign-in" element={<SignInStub />} />
         </Routes>
       </SessionProvider>
     </MemoryRouter>
@@ -83,8 +83,8 @@ describe('RequireSession', () => {
   // only `notice`) -> the `from` paragraph below is empty instead of naming the page that was
   // actually requested, and SignIn/Verify have nothing to forward or return to.
   it('carries the requested path and query string as `from`, for SignIn to relay onward', () => {
-    renderApp('/demo/account/orders?status=Delivered')
-    expect(screen.getByTestId('from')).toHaveTextContent('/demo/account/orders?status=Delivered')
+    renderApp('/store/account/orders?status=Delivered')
+    expect(screen.getByTestId('from')).toHaveTextContent('/store/account/orders?status=Delivered')
   })
 
   // Mutation: hardcode the notice to the generic string, ignoring `hadUser.current` -> the text

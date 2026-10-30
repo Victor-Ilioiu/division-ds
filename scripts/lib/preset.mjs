@@ -17,6 +17,18 @@ import { pairsForTokens } from './pairs-for-tokens.mjs'
 
 export const PRESET_VERSION = 1
 export const DEFAULT_PRESET = { signal: '#f2550f', neutral: '#283445' }
+/** The accent swatches on the Themes page (/themes). Each passes every contrast check with the
+ *  default neutral; preset.test.mjs holds that, so a swatch can never offer a theme with no CSS. */
+export const ACCENT_PRESETS = [
+  { name: 'Division orange', signal: '#f2550f' },
+  { name: 'Blue', signal: '#2563eb' },
+  { name: 'Indigo', signal: '#4f46e5' },
+  { name: 'Violet', signal: '#7c3aed' },
+  { name: 'Pink', signal: '#db2777' },
+  { name: 'Teal', signal: '#0d9488' },
+  { name: 'Green', signal: '#16a34a' },
+  { name: 'Amber', signal: '#ca8a04' },
+]
 // Neutral is generated with tighter bounds than the accents: it has to carry the light theme's
 // whole text/background range at its extremes. generate-ramps.mjs reads this too.
 export const NEUTRAL_BOUNDS = { lightBound: 96, darkBound: 2 }

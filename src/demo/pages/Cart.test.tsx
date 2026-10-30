@@ -24,14 +24,14 @@ function AddPack() {
 
 function renderCart() {
   return render(
-    <MemoryRouter initialEntries={['/demo/cart']}>
+    <MemoryRouter initialEntries={['/store/cart']}>
       <Toaster>
         <CartProvider>
           <AddPack />
           <Routes>
-            <Route path="/demo/cart" element={<Cart />} />
-            <Route path="/demo/checkout" element={<Stub name="Checkout" />} />
-            <Route path="/demo/shop" element={<Stub name="Shop" />} />
+            <Route path="/store/cart" element={<Cart />} />
+            <Route path="/store/checkout" element={<Stub name="Checkout" />} />
+            <Route path="/store/shop" element={<Stub name="Shop" />} />
           </Routes>
         </CartProvider>
       </Toaster>
@@ -58,19 +58,19 @@ describe('Cart', () => {
     renderCart()
     expect(screen.getByRole('heading', { level: 1, name: 'Your cart' })).toBeInTheDocument()
     expect(screen.getByText('Your cart is empty.')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Browse the shop' })).toHaveAttribute('href', '/demo/shop')
+    expect(screen.getByRole('link', { name: 'Browse the shop' })).toHaveAttribute('href', '/store/shop')
     expect(screen.queryByRole('link', { name: 'Checkout' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Continue shopping' })).not.toBeInTheDocument()
   })
 
-  // Mutation: change the Checkout link's `to` from `/demo/checkout` to anything else -> the href
+  // Mutation: change the Checkout link's `to` from `/store/checkout` to anything else -> the href
   // assertion below fails.
   it('a full cart shows Checkout and Continue shopping links, no Browse-the-shop line', async () => {
     renderCart()
     await userEvent.click(screen.getByRole('button', { name: 'Seed cart' }))
     expect(await screen.findByText('1 item')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Checkout' })).toHaveAttribute('href', '/demo/checkout')
-    expect(screen.getByRole('link', { name: 'Continue shopping' })).toHaveAttribute('href', '/demo/shop')
+    expect(screen.getByRole('link', { name: 'Checkout' })).toHaveAttribute('href', '/store/checkout')
+    expect(screen.getByRole('link', { name: 'Continue shopping' })).toHaveAttribute('href', '/store/shop')
     expect(screen.queryByText('Browse the shop')).not.toBeInTheDocument()
   })
 
@@ -109,7 +109,7 @@ describe('Cart notice', () => {
       <MemoryRouter
         initialEntries={[
           {
-            pathname: '/demo/cart',
+            pathname: '/store/cart',
             state: { notice: 'Your cart is empty, so there is nothing to check out yet.' },
           },
         ]}

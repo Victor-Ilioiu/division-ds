@@ -43,6 +43,24 @@ export function NavbarDocs() {
         <Navbar label="Store navigation" brand={BRAND} items={ITEMS} actions={ACTIONS} />
       </Example>
 
+      <Example caption="A menu among the links" className="block">
+        <Navbar
+          label="Store navigation with a menu"
+          brand={BRAND}
+          items={[
+            ...ITEMS.slice(0, 3),
+            {
+              label: 'Guides',
+              menu: [
+                { label: 'Sizing', href: '#sizing', description: 'Fit charts for every replica.' },
+                { label: 'Returns', href: '#returns', description: 'Thirty days, no questions.' },
+              ],
+            },
+          ]}
+          actions={ACTIONS}
+        />
+      </Example>
+
       <Example caption="A narrow container" className="block">
         <div className="max-w-sm">
           <Navbar label="Store navigation, narrow" brand={BRAND} items={ITEMS} actions={ACTIONS} />

@@ -3,21 +3,21 @@
     "semantic": {
       "surface": {
         "base": { "$type": "color", "$value": "{color.primitive.neutral.50}" },
-        "sunken": { "$type": "color", "$value": "{color.primitive.neutral.100}" },
+        "sunken": { "$type": "color", "$value": "{color.primitive.neutral.50}", "$extensions": { "division-ds": { "mix": { "with": "{color.primitive.neutral.100}", "amount": 0.31 } } }, "$description": "neutral.50 mixed 31% of the way to neutral.100 in OKLab (#e3e8ef with the default preset), so the base-to-sunken step is OKLCH ΔL 0.038, the same step as the dark theme (#07080b to #0d1016, ΔL 0.038). neutral.100 alone sat ΔL 0.122 below base and made every field a heavy grey slab; the ramp has no stop in between. A mix of two ramp stops, not a literal, so a Theme Builder preset re-tints it." },
         "raised": { "$type": "color", "$value": "rgba(255, 255, 255, 0.6)" },
         "scrim": { "$type": "color", "$value": "rgba(11, 14, 19, 0.48)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." }
       },
       "border": {
         "hairline": { "$type": "color", "$value": "rgba(11, 14, 19, 0.12)" },
         "hairline-strong": { "$type": "color", "$value": "rgba(11, 14, 19, 0.22)", "$description": "Decorative only — panel edges and the corner-crosshair chrome. Deliberately subtle; composited over surface.base it reaches 1.64:1, which carries no SC 1.4.11 obligation. Never use it for a form control's boundary; that is border.control." },
-        "control": { "$type": "color", "$value": "#616874", "$description": "3.49:1 on surface.sunken (the control fill it is painted on) and 5.10:1 on surface.base — the INFORMATIONAL hairline, the one SC 1.4.11 governs. Opaque rather than alpha so the boundary holds whatever surface it lands on." },
-        "selection": { "$type": "color", "$value": "#616874", "$description": "The boundary of the small selection controls (Checkbox, Radio, Switch track) at rest. Same value as border.control in this theme (3.49:1 on surface.sunken), which reads clearly on a light page; the token exists in both themes because dark needed its own brighter step." }
+        "control": { "$type": "color", "$value": "#616874", "$description": "4.56:1 on surface.sunken (the control fill it is painted on) and 5.10:1 on surface.base — the INFORMATIONAL hairline, the one SC 1.4.11 governs. Opaque rather than alpha so the boundary holds whatever surface it lands on." },
+        "selection": { "$type": "color", "$value": "#616874", "$description": "The boundary of the small selection controls (Checkbox, Radio, Switch track) at rest. Same value as border.control in this theme (4.56:1 on surface.sunken), which reads clearly on a light page; the token exists in both themes because dark needed its own brighter step." }
       },
       "text": {
         "primary": { "$type": "color", "$value": "{color.primitive.neutral.900}" },
         "secondary": { "$type": "color", "$value": "{color.primitive.neutral.700}" },
         "muted": { "$type": "color", "$value": "{color.primitive.neutral.500}" },
-        "placeholder": { "$type": "color", "$value": "{color.primitive.neutral.500}", "$description": "7.83:1 on surface.sunken, the control fill it is painted on. Light theme needs no separate step from text.muted — unlike dark, where muted reaches only 4.37:1 there — but the name exists in both themes so the component layer has one alias to point at." },
+        "placeholder": { "$type": "color", "$value": "{color.primitive.neutral.500}", "$description": "10.23:1 on surface.sunken, the control fill it is painted on. Light theme needs no separate step from text.muted — unlike dark, where muted reaches only 4.37:1 there — but the name exists in both themes so the component layer has one alias to point at." },
         "label": { "$type": "color", "$value": "{color.primitive.neutral.400}", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 6.58:1 on surface.base against text.secondary's 14.72:1. Exists because light text.muted (11.44:1) sits too close to text.secondary to separate a label from the links under it. Gated." }
       },
       "accent": {
@@ -55,8 +55,8 @@
         "pad": { "$type": "color", "$value": "{color.primitive.neutral.300}", "$description": "The dimmed leading-zero pad. 3.82:1 on surface.base, 22% of text.primary's 17.55:1 there, against the dark theme's 31%. Light theme needs a LIGHTER step than text.muted for the same role: muted aliases neutral.500 and measures 11.44:1 here, 65% of ink, which does not read as dimmed and out-shouts the signal.fill numeral it is padding (3.14:1 on this surface). neutral.400 would land at 6.58:1 and 38% of ink, closer to dark's share but more than twice the contrast of the digits beside it, so neutral.300 is the step that keeps the pad quieter than what it pads." }
       },
       "ai": {
-        "text": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "Measured by the gate: 8.39:1 on surface.base, 5.75:1 on surface.sunken, 8.92:1 on surface.raised. info.700 reached only 3.49:1 on surface.sunken, so the light theme takes info.800." },
-        "border": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "The edge of a field an AI filled. 5.24:1 on the AI-filled field (ai.wash over surface.sunken). Same stop as ai.text; a separate token because a boundary and text carry different floors." },
+        "text": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "Measured by the gate: 8.39:1 on surface.base, 7.50:1 on surface.sunken, 8.92:1 on surface.raised. info.700 reached only 3.49:1 on the earlier, darker surface.sunken (neutral.100), so the light theme takes info.800." },
+        "border": { "$type": "color", "$value": "{color.primitive.info.800}", "$description": "The edge of a field an AI filled. 6.72:1 on the AI-filled field (ai.wash over surface.sunken). Same stop as ai.text; a separate token because a boundary and text carry different floors." },
         "wash": { "$type": "color", "$value": "rgba(0, 99, 213, 0.08)", "$description": "Tint laid over the control fill of an AI-filled field. Text on it is text.primary and gated (composited over surface.sunken)." }
       },
       "focus": {

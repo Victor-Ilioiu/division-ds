@@ -30,7 +30,7 @@ describe('the generated agent docs', () => {
 
   it('give every component a page with an import line, props and at least one example', () => {
     const pages = Object.entries(files).filter(([path]) => path.startsWith('public/docs/components/'))
-    expect(pages).toHaveLength(72)
+    expect(pages).toHaveLength(74)
     for (const [path, text] of pages) {
       expect(text, path).toMatch(/## Import\n\n```tsx\nimport \{ \w/)
       expect(text, path).toContain('## Props')
@@ -77,13 +77,15 @@ describe('the generated agent docs', () => {
     expect(design).toMatch(/`font-display`: `"Oxanium"/)
     expect(design).toContain('`--color-surface-base`')
     // 18.1 kB when written (2026-10-26). It links the pages rather than inlining them.
-    expect(design.length).toBeLessThan(20_000)
+    // Moved to 21.5 kB with Panel and CodeBlock (2026-10-30): each component adds a linked line.
+    expect(design.length).toBeLessThan(21_500)
   })
 
   it('keep the index small enough to read whole', () => {
     // 20 kB held 58 components; the nine added on 2026-10-15 (monitoring and assistant) brought it
     // to about 22 kB after their index lines were trimmed, so the cap moved with the count.
-    expect(files['public/llms.txt'].length).toBeLessThan(24_000)
+    // 25.5 kB from 2026-10-30, when Panel and CodeBlock took it just over 24 kB.
+    expect(files['public/llms.txt'].length).toBeLessThan(25_500)
     // 8 kB until the Assistant copy rule (2026-10-26) took it just over, trimmed to three lines.
     expect(files['public/llms-guidelines.txt'].length).toBeLessThan(8_500)
   })

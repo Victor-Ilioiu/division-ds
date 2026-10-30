@@ -31,7 +31,7 @@ import { PageHeading } from './PageHeading'
  * this component ever rendered, and it describes where the interrupted visit was headed, not
  * anything that changes while this form is on screen. Validated again here (`returnToFrom`,
  * `authRoutes.ts`) rather than trusted because SignIn already validated it: this page has no way
- * to tell a same-app `/demo/…` path SignIn forwarded untouched from one a future caller handed
+ * to tell a same-app `/store/…` path SignIn forwarded untouched from one a future caller handed
  * `navigate` some other way, so it re-checks rather than assuming. A successful code lands there;
  * anything else (no `from`, or one that fails the check) lands on the shop, same as ever.
  */
@@ -53,7 +53,7 @@ export function Verify() {
   }, [])
 
   if (signedInOnArrival) {
-    return <Navigate to="/demo/shop" replace state={{ notice: "You're already signed in." }} />
+    return <Navigate to="/store/shop" replace state={{ notice: "You're already signed in." }} />
   }
 
   if (!email) {
@@ -69,7 +69,7 @@ export function Verify() {
       }
       if ('errors' in result) return result.errors
       signInAs(result.user)
-      navigate(from ?? '/demo/shop')
+      navigate(from ?? '/store/shop')
       return undefined
     } catch (e) {
       if (!mounted.current) {

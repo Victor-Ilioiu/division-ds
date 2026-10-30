@@ -180,6 +180,8 @@ import { Kbd } from 'src/components/atoms/kbd/Kbd'
 ```
 
 - `children: ReactNode` The key's name, for example "Esc" or "⌘".
+- `size: 'md' \| 'sm' = 'md'` md is 24px tall, for a cap beside text or in a menu row. sm is 20px tall, for a cap inside a 32px control: a small Button or a search field.
+- `cut: boolean = false` Cuts the bottom-right corner (5px at sm, 8px at md) so the cap nests in the corner of a bevelled control, its diagonal parallel to the control's. Only for a cap inside such a control.
 - `className: string` Merged with the component's classes. When Tailwind utility classes clash, the later one wins.
 - `ref: Ref<HTMLElement>` Passed through to the kbd element.
 - `...rest: HTMLAttributes<HTMLElement>` Every native attribute, passed onto the kbd element, such as a title, or an aria-label for a symbol key (aria-label is the name screen readers read out).
@@ -220,6 +222,26 @@ import { LoadingAnimation } from 'src/components/atoms/loading-animation/Loading
 
 Page: /docs/components/loading-animation.md
 
+### Panel
+
+The system's framed surface: a thin border around a fill, with the crosshair corner marks and the cut corner as options. Card is a Panel with a title, body and footer; Panel is the frame alone, for a feature tile, a demo frame or a tile that is one link.
+
+```tsx
+import { Panel } from 'src/components/atoms/panel/Panel'
+```
+
+- `padding: 'none' \| 'sm' \| 'md' \| 'lg' = 'md'` Inner spacing: 0, 12px, 20px or 32px.
+- `tone: 'base' \| 'raised' \| 'signal' = 'raised'` base sits flush with the page, raised is one step up, signal is the brand wash for the one panel in a group that leads.
+- `crosshair: boolean = false` Draws the crosshair marks at the corners.
+- `cut: boolean = false` Cuts the bottom-right corner, with the border following the cut.
+- `interactive: boolean = false` Hover and focus states for a panel that is one link or button. Use it with asChild; it adds no behaviour of its own.
+- `asChild: boolean = false` Renders the single child element (an a, a router Link, a button) with the panel classes merged onto it, instead of a div.
+- `className: string` Merged with the component's classes. Use it for layout (a grid span, flex, gap), not for the fill or the border.
+- `ref: Ref<HTMLDivElement>` Passed through to the div, or to the child with asChild.
+- `...rest: HTMLAttributes<HTMLDivElement>` Every native attribute, passed onto the element.
+
+Page: /docs/components/panel.md
+
 ### Progress
 
 A progress bar that's either determinate (it knows how far along the task is) or indeterminate (it doesn't). The readout is real text in the DOM (the Document Object Model, the live page structure the browser builds) from the very first render. That's motion token M3's rule, and it means a screen reader, the software that reads the page aloud for blind and low-vision people, never hears a number roll.
@@ -232,7 +254,7 @@ import { Progress } from 'src/components/atoms/progress/Progress'
 - `value: number \| null` null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.
 - `max: number = 100` The value at which the bar is complete.
 - `showValue: boolean = false` Shows the percentage (or "In progress") as a readout.
-- `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
+- `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
 - `className: string` Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.
 - `ref: Ref<HTMLDivElement>` Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.
 - `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning.
@@ -629,6 +651,28 @@ Requires: A ChatThread around it. Outside one, a message still shows, but nothin
 
 Page: /docs/components/chat-message.md
 
+### CodeBlock
+
+Code or a command in a panel, with a title bar that names the file or language and a button that copies the text. Long lines scroll sideways inside it, and code longer than one line gets line numbers.
+
+```tsx
+import { CodeBlock } from 'src/components/molecules/code-block/CodeBlock'
+```
+
+Requires: The app’s one Toaster at the root: the copy is confirmed with a toast.
+
+- `code: string` The text shown and copied, exactly.
+- `label: string` What the code is, in a few words ("the theme CSS"). Names the region and the copy button ("Copy the theme CSS").
+- `title: string` Shown in the title bar: a file name ("index.css") or a language ("bash").
+- `language: 'css' \| 'text' = 'text'` css colours comments, at-rules, selectors and property names; text is plain.
+- `lineNumbers: boolean` Line numbers in a gutter. Unset, they show when the code has more than one line.
+- `copyable: boolean = true` The copy button. Turn it off for code nobody should paste, such as a wrong example.
+- `wrap: boolean = false` Wraps long lines instead of scrolling them sideways. For prose, such as a prompt; leave code unwrapped.
+- `className: string` Merged onto the frame. Use it for width (max-w-3xl) and spacing.
+- `ref: Ref<HTMLDivElement>` Passed through to the frame.
+
+Page: /docs/components/code-block.md
+
 ### DatePicker
 
 One date, typed or picked. The field has a segment for the day, the month and the year, in the order your language writes them: type the digits and it moves on by itself, or use the arrow keys. The button inside it opens a calendar. The value is a plain 'YYYY-MM-DD' string with no time zone, so it means the same day for everyone. Calendar and DateField are exported too, for building your own.
@@ -755,6 +799,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 - `onSelect (Item): (event: Event) => void` Called when the item is chosen.
 - `disabled (Item): boolean = false` The item can't be chosen, and typing letters (typeahead) skips it.
 - `tone (Item): 'default' \| 'hostile' = 'default'` Use hostile for a destructive action: hostile-coloured text at rest, the hostile fill with ink text when highlighted.
+- `asChild (Item): boolean = false` Makes the one child (a link) the item, for a menu of links. icon and shortcut are ignored then; put the content inside the link.
 - `icon (Item): ReactNode` A small icon before the text, hidden from screen readers (aria-hidden).
 - `shortcut (Item): string` Shown on the right and passed to screen readers as aria-keyshortcuts. It only displays the key: the menu never makes the key work.
 - `checked (Checkbox item): boolean` Whether the tick shows.
@@ -1521,11 +1566,12 @@ import { Navbar } from 'src/components/organisms/navbar/Navbar'
 
 - `label: string` Required. The name screen readers give the navigation region.
 - `brand: ReactNode` Required. The wordmark or logo, usually a link to the home page.
-- `items: NavbarItem[]` Required. Each item has label, href and current.
+- `items: NavbarItem[]` Required. A link is { label, href, current }. A menu among the links is { label, menu, current }: menu lists { label, href, description } entries, opened from a dropdown on a wide bar and listed as a labelled group in the menu sheet on a narrow one.
 - `actions: ReactNode` Controls on the right: icon buttons, a cart link, an account menu. Keep them small, because they stay visible at every width.
 - `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through.
 - `menuLabel: string = 'Menu'` The menu button's name for screen readers, and the sheet's title.
-- `menuFooter: ReactNode` Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex.
+- `menuFooter: ReactNode` Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex (hidden @4xl:flex when collapseBelow is '4xl').
+- `collapseBelow: '2xl' \| '4xl' = '2xl'` The bar's own width below which the links fold into the menu sheet: 2xl is 42rem, 4xl is 56rem. Pick the one at which the brand, every link and the actions still fit on one row with room to spare.
 - `className: string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
 - `ref: Ref<HTMLElement>` The header element.
 

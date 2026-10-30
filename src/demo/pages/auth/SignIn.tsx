@@ -49,7 +49,7 @@ export function SignIn() {
   }, [])
 
   if (signedInOnArrival) {
-    return <Navigate to="/demo/shop" replace state={{ notice: "You're already signed in." }} />
+    return <Navigate to="/store/shop" replace state={{ notice: "You're already signed in." }} />
   }
 
   const handleSubmit = async (values: AuthValues): Promise<void | AuthErrors> => {

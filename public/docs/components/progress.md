@@ -23,7 +23,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `value` | `number \| null` |  | null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. |
 | `max` | `number` | `100` | The value at which the bar is complete. |
 | `showValue` | `boolean` | `false` | Shows the percentage (or "In progress") as a readout. |
-| `tone` | `'signal' \| 'ok' \| 'warning' \| 'hostile'` | `'signal'` | The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there. |
+| `tone` | `'signal' \| 'ok' \| 'warning' \| 'hostile'` | `'signal'` | The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there. |
 | `className` | `string` |  | Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on. |
 | `...rest` | `Omit<HTMLAttributes<HTMLDivElement>, 'children'>` |  | Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning. |

@@ -6,10 +6,10 @@ import type { AuthMode } from '../../../components/organisms/auth-form/AuthForm'
  * adding a fifth mode there means adding it here too, in one place, rather than in four.
  */
 export const AUTH_PATHS: Record<AuthMode, string> = {
-  'sign-in': '/demo/sign-in',
-  'create-account': '/demo/create-account',
-  'reset-password': '/demo/reset-password',
-  'verify-code': '/demo/sign-in/verify',
+  'sign-in': '/store/sign-in',
+  'create-account': '/store/create-account',
+  'reset-password': '/store/reset-password',
+  'verify-code': '/store/sign-in/verify',
 }
 
 /**
@@ -17,13 +17,13 @@ export const AUTH_PATHS: Record<AuthMode, string> = {
  * without having looked at it yet (RequireSession's own `from`, or a shape SignIn/Verify pass
  * along unchanged) -- unknown, not string, because state on a `Navigate`/`navigate` call is
  * untyped everywhere it's read in this app (see RouteNotice's own `noticeFrom`, the same shape).
- * Only a same-app path starting with `/demo/` passes; anything else -- an absolute URL
+ * Only a same-app path starting with `/store/` passes; anything else -- an absolute URL
  * (`https://…`), a protocol-relative one (`//host/…`, which a browser resolves against its own
  * scheme), a bare `/`, or nothing at all -- returns `undefined`, and every caller here falls back
- * to `/demo/shop` rather than ever handing an unvalidated string to `navigate()`.
+ * to `/store/shop` rather than ever handing an unvalidated string to `navigate()`.
  */
 export function safeReturnTo(value: unknown): string | undefined {
-  return typeof value === 'string' && value.startsWith('/demo/') ? value : undefined
+  return typeof value === 'string' && value.startsWith('/store/') ? value : undefined
 }
 
 /** `from` out of a `Location.state` RequireSession or SignIn left behind -- the one field this

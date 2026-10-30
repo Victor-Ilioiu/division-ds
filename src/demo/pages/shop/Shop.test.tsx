@@ -17,7 +17,7 @@ function CartProbe() {
 
 function renderShop() {
   return render(
-    <MemoryRouter initialEntries={['/demo/shop']}>
+    <MemoryRouter initialEntries={['/store/shop']}>
       <Toaster>
         <CartProvider>
           <Shop />
@@ -126,7 +126,7 @@ describe('Shop notice', () => {
   // though the router state carries it.
   it('shows a notice left in router state by a redirect', () => {
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/demo/shop', state: { notice: "You're already signed in." } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/store/shop', state: { notice: "You're already signed in." } }]}>
         <Toaster>
           <CartProvider>
             <Shop />

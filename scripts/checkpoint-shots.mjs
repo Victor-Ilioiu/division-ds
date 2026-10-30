@@ -29,7 +29,7 @@ const CART_LINE = {
   id: 'bump-helmet:S/M:black',
   productId: 'bump-helmet',
   name: 'Bump helmet',
-  href: '/demo/shop/bump-helmet',
+  href: '/store/shop/bump-helmet',
   detail: 'Size S/M · Black',
   unitPrice: 6900,
   quantity: 1,
@@ -52,7 +52,7 @@ async function seedCart(page) {
 }
 
 async function setupCartSheetOpen(page) {
-  await page.goto('/demo')
+  await page.goto('/store')
   await seedCart(page)
   await page.reload()
   await page.getByRole('button', { name: 'Cart, 1 item' }).click()
@@ -60,9 +60,9 @@ async function setupCartSheetOpen(page) {
 }
 
 async function setupCheckoutStep1(page) {
-  await page.goto('/demo')
+  await page.goto('/store')
   await seedCart(page)
-  await page.goto('/demo/checkout')
+  await page.goto('/store/checkout')
   await page.getByRole('heading', { name: /Shipping/ }).first().waitFor()
 }
 
@@ -70,9 +70,9 @@ async function setupCheckoutConfirmation(page) {
   await page.addInitScript(() => {
     window.__hexlineLatency = 0
   })
-  await page.goto('/demo')
+  await page.goto('/store')
   await seedCart(page)
-  await page.goto('/demo/checkout')
+  await page.goto('/store/checkout')
   await page.getByLabel('Email').fill('rae@hexline.test')
   await page.getByLabel('Full name').fill('Rae Hexline')
   await page.getByLabel('Address line 1').fill('1 Field Lane')
@@ -88,18 +88,18 @@ async function setupCheckoutConfirmation(page) {
   await page.getByLabel('Expiry date').fill('12/29')
   await page.getByLabel('Security code').fill('123')
   await page.getByRole('button', { name: 'Place order' }).click()
-  await page.waitForURL(/\/demo\/checkout\/confirmation$/)
+  await page.waitForURL(/\/store\/checkout\/confirmation$/)
   await page.getByRole('heading', { level: 1, name: 'Order placed' }).waitFor()
 }
 
 async function setupCrash(page) {
-  await page.goto('/demo/status/error')
+  await page.goto('/store/status/error')
   await page.getByRole('button', { name: 'Show the full-page error' }).click()
   await page.getByRole('heading', { level: 1, name: 'Something went wrong' }).waitFor()
 }
 
 function slugify(routePath) {
-  if (routePath === '/') return 'docs'
+  if (routePath === '/components') return 'docs'
   return routePath.replace(/^\//, '').replace(/\//g, '-')
 }
 
@@ -120,16 +120,16 @@ function buildEntries(DEMO_PAGES) {
     const routePath = page.samplePath ?? page.path
     return {
       slug: slugify(routePath),
-      seedSession: routePath.startsWith('/demo/account'),
+      seedSession: routePath.startsWith('/store/account'),
       setup: gotoAndWaitForHeading(routePath),
     }
   })
   const docsEntries = [
-    { slug: 'docs', setup: gotoAndWaitForHeading('/') },
+    { slug: 'docs', setup: gotoAndWaitForHeading('/components') },
     { slug: 'components-button', setup: gotoAndWaitForHeading('/components/button') },
     { slug: 'components-nope', setup: gotoAndWaitForHeading('/components/nope') },
   ]
-  // Distinct from DEMO_PAGES' own '/demo/checkout/confirmation' entry (`demo-checkout-confirmation`,
+  // Distinct from DEMO_PAGES' own '/store/checkout/confirmation' entry (`demo-checkout-confirmation`,
   // a direct load with no order to show) -- this one is the same URL reached by an actual purchase,
   // so it needs a name of its own rather than overwriting that entry's files.
   const stateEntries = [

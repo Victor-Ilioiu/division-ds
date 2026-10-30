@@ -14,21 +14,21 @@ function CartProbe() {
   return <output data-testid="lines">{lines.map(line => `${line.id}:${line.quantity}`).join(',')}</output>
 }
 
-/** Stands in for the not-yet-built `/demo/cart`: just enough to prove the toast action's
+/** Stands in for the not-yet-built `/store/cart`: just enough to prove the toast action's
  *  `navigate` call actually landed here. */
 function CartStub() {
   const location = useLocation()
   return <output data-testid="path">{location.pathname}</output>
 }
 
-function renderProduct(path = '/demo/shop/bump-helmet') {
+function renderProduct(path = '/store/shop/bump-helmet') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Toaster>
         <CartProvider>
           <Routes>
-            <Route path="/demo/shop/:id" element={<Product />} />
-            <Route path="/demo/cart" element={<CartStub />} />
+            <Route path="/store/shop/:id" element={<Product />} />
+            <Route path="/store/cart" element={<CartStub />} />
           </Routes>
           <CartProbe />
         </CartProvider>
@@ -65,16 +65,16 @@ describe('Product', () => {
   // Mutation: change `findProduct(id)` in Product.tsx to always return the first catalogue entry
   // regardless of `id` -> this heading never renders for an id nothing matches.
   it('an unknown id renders its own not-found heading and a link back to the shop, never redirecting', () => {
-    renderProduct('/demo/shop/does-not-exist')
+    renderProduct('/store/shop/does-not-exist')
     expect(screen.getByRole('heading', { level: 1, name: 'Product not found' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/demo/shop')
+    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/store/shop')
     expect(document.title).toBe('Hexline — product not found')
   })
 
   // Mutation: change the `product.soldOut ?` check that swaps in the Sold out button to `false`
   // in Product.tsx -> the Sold out button never renders for a sold-out product.
   it('a sold-out product shows the Sold out button and an explanatory line, never its own Add to cart', () => {
-    renderProduct('/demo/shop/kestrel-l')
+    renderProduct('/store/shop/kestrel-l')
     expect(screen.getByRole('button', { name: 'Sold out' })).toBeInTheDocument()
     // testing-library's own `getByRole` name matching is exact by default (unlike Playwright's,
     // substring by default) -- this doesn't also match the related grid's own "Add to cart:
@@ -91,7 +91,7 @@ describe('Product', () => {
   // (jsdom, like a real browser, refuses focus to a disabled element), failing the `toHaveFocus`
   // assertion.
   it('the Sold out button stays focusable and described by its explanatory line, and a click does nothing', async () => {
-    renderProduct('/demo/shop/kestrel-l')
+    renderProduct('/store/shop/kestrel-l')
     const button = screen.getByRole('button', { name: 'Sold out' })
     expect(button).not.toBeDisabled()
     expect(button).toHaveAttribute('aria-disabled', 'true')
@@ -122,7 +122,7 @@ describe('Product', () => {
   // the real guard never lets fire at all, which is what distinguishes the two.
   // Mutation: remove the `if (product.soldOut) return` line from `submit` in Product.tsx.
   it('a sold-out product raises no toast at all when submitted directly, even with valid choices', () => {
-    const { container } = renderProduct('/demo/shop/kestrel-l')
+    const { container } = renderProduct('/store/shop/kestrel-l')
     fireEvent.click(screen.getByRole('radio', { name: 'Black' }))
     fireEvent.submit(container.querySelector('form')!)
     expect(screen.getByTestId('lines')).toHaveTextContent('')
@@ -178,7 +178,7 @@ describe('Product', () => {
   // Mutation: change `fieldsFor` in Product.tsx to always return `['size', 'colour']` -> the
   // summary gains a spurious "Choose a size." entry for a product with no Size fieldset at all.
   it('a one-size product only asks for a colour, skipping the Size fieldset entirely', async () => {
-    renderProduct('/demo/shop/knee-pads')
+    renderProduct('/store/shop/knee-pads')
     expect(screen.queryByRole('group', { name: 'Size' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Add to cart' }))
     const summary = screen.getByRole('group', { name: 'There is a problem' })
@@ -198,7 +198,7 @@ describe('Product', () => {
   })
 
   // Mutation: change the toast action's `onAction` destination in Product.tsx's `submit` from
-  // `/demo/cart` to `/demo/shop` -> the stub route this test navigates to never mounts.
+  // `/store/cart` to `/store/shop` -> the stub route this test navigates to never mounts.
   it('Add to cart raises a toast naming the size and colour, with a View cart action that navigates', async () => {
     renderProduct()
     await userEvent.click(screen.getByRole('radio', { name: 'S/M' }))
@@ -206,11 +206,11 @@ describe('Product', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add to cart' }))
     expect(await screen.findByText('Added Bump helmet (Size S/M · Black)')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'View cart' }))
-    expect(screen.getByTestId('path')).toHaveTextContent('/demo/cart')
+    expect(screen.getByTestId('path')).toHaveTextContent('/store/cart')
   })
 
   it('Details shows the description by default; In the box and Guide show their own content', async () => {
-    renderProduct('/demo/shop/kestrel-c')
+    renderProduct('/store/shop/kestrel-c')
     expect(screen.getByRole('tabpanel')).toHaveTextContent(/electric airsoft carbine replica/)
     await userEvent.click(screen.getByRole('tab', { name: 'In the box' }))
     expect(screen.getByRole('tabpanel')).toHaveTextContent('Barrel cleaning rod')
@@ -219,17 +219,17 @@ describe('Product', () => {
     // the "a guide matches" branch, not the generic Field notes fallback.
     expect(
       screen.getByRole('link', { name: 'Read the field guide: Cleaning a replica after a field day' })
-    ).toHaveAttribute('href', '/demo/journal/cleaning-after-a-field-day')
+    ).toHaveAttribute('href', '/store/journal/cleaning-after-a-field-day')
   })
 
   // No Field notes guide lists `tactical` in its own `categories`, so this covers Product.tsx's
   // `undefined` branch: the fallback link, rather than a broken or guessed one.
-  // Mutation: change the fallback branch's `to="/demo/journal"` to `to="/demo"` -> this assertion
+  // Mutation: change the fallback branch's `to="/store/journal"` to `to="/store"` -> this assertion
   // fails on the href.
   it("falls back to the Field notes index when no guide covers the product's category", async () => {
-    renderProduct('/demo/shop/dummy-radio')
+    renderProduct('/store/shop/dummy-radio')
     await userEvent.click(screen.getByRole('tab', { name: 'Guide' }))
-    expect(screen.getByRole('link', { name: 'Read the field guides' })).toHaveAttribute('href', '/demo/journal')
+    expect(screen.getByRole('link', { name: 'Read the field guides' })).toHaveAttribute('href', '/store/journal')
   })
 
   // Most Hexline products come one way: no sizes and no choice of finish. The page then shows
@@ -237,7 +237,7 @@ describe('Product', () => {
   // Mutation: change `fieldsFor` in Product.tsx back to always include 'colour' -> the submit
   // fails validation on a colour nobody can choose, and the cart stays empty.
   it('a product with no size and no colour to choose shows neither group and adds straight away', async () => {
-    renderProduct('/demo/shop/dummy-radio')
+    renderProduct('/store/shop/dummy-radio')
     expect(screen.queryByRole('group', { name: /Size/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('group', { name: /Colour/ })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Add to cart' }))

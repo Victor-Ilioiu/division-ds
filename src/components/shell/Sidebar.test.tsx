@@ -27,7 +27,7 @@ describe('shell Sidebar', () => {
     // Guards against a prefix match (e.g. `startsWith`) standing in for the exact-match compare:
     // '/' is a prefix of every pathname, so Overview would wrongly read as current on every page
     // under such a change, and this is the assertion that would catch it.
-    expect(screen.getByRole('link', { name: 'Overview' })).not.toHaveAttribute('aria-current')
+    expect(screen.getByRole('link', { name: 'All components' })).not.toHaveAttribute('aria-current')
   })
 
   it('still marks the current route when its URL carries a trailing slash', () => {
@@ -35,9 +35,9 @@ describe('shell Sidebar', () => {
     expect(screen.getByRole('link', { name: 'Button' })).toHaveAttribute('aria-current', 'page')
   })
 
-  it("marks '/' current for the Overview link, the one route with no path segment", () => {
-    renderSidebar('/')
-    expect(screen.getByRole('link', { name: 'Overview' })).toHaveAttribute('aria-current', 'page')
+  it("marks '/components' current for the All components link (the homepage '/' is not a docs page)", () => {
+    renderSidebar('/components')
+    expect(screen.getByRole('link', { name: 'All components' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('every NAV group title is a real, focusable disclosure button', () => {

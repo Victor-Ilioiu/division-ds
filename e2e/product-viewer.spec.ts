@@ -115,7 +115,7 @@ async function ink(page: Page): Promise<{ share: number; x0: number; y0: number;
 test.describe('the product page: the cutout first, then the model, unasked', () => {
   // Mutation: add `frame.current?.focus()` when the viewer starts or lands -> the focus checks fail.
   test('starts the 3D view by itself, with no button, and leaves focus where the page put it', async ({ page }) => {
-    await page.goto('/demo/shop/kestrel-c')
+    await page.goto('/store/shop/kestrel-c')
     await expect(page.getByRole('heading', { level: 1, name: 'Kestrel C carbine replica' })).toBeVisible()
     const cutout = page.locator(`${STAGE} img`)
     await expect(cutout).toHaveAttribute('src', '/media/products/cutout/kestrel-c.webp')
@@ -137,7 +137,7 @@ test.describe('the product page: the cutout first, then the model, unasked', () 
   test('reduced motion gets the still cutout and requests neither the viewer, a model, nor three.js', async ({ page }) => {
     const requests = sceneRequests(page)
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/demo/shop/kestrel-c')
+    await page.goto('/store/shop/kestrel-c')
     await expect(page.locator(`${STAGE} img`)).toBeVisible()
     await page.waitForTimeout(2500)
     await expect(frame(page)).toHaveCount(0)
@@ -157,7 +157,7 @@ test.describe('the product page: the cutout first, then the model, unasked', () 
         body: `export async function startViewer() { throw new Error('The viewer is switched off for this test.') }\n`,
       })
     )
-    await page.goto('/demo/shop/dummy-radio')
+    await page.goto('/store/shop/dummy-radio')
     const notice = page.getByText(PRODUCT_VIEWER.unavailable)
     await expect(notice).toBeVisible()
     // Focus was never in the viewer, so the message does not take it.
@@ -192,7 +192,7 @@ test.describe('the viewer, up', () => {
     // Held still (reduced motion, forced on), so the model is compared at the cutout's own angle,
     // not a few degrees into its idle turn.
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/demo/shop/harrier-lr?fx=force')
+    await page.goto('/store/shop/harrier-lr?fx=force')
     await page.evaluate(() => document.fonts.ready)
     // The toolbar and the instructions are there from the start, so the model landing adds none.
     await expect(page.getByText(PRODUCT_VIEWER.instructions)).toBeVisible()
@@ -242,7 +242,7 @@ test.describe('the viewer, up', () => {
   test('the keyboard turns, tilts, zooms and resets, inside the limits', async ({ page }) => {
     // Held still, so the starting view can be read exactly; the idle turn has its own test.
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/demo/shop/kestrel-c?fx=force')
+    await page.goto('/store/shop/kestrel-c?fx=force')
     await landed(page)
     const start = PRODUCT_MODELS['kestrel-c']
     const bounds = await limits(page)
@@ -299,7 +299,7 @@ test.describe('the viewer, up', () => {
   // -> the plain wheel zooms and the page does not scroll.
   test('Ctrl and wheel zooms the model and leaves the page; a plain wheel over the model scrolls the page', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 600 })
-    await page.goto('/demo/shop/kestrel-c')
+    await page.goto('/store/shop/kestrel-c')
     await landed(page)
     const start = await view(page)
     const scrollStart = await page.evaluate(() => window.scrollY)
@@ -322,7 +322,7 @@ test.describe('the viewer, up', () => {
   })
 
   test('the model turns slowly by itself once it has landed, and stops for good at a key press', async ({ page }) => {
-    await page.goto('/demo/shop/kestrel-c')
+    await page.goto('/store/shop/kestrel-c')
     await landed(page)
     const first = await view(page)
     expect(first.idle).toBe(true)
@@ -336,7 +336,7 @@ test.describe('the viewer, up', () => {
   })
 
   test('a drag turns the model, and the toolbar does what the keys do', async ({ page }) => {
-    await page.goto('/demo/shop/bbs-028')
+    await page.goto('/store/shop/bbs-028')
     await landed(page)
     const start = await view(page)
     const box = (await page.locator(STAGE).boundingBox())!
@@ -371,7 +371,7 @@ test.describe('the viewer, up', () => {
     const productId = () => page.evaluate(() => ((window as any).__productViewer?.productId ?? null) as string | null)
     const canvases = page.locator('main canvas')
 
-    await page.goto('/demo/shop/bbs-028')
+    await page.goto('/store/shop/bbs-028')
     await landed(page)
     expect(await productId()).toBe('bbs-028')
     // Through the related grid: the old canvas goes with the old product.
@@ -399,7 +399,7 @@ test.describe('the viewer, up', () => {
 
   // A context taken away while the viewer is up (a driver reset, the browser reclaiming one).
   test('a lost WebGL context goes back to the cutout and says so, with no console error', async ({ page }) => {
-    await page.goto('/demo/shop/dummy-radio')
+    await page.goto('/store/shop/dummy-radio')
     await landed(page)
     await page.evaluate(() => (window as any).__productViewer.renderer.forceContextLoss())
     await expect(page.getByText(PRODUCT_VIEWER.unavailable)).toBeVisible()
@@ -414,7 +414,7 @@ test.describe('the viewer, up', () => {
   test('with the viewer up the page is axe clean in both themes, and the model does not turn by itself', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo/shop/kestrel-c-kit?fx=force')
+    await page.goto('/store/shop/kestrel-c-kit?fx=force')
     await landed(page)
     const first = await view(page)
     expect(first.idle).toBe(false)

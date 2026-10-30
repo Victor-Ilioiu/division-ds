@@ -25,11 +25,11 @@ function renderPage({ user }: { user?: { name: string; email: string } } = {}) {
     sessionStorage.setItem('hexline-session', JSON.stringify({ user, pendingEmail: null }))
   }
   return render(
-    <MemoryRouter initialEntries={['/demo/care']}>
+    <MemoryRouter initialEntries={['/store/care']}>
       <SessionProvider>
         <Routes>
           <Route
-            path="/demo/care"
+            path="/store/care"
             element={
               <>
                 <Pricing />
@@ -120,18 +120,18 @@ describe('Pricing', () => {
     expect(status).toHaveTextContent('Showing annual prices')
   })
 
-  // Mutation: point the CTA at '/demo/create-account' unconditionally, ignoring `useSession()`'s
+  // Mutation: point the CTA at '/store/create-account' unconditionally, ignoring `useSession()`'s
   // `user` -> the second assertion below fails for a signed-in render.
   it('the CTA goes to create-account signed out, and to the account page signed in', () => {
     renderPage()
     expect(screen.getByRole('link', { name: 'Get started with Basic' })).toHaveAttribute(
       'href',
-      '/demo/create-account'
+      '/store/create-account'
     )
     renderPage({ user: { name: 'Alex', email: 'alex@hexline.test' } })
     expect(screen.getAllByRole('link', { name: 'Get started with Basic' })[1]).toHaveAttribute(
       'href',
-      '/demo/account'
+      '/store/account'
     )
   })
 

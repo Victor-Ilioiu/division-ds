@@ -61,7 +61,7 @@ export function Checkout() {
   if (placedLines === null && lines.length === 0) {
     return (
       <Navigate
-        to="/demo/cart"
+        to="/store/cart"
         replace
         state={{ notice: 'Your cart is empty, so there is nothing to check out yet.' }}
       />
@@ -81,7 +81,7 @@ export function Checkout() {
       }
       setPlacedLines(lines)
       clear()
-      navigate('/demo/checkout/confirmation', {
+      navigate('/store/checkout/confirmation', {
         state: { order: { orderNumber, email: order.email, total: order.total, lines } },
       })
     } catch (e) {

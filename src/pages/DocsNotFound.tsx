@@ -3,9 +3,9 @@ import { linkVariants } from '../components/atoms/link/Link'
 import { PageHeader } from '../components/docs/PageChrome'
 
 const LINKS: { to: string; label: string }[] = [
-  { to: '/', label: 'Design system overview' },
+  { to: '/components', label: 'All components' },
   { to: '/components/button', label: 'Components: Button' },
-  { to: '/demo', label: 'The Hexline demo store' },
+  { to: '/store', label: 'The Hexline demo store' },
 ]
 
 /**

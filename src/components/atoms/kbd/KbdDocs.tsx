@@ -2,6 +2,8 @@ import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Kbd.meta'
 import { Example } from '../../docs/Example'
 import { Kbd } from './Kbd'
+import { Button } from '../button/Button'
+import { Search } from 'lucide-react'
 
 export function KbdDocs() {
   return (
@@ -21,6 +23,20 @@ export function KbdDocs() {
           <Kbd>K</Kbd>
         </span>
         <span className="text-sm text-[var(--color-text-secondary)]">Open the command palette</span>
+      </Example>
+
+      <Example caption="Sizes">
+        <Kbd>Esc</Kbd>
+        <Kbd size="sm">Esc</Kbd>
+      </Example>
+
+      <Example caption="Small and cut, inside a small button">
+        <Button variant="secondary" size="sm" iconStart={<Search />} aria-keyshortcuts="Control+K">
+          Search
+          <Kbd aria-hidden="true" size="sm" cut className="-mr-1.5 ml-2 -translate-y-[var(--cap-shift,0px)]">
+            Ctrl K
+          </Kbd>
+        </Button>
       </Example>
     </ComponentDocs>
   )

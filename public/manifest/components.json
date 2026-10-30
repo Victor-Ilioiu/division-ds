@@ -1232,6 +1232,18 @@
           "description": "The key's name, for example \"Esc\" or \"⌘\"."
         },
         {
+          "name": "size",
+          "type": "'md' | 'sm'",
+          "default": "'md'",
+          "description": "md is 24px tall, for a cap beside text or in a menu row. sm is 20px tall, for a cap inside a 32px control: a small Button or a search field."
+        },
+        {
+          "name": "cut",
+          "type": "boolean",
+          "default": "false",
+          "description": "Cuts the bottom-right corner (5px at sm, 8px at md) so the cap nests in the corner of a bevelled control, its diagonal parallel to the control's. Only for a cap inside such a control."
+        },
+        {
           "name": "className",
           "type": "string",
           "description": "Merged with the component's classes. When Tailwind utility classes clash, the later one wins."
@@ -1251,10 +1263,11 @@
       "dos": [
         "Use one Kbd per physical key, and put them side by side for a chord (keys pressed together).",
         "Put it next to the action it triggers, in the same row or the same tooltip.",
-        "Write the key name the way the keyboard prints it."
+        "Write the key name the way the keyboard prints it.",
+        "Inside a 32px control, use size=\"sm\"; inside a bevelled one (a Button), add cut and place the cap at the end, near the cut corner."
       ],
       "donts": [
-        "Don’t bevel it. Cut corners are for surfaces and controls, not 24px chrome.",
+        "Don’t set cut on a cap that stands alone in text or a menu row. The cut answers a bevelled corner around it; without one it reads as a button.",
         "Don’t put a whole chord inside one Kbd (\"Ctrl+K\" in a single cap).",
         "Don’t use it for anything that isn’t a key. It’s not a badge."
       ],
@@ -1265,11 +1278,11 @@
         },
         {
           "part": "Hairline border",
-          "description": "A one-pixel border in border.hairline-strong, with no bevel (cut corners)."
+          "description": "A one-pixel border in border.hairline-strong. Square corners by default; with cut, the bottom-right corner is cut at 45 degrees and the border follows the diagonal."
         },
         {
           "part": "Mono legend",
-          "description": "JetBrains Mono, uppercase, 11px (pixels): the tertiary type role."
+          "description": "JetBrains Mono, uppercase, 11px (pixels): the tertiary type role, at both sizes."
         }
       ],
       "examples": [
@@ -1280,6 +1293,14 @@
         {
           "caption": "A chord: one cap per key",
           "source": "<span className=\"flex items-center gap-1\">\n  <Kbd>Ctrl</Kbd>\n  <span className=\"text-[var(--color-text-muted)] text-sm\">+</span>\n  <Kbd>K</Kbd>\n</span>\n<span className=\"text-sm text-[var(--color-text-secondary)]\">Open the command palette</span>"
+        },
+        {
+          "caption": "Sizes",
+          "source": "<Kbd>Esc</Kbd>\n<Kbd size=\"sm\">Esc</Kbd>"
+        },
+        {
+          "caption": "Small and cut, inside a small button",
+          "source": "<Button variant=\"secondary\" size=\"sm\" iconStart={<Search />} aria-keyshortcuts=\"Control+K\">\n  Search\n  <Kbd aria-hidden=\"true\" size=\"sm\" cut className=\"-mr-1.5 ml-2 -translate-y-[var(--cap-shift,0px)]\">\n    Ctrl K\n  </Kbd>\n</Button>"
         }
       ],
       "closed": false
@@ -1504,6 +1525,155 @@
       "closed": false
     },
     {
+      "name": "Panel",
+      "title": "Panel",
+      "tier": "atoms",
+      "slug": "panel",
+      "summary": "The system's framed surface: a thin border around a fill, with the crosshair corner marks and the cut corner as options. Card is a Panel with a title, body and footer; Panel is the frame alone, for a feature tile, a demo frame or a tile that is one link.",
+      "useWhen": "Framing content that has no title, body and footer structure: a feature tile, a demo area, or a tile that is one link.",
+      "notFor": "Content with a title, a body and actions: use Card. A page-width layout wrapper: use a plain div with max-w-*.",
+      "source": "src/components/atoms/panel/Panel.tsx",
+      "docs": "/docs/components/panel.md",
+      "imports": [
+        {
+          "names": [
+            "Panel"
+          ],
+          "from": "src/components/atoms/panel/Panel"
+        }
+      ],
+      "props": [
+        {
+          "name": "padding",
+          "type": "'none' | 'sm' | 'md' | 'lg'",
+          "default": "'md'",
+          "description": "Inner spacing: 0, 12px, 20px or 32px."
+        },
+        {
+          "name": "tone",
+          "type": "'base' | 'raised' | 'signal'",
+          "default": "'raised'",
+          "description": "base sits flush with the page, raised is one step up, signal is the brand wash for the one panel in a group that leads."
+        },
+        {
+          "name": "crosshair",
+          "type": "boolean",
+          "default": "false",
+          "description": "Draws the crosshair marks at the corners."
+        },
+        {
+          "name": "cut",
+          "type": "boolean",
+          "default": "false",
+          "description": "Cuts the bottom-right corner, with the border following the cut."
+        },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "default": "false",
+          "description": "Hover and focus states for a panel that is one link or button. Use it with asChild; it adds no behaviour of its own."
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders the single child element (an a, a router Link, a button) with the panel classes merged onto it, instead of a div."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes. Use it for layout (a grid span, flex, gap), not for the fill or the border."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the div, or to the child with asChild."
+        },
+        {
+          "name": "...rest",
+          "type": "HTMLAttributes<HTMLDivElement>",
+          "description": "Every native attribute, passed onto the element."
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "With interactive and asChild on a link or button: moves focus to the panel and shows the focus ring."
+        },
+        {
+          "keys": [
+            "Enter"
+          ],
+          "does": "Follows the link, or presses the button, that the panel was rendered as."
+        }
+      ],
+      "dos": [
+        "Use signal on at most one panel in a group: the one that leads.",
+        "Give a clickable panel interactive and asChild, with a real link or button as the child.",
+        "Leave 8px around a panel with the crosshair, so a parent that clips does not cut the marks off."
+      ],
+      "donts": [
+        "Don’t put a button near the bottom-right corner of a cut panel; the cut can clip it.",
+        "Don’t set a fill or border colour with a class. Choose a tone.",
+        "Don’t put a second link or button inside an interactive panel."
+      ],
+      "pitfalls": [
+        {
+          "wrong": "<Panel className=\"bg-[var(--color-surface-base)] border-[var(--color-border-selection)]\">",
+          "right": "<Panel tone=\"base\">",
+          "why": "The panel's fill and border come from its tone, through CSS that sits outside Tailwind's layers, so a bg- or border- class never wins. Pick the tone."
+        },
+        {
+          "wrong": "<Panel interactive onClick={open}>Replicas</Panel>",
+          "right": "<Panel interactive asChild><Link to=\"/replicas\">Replicas</Link></Panel>",
+          "why": "A div with a click handler cannot be reached by keyboard and is not announced as a link. interactive styles a panel that already is a link or a button; asChild makes it one."
+        }
+      ],
+      "anatomy": [
+        {
+          "part": "Frame",
+          "description": "A div (or, with asChild, your element) with the .panel class: a one-pixel border and a fill, both set by the tone."
+        },
+        {
+          "part": "Tone",
+          "description": "base: surface.base fill, border.hairline border. raised: surface.raised fill, border.hairline border. signal: accent.signal.wash fill, border.selection border. All tokens, so each one is right in both themes."
+        },
+        {
+          "part": "Crosshair",
+          "description": "Optional. Short marks drawn 5px outside each corner, in text.muted. The parent must not clip its overflow."
+        },
+        {
+          "part": "Cut corner",
+          "description": "Optional. The bottom-right corner cut at 45 degrees (14px), with the border drawn along the cut, so the outline does not break at that corner. With the crosshair on, the bottom-right marks fall inside the cut and are not drawn."
+        },
+        {
+          "part": "Interactive state",
+          "description": "Optional. On hover and on keyboard focus the border, diagonal included, turns accent.signal.indicator; keyboard focus also draws the focus ring 2px outside. Nothing moves."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Tones",
+          "source": "<Panel tone=\"base\">\n  <p className=\"font-display font-semibold\">Base</p>\n  <p className=\"text-sm text-[var(--color-text-secondary)]\">Flush with the page.</p>\n</Panel>\n<Panel tone=\"raised\">\n  <p className=\"font-display font-semibold\">Raised</p>\n  <p className=\"text-sm text-[var(--color-text-secondary)]\">One step up.</p>\n</Panel>\n<Panel tone=\"signal\">\n  <p className=\"font-display font-semibold\">Signal</p>\n  <p className=\"text-sm text-[var(--color-text-secondary)]\">The one that leads.</p>\n</Panel>"
+        },
+        {
+          "caption": "Padding",
+          "source": "<Panel padding=\"none\">none</Panel>\n<Panel padding=\"sm\">sm</Panel>\n<Panel padding=\"md\">md</Panel>\n<Panel padding=\"lg\">lg</Panel>"
+        },
+        {
+          "caption": "Crosshair and cut corner",
+          "source": "<Panel crosshair>Crosshair</Panel>\n<Panel cut>Cut corner</Panel>\n<Panel crosshair cut tone=\"signal\">Both</Panel>"
+        },
+        {
+          "caption": "Interactive, as a router link",
+          "source": "<Panel interactive cut padding=\"lg\" asChild>\n  <RouterLink to=\"/components/card\" className=\"flex flex-col gap-3\">\n    <span className=\"font-display text-lg font-semibold\">Card</span>\n    <span className=\"text-sm text-[var(--color-text-secondary)]\">A panel with a title, a body and a footer.</span>\n    <span className=\"inline-flex items-center gap-2 font-semibold text-[var(--color-accent-signal-text)]\">\n      Open <ArrowRight aria-hidden=\"true\" className=\"size-4\" />\n    </span>\n  </RouterLink>\n</Panel>"
+        }
+      ],
+      "closed": false
+    },
+    {
       "name": "Progress",
       "title": "Progress",
       "tier": "atoms",
@@ -1548,7 +1718,7 @@
           "name": "tone",
           "type": "'signal' | 'ok' | 'warning' | 'hostile'",
           "default": "'signal'",
-          "description": "The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there."
+          "description": "The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there."
         },
         {
           "name": "className",
@@ -4374,6 +4544,153 @@
       "closed": true
     },
     {
+      "name": "CodeBlock",
+      "title": "Code block",
+      "tier": "molecules",
+      "slug": "code-block",
+      "summary": "Code or a command in a panel, with a title bar that names the file or language and a button that copies the text. Long lines scroll sideways inside it, and code longer than one line gets line numbers.",
+      "useWhen": "Showing code or a command someone will read or copy: an install step, a config file, an example.",
+      "notFor": "A word of code inside a sentence: use a code element. A key to press: use Kbd.",
+      "source": "src/components/molecules/code-block/CodeBlock.tsx",
+      "docs": "/docs/components/code-block.md",
+      "imports": [
+        {
+          "names": [
+            "CodeBlock"
+          ],
+          "from": "src/components/molecules/code-block/CodeBlock"
+        }
+      ],
+      "requires": [
+        "The app’s one Toaster at the root: the copy is confirmed with a toast."
+      ],
+      "props": [
+        {
+          "name": "code",
+          "type": "string",
+          "description": "The text shown and copied, exactly."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "What the code is, in a few words (\"the theme CSS\"). Names the region and the copy button (\"Copy the theme CSS\")."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Shown in the title bar: a file name (\"index.css\") or a language (\"bash\")."
+        },
+        {
+          "name": "language",
+          "type": "'css' | 'text'",
+          "default": "'text'",
+          "description": "css colours comments, at-rules, selectors and property names; text is plain."
+        },
+        {
+          "name": "lineNumbers",
+          "type": "boolean",
+          "description": "Line numbers in a gutter. Unset, they show when the code has more than one line."
+        },
+        {
+          "name": "copyable",
+          "type": "boolean",
+          "default": "true",
+          "description": "The copy button. Turn it off for code nobody should paste, such as a wrong example."
+        },
+        {
+          "name": "wrap",
+          "type": "boolean",
+          "default": "false",
+          "description": "Wraps long lines instead of scrolling them sideways. For prose, such as a prompt; leave code unwrapped."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged onto the frame. Use it for width (max-w-3xl) and spacing."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the frame."
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "Moves to the copy button, then to the code region."
+        },
+        {
+          "keys": [
+            "←",
+            "→"
+          ],
+          "does": "In the focused code region: scrolls a long line sideways."
+        },
+        {
+          "keys": [
+            "Enter"
+          ],
+          "does": "On the copy button: copies the code."
+        }
+      ],
+      "dos": [
+        "Write a label that says what the code is, so the copy button reads \"Copy the install command\".",
+        "Give it a title: the file name it belongs in, or the language.",
+        "Set a max width with className; long lines scroll inside it, so it never widens the page."
+      ],
+      "donts": [
+        "Don’t put several unrelated commands in one block. One block per thing to copy.",
+        "Don’t set copyable on an example of what not to write.",
+        "Don’t wrap it in another bordered panel; it brings its own frame."
+      ],
+      "pitfalls": [
+        {
+          "wrong": "<pre className=\"font-mono text-sm\">{command}</pre>",
+          "right": "<CodeBlock code={command} label=\"the install command\" title=\"bash\" />",
+          "why": "A bare pre has no copy button, no name, and cannot be scrolled with a keyboard when a line runs past the edge."
+        }
+      ],
+      "anatomy": [
+        {
+          "part": "Frame",
+          "description": "A thin border around a surface.base fill. The syntax colours are measured for contrast on surface.base."
+        },
+        {
+          "part": "Title bar",
+          "description": "The title on the left, in 12px uppercase mono, and the copy button on the right, above a thin line."
+        },
+        {
+          "part": "Code region",
+          "description": "A pre with role region, named by the title and the label, focusable so a keyboard can scroll it. Up to 32rem tall, then it scrolls."
+        },
+        {
+          "part": "Line numbers",
+          "description": "A gutter in text.muted, hidden from screen readers and from text selection."
+        },
+        {
+          "part": "Copy button",
+          "description": "An IconButton named \"Copy\" plus the label. After copying, its icon turns into a tick for a moment and a toast confirms it."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "A command",
+          "source": "<CodeBlock title=\"bash\" label=\"the check command\" code=\"npx division-ds check src\" className=\"max-w-3xl\" />"
+        },
+        {
+          "caption": "A file, with CSS colours and line numbers",
+          "source": "<CodeBlock\n  title=\"index.css\"\n  language=\"css\"\n  label=\"the theme CSS\"\n  className=\"max-w-3xl\"\n  code={'@import \"./division-ds/styles/division-ds.css\";\\n\\n/* Square corners */\\n:root {\\n  --shape-bevel: 0;\\n  --shape-radius: 4px;\\n}\\n'}\n/>"
+        },
+        {
+          "caption": "Not copyable, for code nobody should paste",
+          "source": "<CodeBlock title=\"Wrong\" label=\"a bare pre\" copyable={false} code={'<pre>{command}</pre>'} className=\"max-w-3xl\" />"
+        }
+      ],
+      "closed": true
+    },
+    {
       "name": "DatePicker",
       "title": "Date picker",
       "tier": "molecules",
@@ -5221,6 +5538,12 @@
           "type": "'default' | 'hostile'",
           "default": "'default'",
           "description": "Use hostile for a destructive action: hostile-coloured text at rest, the hostile fill with ink text when highlighted."
+        },
+        {
+          "name": "asChild (Item)",
+          "type": "boolean",
+          "default": "false",
+          "description": "Makes the one child (a link) the item, for a menu of links. icon and shortcut are ignored then; put the content inside the link."
         },
         {
           "name": "icon (Item)",
@@ -9547,7 +9870,7 @@
       "examples": [
         {
           "caption": "Line, two series",
-          "source": "type Week = { week: string; online: number; store: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 120, store: 160 },\n  { week: 'W2', online: 131, store: 158 },\n  { week: 'W3', online: 142, store: 163 },\n  { week: 'W4', online: 150, store: 155 },\n  { week: 'W5', online: 171, store: 162 },\n  { week: 'W6', online: 188, store: 159 },\n  { week: 'W7', online: 197, store: 166 },\n  { week: 'W8', online: 214, store: 161 },\n]\n\n<ChartPanel<Week>\n  title=\"Weekly orders\"\n  summary=\"Online orders rose from 120 to 214 over eight weeks and passed in-store orders in week 5.\"\n  kind=\"line\"\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[\n    { key: 'online', label: 'Online' },\n    { key: 'store', label: 'In store' },\n  ]}\n  headingLevel={4}\n/>"
+          "source": "type Week = { week: string; online: number; store: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 118, store: 150 },\n  { week: 'W2', online: 149, store: 172 },\n  { week: 'W3', online: 168, store: 158 },\n  { week: 'W4', online: 141, store: 131 },\n  { week: 'W5', online: 126, store: 128 },\n  { week: 'W6', online: 174, store: 150 },\n  { week: 'W7', online: 231, store: 141 },\n  { week: 'W8', online: 183, store: 122 },\n  { week: 'W9', online: 139, store: 149 },\n  { week: 'W10', online: 162, store: 185 },\n  { week: 'W11', online: 196, store: 163 },\n  { week: 'W12', online: 170, store: 140 },\n]\n\n<ChartPanel<Week>\n  title=\"Weekly orders\"\n  summary=\"Online orders peaked three times in twelve weeks, highest at 231 in week 7; in-store orders peaked highest at 185 in week 10.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[\n    { key: 'online', label: 'Online' },\n    { key: 'store', label: 'In store' },\n  ]}\n  headingLevel={4}\n/>"
         },
         {
           "caption": "Bar, one series",
@@ -9555,11 +9878,11 @@
         },
         {
           "caption": "Area under a smooth line",
-          "source": "type Day = { day: string; visits: number; orders: number }\n\nconst DAYS: Day[] = [\n  { day: 'Mon', visits: 1840, orders: 61 },\n  { day: 'Tue', visits: 2210, orders: 74 },\n  { day: 'Wed', visits: 1960, orders: 58 },\n  { day: 'Thu', visits: 2650, orders: 92 },\n  { day: 'Fri', visits: 3120, orders: 118 },\n  { day: 'Sat', visits: 3890, orders: 141 },\n  { day: 'Sun', visits: 3370, orders: 126 },\n]\n\n<ChartPanel<Day>\n  title=\"Visits this week\"\n  summary=\"Visits climbed from 1,840 on Monday to a Saturday peak of 3,890.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'visits', label: 'Visits' }]}\n  headline=\"19,040\"\n  headingLevel={4}\n/>"
+          "source": "type Day = { day: string; visits: number; orders: number }\n\nconst DAYS: Day[] = [\n  { day: 'Mon', visits: 1840, orders: 61 },\n  { day: 'Tue', visits: 2960, orders: 104 },\n  { day: 'Wed', visits: 2210, orders: 74 },\n  { day: 'Thu', visits: 1720, orders: 55 },\n  { day: 'Fri', visits: 2650, orders: 92 },\n  { day: 'Sat', visits: 3890, orders: 141 },\n  { day: 'Sun', visits: 3120, orders: 118 },\n]\n\n<ChartPanel<Day>\n  title=\"Visits this week\"\n  summary=\"Visits peaked on Tuesday at 2,960, fell to a Thursday low of 1,720, then peaked higher on Saturday at 3,890.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'visits', label: 'Visits' }]}\n  headline=\"18,390\"\n  headingLevel={4}\n/>"
         },
         {
           "caption": "No grid lines: only the labels along the axes",
-          "source": "type Week = { week: string; online: number; store: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 120, store: 160 },\n  { week: 'W2', online: 131, store: 158 },\n  { week: 'W3', online: 142, store: 163 },\n  { week: 'W4', online: 150, store: 155 },\n  { week: 'W5', online: 171, store: 162 },\n  { week: 'W6', online: 188, store: 159 },\n  { week: 'W7', online: 197, store: 166 },\n  { week: 'W8', online: 214, store: 161 },\n]\n\n<ChartPanel<Week>\n  title=\"Weekly orders, gridless\"\n  summary=\"Online orders rose from 120 to 214 over eight weeks and passed in-store orders in week 5.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  grid={false}\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[\n    { key: 'online', label: 'Online' },\n    { key: 'store', label: 'In store' },\n  ]}\n  headingLevel={4}\n/>"
+          "source": "type Week = { week: string; online: number; store: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 118, store: 150 },\n  { week: 'W2', online: 149, store: 172 },\n  { week: 'W3', online: 168, store: 158 },\n  { week: 'W4', online: 141, store: 131 },\n  { week: 'W5', online: 126, store: 128 },\n  { week: 'W6', online: 174, store: 150 },\n  { week: 'W7', online: 231, store: 141 },\n  { week: 'W8', online: 183, store: 122 },\n  { week: 'W9', online: 139, store: 149 },\n  { week: 'W10', online: 162, store: 185 },\n  { week: 'W11', online: 196, store: 163 },\n  { week: 'W12', online: 170, store: 140 },\n]\n\n<ChartPanel<Week>\n  title=\"Weekly orders, gridless\"\n  summary=\"Online orders peaked three times in twelve weeks, highest at 231 in week 7; in-store orders peaked highest at 185 in week 10.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  grid={false}\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[\n    { key: 'online', label: 'Online' },\n    { key: 'store', label: 'In store' },\n  ]}\n  headingLevel={4}\n/>"
         },
         {
           "caption": "A shaded band: night hours on a 24-hour series (the band wraps past midnight)",
@@ -9567,7 +9890,7 @@
         },
         {
           "caption": "Small: stat cards, each with a sparkline (a tiny line chart with no axes)",
-          "source": "type Week = { week: string; online: number; store: number }\n\ntype Day = { day: string; visits: number; orders: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 120, store: 160 },\n  { week: 'W2', online: 131, store: 158 },\n  { week: 'W3', online: 142, store: 163 },\n  { week: 'W4', online: 150, store: 155 },\n  { week: 'W5', online: 171, store: 162 },\n  { week: 'W6', online: 188, store: 159 },\n  { week: 'W7', online: 197, store: 166 },\n  { week: 'W8', online: 214, store: 161 },\n]\n\nconst DAYS: Day[] = [\n  { day: 'Mon', visits: 1840, orders: 61 },\n  { day: 'Tue', visits: 2210, orders: 74 },\n  { day: 'Wed', visits: 1960, orders: 58 },\n  { day: 'Thu', visits: 2650, orders: 92 },\n  { day: 'Fri', visits: 3120, orders: 118 },\n  { day: 'Sat', visits: 3890, orders: 141 },\n  { day: 'Sun', visits: 3370, orders: 126 },\n]\n\n<ChartPanel<Day>\n  title=\"Visits\"\n  headline=\"19,040\"\n  summary=\"Up every day but Wednesday and Sunday.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  size=\"sm\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'visits', label: 'Visits' }]}\n  headingLevel={4}\n/>\n<ChartPanel<Day>\n  title=\"Orders\"\n  headline=\"670\"\n  summary=\"Saturday took 141, the most of the week.\"\n  kind=\"bar\"\n  size=\"sm\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'orders', label: 'Orders' }]}\n  headingLevel={4}\n/>\n<ChartPanel<Week>\n  title=\"Online orders\"\n  headline=\"214\"\n  summary=\"Eight weeks of growth, from 120 a week.\"\n  kind=\"line\"\n  curve=\"smooth\"\n  size=\"sm\"\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[{ key: 'online', label: 'Online' }]}\n  headingLevel={4}\n/>"
+          "source": "type Week = { week: string; online: number; store: number }\n\ntype Day = { day: string; visits: number; orders: number }\n\nconst WEEKS: Week[] = [\n  { week: 'W1', online: 118, store: 150 },\n  { week: 'W2', online: 149, store: 172 },\n  { week: 'W3', online: 168, store: 158 },\n  { week: 'W4', online: 141, store: 131 },\n  { week: 'W5', online: 126, store: 128 },\n  { week: 'W6', online: 174, store: 150 },\n  { week: 'W7', online: 231, store: 141 },\n  { week: 'W8', online: 183, store: 122 },\n  { week: 'W9', online: 139, store: 149 },\n  { week: 'W10', online: 162, store: 185 },\n  { week: 'W11', online: 196, store: 163 },\n  { week: 'W12', online: 170, store: 140 },\n]\n\nconst DAYS: Day[] = [\n  { day: 'Mon', visits: 1840, orders: 61 },\n  { day: 'Tue', visits: 2960, orders: 104 },\n  { day: 'Wed', visits: 2210, orders: 74 },\n  { day: 'Thu', visits: 1720, orders: 55 },\n  { day: 'Fri', visits: 2650, orders: 92 },\n  { day: 'Sat', visits: 3890, orders: 141 },\n  { day: 'Sun', visits: 3120, orders: 118 },\n]\n\n<ChartPanel<Day>\n  title=\"Visits\"\n  headline=\"18,390\"\n  summary=\"Two peaks: Tuesday, then a higher Saturday.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  size=\"sm\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'visits', label: 'Visits' }]}\n  headingLevel={4}\n/>\n<ChartPanel<Day>\n  title=\"Orders\"\n  headline=\"670\"\n  summary=\"Saturday took 141, the most of the week.\"\n  kind=\"bar\"\n  size=\"sm\"\n  data={DAYS}\n  xKey=\"day\"\n  xLabel=\"Day\"\n  series={[{ key: 'orders', label: 'Orders' }]}\n  headingLevel={4}\n/>\n<ChartPanel<Week>\n  title=\"Online orders\"\n  headline=\"170\"\n  summary=\"Three peaks in twelve weeks; the highest, 231, in week 7.\"\n  kind=\"line\"\n  area\n  curve=\"smooth\"\n  size=\"sm\"\n  data={WEEKS}\n  xKey=\"week\"\n  xLabel=\"Week\"\n  series={[{ key: 'online', label: 'Online' }]}\n  headingLevel={4}\n/>"
         },
         {
           "caption": "Donut with a centre total",
@@ -10984,7 +11307,7 @@
         {
           "name": "items",
           "type": "NavbarItem[]",
-          "description": "Required. Each item has label, href and current."
+          "description": "Required. A link is { label, href, current }. A menu among the links is { label, menu, current }: menu lists { label, href, description } entries, opened from a dropdown on a wide bar and listed as a labelled group in the menu sheet on a narrow one."
         },
         {
           "name": "actions",
@@ -11006,7 +11329,13 @@
         {
           "name": "menuFooter",
           "type": "ReactNode",
-          "description": "Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex."
+          "description": "Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex (hidden @4xl:flex when collapseBelow is '4xl')."
+        },
+        {
+          "name": "collapseBelow",
+          "type": "'2xl' | '4xl'",
+          "default": "'2xl'",
+          "description": "The bar's own width below which the links fold into the menu sheet: 2xl is 42rem, 4xl is 56rem. Pick the one at which the brand, every link and the actions still fit on one row with room to spare."
         },
         {
           "name": "className",
@@ -11023,7 +11352,7 @@
         {
           "name": "NavbarItem",
           "kind": "type",
-          "code": "export type NavbarItem = { label: string; href: string; current?: boolean }",
+          "code": "export type NavbarItem = NavbarLink | NavbarMenu",
           "from": "src/components/organisms/navbar/Navbar"
         }
       ],
@@ -11083,6 +11412,10 @@
         {
           "caption": "Store navigation",
           "source": "const ITEMS = [\n  { label: 'Replicas', href: '#replicas' },\n  { label: 'Optics', href: '#optics', current: true },\n  { label: 'Parts', href: '#parts' },\n  { label: 'Care', href: '#care' },\n  { label: 'Field notes', href: '#field-notes' },\n]\n\nconst BRAND = (\n  <a\n    href=\"#home\"\n    className=\"inline-flex items-center min-h-10 font-display font-bold uppercase tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]\"\n  >\n    Hexline\n  </a>\n)\n\nconst ACTIONS = (\n  <>\n    <IconButton label=\"Search\" variant=\"ghost\">\n      <Search aria-hidden=\"true\" className=\"w-5 h-5\" />\n    </IconButton>\n    <IconButton label=\"Cart, 2 items\" variant=\"ghost\" asChild>\n      <a href=\"#cart\">\n        <ShoppingBag aria-hidden=\"true\" className=\"w-5 h-5\" />\n      </a>\n    </IconButton>\n  </>\n)\n\n<Navbar label=\"Store navigation\" brand={BRAND} items={ITEMS} actions={ACTIONS} />"
+        },
+        {
+          "caption": "A menu among the links",
+          "source": "const ITEMS = [\n  { label: 'Replicas', href: '#replicas' },\n  { label: 'Optics', href: '#optics', current: true },\n  { label: 'Parts', href: '#parts' },\n  { label: 'Care', href: '#care' },\n  { label: 'Field notes', href: '#field-notes' },\n]\n\nconst BRAND = (\n  <a\n    href=\"#home\"\n    className=\"inline-flex items-center min-h-10 font-display font-bold uppercase tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]\"\n  >\n    Hexline\n  </a>\n)\n\nconst ACTIONS = (\n  <>\n    <IconButton label=\"Search\" variant=\"ghost\">\n      <Search aria-hidden=\"true\" className=\"w-5 h-5\" />\n    </IconButton>\n    <IconButton label=\"Cart, 2 items\" variant=\"ghost\" asChild>\n      <a href=\"#cart\">\n        <ShoppingBag aria-hidden=\"true\" className=\"w-5 h-5\" />\n      </a>\n    </IconButton>\n  </>\n)\n\n<Navbar\n  label=\"Store navigation with a menu\"\n  brand={BRAND}\n  items={[\n    ...ITEMS.slice(0, 3),\n    {\n      label: 'Guides',\n      menu: [\n        { label: 'Sizing', href: '#sizing', description: 'Fit charts for every replica.' },\n        { label: 'Returns', href: '#returns', description: 'Thirty days, no questions.' },\n      ],\n    },\n  ]}\n  actions={ACTIONS}\n/>"
         },
         {
           "caption": "A narrow container",

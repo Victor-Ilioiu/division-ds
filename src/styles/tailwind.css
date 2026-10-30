@@ -41,3 +41,8 @@
 html:has([data-docs-shell]) {
   scroll-padding-top: 4.5rem;
 }
+
+/* Hexline's Navbar is sticky too (3.5rem tall): the skip link and in-page jumps land below it. */
+html:has([data-demo-shell]) {
+  scroll-padding-top: 3.5rem;
+}

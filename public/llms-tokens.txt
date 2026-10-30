@@ -11,7 +11,7 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | Token | Use | Value |
 |---|---|---|
 | `--color-surface-base` | The page background, and the opaque fill of every form and overlay. Start here: text and control colours are measured against it. | `dark #07080b, light #f2f4f8` |
-| `--color-surface-sunken` | The opaque fill of a control you type or pick in (Input, Textarea, Select), and of small opaque surfaces: Kbd, Tag, Tooltip, menus, toasts. Not a card. | `dark #0d1016, light #c2cddc` |
+| `--color-surface-sunken` | The opaque fill of a control you type or pick in (Input, Textarea, Select), and of small opaque surfaces: Kbd, Tag, Tooltip, menus, toasts. Not a card. | `dark #0d1016, light #e3e8ef` |
 | `--color-surface-raised` | The translucent fill of a Card or panel sitting on the page. Use the Card component; do not paint it by hand, and avoid nesting raised inside raised. | `dark rgba(40, 52, 69, 0.42), light rgba(255, 255, 255, 0.6)` |
 | `--color-surface-scrim` | The dimming layer behind a Dialog, Sheet or CommandPalette. Those components paint it; nothing else should. | `dark rgba(0, 0, 0, 0.6), light rgba(11, 14, 19, 0.48)` |
 | `--color-border-hairline` | A quiet divider or panel edge that carries no information: row separators, card outlines. | `dark rgba(214, 226, 240, 0.16), light rgba(11, 14, 19, 0.12)` |

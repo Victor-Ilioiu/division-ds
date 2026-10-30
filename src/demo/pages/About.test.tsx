@@ -2,20 +2,23 @@ import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { axeClean } from '../../test/axe'
+import { Toaster } from '../../components/molecules/toast/Toast'
 import { DEMO_PAGES } from '../routes'
 import { About, CASE_STUDY_URL, HEXLINE_COMPONENTS } from './About'
 
 function renderPage() {
   return render(
-    <MemoryRouter initialEntries={['/demo/about']}>
-      <About />
+    <MemoryRouter initialEntries={['/store/about']}>
+      <Toaster>
+        <About />
+      </Toaster>
     </MemoryRouter>
   )
 }
 
 describe('Hexline about page', () => {
   it('is registered in the Navbar with the demo title format', () => {
-    const entry = DEMO_PAGES.find(page => page.path === '/demo/about')
+    const entry = DEMO_PAGES.find(page => page.path === '/store/about')
     expect(entry).toMatchObject({ label: 'About', title: 'Hexline — about', inNav: true })
   })
 

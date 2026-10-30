@@ -24,6 +24,20 @@ describe('Kbd', () => {
     expect(ref.current?.tagName).toBe('KBD')
   })
 
+  it('is 24px by default and 20px at size sm', () => {
+    render(<><Kbd>A</Kbd><Kbd size="sm">B</Kbd></>)
+    expect(screen.getByText('A')).toHaveClass('h-[24px]')
+    expect(screen.getByText('B')).toHaveClass('h-[20px]')
+    expect(screen.getByText('B')).not.toHaveClass('h-[24px]')
+  })
+
+  it('is square unless cut, and a cut follows its size', () => {
+    render(<><Kbd>A</Kbd><Kbd size="sm" cut>B</Kbd><Kbd cut>C</Kbd></>)
+    expect(screen.getByText('A').className).not.toMatch(/bevel/)
+    expect(screen.getByText('B')).toHaveClass('bevel-xs', 'bevel-edge', 'relative')
+    expect(screen.getByText('C')).toHaveClass('bevel-sm', 'bevel-edge')
+  })
+
   it('is axe clean', async () => {
     const { container } = render(<Kbd>Esc</Kbd>)
     expect(await axeClean(container)).toHaveNoViolations()

@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { axeClean } from '../../test/axe'
 import { ComponentDocs } from './ComponentDocs'
 import { Example } from './Example'
+import { Toaster } from '../molecules/toast/Toast'
 import type { ComponentMeta } from './meta'
 
 const meta: ComponentMeta = {
@@ -34,12 +35,14 @@ describe('Example', () => {
 
   it('shows the source it is given, in a named region, behind a disclosure', () => {
     render(
-      <Example caption="Plain" source={'<Thing label="Go" />'}>
-        content
-      </Example>
+      <Toaster>
+        <Example caption="Plain" source={'<Thing label="Go" />'}>
+          content
+        </Example>
+      </Toaster>
     )
     expect(screen.getByText('Code').closest('details')).not.toHaveAttribute('open')
-    expect(screen.getByRole('region', { name: 'Plain, source', hidden: true })).toHaveTextContent('<Thing label="Go" />')
+    expect(screen.getByRole('region', { name: 'tsx, Plain, source', hidden: true })).toHaveTextContent('<Thing label="Go" />')
   })
 
   it('copies the source and says so', async () => {
@@ -47,23 +50,27 @@ describe('Example', () => {
     const user = userEvent.setup()
     Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
     render(
-      <Example caption="Plain" source="<Thing />">
-        content
-      </Example>
+      <Toaster>
+        <Example caption="Plain" source="<Thing />">
+          content
+        </Example>
+      </Toaster>
     )
     await user.click(screen.getByText('Code'))
-    await user.click(screen.getByRole('button', { name: 'Copy', hidden: true }))
+    await user.click(screen.getByRole('button', { name: 'Copy Plain, source', hidden: true }))
     expect(writeText).toHaveBeenCalledWith('<Thing />')
-    expect(await screen.findByText('Copied')).toBeInTheDocument()
+    expect(await screen.findByText('Copied: Plain, source')).toBeInTheDocument()
   })
 })
 
 describe('ComponentDocs, from metadata', () => {
   const page = () =>
     render(
-      <ComponentDocs meta={meta}>
-        <Example caption="Plain">content</Example>
-      </ComponentDocs>
+      <Toaster>
+        <ComponentDocs meta={meta}>
+          <Example caption="Plain">content</Example>
+        </ComponentDocs>
+      </Toaster>
     )
 
   it('links its markdown twin', () => {
@@ -115,9 +122,9 @@ describe('ComponentDocs, from metadata', () => {
 
   it('shows each mistake as wrong beside right, each region named once', () => {
     page()
-    expect(screen.getByRole('region', { name: 'Mistake 1, wrong' })).toHaveTextContent('<Thing />')
-    expect(screen.getByRole('region', { name: 'Mistake 1, right' })).toHaveTextContent('<Thing label="Go" />')
-    expect(screen.getByRole('region', { name: 'Mistake 2, right' })).toHaveTextContent('<Thing b />')
+    expect(screen.getByRole('region', { name: 'tsx, Mistake 1, wrong' })).toHaveTextContent('<Thing />')
+    expect(screen.getByRole('region', { name: 'tsx, Mistake 1, right' })).toHaveTextContent('<Thing label="Go" />')
+    expect(screen.getByRole('region', { name: 'tsx, Mistake 2, right' })).toHaveTextContent('<Thing b />')
     expect(screen.getByText('It needs a name.')).toBeInTheDocument()
   })
 

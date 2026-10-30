@@ -41,13 +41,13 @@ function renderPage({ user }: { user?: { name: string; email: string } } = {}) {
     sessionStorage.setItem('hexline-session', JSON.stringify({ user, pendingEmail: null }))
   }
   return render(
-    <MemoryRouter initialEntries={['/demo/onboarding']}>
+    <MemoryRouter initialEntries={['/store/onboarding']}>
       <SessionProvider>
         <Toaster>
           <Routes>
-            <Route path="/demo/onboarding" element={<Onboarding />} />
-            <Route path="/demo/create-account" element={<Stub name="Create account" />} />
-            <Route path="/demo/shop" element={<Stub name="Shop" />} />
+            <Route path="/store/onboarding" element={<Onboarding />} />
+            <Route path="/store/create-account" element={<Stub name="Create account" />} />
+            <Route path="/store/shop" element={<Stub name="Shop" />} />
           </Routes>
         </Toaster>
       </SessionProvider>
@@ -217,7 +217,7 @@ describe('Onboarding', () => {
 
   // Same reasoning as CreateAccount's own stale-result test: two independent assertions, since
   // neither alone proves the guard. Mutation: drop the `if (!mounted.current) return` line before
-  // `toast`/`navigate` in `finish` -> the toast appears and the path moves to `/demo/shop` even
+  // `toast`/`navigate` in `finish` -> the toast appears and the path moves to `/store/shop` even
   // though the page was left first.
   it('drops a save result that resolves after the page is gone, without toasting or navigating', async () => {
     let resolveSave: () => void = () => {}
@@ -227,14 +227,14 @@ describe('Onboarding', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/onboarding']}>
+        <MemoryRouter initialEntries={['/store/onboarding']}>
           <SessionProvider>
             <Toaster>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Probe />
               <Routes>
-                <Route path="/demo/onboarding" element={present ? <Onboarding /> : <p>Left the page</p>} />
-                <Route path="/demo/shop" element={<p>Shop</p>} />
+                <Route path="/store/onboarding" element={present ? <Onboarding /> : <p>Left the page</p>} />
+                <Route path="/store/shop" element={<p>Shop</p>} />
               </Routes>
             </Toaster>
           </SessionProvider>
@@ -254,7 +254,7 @@ describe('Onboarding', () => {
     await act(async () => {
       resolveSave()
     })
-    expect(screen.getByTestId('path')).toHaveTextContent('/demo/onboarding')
+    expect(screen.getByTestId('path')).toHaveTextContent('/store/onboarding')
     expect(screen.queryByText('Your account is set up.')).toBeNull()
   })
 
@@ -271,12 +271,12 @@ describe('Onboarding', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/onboarding']}>
+        <MemoryRouter initialEntries={['/store/onboarding']}>
           <SessionProvider>
             <Toaster>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/onboarding" element={present ? <Onboarding /> : <p>Left the page</p>} />
+                <Route path="/store/onboarding" element={present ? <Onboarding /> : <p>Left the page</p>} />
               </Routes>
             </Toaster>
           </SessionProvider>

@@ -407,7 +407,7 @@ describe('Product: the viewer across products', () => {
         <Toaster>
           <CartProvider>
             <Routes>
-              <Route path="/demo/shop/:id" element={<Product />} />
+              <Route path="/store/shop/:id" element={<Product />} />
             </Routes>
           </CartProvider>
         </Toaster>
@@ -420,7 +420,7 @@ describe('Product: the viewer across products', () => {
   // new product starts its own.
   it('going to another product disposes the viewer and starts that product’s own', async () => {
     const fake = fakeViewer()
-    const { container } = renderProduct('/demo/shop/bump-helmet')
+    const { container } = renderProduct('/store/shop/bump-helmet')
     await waitFor(() => expect(viewer.startViewer).toHaveBeenCalledTimes(1))
     await fake.ready()
     expect(viewer.startViewer.mock.calls[0][1]).toBe('bump-helmet')
@@ -439,7 +439,7 @@ describe('Product: the viewer across products', () => {
   // over to the next product and its viewer never starts.
   it('a failure on one product does not withdraw the viewer on the next', async () => {
     const fake = fakeViewer()
-    renderProduct('/demo/shop/bump-helmet')
+    renderProduct('/store/shop/bump-helmet')
     await waitFor(() => expect(viewer.startViewer).toHaveBeenCalledTimes(1))
     await fake.reject()
     expect(screen.getByText(PRODUCT_VIEWER.unavailable)).toBeInTheDocument()

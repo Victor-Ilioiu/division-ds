@@ -7,9 +7,9 @@ import { cn } from '../../../lib/cn'
 import { routerLink } from '../../routerLink'
 
 export const OPS_PAGES = [
-  { href: '/demo/ops', label: 'Dashboard', icon: <LayoutDashboard /> },
-  { href: '/demo/ops/inventory', label: 'Inventory', icon: <Boxes /> },
-  { href: '/demo/ops/settings', label: 'Settings', icon: <SettingsIcon /> },
+  { href: '/store/ops', label: 'Dashboard', icon: <LayoutDashboard /> },
+  { href: '/store/ops/inventory', label: 'Inventory', icon: <Boxes /> },
+  { href: '/store/ops/settings', label: 'Settings', icon: <SettingsIcon /> },
 ] as const
 
 const RING =
@@ -61,7 +61,7 @@ export function OpsLayout({ children }: { children: ReactNode }) {
           footer={
             <div className="flex flex-col gap-2 border-t border-[var(--color-border-hairline)] pt-4">
               <p className="font-body text-sm text-[var(--color-text-secondary)]">Every figure here is demo data.</p>
-              <RouterLink to="/demo" className={cn(linkVariants(), 'text-sm')}>
+              <RouterLink to="/store" className={cn(linkVariants(), 'text-sm')}>
                 Back to the store
               </RouterLink>
             </div>

@@ -109,7 +109,7 @@ export function Journal() {
         {!knownTag ? (
           <EmptyState title="No field notes with that tag">
             Nothing here is tagged &ldquo;{activeTag}&rdquo;.{' '}
-            <RouterLink to="/demo/journal" className={linkVariants({ tone: 'quiet' })}>
+            <RouterLink to="/store/journal" className={linkVariants({ tone: 'quiet' })}>
               Clear the filter
             </RouterLink>{' '}
             to see every note.
@@ -117,7 +117,7 @@ export function Journal() {
         ) : posts.length === 0 ? (
           <EmptyState title="No field notes match">
             Nothing matches those filters.{' '}
-            <RouterLink to="/demo/journal" className={linkVariants({ tone: 'quiet' })}>
+            <RouterLink to="/store/journal" className={linkVariants({ tone: 'quiet' })}>
               Clear the filters
             </RouterLink>{' '}
             to see every note.

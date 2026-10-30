@@ -2,6 +2,19 @@ import type { Locator, Page } from '@playwright/test'
 import { CARE } from '../src/demo/content'
 import { applyTheme, expect, expectAxeClean, settleAnimations, test, THEMES, trackHeroBottom } from './fixtures'
 
+// The page gutter, read off the demo shell: since the headers all moved to a 16px gutter
+// (2026-10-30) the Navbar brand no longer marks where page content starts, the gutter does.
+const pageGutter = (page: import('@playwright/test').Page) =>
+  page.evaluate(() => {
+    const shell = document.querySelector('[data-demo-shell]')!
+    const probe = document.createElement('div')
+    probe.style.width = 'var(--page-gutter)'
+    shell.appendChild(probe)
+    const width = probe.getBoundingClientRect().width
+    probe.remove()
+    return width
+  })
+
 // demo.spec.ts already covers axe and 320px-wide reflow for every registered page in both
 // themes (Field notes' index and article included, via the article's own `samplePath`), and
 // flows.spec.ts's own "every flow route reflows at 1280x256 and 320x256 in dark theme" describe
@@ -25,24 +38,24 @@ import { applyTheme, expect, expectAxeClean, settleAnimations, test, THEMES, tra
 // own left gutter regardless of the wrapper's own padding -- it would prove nothing either way.
 test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () => {
   const PAGES: { path: string; heading: string }[] = [
-    { path: '/demo', heading: 'Kestrel C carbine replica' },
-    { path: '/demo/shop', heading: 'Shop' },
-    { path: '/demo/journal', heading: 'Field notes' },
-    { path: '/demo/journal/cleaning-after-a-field-day', heading: 'Cleaning a replica after a field day' },
-    { path: '/demo/care', heading: 'Hexline Care' },
-    { path: '/demo/cart', heading: 'Your cart' },
-    { path: '/demo/status/error', heading: 'Error states' },
+    { path: '/store', heading: 'Kestrel C carbine replica' },
+    { path: '/store/shop', heading: 'Shop' },
+    { path: '/store/journal', heading: 'Field notes' },
+    { path: '/store/journal/cleaning-after-a-field-day', heading: 'Cleaning a replica after a field day' },
+    { path: '/store/care', heading: 'Hexline Care' },
+    { path: '/store/cart', heading: 'Your cart' },
+    { path: '/store/status/error', heading: 'Error states' },
   ]
 
   // Mutation: change `px-gutter` on Shop.tsx's root wrapper div to `px-4` -> at this test's own
   // 1280px viewport, the h1 sits 48px left of the Navbar brand instead of flush with it, and the
-  // poll below never settles at 0 within its timeout. Same for `/demo`: put `lg:px-24` on
+  // poll below never settles at 0 within its timeout. Same for `/store`: put `lg:px-24` on
   // HomeHero.tsx's copy column and its h1 is 32px right of the brand.
   // A Default page (DEFAULT_PAGE, src/demo/DefaultPage.tsx) is at most 1200px wide, and at 1280px
   // its column is the whole gutter-to-gutter width, so its h1 is flush with the brand like a
   // full-width page's. The 1440px block below holds the centring itself.
   for (const { path, heading } of PAGES) {
-    test(`the h1 on ${path} is flush with the Navbar brand`, async ({ page }) => {
+    test(`the h1 on ${path} starts at the page gutter`, async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })
       await page.goto(path)
       const h1 = page.getByRole('heading', { level: 1, name: heading })
@@ -52,15 +65,14 @@ test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () 
       // still waits for it, the same defensive rule every other layout measurement in this suite
       // follows, rather than assuming this one case is different.
       await page.evaluate(() => document.fonts.ready)
-      const brand = page.getByRole('banner').getByRole('link', { name: 'Hexline', exact: true })
+      const gutter = await pageGutter(page)
       await expect
         .poll(
           async () => {
-            const brandX = await brand.evaluate(el => el.getBoundingClientRect().left)
             const h1X = await h1.evaluate(el => el.getBoundingClientRect().left)
-            return Math.abs(brandX - h1X)
+            return Math.abs(gutter - h1X)
           },
-          { message: `h1 on ${path} is not flush with the Navbar brand` }
+          { message: `h1 on ${path} does not start at the page gutter` }
         )
         .toBeLessThanOrEqual(1)
     })
@@ -71,11 +83,11 @@ test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () 
   // or for the product page (whose h1 sits in the second column of its grid) the breadcrumbs.
   // Mutation: drop `mx-auto` from DEFAULT_PAGE -> left becomes 64 on every page below.
   for (const { path, first } of [
-    { path: '/demo/cart', first: 'h1' },
-    { path: '/demo/care', first: 'h1' },
-    { path: '/demo/journal', first: 'h1' },
-    { path: '/demo/journal/cleaning-after-a-field-day', first: 'breadcrumb' },
-    { path: '/demo/shop/harrier-lr', first: 'breadcrumb' },
+    { path: '/store/cart', first: 'h1' },
+    { path: '/store/care', first: 'h1' },
+    { path: '/store/journal', first: 'h1' },
+    { path: '/store/journal/cleaning-after-a-field-day', first: 'breadcrumb' },
+    { path: '/store/shop/harrier-lr', first: 'breadcrumb' },
   ]) {
     test(`${path} is a Default page: 1200px, centred, at 1440px`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 })
@@ -94,7 +106,7 @@ test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () 
   // Mutation: drop `mx-auto` from SignIn.tsx's wrapper -> the right gap grows, this fails.
   test('the sign-in column is centred in the page', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo/sign-in')
+    await page.goto('/store/sign-in')
     const h1 = page.getByRole('heading', { level: 1, name: 'Hexline account' })
     await expect(h1).toBeVisible()
     const gaps = await h1.evaluate(el => {
@@ -116,11 +128,12 @@ test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () 
   ]) {
     test(`the page gutter is ${gutter}px on both sides at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await page.evaluate(() => document.fonts.ready)
       const brand = page.getByRole('banner').getByRole('link', { name: 'Hexline', exact: true })
       await expect(brand).toBeVisible()
-      await expect.poll(() => brand.evaluate(el => Math.round(el.getBoundingClientRect().left))).toBe(gutter)
+      // the header keeps the site-wide 16px gutter at every width; the page content takes the page's
+      await expect.poll(() => brand.evaluate(el => Math.round(el.getBoundingClientRect().left))).toBe(16)
       const h1 = page.getByRole('heading', { level: 1, name: 'Kestrel C carbine replica' })
       await expect.poll(() => h1.evaluate(el => Math.round(el.getBoundingClientRect().left))).toBe(gutter)
       // The right side: the first section heading's rule runs from gutter to gutter.
@@ -134,7 +147,7 @@ test.describe('Page content starts at the Navbar brand\'s own x, at 1280px', () 
   }
 })
 
-// A real Lighthouse CLS regression on /demo (0.59, "poor") traced to one dominant source: the
+// A real Lighthouse CLS regression on /store (0.59, "poor") traced to one dominant source: the
 // homepage's own route used to be lazy-loaded like every other route, so a direct load briefly
 // showed DemoLayout's Suspense fallback (a short "Loading…" paragraph) before the real, much
 // taller page swapped in once its own separate chunk finished fetching -- the Footer jumping from
@@ -165,7 +178,7 @@ test.describe('Homepage layout stability', () => {
   // the hero renders once as live and then falls back, so its bottom edge moves 96px: the edge
   // assertion failed with two values (801 and 897), and both layout-shift assertions above it
   // passed.
-  test('cumulative layout shift on /demo stays under 0.1 over load + 2s, motion allowed', async ({ page }) => {
+  test('cumulative layout shift on /store stays under 0.1 over load + 2s, motion allowed', async ({ page }) => {
     // Motion allowed, not reduced: smooth scroll (Lenis) only mounts on this branch, and it is
     // the one most visitors actually see.
     await page.emulateMedia({ reducedMotion: 'no-preference' })
@@ -181,7 +194,7 @@ test.describe('Homepage layout stability', () => {
       po.observe({ type: 'layout-shift', buffered: true })
     })
     const heroBottoms = await trackHeroBottom(page)
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     // The regression this guards landed a full 2s+ after `load` in real runs (the lazy chunk's
     // own network round trip) -- a read taken any earlier would miss it entirely, which is
@@ -192,7 +205,7 @@ test.describe('Homepage layout stability', () => {
     await expect
       .poll(async () => page.evaluate(() => (window as any).__cls), {
         timeout: 5000,
-        message: 'cumulative layout shift on /demo exceeded 0.1 over load + 2s',
+        message: 'cumulative layout shift on /store exceeded 0.1 over load + 2s',
       })
       .toBeLessThan(0.1)
     // A poll can pass on an EARLY read before a late shift lands, just as easily as a single
@@ -224,11 +237,11 @@ test.describe('Homepage layout stability', () => {
 test.describe('Lazy demo routes do not shift the layout on a direct load', () => {
   const LAZY_ROUTES = [
     // A page several screens tall: its Footer used to be thrown furthest.
-    { path: '/demo/shop/kestrel-c', module: '**/src/demo/pages/shop/Product.tsx*' },
-    { path: '/demo/shop', module: '**/src/demo/pages/shop/Shop.tsx*' },
-    { path: '/demo/care', module: '**/src/demo/pages/Pricing.tsx*' },
+    { path: '/store/shop/kestrel-c', module: '**/src/demo/pages/shop/Product.tsx*' },
+    { path: '/store/shop', module: '**/src/demo/pages/shop/Shop.tsx*' },
+    { path: '/store/care', module: '**/src/demo/pages/Pricing.tsx*' },
     // A page shorter than a screen: a floor on the fallback alone would pull its Footer UP.
-    { path: '/demo/sign-in', module: '**/src/demo/pages/auth/SignIn.tsx*' },
+    { path: '/store/sign-in', module: '**/src/demo/pages/auth/SignIn.tsx*' },
   ]
   const VIEWPORTS = [
     { width: 1280, height: 800 },
@@ -312,7 +325,7 @@ test.describe('Field notes reflow at short viewports, light theme', () => {
       page,
     }) => {
       await page.setViewportSize(viewport)
-      await page.goto('/demo/journal')
+      await page.goto('/store/journal')
       await expect(page.getByRole('heading', { level: 1, name: 'Field notes' })).toBeVisible()
       await applyTheme(page, 'light')
       await page.evaluate(() => document.fonts.ready)
@@ -329,7 +342,7 @@ test.describe('Field notes reflow at short viewports, light theme', () => {
   for (const viewport of VIEWPORTS) {
     test(`a Field note has no horizontal overflow at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await page.setViewportSize(viewport)
-      await page.goto('/demo/journal/cleaning-after-a-field-day')
+      await page.goto('/store/journal/cleaning-after-a-field-day')
       await expect(page.getByRole('heading', { level: 1, name: 'Cleaning a replica after a field day' })).toBeVisible()
       await applyTheme(page, 'light')
       await page.evaluate(() => document.fonts.ready)
@@ -354,7 +367,7 @@ test.describe('Field notes reflow at short viewports, light theme', () => {
 // that), but there is nothing focusable there to land on, and the `toBeFocused()` assertion below
 // times out instead.
 test('a click on an "On this page" link scrolls to that section and moves focus there', async ({ page }) => {
-  await page.goto('/demo/journal/cleaning-after-a-field-day')
+  await page.goto('/store/journal/cleaning-after-a-field-day')
   await expect(page.getByRole('heading', { level: 1, name: 'Cleaning a replica after a field day' })).toBeVisible()
 
   const link = page.getByRole('link', { name: 'Steps' })
@@ -400,7 +413,7 @@ test.describe('Care page', () => {
     for (const viewport of VIEWPORTS) {
       test(`Care has no horizontal overflow at ${viewport.width}x${viewport.height}`, async ({ page }) => {
         await page.setViewportSize(viewport)
-        await page.goto('/demo/care')
+        await page.goto('/store/care')
         await expect(page.getByRole('heading', { level: 1, name: 'Hexline Care' })).toBeVisible()
         await page.evaluate(() => document.fonts.ready)
         await expect
@@ -415,7 +428,7 @@ test.describe('Care page', () => {
   // Mutation: hardcode `checked={false}` on Pricing.tsx's Switch instead of `checked={annual}` ->
   // the switch never reflects `?billing=annual` and the second assertion below fails.
   test('the billing switch survives a reload through the URL, not local state', async ({ page }) => {
-    await page.goto('/demo/care')
+    await page.goto('/store/care')
     await expect(page.getByRole('heading', { level: 1, name: 'Hexline Care' })).toBeVisible()
     const billingSwitch = page.getByRole('switch', { name: 'Bill annually (2 months free)' })
     await billingSwitch.click()
@@ -434,7 +447,7 @@ test.describe('Care page', () => {
   // opening on a real activation. Confirmed by running it: the actual failure is the initial
   // `not.toBeVisible()`, not a later no-op Enter press.
   test('a keyboard user can open an FAQ item with Enter', async ({ page }) => {
-    await page.goto('/demo/care')
+    await page.goto('/store/care')
     await expect(page.getByRole('heading', { level: 1, name: 'Hexline Care' })).toBeVisible()
     const question = CARE.faq[0].question
     const answer = page.getByText(CARE.faq[0].answer)
@@ -450,7 +463,7 @@ test.describe('Care page', () => {
 })
 
 // demo.spec.ts's generic per-page pass and flows.spec.ts's own FLOW_PAGES sweep both only ever
-// `goto` /demo/status/error fresh, so between them they already prove the page's own default
+// `goto` /store/status/error fresh, so between them they already prove the page's own default
 // load (both themes' axe, 320px reflow, and dark-theme 1280x256/320x256 reflow) -- see this
 // file's own header comment on that split. None of that ever clicks the crash button, so the
 // route error boundary's own fallback (DemoErrorBoundary/DemoRouteError, mounted in DemoLayout)
@@ -458,7 +471,7 @@ test.describe('Care page', () => {
 // coverage, not a light-theme gap-fill for the page's normal state the way Care's/Field notes'
 // own blocks are.
 async function triggerCrash(page: Page) {
-  await page.goto('/demo/status/error')
+  await page.goto('/store/status/error')
   await expect(page.getByRole('heading', { level: 1, name: 'Error states' })).toBeVisible()
   await page.getByRole('button', { name: 'Show the full-page error' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible()
@@ -487,7 +500,7 @@ test.describe('Error states', () => {
   // Mutation: drop `tabIndex={-1}` and the focus-on-mount effect from DemoRouteError's own `<h1>`
   // -> `__b` counts at least one frame with focus on body before the heading ever takes it.
   test('focus moves to the error page heading, never to body', async ({ page }) => {
-    await page.goto('/demo/status/error')
+    await page.goto('/store/status/error')
     await expect(page.getByRole('heading', { level: 1, name: 'Error states' })).toBeVisible()
     const crashButton = page.getByRole('button', { name: 'Show the full-page error' })
     // Focused explicitly before the counter starts: a freshly loaded page has no focused element
@@ -539,7 +552,7 @@ test.describe('Error states', () => {
   test('navigating to another route clears the error', async ({ page }) => {
     await triggerCrash(page)
     await page.getByRole('link', { name: 'Go to the store home' }).click()
-    await expect(page).toHaveURL(/\/demo$/)
+    await expect(page).toHaveURL(/\/store$/)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect(page.getByText('Something went wrong')).toHaveCount(0)
   })
@@ -561,7 +574,7 @@ test.describe('Error states', () => {
   // correct and is applied below regardless -- this test guards the contract going forward, not
   // a regression proven to exist in this exact build.
   test('navigating to an already-visited route never re-shows the "Loading…" fallback', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     // Warm Care's own lazy chunk -- resolved and cached from here on, independent of any
     // Suspense boundary's own mount identity.
@@ -600,7 +613,7 @@ test.describe('Error states', () => {
     test('opening Care with its module blocked shows the fallback, and "Try again" reloads once unblocked', async ({
       page,
     }) => {
-      await page.goto('/demo')
+      await page.goto('/store')
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       await page.route('**/src/demo/pages/Pricing.tsx*', route => route.fulfill({ status: 404 }))
       // Scoped to the Navbar: the footer's own Shop column also links to Care (added the same
@@ -652,7 +665,7 @@ test.describe('Error states', () => {
   })
 })
 
-// The account dashboard (`/demo/account`, `/demo/account/orders`, `/demo/account/settings`) is
+// The account dashboard (`/store/account`, `/store/account/orders`, `/store/account/settings`) is
 // reached only signed in -- every route has `sampleTitle: SIGN_IN_TITLE` in routes.ts precisely
 // because demo.spec's own generic per-route sweep, and flows.spec's own dark-theme
 // 1280x256/320x256 sweep, both navigate with no session and so only ever measure the sign-in
@@ -661,7 +674,7 @@ test.describe('Error states', () => {
 // block is where that content's own axe and reflow coverage lives, seeded with `addInitScript`
 // the way flows.spec seeds a pending email or a cart line.
 test.describe('Account pages', () => {
-  const ACCOUNT_PATHS = ['/demo/account', '/demo/account/orders', '/demo/account/settings']
+  const ACCOUNT_PATHS = ['/store/account', '/store/account/orders', '/store/account/settings']
 
   async function seedSignedIn(page: Page) {
     await page.addInitScript(() => {
@@ -692,10 +705,10 @@ test.describe('Account pages', () => {
   // "signing out focuses..." test for that case).
   test('signing out from Settings lands on sign-in, with its own notice, focus on #main', async ({ page }) => {
     await seedSignedIn(page)
-    await page.goto('/demo/account/settings')
+    await page.goto('/store/account/settings')
     await expect(page.getByRole('heading', { level: 1, name: 'Your account' })).toBeVisible()
     await page.getByRole('button', { name: 'Sign out' }).click()
-    await expect(page).toHaveURL(/\/demo\/sign-in$/)
+    await expect(page).toHaveURL(/\/store\/sign-in$/)
     await expect(page.getByText("You've signed out.")).toBeVisible()
     await expect(page.locator('#main')).toBeFocused()
   })
@@ -704,7 +717,7 @@ test.describe('Account pages', () => {
   // `getByRole('button', { name: 'Page 2' })` click below times out.
   test('Orders sorts by Total, paginates, and both survive a reload', async ({ page }) => {
     await seedSignedIn(page)
-    await page.goto('/demo/account/orders')
+    await page.goto('/store/account/orders')
     await expect(page.getByRole('heading', { level: 1, name: 'Your account' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Total' }).click()
@@ -730,7 +743,7 @@ test.describe('Account pages', () => {
   // EmptyState, and the text below is never found.
   test('filtering Orders to a status with none shows an empty state, cleared by its own action', async ({ page }) => {
     await seedSignedIn(page)
-    await page.goto('/demo/account/orders')
+    await page.goto('/store/account/orders')
     await expect(page.getByRole('heading', { level: 1, name: 'Your account' })).toBeVisible()
     await page.getByRole('combobox', { name: 'Status' }).click()
     await page.getByRole('option', { name: 'Returned', exact: true }).click()
@@ -744,41 +757,41 @@ test.describe('Account pages', () => {
   // -> Clear filter's own button unmounts (the empty state it lived in goes away) with nothing
   // else claiming focus, and it drops to the body.
   test('Clear filter keeps focus off the body', async ({ page }) => {
-    await seedSignedIn(page); await page.goto('/demo/account/orders?status=Returned')
+    await seedSignedIn(page); await page.goto('/store/account/orders?status=Returned')
     await page.getByRole('button', { name: 'Clear filter' }).click()
     await expect(page.getByRole('table')).toBeVisible()
     await expect(page.getByRole('combobox', { name: 'Status' })).toBeFocused()
   })
 
-  // Mutation: drop the `location.pathname === '/demo/account'` check from DemoLayout.tsx's
-  // `handleAccountSelect` (always `navigate('/demo/account')`) -> at either width, `#main` below
+  // Mutation: drop the `location.pathname === '/store/account'` check from DemoLayout.tsx's
+  // `handleAccountSelect` (always `navigate('/store/account')`) -> at either width, `#main` below
   // is not focused, since React Router's own navigate() to the page already showing renders
   // nothing new for `useFocusMainOnNavigate` to react to.
   for (const width of [320, 1280]) {
     test(`Your account from the Account menu at ${width}px`, async ({ page }) => {
       await seedSignedIn(page)
       await page.setViewportSize({ width, height: 800 })
-      await page.goto('/demo/shop')
+      await page.goto('/store/shop')
       await page.getByRole('button', { name: 'Account: Rae' }).locator('visible=true').click()
       await page.getByRole('menuitem', { name: 'Your account' }).click()
-      await expect(page).toHaveURL(/\/demo\/account$/)
+      await expect(page).toHaveURL(/\/store\/account$/)
       await expect(page.locator('#main')).toBeFocused()
     })
   }
 
-  // Mutation: drop the `location.pathname === '/demo/account'` check from DemoLayout.tsx's
-  // `handleAccountSelect` (always `navigate('/demo/account')`) -> the history length below grows
+  // Mutation: drop the `location.pathname === '/store/account'` check from DemoLayout.tsx's
+  // `handleAccountSelect` (always `navigate('/store/account')`) -> the history length below grows
   // by one (a duplicate entry for the page already showing) instead of staying the same.
   test('choosing "Your account" while already there moves focus, without a duplicate history entry', async ({
     page,
   }) => {
     await seedSignedIn(page)
-    await page.goto('/demo/account')
+    await page.goto('/store/account')
     await expect(page.getByRole('heading', { level: 1, name: 'Your account' })).toBeVisible()
     const historyLength = await page.evaluate(() => history.length)
     await page.getByRole('button', { name: 'Account: Rae' }).locator('visible=true').click()
     await page.getByRole('menuitem', { name: 'Your account' }).click()
-    await expect(page).toHaveURL(/\/demo\/account$/)
+    await expect(page).toHaveURL(/\/store\/account$/)
     await expect(page.locator('#main')).toBeFocused()
     expect(await page.evaluate(() => history.length)).toBe(historyLength)
   })
@@ -800,7 +813,7 @@ test.describe('Account pages', () => {
   // can tell apart from the effect's own guarantee.
   test('signing out from the Account menu still focuses the Sign in control', async ({ page }) => {
     await seedSignedIn(page)
-    await page.goto('/demo/shop')
+    await page.goto('/store/shop')
     await page.getByRole('button', { name: 'Account: Rae' }).locator('visible=true').click()
     await page.getByRole('menuitem', { name: 'Sign out' }).click()
     await expect(page.getByRole('link', { name: 'Sign in' }).locator('visible=true')).toBeFocused()
@@ -849,7 +862,7 @@ test.describe('Account pages', () => {
 })
 
 // The homepage under its hero: five sections, two of them sliders that run the full width of the
-// page. demo.spec.ts already holds axe and the 320px reflow for `/demo` in both themes; what is
+// page. demo.spec.ts already holds axe and the 320px reflow for `/store` in both themes; what is
 // here is what only this page can get wrong.
 test.describe('Homepage sections', () => {
   const SECTIONS = [
@@ -865,16 +878,13 @@ test.describe('Homepage sections', () => {
   // pass `gutter="2rem"` to a Carousel in Home.tsx -> its first card starts 32px left of the
   // brand at 1280 and 16px right of it at 390.
   for (const width of [1280, 390]) {
-    test(`every section heading, and the first card of each slider, starts at the Navbar brand's x at ${width}px`, async ({
+    test(`every section heading, and the first card of each slider, starts at the page gutter at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 800 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await page.evaluate(() => document.fonts.ready)
-      const brandX = await page
-        .getByRole('banner')
-        .getByRole('link', { name: 'Hexline', exact: true })
-        .evaluate(el => el.getBoundingClientRect().left)
+      const brandX = await pageGutter(page)
       for (const name of SECTIONS) {
         const heading = page.getByRole('heading', { level: 2, name })
         await expect(heading).toBeVisible()
@@ -907,7 +917,7 @@ test.describe('Homepage sections', () => {
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await page.evaluate(() => document.fonts.ready)
       const list = page.getByRole('region', { name: 'Top-rated replicas' }).getByRole('list')
       await list.scrollIntoViewIfNeeded()
@@ -936,7 +946,7 @@ test.describe('Homepage sections', () => {
   ]) {
     test(`the house rules are four cards in rows of ${rows.join(' and ')} at ${width}px, one height per row`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await page.evaluate(() => document.fonts.ready)
       const cards = page.getByRole('list', { name: 'House rules' }).getByRole('article')
       await expect(cards).toHaveCount(4)
@@ -954,7 +964,7 @@ test.describe('Homepage sections', () => {
   // on, and says so: a new tab, announced, and "Coming soon" beside it. Not clicked here: the
   // suite does not reach the network.
   test('the fourth house rule links out to the case study, announced as a new tab and marked as coming soon', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     const concept = page.getByRole('list', { name: 'House rules' }).getByRole('article').nth(3)
     await expect(concept).toContainText('Nothing here is for sale.')
     const link = concept.getByRole('link', { name: 'Read the case study (opens in a new tab)' })
@@ -970,7 +980,7 @@ test.describe('Homepage sections', () => {
   // and the title starts to the right of the numeral.
   test('each section numeral sits above its title, both on the same left edge', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo')
+    await page.goto('/store')
     await page.evaluate(() => document.fonts.ready)
     for (const name of ['Top-rated replicas', 'Offers', 'Shop by category', 'Top-rated accessories', 'House rules']) {
       const heading = page.getByRole('heading', { level: 2, name })
@@ -988,7 +998,7 @@ test.describe('Homepage sections', () => {
   for (const width of [1440, 1024, 768, 390]) {
     test(`each slider shows a cut card at its edge and cards of one height at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await page.evaluate(() => document.fonts.ready)
       for (const name of ['Offers', 'Top-rated accessories']) {
         const track = page.getByRole('region', { name }).getByRole('list')
@@ -1021,7 +1031,7 @@ test.describe('Homepage sections', () => {
   }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/demo')
+    await page.goto('/store')
     await page.waitForFunction(() => {
       const lenis = (window as unknown as { __lenis?: { limit: number } }).__lenis
       return lenis !== undefined && lenis.limit > 0
@@ -1044,14 +1054,14 @@ test.describe('Homepage sections', () => {
   })
 
   test('a category tile opens the shop filtered to that category, with the count the tile gave', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     const tile = page
       .getByRole('region', { name: 'Shop by category' })
       .getByRole('listitem')
       .filter({ hasText: 'Optics' })
     const count = (await tile.textContent())!.match(/(\d+) products?/)![1]
     await tile.getByRole('link', { name: 'Optics' }).click()
-    await expect(page).toHaveURL(/\/demo\/shop\?category=optics$/)
+    await expect(page).toHaveURL(/\/store\/shop\?category=optics$/)
     await expect(page.getByRole('checkbox', { name: 'Optics' })).toBeChecked()
     await expect(page.getByRole('status', { name: 'Result count' })).toHaveText(new RegExp(`^${count} products?$`))
   })
@@ -1069,7 +1079,7 @@ test.describe('Homepage sections', () => {
     test('an empty submit focuses the error summary, the offline address shows the alert, a real one succeeds', async ({
       page,
     }) => {
-      await page.goto('/demo')
+      await page.goto('/store')
       const form = page.getByRole('form', { name: 'Newsletter sign-up' })
       const field = form.getByRole('textbox', { name: 'Email for field notes', exact: true })
       const submit = form.locator('button[type="submit"]')
@@ -1092,7 +1102,7 @@ test.describe('Homepage sections', () => {
     for (const theme of THEMES) {
       test(`axe clean with the newsletter error summary showing in ${theme} theme`, async ({ page }) => {
         await page.emulateMedia({ reducedMotion: 'reduce' })
-        await page.goto('/demo')
+        await page.goto('/store')
         await applyTheme(page, theme)
         const form = page.getByRole('form', { name: 'Newsletter sign-up' })
         await form.locator('button[type="submit"]').click()

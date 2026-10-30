@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link as RouterLink, Outlet, matchPath, useLocation, useNavigate } from 'react-router-dom'
-import { User } from 'lucide-react'
+import { Search, User } from 'lucide-react'
 import { Button } from '../components/atoms/button/Button'
 import { IconButton } from '../components/atoms/icon-button/IconButton'
 import { TooltipProvider } from '../components/atoms/tooltip/Tooltip'
@@ -15,6 +15,8 @@ import { Navbar } from '../components/organisms/navbar/Navbar'
 import { Footer, type FooterColumn } from '../components/organisms/footer/Footer'
 import { NewsletterForm } from '../components/organisms/newsletter-form/NewsletterForm'
 import { BackToDocs } from '../components/shell/BackToDocs'
+import { DocsSearch } from '../search/DocsSearch'
+import { DivisionSymbol } from '../components/shell/DivisionSymbol'
 import { ThemeToggle } from '../components/shell/ThemeToggle'
 import { hasWebGL2 } from '../fx/core/webgl'
 import { CartSheet } from './CartSheet'
@@ -29,19 +31,19 @@ import { SessionProvider, useSession } from './store/session'
 import { Terrain } from './terrain/Terrain'
 import { useSmoothScroll } from './useSmoothScroll'
 
-// Same classes as NavbarDocs.tsx's own BRAND, swapped from a plain anchor to a router link home,
-// with one addition: NavbarDocs's own wordmark never has to share a 320px-wide row with a cart
-// button and a sign-in control, so tracking there stays fixed. Below `sm` here it tightens from
-// 0.14em to 0 -- the ~18px that buys back is what keeps the Navbar's actions row on one line at
-// 320px alongside the account and cart controls; see AccountAction's own comment for the rest of
-// that budget.
+// Same classes as NavbarDocs.tsx's own BRAND, swapped from a plain anchor to a router link home.
+// The Division DS symbol shows at every width. Below `sm` the word is visually hidden (still the
+// link's accessible name): the 320px row has no room for the symbol, the word, the menu button
+// and the account, cart and theme controls on one line (demo.spec header-height test). From `sm`
+// the word comes back with its 0.14em tracking.
 function Brand() {
   return (
     <RouterLink
       to={DEMO_HOME}
-      className="inline-flex items-center min-h-10 font-display font-bold uppercase tracking-normal sm:tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
+      className="inline-flex items-center gap-2 min-h-10 font-display font-bold uppercase tracking-[0.14em] text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
     >
-      Hexline
+      <DivisionSymbol className="size-5" />
+      <span className="sr-only sm:not-sr-only">Hexline</span>
     </RouterLink>
   )
 }
@@ -112,11 +114,11 @@ function AccountAction() {
   // finished unmounting and released its trap, is what both blocks Radix's own default (return
   // focus to the trigger) and performs the real focus move, in the one place it can stick.
   const handleAccountSelect = () => {
-    if (location.pathname === '/demo/account') {
+    if (location.pathname === '/store/account') {
       stayingPut.current = true
       return
     }
-    navigate('/demo/account')
+    navigate('/store/account')
   }
 
   const closeAutoFocus = (event: Event) => {
@@ -135,14 +137,14 @@ function AccountAction() {
       <>
         <span className="sm:hidden">
           <IconButton asChild label="Sign in" variant="ghost" size="sm">
-            <RouterLink ref={compactSignInRef} to="/demo/sign-in">
+            <RouterLink ref={compactSignInRef} to="/store/sign-in">
               <User aria-hidden="true" className="w-4 h-4" />
             </RouterLink>
           </IconButton>
         </span>
         <span className="hidden sm:inline-flex">
           <Button asChild variant="ghost" size="sm">
-            <RouterLink ref={fullSignInRef} to="/demo/sign-in">
+            <RouterLink ref={fullSignInRef} to="/store/sign-in">
               Sign in
             </RouterLink>
           </Button>
@@ -211,36 +213,36 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'Shop',
     links: [
-      { label: 'All products', href: '/demo/shop' },
-      ...CATEGORIES.map(category => ({ label: category.label, href: `/demo/shop?category=${category.id}` })),
+      { label: 'All products', href: '/store/shop' },
+      ...CATEGORIES.map(category => ({ label: category.label, href: `/store/shop?category=${category.id}` })),
     ],
   },
   {
     title: 'Guides',
     links: [
-      { label: 'Field notes', href: '/demo/journal' },
-      ...FOOTER_GUIDES.map(guide => ({ label: guide.title, href: `/demo/journal/${guide.slug}` })),
+      { label: 'Field notes', href: '/store/journal' },
+      ...FOOTER_GUIDES.map(guide => ({ label: guide.title, href: `/store/journal/${guide.slug}` })),
     ],
   },
   {
     title: 'Service',
     links: [
-      { label: 'Care', href: '/demo/care' },
-      { label: 'Your account', href: '/demo/account' },
-      { label: 'Orders', href: '/demo/account/orders' },
-      { label: 'Cart', href: '/demo/cart' },
-      { label: 'Back office', href: '/demo/ops' },
+      { label: 'Care', href: '/store/care' },
+      { label: 'Your account', href: '/store/account' },
+      { label: 'Orders', href: '/store/account/orders' },
+      { label: 'Cart', href: '/store/cart' },
+      { label: 'Back office', href: '/store/ops' },
     ],
   },
   {
     title: 'Design system',
     links: [
-      { label: 'Documentation', href: '/' },
+      { label: 'Documentation', href: '/components' },
       { label: 'Tokens', href: '/guidelines/tokens' },
       { label: 'Motion', href: '/guidelines/motion' },
       { label: 'Accessibility', href: '/guidelines/accessibility' },
       { label: 'Footer', href: '/components/footer' },
-      { label: 'Error states', href: '/demo/status/error' },
+      { label: 'Error states', href: '/store/status/error' },
     ],
   },
 ]
@@ -264,7 +266,7 @@ function DemoPageFallback({ onShown }: { onShown: (shown: boolean) => void }) {
 
 /** Sets the tab title from the matching route, or the 404 title once none matches -- the docs
  *  shell has no equivalent because it never leaves the static title in index.html. `matchPath`,
- *  not `===`: a registry path can carry a param (`/demo/shop/:id`), which a plain string compare
+ *  not `===`: a registry path can carry a param (`/store/shop/:id`), which a plain string compare
  *  never matches against the real URL. */
 function useDocumentTitle(path: string) {
   useEffect(() => {
@@ -278,10 +280,10 @@ function useDocumentTitle(path: string) {
 }
 
 /** Whether `path` sits under `page`'s own registered path, one level or deeper. Home is an
- *  explicit exception to the prefix rule and has no descendants at all: `/demo` is a literal
- *  prefix of `/demo/sign-in`, `/demo/cart` and everything else in the shell, and treating that as
+ *  explicit exception to the prefix rule and has no descendants at all: `/store` is a literal
+ *  prefix of `/store/sign-in`, `/store/cart` and everything else in the shell, and treating that as
  *  ancestry would mark Home current on all of them. Every other `inNav` entry keeps the plain
- *  prefix rule (Shop covers its own unlisted `/demo/shop/:id`). */
+ *  prefix rule (Shop covers its own unlisted `/store/shop/:id`). */
 function isDescendantOf(page: DemoPage, path: string): boolean {
   if (page.path === DEMO_HOME) return false
   return path.startsWith(`${page.path}/`)
@@ -302,7 +304,7 @@ function isNavCurrent(page: DemoPage, matched: DemoPage | undefined): boolean {
 
 export function DemoLayout() {
   const { pathname } = useLocation()
-  // A trailing slash is the same page, not a 404: /demo/ must render Home, not NotFound.
+  // A trailing slash is the same page, not a 404: /store/ must render Home, not NotFound.
   const path = pathname.replace(/\/+$/, '') || '/'
   useDocumentTitle(path)
   // Hexline's own smooth scroll (design.md's "Demo site and effects"). Called only here, never
@@ -316,6 +318,21 @@ export function DemoLayout() {
   const [resetCount, setResetCount] = useState(0)
   // True while a lazy route's chunk is loading (see DemoPageFallback).
   const [pageLoading, setPageLoading] = useState(false)
+  // The site search, lifted so the menu sheet's Search entry opens the one DocsSearch in the
+  // header (hidden below @4xl, still mounted, still the only owner of Ctrl+K and /).
+  const [searchOpen, setSearchOpen] = useState(false)
+  // From the menu: close the sheet, wait for it to unmount (Radix then hands focus back to the
+  // menu button), and only then open the palette, so closing the palette returns focus to the
+  // menu button instead of to a Search entry that no longer exists.
+  const searchFromMenu = (closeMenu: () => void) => {
+    closeMenu()
+    const started = performance.now()
+    const openWhenClosed = () => {
+      if (!document.querySelector('[role="dialog"]') || performance.now() - started > 1000) setSearchOpen(true)
+      else requestAnimationFrame(openWhenClosed)
+    }
+    requestAnimationFrame(openWhenClosed)
+  }
 
   // "Try again" recovers the page but removes the very button that had focus (the same reasoning
   // DemoRouteError's own focus-on-mount effect exists for): the fresh page that remounts under it
@@ -330,7 +347,7 @@ export function DemoLayout() {
   // The route this path actually matches (never a bare string compare -- a registry path can
   // carry a param), or undefined for a real 404: neither Home nor Shop is current on one.
   const matched = DEMO_PAGES.find(p => matchPath({ path: p.path, end: true }, path))
-  // Shop (`/demo/shop`) also covers its own product pages (`/demo/shop/:id`): those are reached
+  // Shop (`/store/shop`) also covers its own product pages (`/store/shop/:id`): those are reached
   // without ever being listed in the Navbar themselves, so without `isNavCurrent`'s ancestor
   // check the `inNav` entry above them stayed unmarked as soon as the URL moved past its own
   // exact path. Home has no such children (see `isDescendantOf`).
@@ -354,31 +371,49 @@ export function DemoLayout() {
                 src/styles/tailwind.css), so the brand, the hero copy, the headings and every
                 grid start on one left edge and end on one right edge. This is the demo store's
                 gutter. The docs shell does not set it. */}
-            <div className="[--page-gutter:1rem] lg:[--page-gutter:4rem] min-h-screen flex flex-col bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
+            <div data-demo-shell="" className="[--page-gutter:1rem] lg:[--page-gutter:4rem] min-h-screen flex flex-col bg-[var(--color-surface-base)] text-[var(--color-text-primary)] font-body">
               <a
-                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:bg-[var(--color-accent-signal-fill)] focus:text-[var(--color-accent-signal-ink)] focus:px-3 focus:py-2"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-40 focus:bg-[var(--color-accent-signal-fill)] focus:text-[var(--color-accent-signal-ink)] focus:px-3 focus:py-2"
                 href="#main"
               >
                 Skip to content
               </a>
               <Navbar
+                className="sticky top-0 z-30 bg-[var(--color-surface-base)] [--page-gutter:1rem]"
                 label="Hexline"
+                collapseBelow="4xl"
                 brand={<Brand />}
                 items={navItems}
                 actions={
                   <>
-                    <AccountAction />
-                    <CartSheet />
+                    {/* Same order as every header: search, Design system, then the store's own
+                        account and cart, then the theme. The search is icon only below @5xl,
+                        where the row has no room for its word. Below @4xl the button does
+                        not fit the row (demo.spec's 320px and 680px header-height tests), so it
+                        is hidden there; Ctrl+K and / still open it, and so does the menu
+                        sheet's Search entry. */}
+                    <div className="hidden @4xl:flex">
+                      <DocsSearch labelClassName="hidden @5xl:inline-flex" open={searchOpen} onOpenChange={setSearchOpen} />
+                    </div>
                     {/* The Navbar's own breakpoint: below it, BackToDocs is in the menu. Icon only
                         until @5xl: signed in, the row has no room for the word just above @2xl. */}
                     <div className="hidden @2xl:flex">
                       <BackToDocs labelClassName="ml-2 hidden @5xl:inline" />
                     </div>
+                    <AccountAction />
+                    <CartSheet />
                     <ThemeToggle />
                   </>
                 }
                 renderLink={routerLink}
-                menuFooter={<BackToDocs />}
+                menuFooter={close => (
+                  <div className="flex flex-col items-start gap-2">
+                    <Button variant="secondary" size="sm" iconStart={<Search />} onClick={() => searchFromMenu(close)}>
+                      Search
+                    </Button>
+                    <BackToDocs />
+                  </div>
+                )}
               />
               {/* At least one screen less the Navbar (3.5rem, the figure HomeHero's own height
                   uses). That puts the Footer's top edge at or below the fold on every demo page,

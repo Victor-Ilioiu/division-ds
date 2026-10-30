@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Button } from '../atoms/button/Button'
 import { Kbd } from '../atoms/kbd/Kbd'
 import { Link } from '../atoms/link/Link'
+import { CodeBlock } from '../molecules/code-block/CodeBlock'
 import { PageHeader, SectionHeading, docsLabel, docsProse } from './PageChrome'
 
 import type { ComponentMeta, Pitfall, PropRow } from './meta'
@@ -123,26 +124,20 @@ function AdviceHeading({ state, children }: { state: keyof typeof ADVICE; childr
   )
 }
 
-/** One mistake as code, wrong beside right, with the reason under both. The two `pre`s scroll
- *  sideways, so each is a named, focusable region (the same accommodation `Table` makes above),
- *  numbered so two mistakes on one page do not give four regions two names. */
+/** One mistake as code, wrong beside right, with the reason under both. Each is a CodeBlock (a
+ *  named, focusable region), numbered so two mistakes on one page do not give four regions two
+ *  names. The wrong one has no copy button: nobody should paste it. */
 function PitfallBlock({ pitfall, index }: { pitfall: Pitfall; index: number }) {
-  const pre =
-    'overflow-x-auto p-4 font-mono text-[0.8125rem] leading-relaxed text-[var(--color-text-primary)] bg-[var(--color-surface-base)] border border-[var(--color-border-hairline)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]'
   return (
     <div className="mt-10">
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="min-w-0">
           <AdviceHeading state="hostile">Wrong</AdviceHeading>
-          <pre role="region" aria-label={`Mistake ${index}, wrong`} tabIndex={0} className={pre}>
-            <code>{pitfall.wrong}</code>
-          </pre>
+          <CodeBlock title="tsx" label={`Mistake ${index}, wrong`} code={pitfall.wrong} copyable={false} />
         </div>
         <div className="min-w-0">
           <AdviceHeading state="ok">Right</AdviceHeading>
-          <pre role="region" aria-label={`Mistake ${index}, right`} tabIndex={0} className={pre}>
-            <code>{pitfall.right}</code>
-          </pre>
+          <CodeBlock title="tsx" label={`Mistake ${index}, right`} code={pitfall.right} />
         </div>
       </div>
       <p className={`${prose} mt-3 max-w-[64ch]`}>{pitfall.why}</p>

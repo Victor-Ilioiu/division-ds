@@ -24,10 +24,10 @@ test('keyboard focus is never hidden under the sticky bar (SC 2.4.11)', async ({
 })
 
 test('/ opens search, a query ranks the right component first, Enter opens it', async ({ page }) => {
-  await page.goto('/')
-  await expect(page.getByRole('button', { name: 'Search the docs' })).toBeVisible()
+  await page.goto('/components')
+  await expect(page.getByRole('button', { name: 'Search the site' })).toBeVisible()
   await page.keyboard.press('/')
-  const field = page.getByRole('combobox', { name: 'Search components, guidelines, props and tokens' })
+  const field = page.getByRole('combobox', { name: 'Search components, guidelines, tokens, the store and the CRM' })
   await expect(field).toBeFocused()
   await field.fill('confirm delete')
   await expect(page.getByRole('option').first()).toContainText('AlertDialog')
@@ -37,7 +37,7 @@ test('/ opens search, a query ranks the right component first, Enter opens it', 
 
 test('a prop result opens the page at its Props section', async ({ page }) => {
   await page.goto('/components/button')
-  await expect(page.getByRole('button', { name: 'Search the docs' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Search the site' })).toBeVisible()
   await page.keyboard.press('Control+k')
   await page.getByRole('combobox').fill('checkbox indeterminate')
   await expect(page.getByRole('option').first()).toContainText('Checkbox')

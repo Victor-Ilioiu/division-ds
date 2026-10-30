@@ -1,5 +1,5 @@
 // Division DS — molecules barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Thirty-two folders under
+// the component(s) and their exported types and helpers. Thirty-three folders under
 // src/components/molecules/ — verify the folder count still matches before trusting either.
 
 export {
@@ -18,6 +18,7 @@ export { ApprovalRequest, type ApprovalRequestProps, type ApprovalState } from '
 export { AvatarGroup, type AvatarGroupPerson, type AvatarGroupProps } from './avatar-group/AvatarGroup'
 export { Breadcrumbs, collapseCrumbs, type BreadcrumbsProps, type Crumb } from './breadcrumbs/Breadcrumbs'
 export { Card, CardActions, CardBody, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle, cardLinkClass, type CardMediaProps, type CardProps } from './card/Card'
+export { CodeBlock, type CodeBlockProps } from './code-block/CodeBlock'
 export { ChatMessage, type ChatMessageProps, type ChatMessageRole } from './chat-message/ChatMessage'
 export { ResponseFeedback, type FeedbackVote, type ResponseFeedbackProps } from './chat-message/ResponseFeedback'
 export { Calendar, type CalendarProps, type DayState } from './date-picker/Calendar'

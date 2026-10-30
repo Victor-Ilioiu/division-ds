@@ -2,9 +2,9 @@
 // these with the same scorer as components and tokens. guidelines.test.ts fails when a Guidelines
 // page in the sidebar has no entry here, so a new page cannot be unsearchable.
 export const GUIDELINE_SEARCH: Record<string, { description: string; keywords: string }> = {
-  '/': {
-    description: 'What Division DS is, how many components it has, and the build gates that enforce its rules.',
-    keywords: 'overview home start introduction gates counts',
+  '/components': {
+    description: 'Every component in one index, filtered by atoms, molecules or organisms.',
+    keywords: 'components index all list overview atoms molecules organisms catalogue browse',
   },
   '/guidelines/install': {
     description: 'Install the agent skill, add components with shadcn, run the checker and the MCP server.',
@@ -14,9 +14,9 @@ export const GUIDELINE_SEARCH: Record<string, { description: string; keywords: s
     description: 'Every colour grouped by its job, with its token name and contrast ratio.',
     keywords: 'color colour palette tokens contrast surface text accent signal hostile ok info warning ai dark light theme',
   },
-  '/guidelines/theme': {
-    description: 'Pick an accent and a neutral; both themes are rebuilt and contrast-checked before you get the CSS.',
-    keywords: 'theme builder customize brand colour accent neutral preset fonts radius css',
+  '/themes': {
+    description: 'The Theme Builder: pick an accent, a neutral, fonts and corners; a live preview repaints and both themes are contrast-checked before you get the CSS.',
+    keywords: 'themes theme builder customize customizer brand colour accent neutral preset fonts radius css preview share link',
   },
   '/guidelines/typography': {
     description: 'Typefaces, the type scale and how numerals are set.',

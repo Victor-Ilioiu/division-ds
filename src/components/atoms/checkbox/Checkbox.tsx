@@ -59,6 +59,8 @@ export function Checkbox({ invalid, className, checked, ref, ...rest }: Checkbox
       className={cn(
         // 20px visual box, without looking like a 24px checkbox...
         'relative inline-flex items-center justify-center shrink-0 w-5 h-5',
+        // With the cut off (the theme builder's shape), a 20px box takes a third of the radius.
+        'rounded-[calc(var(--shape-radius,0px)/3)]',
         // align-middle: an inline-flex box's default vertical-align (baseline) is defined by its
         // LAST LINE BOX when it has content but by its own bottom edge when empty (CSS2.1
         // 10.8.1). The indicator only mounts when checked/indeterminate, so an unstyled baseline

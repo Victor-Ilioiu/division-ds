@@ -162,22 +162,18 @@ test('the command palette jumps to an account', async ({ page }) => {
   await page.goto('/crm')
   await expect(page.getByRole('heading', { level: 1, name: 'Pipeline' })).toBeVisible()
   await page.keyboard.press('Control+k')
-  const field = page.getByRole('combobox', { name: 'Search deals, accounts, contacts and pages' })
+  const field = page.getByRole('combobox', { name: 'Search components, guidelines, tokens, the store and the CRM' })
   await field.fill('Saltmere')
-  await page.getByRole('option', { name: 'Saltmere Foods' }).click()
+  await page.getByRole('option', { name: 'Saltmere Foods', exact: true }).first().click()
   await expect(page).toHaveURL(/\/crm\/accounts\/acc-saltmere$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Saltmere Foods' })).toBeVisible()
   await expect(page).toHaveTitle('Corvane — Saltmere Foods')
 })
 
-test('the docs sidebar links to Corvane', async ({ page }) => {
-  await page.goto('/')
-  const nav = page.getByRole('navigation', { name: 'Documentation' })
-  const link = nav.getByRole('link', { name: 'Corvane CRM' })
-  // The Demo site group starts folded.
-  const group = nav.getByRole('button', { name: /Demo site/ })
-  if ((await group.getAttribute('aria-expanded')) === 'false') await group.click()
-  await link.click()
+test('the docs header Demos menu links to Corvane', async ({ page }) => {
+  await page.goto('/components')
+  await page.getByRole('button', { name: 'Demos' }).click()
+  await page.getByRole('menuitem', { name: /Corvane CRM/ }).click()
   await expect(page).toHaveURL(/\/crm$/)
   await expect(page).toHaveTitle('Corvane — pipeline')
 })

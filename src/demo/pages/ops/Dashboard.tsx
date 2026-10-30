@@ -202,7 +202,7 @@ function DashboardBody() {
               id="ops-on-shift"
               title="On shift"
               action={
-                <RouterLink to="/demo/ops/settings?tab=team" className={linkVariants()}>
+                <RouterLink to="/store/ops/settings?tab=team" className={linkVariants()}>
                   Manage team
                 </RouterLink>
               }
@@ -223,7 +223,7 @@ function DashboardBody() {
               id="ops-low-stock"
               title="Low on stock"
               action={
-                <RouterLink to="/demo/ops/inventory?status=low" className={linkVariants()}>
+                <RouterLink to="/store/ops/inventory?status=low" className={linkVariants()}>
                   View in inventory
                 </RouterLink>
               }
@@ -318,7 +318,7 @@ export function Dashboard() {
             {/* "Inventory", not "Open inventory": PageHeader's actions row is `shrink-0`, so it never
                 wraps its own buttons, and the longer label pushed the pair past a 320px screen. */}
             <Button asChild>
-              <RouterLink to="/demo/ops/inventory">
+              <RouterLink to="/store/ops/inventory">
                 Inventory
                 <ArrowRight aria-hidden="true" className="size-4" />
               </RouterLink>

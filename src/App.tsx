@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
 import { AppShell } from './components/shell/AppShell'
 import { DemoLayout } from './demo/DemoLayout'
 import { NotFound } from './demo/pages/NotFound'
@@ -10,9 +10,13 @@ import { useFocusMainOnNavigate } from './demo/useFocusMainOnNavigate'
 import { Spinner } from './components/atoms/spinner/Spinner'
 import { useScrollResetOnNavigate } from './demo/useScrollResetOnNavigate'
 import { DocsNotFound } from './pages/DocsNotFound'
-import { Overview } from './pages/Overview'
+import { Components } from './pages/Components'
 import { DOCS_PAGES } from './docsPages'
 import { routerBasename } from './base-path'
+import { COMPONENTS_HOME, LEGACY_DESIGN_SYSTEM, LEGACY_THEME_BUILDER, SHOWCASE_PAGES, THEMES_HOME } from './showcase/routes'
+
+// The showcase site (marketing, dashboard, store): its shell loads on the first visit to the homepage (`/`).
+const ShowcaseLayout = lazy(() => import('./showcase/ShowcaseLayout').then(module => ({ default: module.ShowcaseLayout })))
 
 // Corvane, the CRM demo: its whole shell (store, data, sheets) loads on the first visit to /crm,
 // never with the docs site or the Hexline store. Its pages are lazy too (src/crm/routes.ts).
@@ -38,6 +42,14 @@ function ConsoleFallback() {
   )
 }
 
+function ShowcaseFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-base)]">
+      <Spinner variant="conveyor" size="lg" label="Loading the showcase" />
+    </div>
+  )
+}
+
 /**
  * A parent route with no path of its own, so it sits above both the docs shell and the Hexline
  * demo shell without owning either one's chrome. It exists to call the focus and scroll-reset
@@ -50,6 +62,22 @@ function ConsoleFallback() {
  * correctly no matter what path it renders -- including a trailing-slash docs URL a route-list
  * lookup here would have missed.
  */
+/**
+ * Old URLs that published links still point at: the showcase lived at /showcase (its own dashboard
+ * and store are gone; the homepage is `/` now) and the Hexline store at /demo/*. A /demo URL keeps
+ * the rest of its path, query and hash, so a shared product link lands on the same product.
+ */
+function LegacyDemoRedirect() {
+  const { pathname, search, hash } = useLocation()
+  return <Navigate replace to={pathname.replace(/^\/demo(?=\/|$)/, '/store') + search + hash} />
+}
+
+/** The theme builder moved out of the docs; a shared theme link keeps its preset, fonts and shape. */
+function LegacyThemeRedirect() {
+  const { search, hash } = useLocation()
+  return <Navigate replace to={THEMES_HOME + search + hash} />
+}
+
 function RouteFocus() {
   useScrollResetOnNavigate()
   useFocusMainOnNavigate()
@@ -62,7 +90,7 @@ export default function App() {
       <Routes>
         <Route element={<RouteFocus />}>
           <Route element={<AppShell />}>
-              <Route path="/" element={<Overview />} />
+              <Route path={COMPONENTS_HOME} element={<Components />} />
               {DOCS_PAGES.map(({ path, Component }) => (
                 <Route key={path} path={path} element={<Component />} />
               ))}
@@ -71,7 +99,7 @@ export default function App() {
             {DEMO_PAGES.map(({ path, Component }) => (
               <Route key={path} path={path} element={<Component />} />
             ))}
-            <Route path="/demo/*" element={<NotFound />} />
+            <Route path="/store/*" element={<NotFound />} />
           </Route>
           <Route
             element={
@@ -97,7 +125,23 @@ export default function App() {
             ))}
             <Route path="/console/*" element={<ConsoleNotFound />} />
           </Route>
-          {/* Every path neither the docs shell nor /demo claims: styled as a docs page (a
+          <Route
+            element={
+              <Suspense fallback={<ShowcaseFallback />}>
+                <ShowcaseLayout />
+              </Suspense>
+            }
+          >
+            {SHOWCASE_PAGES.map(({ path, Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          </Route>
+          <Route path="/showcase/*" element={<Navigate replace to="/" />} />
+          {/* The docs Overview folded into the components index. */}
+          <Route path={LEGACY_DESIGN_SYSTEM} element={<Navigate replace to={COMPONENTS_HOME} />} />
+          <Route path="/demo/*" element={<LegacyDemoRedirect />} />
+          <Route path={LEGACY_THEME_BUILDER} element={<LegacyThemeRedirect />} />
+          {/* Every path neither the docs shell nor /store claims: styled as a docs page (a
               mistyped `/components/*` path, or a bare `/does-not-exist`), not the Hexline
               store's own 404, since nothing about it is scoped to the demo. */}
           <Route element={<AppShell title="Division DS — page not found" />}>

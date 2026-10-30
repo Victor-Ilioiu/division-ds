@@ -214,7 +214,7 @@ test.describe('the motifs are on the components, not only in the docs', () => {
 })
 
 /**
- * The Overview is the one brand-register surface in the app, and the only place extreme scale is
+ * The components index is the one brand-register surface in the app, and the only place extreme scale is
  * licensed. What that buys is a numeral roughly four times the size of a component page's h1, in
  * `accent.signal.fill` -- the theme-INVARIANT step, which measures 3.14:1 on the light page. That
  * clears WCAG's 3:1 rule for large text and fails the 4.5:1 body rule, so the pair named in
@@ -222,47 +222,30 @@ test.describe('the motifs are on the components, not only in the docs', () => {
  * fail the contrast gate, it silently invalidates it, which is why the size is asserted here as
  * well as measured there.
  */
-test.describe('the Overview spends its scale where the contrast gate assumes it does', () => {
+test.describe('the components index spends its scale where the contrast gate assumes it does', () => {
   /** The 52px step. Every numeral on the page is at or above it; the pair is named for it. */
   const LEDGER_PX = 52
 
-  test('the hero numeral and the gate ledger stay at or above the size their pair assumes', async ({
-    page,
-  }) => {
-    await page.goto('/')
-
+  test('the hero numeral stays at or above the size its pair assumes', async ({ page }) => {
+    await page.goto('/components')
     const sizes = await page.evaluate(() =>
       [...document.querySelectorAll('#main [data-numeral]')].map(el => ({
         kind: el.getAttribute('data-numeral'),
         px: parseFloat(getComputedStyle(el).fontSize),
       }))
     )
-    // One hero and a numeral per gate row. Not a fixed total: each demo added to the site (Corvane,
-    // Halden Console) adds a gate row, and the size rule below is what this test is for.
-    expect(sizes.filter(s => s.kind === 'hero'), 'one hero numeral').toHaveLength(1)
-    expect(sizes.filter(s => s.kind === 'gate').length, 'a numeral per gate row').toBeGreaterThanOrEqual(4)
-    expect(sizes.length, 'nothing but the hero and the gate rows carries data-numeral').toBe(
-      1 + sizes.filter(s => s.kind === 'gate').length
-    )
-    for (const { kind, px: size } of sizes) {
-      expect(
-        size,
-        `the ${kind} numeral renders at ${size}px. Its pair in scripts/lib/contrast-pairs.mjs is ` +
-          `gated at 3:1 rather than 4.5:1 solely because it is large text; below ${LARGE_TEXT_PX}px ` +
-          `that pair measures the wrong threshold and passes while the type fails.`
-      ).toBeGreaterThanOrEqual(LEDGER_PX)
-    }
-    const hero = sizes.find(s => s.kind === 'hero')!
-    const ledger = sizes.find(s => s.kind === 'gate')!
+    expect(sizes, 'one hero numeral and nothing else carries data-numeral').toHaveLength(1)
+    expect(sizes[0].kind).toBe('hero')
     expect(
-      hero.px / ledger.px,
-      'the hero is the hero: one thing on this page is meant to be unmistakably the largest'
-    ).toBeGreaterThanOrEqual(2)
+      sizes[0].px,
+      `the hero numeral renders at ${sizes[0].px}px. Its pair in scripts/lib/contrast-pairs.mjs is ` +
+        `gated at 3:1 rather than 4.5:1 solely because it is large text.`
+    ).toBeGreaterThanOrEqual(LEDGER_PX)
   })
 
   test('the hero numeral clears the large-text threshold at 320px too', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
-    await page.goto('/')
+    await page.goto('/components')
     const px = await page.evaluate(
       () => parseFloat(getComputedStyle(document.querySelector('#main [data-numeral="hero"]')!).fontSize)
     )
@@ -274,10 +257,10 @@ test.describe('the Overview spends its scale where the contrast gate assumes it 
   })
 
   for (const theme of THEMES) {
-    test(`the Overview numerals paint accent.signal.fill, not the adaptive text step -- ${theme} theme`, async ({
+    test(`the components index numerals paint accent.signal.fill, not the adaptive text step -- ${theme} theme`, async ({
       page,
     }) => {
-      await page.goto('/')
+      await page.goto('/components')
       await page.evaluate(t => document.documentElement.setAttribute('data-theme', t), theme)
 
       const seen = await page.evaluate(() => {
@@ -299,10 +282,10 @@ test.describe('the Overview spends its scale where the contrast gate assumes it 
     })
   }
 
-  test('the Overview h1 is the same step as a component page h1, not a second scale', async ({
+  test('the components index h1 is the same step as a component page h1, not a second scale', async ({
     page,
   }) => {
-    await page.goto('/')
+    await page.goto('/components')
     const overview = await px(page, '#main h1')
     await gotoDocs(page, '/components/button')
     const component = await px(page, '#main h1')
@@ -313,14 +296,4 @@ test.describe('the Overview spends its scale where the contrast gate assumes it 
     ).toBe(component)
   })
 
-  test('the front door uses the system it documents', async ({ page }) => {
-    await page.goto('/')
-    // The real Panel, with the corner crosshair drawn by ::before rather than by extra markup.
-    const panel = page.locator('#main .panel.crosshair').first()
-    await expect(panel).toBeVisible()
-    const arms = await panel.evaluate(el => getComputedStyle(el, '::before').backgroundImage)
-    expect(arms.match(/linear-gradient/g) ?? [], 'four corners, two arms each').toHaveLength(8)
-    // Real Buttons, which render their own unclipped focus wrapper.
-    await expect(page.locator('#main .bevel-focus-wrap').first()).toBeVisible()
-  })
 })

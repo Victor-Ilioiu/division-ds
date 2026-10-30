@@ -73,6 +73,7 @@ export const meta: ComponentMeta = {
       default: "'default'",
       description: 'Use hostile for a destructive action: hostile-coloured text at rest, the hostile fill with ink text when highlighted.',
     },
+    { name: 'asChild (Item)', type: 'boolean', default: 'false', description: 'Makes the one child (a link) the item, for a menu of links. icon and shortcut are ignored then; put the content inside the link.' },
     { name: 'icon (Item)', type: 'ReactNode', description: 'A small icon before the text, hidden from screen readers (aria-hidden).' },
     {
       name: 'shortcut (Item)',

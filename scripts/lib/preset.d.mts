@@ -7,6 +7,7 @@ export type BuiltTheme = { themes: { dark: Theme; light: Theme }; failures: (Res
 
 export const PRESET_VERSION: number
 export const DEFAULT_PRESET: Preset
+export const ACCENT_PRESETS: { name: string; signal: string }[]
 export const NEUTRAL_BOUNDS: { lightBound: number; darkBound: number }
 export const WHITE_INK: string
 export function inkFor(fill: string, darkInk: string): string

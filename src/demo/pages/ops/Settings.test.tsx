@@ -8,13 +8,13 @@ import { axeClean } from '../../../test/axe'
 import { setOpsLatency, STORE_HANDLE, TEAM } from './data'
 import { Settings } from './Settings'
 
-function renderSettings(path = '/demo/ops/settings') {
+function renderSettings(path = '/store/ops/settings') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <TooltipProvider>
         <Toaster>
           <Routes>
-            <Route path="/demo/ops/settings" element={<Settings />} />
+            <Route path="/store/ops/settings" element={<Settings />} />
           </Routes>
         </Toaster>
       </TooltipProvider>
@@ -70,7 +70,7 @@ describe('Ops settings', () => {
 
   it('opens the section named in the URL, and gives each member a named role control', async () => {
     const user = userEvent.setup()
-    renderSettings('/demo/ops/settings?tab=team')
+    renderSettings('/store/ops/settings?tab=team')
     expect(screen.getByRole('tab', { name: 'Team' })).toHaveAttribute('aria-selected', 'true')
     const list = screen.getByRole('list', { name: 'Team members' })
     expect(within(list).getAllByRole('listitem')).toHaveLength(TEAM.length)
@@ -82,7 +82,7 @@ describe('Ops settings', () => {
 
   it('signs out of one session', async () => {
     const user = userEvent.setup()
-    renderSettings('/demo/ops/settings?tab=sessions')
+    renderSettings('/store/ops/settings?tab=sessions')
     await user.click(screen.getByRole('button', { name: 'Sign out of Safari on iPhone' }))
     expect(await screen.findByText('Signed out of Safari on iPhone')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Sign out of Safari on iPhone' })).toBeNull()
@@ -91,7 +91,7 @@ describe('Ops settings', () => {
   // Mutation: drop `disabled={!matches}` from the dialog's action -> the first assertion fails.
   it('closes the store only once its handle is typed', async () => {
     const user = userEvent.setup()
-    renderSettings('/demo/ops/settings?tab=danger')
+    renderSettings('/store/ops/settings?tab=danger')
     await user.click(screen.getByRole('button', { name: 'Close store' }))
     const dialog = screen.getByRole('alertdialog', {
       name: 'Close the Hexline store?',

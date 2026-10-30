@@ -31,17 +31,17 @@ export function Cart() {
         footer={
           <>
             <Button asChild variant="primary">
-              <RouterLink to="/demo/checkout">Checkout</RouterLink>
+              <RouterLink to="/store/checkout">Checkout</RouterLink>
             </Button>
             <Button asChild variant="secondary">
-              <RouterLink to="/demo/shop">Continue shopping</RouterLink>
+              <RouterLink to="/store/shop">Continue shopping</RouterLink>
             </Button>
           </>
         }
       />
       {lines.length === 0 ? (
         <p className="font-body text-sm text-[var(--color-text-secondary)]">
-          <RouterLink to="/demo/shop" className={linkVariants()}>
+          <RouterLink to="/store/shop" className={linkVariants()}>
             Browse the shop
           </RouterLink>
         </p>

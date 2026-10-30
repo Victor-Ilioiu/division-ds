@@ -7,9 +7,9 @@ import { Article } from './Article'
 
 function renderArticle(slug = 'cleaning-after-a-field-day') {
   return render(
-    <MemoryRouter initialEntries={[`/demo/journal/${slug}`]}>
+    <MemoryRouter initialEntries={[`/store/journal/${slug}`]}>
       <Routes>
-        <Route path="/demo/journal/:slug" element={<Article />} />
+        <Route path="/store/journal/:slug" element={<Article />} />
       </Routes>
     </MemoryRouter>
   )
@@ -113,7 +113,7 @@ describe('Article', () => {
     renderArticle()
     expect(screen.getByRole('link', { name: 'Shop parts and accessories' })).toHaveAttribute(
       'href',
-      '/demo/shop?category=parts'
+      '/store/shop?category=parts'
     )
   })
 
@@ -123,7 +123,7 @@ describe('Article', () => {
   it('renders "Note not found" and a link back for an unknown slug', () => {
     renderArticle('does-not-exist')
     expect(screen.getByRole('heading', { level: 1, name: 'Note not found' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Back to Field notes' })).toHaveAttribute('href', '/demo/journal')
+    expect(screen.getByRole('link', { name: 'Back to Field notes' })).toHaveAttribute('href', '/store/journal')
     expect(document.title).toBe('Hexline — note not found')
   })
 
@@ -141,9 +141,9 @@ describe('Article', () => {
     renderArticle()
     const side = screen.getByRole('complementary', { name: 'Field notes' })
     expect(within(side).getByRole('searchbox', { name: 'Search field notes' })).toBeInTheDocument()
-    expect(within(side).getByRole('link', { name: /^May 2026/ })).toHaveAttribute('href', '/demo/journal?month=2026-05')
-    expect(within(side).getByRole('link', { name: /^replicas/ })).toHaveAttribute('href', '/demo/journal?tag=replicas')
-    expect(within(side).getByRole('link', { name: /^optics/ })).toHaveAttribute('href', '/demo/journal?tag=optics')
+    expect(within(side).getByRole('link', { name: /^May 2026/ })).toHaveAttribute('href', '/store/journal?month=2026-05')
+    expect(within(side).getByRole('link', { name: /^replicas/ })).toHaveAttribute('href', '/store/journal?tag=replicas')
+    expect(within(side).getByRole('link', { name: /^optics/ })).toHaveAttribute('href', '/store/journal?tag=optics')
   })
 
   it("marks this note's own tags in the cloud", () => {

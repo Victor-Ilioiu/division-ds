@@ -5,9 +5,7 @@ import { pairsForTokens } from './pairs-for-tokens.mjs'
 /** Every gated colour pair, per theme, as data.
  *
  * Split out of `check-contrast.mjs` so the CLI gate is not the only thing that can read the
- * list: `src/pages/Overview.test.tsx` imports it to assert that the count the Overview prints
- * is the count the gate actually runs. The front door states this number in 52px type, and a
- * number nothing recomputes is a number that goes stale the first time a pair is added.
+ * list: a test can import it and assert against the count the gate actually runs.
  *
  * Same shape as `scripts/lib/ramp.mjs`: the CLI script stays a thin wrapper around a pure
  * function that something else can call. */

@@ -51,7 +51,7 @@ async function expectFocusNotBody(page: Page) {
  *  enough for a mouse-driven checkout test to start already past Product.tsx's own Add-to-cart
  *  step, which the keyboard journey test below covers on its own. */
 async function seedCartItem(page: Page) {
-  await page.goto('/demo')
+  await page.goto('/store')
   await page.evaluate(() => {
     sessionStorage.setItem(
       'hexline-cart',
@@ -60,7 +60,7 @@ async function seedCartItem(page: Page) {
           id: 'bump-helmet:S/M:black',
           productId: 'bump-helmet',
           name: 'Bump helmet',
-          href: '/demo/shop/bump-helmet',
+          href: '/store/shop/bump-helmet',
           detail: 'Size S/M · Black',
           unitPrice: 6900,
           quantity: 1,
@@ -98,7 +98,7 @@ async function fillPaymentStep(page: Page) {
  *  double-submit/retry tests below, none of which are the keyboard-only journey. */
 async function reachPaymentStep(page: Page, postalCode = 'T12 X285') {
   await seedCartItem(page)
-  await page.goto('/demo/checkout')
+  await page.goto('/store/checkout')
   await fillShippingStep(page, postalCode)
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByRole('radio', { name: /Standard/ }).click()
@@ -110,7 +110,7 @@ async function reachPaymentStep(page: Page, postalCode = 'T12 X285') {
 // CheckoutForm unconditionally) -> the cart heading and notice below never appear, replaced by a
 // checkout form with no lines to show.
 test('a direct load of checkout with an empty cart bounces to the cart page, with a notice', async ({ page }) => {
-  await page.goto('/demo/checkout')
+  await page.goto('/store/checkout')
   await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible()
   await expect(page.getByText('Your cart is empty, so there is nothing to check out yet.')).toBeVisible()
 })
@@ -120,7 +120,7 @@ test('a direct load of checkout with an empty cart bounces to the cart page, wit
 // next line reads `.order` off `null` and throws ("Cannot read properties of null (reading
 // 'order')") -- caught both by the missing heading below and by the console-error fixture.
 test('a direct load of the confirmation page with no order shows "No recent order"', async ({ page }) => {
-  await page.goto('/demo/checkout/confirmation')
+  await page.goto('/store/checkout/confirmation')
   await expect(page.getByRole('heading', { level: 1, name: 'No recent order' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Back to the shop' })).toBeVisible()
 })
@@ -136,7 +136,7 @@ test('postal code 00000 names the fix in its own alert, and a corrected address 
       .getByText('We could not deliver to that postal code. Go back to Shipping to change it, then place the order again.')
       .first()
   ).toBeVisible()
-  await expect(page).toHaveURL(/\/demo\/checkout$/)
+  await expect(page).toHaveURL(/\/store\/checkout$/)
 
   await page.getByRole('button', { name: 'Back' }).click()
   await page.getByRole('button', { name: 'Back' }).click()
@@ -145,7 +145,7 @@ test('postal code 00000 names the fix in its own alert, and a corrected address 
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByRole('button', { name: 'Place order' }).click()
-  await expect(page).toHaveURL(/\/demo\/checkout\/confirmation$/)
+  await expect(page).toHaveURL(/\/store\/checkout\/confirmation$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Order placed' })).toBeVisible()
 })
 
@@ -170,13 +170,13 @@ test('two clicks on Place order in one task place exactly one order, HX-100231',
     button.click()
     button.click()
   })
-  await expect(page).toHaveURL(/\/demo\/checkout\/confirmation$/)
+  await expect(page).toHaveURL(/\/store\/checkout\/confirmation$/)
   await expect(page.getByText('HX-100231')).toBeVisible()
   expect(navigations, 'more than one navigation fired from the double click').toBe(1)
 })
 
 // Mutation: drop the `if (!mounted.current)` branch in Checkout.tsx's `runPlaceOrder` -> `navigate`
-// runs for a component that already left, and the confirmation heading appears at `/demo/shop`
+// runs for a component that already left, and the confirmation heading appears at `/store/shop`
 // instead of the toast below, failing the URL assertion.
 test('leaving checkout while an order is placing clears the cart and toasts, without navigating', async ({
   page,
@@ -189,20 +189,20 @@ test('leaving checkout while an order is placing clears the cart and toasts, wit
   await page.getByRole('link', { name: 'Shop', exact: true }).first().click()
   await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
   await expect(page.getByText('Order HX-100231 placed.').first()).toBeVisible({ timeout: 4000 })
-  await expect(page).toHaveURL(/\/demo\/shop$/)
+  await expect(page).toHaveURL(/\/store\/shop$/)
   await expect(page.getByRole('button', { name: 'Cart, 0 items' })).toBeVisible()
 })
 
-// demo.spec's generic per-page pass only ever reaches /demo/cart empty (its default state). A
+// demo.spec's generic per-page pass only ever reaches /store/cart empty (its default state). A
 // line in the cart is a real state that pass can't set up on its own -- the same reasoning as
 // this file's other per-state axe checks above.
-// Mutation: empty the Checkout link's text in Cart.tsx's own footer (`<RouterLink to="/demo/
+// Mutation: empty the Checkout link's text in Cart.tsx's own footer (`<RouterLink to="/store/
 // checkout"></RouterLink>`) -> a real `link-name` violation, only reachable once a line is in the
 // cart (the footer is hidden entirely while it's empty).
 for (const theme of THEMES) {
   test(`the cart with a line in it is axe clean, in ${theme} theme`, async ({ page }) => {
     await seedCartItem(page)
-    await page.goto('/demo/cart')
+    await page.goto('/store/cart')
     await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible()
     await expect(page.getByText('1 item')).toBeVisible()
     await applyTheme(page, theme)
@@ -221,7 +221,7 @@ for (const theme of THEMES) {
 for (const theme of THEMES) {
   test(`the cart sheet is axe clean while open with a line in it, in ${theme} theme`, async ({ page }) => {
     await seedCartItem(page)
-    await page.goto('/demo')
+    await page.goto('/store')
     await page.getByRole('button', { name: 'Cart, 1 item' }).click()
     await expect(page.getByRole('dialog', { name: 'Cart' })).toBeVisible()
     await applyTheme(page, theme)
@@ -230,14 +230,14 @@ for (const theme of THEMES) {
   })
 }
 
-// demo.spec's generic per-page pass only ever reaches /demo/checkout with an empty cart (the
+// demo.spec's generic per-page pass only ever reaches /store/checkout with an empty cart (the
 // redirect it bounces to). A real checkout form is a state that pass can't set up on its own.
 // Mutation: drop the page's own `<h1>Hexline checkout</h1>` in Checkout.tsx -> a real
 // `page-has-heading-one` violation (CheckoutForm's own `h2` doesn't satisfy it), in either theme.
 for (const theme of THEMES) {
   test(`checkout step 1 (Shipping) is axe clean, in ${theme} theme`, async ({ page }) => {
     await seedCartItem(page)
-    await page.goto('/demo/checkout')
+    await page.goto('/store/checkout')
     await expect(page.getByRole('heading', { level: 1, name: 'Hexline checkout' })).toBeVisible()
     await applyTheme(page, theme)
     await settleAnimations(page)
@@ -251,7 +251,7 @@ for (const theme of THEMES) {
 for (const theme of THEMES) {
   test(`checkout's Shipping validation error is axe clean, in ${theme} theme`, async ({ page }) => {
     await seedCartItem(page)
-    await page.goto('/demo/checkout')
+    await page.goto('/store/checkout')
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page.getByRole('group', { name: 'There is a problem' })).toBeVisible()
     await applyTheme(page, theme)
@@ -306,7 +306,7 @@ test.describe('cart, checkout and confirmation reflow at short viewports', () =>
     test(`the cart has no horizontal overflow at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await seedCartItem(page)
       await page.setViewportSize(viewport)
-      await page.goto('/demo/cart')
+      await page.goto('/store/cart')
       await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible()
       await page.evaluate(() => document.fonts.ready)
       await expect
@@ -324,7 +324,7 @@ test.describe('cart, checkout and confirmation reflow at short viewports', () =>
     test(`checkout has no horizontal overflow at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await seedCartItem(page)
       await page.setViewportSize(viewport)
-      await page.goto('/demo/checkout')
+      await page.goto('/store/checkout')
       await expect(page.getByRole('heading', { level: 1, name: 'Hexline checkout' })).toBeVisible()
       await page.evaluate(() => document.fonts.ready)
       await expect
@@ -342,7 +342,7 @@ test.describe('cart, checkout and confirmation reflow at short viewports', () =>
       page,
     }) => {
       await page.setViewportSize(viewport)
-      await page.goto('/demo/checkout/confirmation')
+      await page.goto('/store/checkout/confirmation')
       await expect(page.getByRole('heading', { level: 1, name: 'No recent order' })).toBeVisible()
       await page.evaluate(() => document.fonts.ready)
       await expect
@@ -360,10 +360,10 @@ test.describe('cart, checkout and confirmation reflow at short viewports', () =>
 // above already covers) -> Checkout -> Shipping -> Delivery -> Payment -> Place order ->
 // Confirmation. Every step polls that focus is never on the body, on top of `tabTo`/`shiftTabTo`'s
 // own per-press check along the way.
-// Mutation: change the CartSheet's Checkout link's `to` from `/demo/checkout` to anything else ->
-// the journey never reaches `/demo/checkout`, and the heading assertion there fails.
+// Mutation: change the CartSheet's Checkout link's `to` from `/store/checkout` to anything else ->
+// the journey never reaches `/store/checkout`, and the heading assertion there fails.
 test('the full purchase journey works from the keyboard, homepage to confirmation', async ({ page }) => {
-  await page.goto('/demo')
+  await page.goto('/store')
   // The first way into the shop under the hero: the link that closes the heading of the
   // top-rated replicas. The hero's own controls (the kit link and Buy kit) come before it in the
   // Tab order. It opens the shop already filtered to replicas, and the next step adds a category.
@@ -494,7 +494,7 @@ test.beforeEach(async ({ page }) => {
 // wrong password proceeds to sign in anyway, and the page moves on to the verify step instead of
 // showing the error.
 test('a wrong password focuses the error summary and names the password', async ({ page }) => {
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await expect(page.getByRole('heading', { level: 1, name: 'Hexline account' })).toBeVisible()
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('rae@hexline.test')
   await page.getByLabel(/^Password/).fill('wrong')
@@ -520,7 +520,7 @@ test('a wrong password focuses the error summary and names the password', async 
 // exact element a stray click lands on is incidental), no `submit` event ever fires, and the
 // summary this test waits for never takes focus.
 test('a blurred, empty email does not swallow the first click on Sign in', async ({ page }) => {
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await expect(page.getByRole('heading', { level: 1, name: 'Hexline account' })).toBeVisible()
   const email = page.getByRole('textbox', { name: 'Email', exact: true })
   const signIn = page.getByRole('button', { name: 'Sign in' })
@@ -539,9 +539,9 @@ test('a blurred, empty email does not swallow the first click on Sign in', async
 })
 
 // Mutation: change SignIn's success destination from `AUTH_PATHS['verify-code']` to
-// `/demo/shop` directly -> the "Enter your code" heading below never appears.
+// `/store/shop` directly -> the "Enter your code" heading below never appears.
 test('a right password reaches the two-step code, and the right code signs in to the shop', async ({ page }) => {
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('rae@hexline.test')
   await page.getByLabel(/^Password/).fill('hexline')
   await page.getByRole('button', { name: 'Sign in' }).click()
@@ -556,18 +556,18 @@ test('a right password reaches the two-step code, and the right code signs in to
 
   await page.getByRole('textbox', { name: 'Code', exact: true }).fill('123456')
   await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page).toHaveURL(/\/demo\/shop$/)
+  await expect(page).toHaveURL(/\/store\/shop$/)
   await expect(page.locator('#main')).toBeFocused()
   await expect(page.getByRole('button', { name: 'Account: Rae' })).toBeVisible()
 })
 
 // Mutation: drop the `from: pathname + search` from RequireSession.tsx's redirect state (or drop
-// `navigate(from ?? '/demo/shop')` in Verify.tsx back to a plain `navigate('/demo/shop')`) -> the
-// URL assertion below finds `/demo/shop`, not the orders page the visit actually asked for.
+// `navigate(from ?? '/store/shop')` in Verify.tsx back to a plain `navigate('/store/shop')`) -> the
+// URL assertion below finds `/store/shop`, not the orders page the visit actually asked for.
 test('a direct load of a protected page bounces through sign-in and back to the page it asked for', async ({
   page,
 }) => {
-  await page.goto('/demo/account/orders?status=Delivered')
+  await page.goto('/store/account/orders?status=Delivered')
   await expect(page.getByRole('heading', { level: 1, name: 'Hexline account' })).toBeVisible()
   await expect(page.getByText('Sign in to see your account.')).toBeVisible()
 
@@ -578,7 +578,7 @@ test('a direct load of a protected page bounces through sign-in and back to the 
 
   await page.getByRole('textbox', { name: 'Code', exact: true }).fill('123456')
   await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page).toHaveURL(/\/demo\/account\/orders\?status=Delivered$/)
+  await expect(page).toHaveURL(/\/store\/account\/orders\?status=Delivered$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Your account' })).toBeVisible()
   await expect(page.locator('#main')).toBeFocused()
 })
@@ -586,7 +586,7 @@ test('a direct load of a protected page bounces through sign-in and back to the 
 // Mutation: drop the `if (!email)` guard in Verify.tsx (render the form regardless) -> the
 // sign-in heading and notice below never appear; a code form with nothing behind it does instead.
 test('a direct load of the verify page with nothing pending bounces to sign-in, with a notice', async ({ page }) => {
-  await page.goto('/demo/sign-in/verify')
+  await page.goto('/store/sign-in/verify')
   await expect(page.getByRole('heading', { level: 2, name: 'Sign in' })).toBeVisible()
   await expect(page.getByText('Start by signing in.')).toBeVisible()
   await expect(page.locator('#main')).toBeFocused()
@@ -600,7 +600,7 @@ test('a direct load of the verify page with nothing pending bounces to sign-in, 
 // Mutation: make SignIn's `handleModeChange` a no-op (`() => {}`) -> the "Reset your password"
 // heading below never appears.
 test('forgot password shows the neutral confirmation', async ({ page }) => {
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await page.getByRole('button', { name: 'Forgot your password?' }).click()
   await expect(page.getByRole('heading', { level: 2, name: 'Reset your password' })).toBeVisible()
   await expect(page.locator('#main')).toBeFocused()
@@ -612,9 +612,9 @@ test('forgot password shows the neutral confirmation', async ({ page }) => {
 })
 
 // Mutation: change the destination CreateAccount's onSubmit navigates to on success from
-// `/demo/onboarding` to anything else -> the URL assertion below fails.
+// `/store/onboarding` to anything else -> the URL assertion below fails.
 test('create account: a taken address shows an email error, a fresh one reaches onboarding', async ({ page }) => {
-  await page.goto('/demo/create-account')
+  await page.goto('/store/create-account')
   await page.getByLabel('Name').fill('Rae')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('taken@hexline.test')
   await page.getByLabel(/^Password/).fill('longenough')
@@ -625,14 +625,14 @@ test('create account: a taken address shows an email error, a fresh one reaches 
 
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('rae@hexline.test')
   await page.getByRole('button', { name: 'Create account' }).click()
-  await expect(page).toHaveURL(/\/demo\/onboarding$/)
+  await expect(page).toHaveURL(/\/store\/onboarding$/)
   await expect(page.locator('#main')).toBeFocused()
 })
 
 // Mutation: wrap the `await signIn(...)` call in SignIn's onSubmit in a try/catch that swallows
 // the rejection -> this alert never appears, and the person sees a form that just sits there.
 test('offline@hexline.test shows the generic alert, never a field error', async ({ page }) => {
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('offline@hexline.test')
   await page.getByLabel(/^Password/).fill('hexline')
   await page.getByRole('button', { name: 'Sign in' }).click()
@@ -653,7 +653,7 @@ for (const theme of THEMES) {
         JSON.stringify({ user: null, pendingEmail: 'rae@hexline.test' })
       )
     })
-    await page.goto('/demo/sign-in/verify')
+    await page.goto('/store/sign-in/verify')
     await expect(page.getByRole('heading', { level: 2, name: 'Enter your code' })).toBeVisible()
     await applyTheme(page, theme)
     await settleAnimations(page)
@@ -666,7 +666,7 @@ for (const theme of THEMES) {
 test('a direct load of onboarding with no one signed in bounces to account creation with a notice, focus on main', async ({
   page,
 }) => {
-  await page.goto('/demo/onboarding')
+  await page.goto('/store/onboarding')
   await expect(page.getByRole('heading', { level: 1, name: 'Hexline account' })).toBeVisible()
   await expect(page.getByText('Create an account first.')).toBeVisible()
   await expect(page.locator('#main')).toBeFocused()
@@ -677,12 +677,12 @@ test('a direct load of onboarding with no one signed in bounces to account creat
 test('onboarding: pressing Next with no activity checked shows the error and focuses the summary', async ({
   page,
 }) => {
-  await page.goto('/demo/create-account')
+  await page.goto('/store/create-account')
   await page.getByLabel('Name').fill('Rae')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('rae-onboarding-error@hexline.test')
   await page.getByLabel(/^Password/).fill('longenough')
   await page.getByRole('button', { name: 'Create account' }).click()
-  await expect(page).toHaveURL(/\/demo\/onboarding$/)
+  await expect(page).toHaveURL(/\/store\/onboarding$/)
   await page.getByRole('button', { name: 'Next' }).click()
   const summary = page.getByRole('group', { name: 'There is a problem' })
   await expect(summary).toBeFocused()
@@ -695,14 +695,14 @@ test('onboarding: pressing Next with no activity checked shows the error and foc
 // box, Enter/ArrowDown to work the helmet-size Select (the same shape as CheckoutForm's own
 // keyboard test for its country Select), and Enter to activate every button and switch.
 // Mutation: change the destination Onboarding's `finish` navigates to on success from
-// `/demo/shop` to anything else -> the URL assertion at the end below fails.
+// `/store/shop` to anything else -> the URL assertion at the end below fails.
 test('the full create-account, onboarding and shop journey works from the keyboard', async ({ page }) => {
-  await page.goto('/demo/create-account')
+  await page.goto('/store/create-account')
   await page.getByLabel('Name').fill('Rae')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('rae-onboarding-keyboard@hexline.test')
   await page.getByLabel(/^Password/).fill('longenough')
   await page.getByLabel(/^Password/).press('Enter')
-  await expect(page).toHaveURL(/\/demo\/onboarding$/)
+  await expect(page).toHaveURL(/\/store\/onboarding$/)
   await expect(page.getByRole('heading', { level: 2, name: 'Step 1 of 3: Activities' })).toBeVisible()
 
   const woodland = page.getByRole('checkbox', { name: 'Woodland field days' })
@@ -747,7 +747,7 @@ test('the full create-account, onboarding and shop journey works from the keyboa
   // Radix's own toast announcer mirrors the title into a second, separate live region, the same
   // duplicate-text shape as the two-step code's error above -- `.first()` for the same reason.
   await expect(page.getByText('Your account is set up.').first()).toBeVisible()
-  await expect(page).toHaveURL(/\/demo\/shop$/)
+  await expect(page).toHaveURL(/\/store\/shop$/)
 })
 
 // Retry unmounts itself the instant it succeeds in clearing the failed save, so focus has to land
@@ -758,7 +758,7 @@ test('the full create-account, onboarding and shop journey works from the keyboa
 test('onboarding: a failed save shows the alert and Retry, and retrying keeps focus off the body', async ({
   page,
 }) => {
-  await page.goto('/demo/create-account')
+  await page.goto('/store/create-account')
   await page.getByLabel('Name').fill('Rae')
   await page.getByRole('textbox', { name: 'Email', exact: true }).fill('onboarding-fails@hexline.test')
   await page.getByLabel(/^Password/).fill('longenough')
@@ -774,7 +774,7 @@ test('onboarding: a failed save shows the alert and Retry, and retrying keeps fo
   await page.getByRole('button', { name: 'Retry' }).click()
   await expect.poll(() => page.evaluate(() => document.activeElement !== document.body)).toBe(true)
   await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible()
-  await expect(page).toHaveURL(/\/demo\/onboarding$/)
+  await expect(page).toHaveURL(/\/store\/onboarding$/)
   await expect(page.getByRole('heading', { name: 'Step 3 of 3: Updates' })).toBeVisible()
 })
 
@@ -793,7 +793,7 @@ for (const theme of THEMES) {
         JSON.stringify({ user: { name: 'Rae', email: 'rae@hexline.test' }, pendingEmail: null })
       )
     })
-    await page.goto('/demo/onboarding')
+    await page.goto('/store/onboarding')
     await expect(page.getByRole('heading', { level: 1, name: 'Set up your account' })).toBeVisible()
     await applyTheme(page, theme)
     await settleAnimations(page)
@@ -809,7 +809,7 @@ const shopStatus = (page: Page) => page.getByRole('status', { name: 'Result coun
 test('applying a category and In stock only writes both into the URL, and a reload keeps them', async ({
   page,
 }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   await page.getByRole('checkbox', { name: 'Tactical equipment' }).click()
   await page.getByRole('switch', { name: 'In stock only' }).click()
   await expect(page).toHaveURL(/category=tactical/)
@@ -829,7 +829,7 @@ test('applying a category and In stock only writes both into the URL, and a relo
 // write went out. Reproduced directly: with that old code, this test's field ends up reading
 // "sel" or "sell" depending on timing, never "shell".
 test('typing with pauses near the debounce keeps every character', async ({ page }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   const search = page.getByRole('searchbox', { name: 'Search the range' })
   await search.click()
   for (const ch of 'shell') {
@@ -846,7 +846,7 @@ test('typing with pauses near the debounce keeps every character', async ({ page
 // happened, so that click's own change is silently overwritten a moment later and
 // `category=tactical` never survives.
 test('a category checked while a search is pending survives the debounce', async ({ page }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   await page.getByRole('searchbox', { name: 'Search the range' }).fill('a')
   await page.getByRole('checkbox', { name: 'Tactical equipment' }).click()
   await expect(page).toHaveURL(/q=a/)
@@ -877,7 +877,7 @@ test('a category checked while a search is pending survives the debounce', async
 test('a category click survives an urgent re-render from typing, before either write lands', async ({
   page,
 }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   const checkbox = await page.getByRole('checkbox', { name: 'Tactical equipment' }).elementHandle()
   const input = await page.getByRole('searchbox', { name: 'Search the range' }).elementHandle()
   await page.evaluate(
@@ -924,7 +924,7 @@ for (const order of ['click-then-debounce', 'debounce-then-click'] as const) {
         f.forEach(g => g())
       }
     })
-    await page.goto('/demo/shop')
+    await page.goto('/store/shop')
     await page.getByRole('searchbox', { name: 'Search the range' }).fill('a')
     await page.getByRole('checkbox', { name: 'Tactical equipment' }).evaluate((el: HTMLElement, o) => {
       const flush = (window as any).__flushDebounce
@@ -946,7 +946,7 @@ for (const order of ['click-then-debounce', 'debounce-then-click'] as const) {
 // running after Clear empties the URL, and fires ~250ms later, writing the stale search text
 // straight back into it.
 test('Clear filters cancels a search debounce still in flight', async ({ page }) => {
-  await page.goto('/demo/shop?q=zzzz-nothing-matches-this')
+  await page.goto('/store/shop?q=zzzz-nothing-matches-this')
   const search = page.getByRole('searchbox', { name: 'Search the range' })
   await expect(page.getByRole('button', { name: 'Clear filters' })).toBeVisible()
   await search.fill('zzzz-nothing-matches-thisz')
@@ -967,7 +967,7 @@ test('Clear filters cancels a search debounce still in flight', async ({ page })
 // samples the DOM (Playwright's own auto-retry waits it out). The commit-side floor above is what
 // actually reaches the URL unconditionally, so it's the one this test can prove.)
 test('the price slider never shows less than the €10 it filters by', async ({ page }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   const slider = page.getByRole('slider', { name: /Maximum price/ })
   await slider.focus()
   await page.keyboard.press('Home')
@@ -981,7 +981,7 @@ test('the price slider never shows less than the €10 it filters by', async ({ 
 // same history entry instead of pushing a new one each, so Back below lands one step too far (on
 // whatever page came before this test's own `goto`) instead of restoring the Optics-only listing.
 test('Back and Forward restore the shop listing at each step it was narrowed', async ({ page }) => {
-  await page.goto('/demo/shop')
+  await page.goto('/store/shop')
   const status = shopStatus(page)
   const search = page.getByRole('searchbox', { name: 'Search the range' })
   const slider = page.getByRole('slider', { name: /Maximum price/ })
@@ -1024,7 +1024,7 @@ test('Back and Forward restore the shop listing at each step it was narrowed', a
 // assertion below (a real product from the actual last page) fails instead of the ones from
 // page 1.
 test('?page=99 clamps to the shop\'s last real page instead of showing nothing', async ({ page }) => {
-  await page.goto('/demo/shop?page=99')
+  await page.goto('/store/shop?page=99')
   await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
   // Twenty-two products, six to a page: the last page holds the nineteenth to the twenty-second
   // (Bump helmet, Knee pads, Dummy radio, the kit). Field goggles is the eighteenth, the last
@@ -1037,7 +1037,7 @@ test('?page=99 clamps to the shop\'s last real page instead of showing nothing',
 // unknown category survives, the category filter then matches nothing, and the status assertion
 // below fails.
 test('an unknown category in the URL is dropped, showing every product with no crash', async ({ page }) => {
-  await page.goto('/demo/shop?category=nope')
+  await page.goto('/store/shop?category=nope')
   await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
   await expect(shopStatus(page)).toHaveText('22 products')
 })
@@ -1049,7 +1049,7 @@ test.describe('the shop below lg', () => {
   test.use({ viewport: { width: 320, height: 800 } })
 
   test('the Filters sheet applies a category filter and Apply closes it', async ({ page }) => {
-    await page.goto('/demo/shop')
+    await page.goto('/store/shop')
     await expect(page.getByRole('button', { name: 'Filters' })).toBeVisible()
     await page.getByRole('button', { name: 'Filters' }).click()
     const sheet = page.getByRole('dialog', { name: 'Filters' })
@@ -1071,7 +1071,7 @@ test.describe('the shop below lg', () => {
     // element in FilterPanel.tsx (leave the `htmlFor` orphaned) -> a real `button-name` violation
     // inside the open sheet, in either theme.
     test(`the Filters sheet is axe clean while open, in ${theme} theme`, async ({ page }) => {
-      await page.goto('/demo/shop')
+      await page.goto('/store/shop')
       await page.getByRole('button', { name: 'Filters' }).click()
       await expect(page.getByRole('dialog', { name: 'Filters' })).toBeVisible()
       await applyTheme(page, theme)
@@ -1091,7 +1091,7 @@ test.describe('the shop below lg', () => {
 // accessible name is what the mutation touches.
 for (const theme of THEMES) {
   test(`the shop is axe clean with no results, in ${theme} theme`, async ({ page }) => {
-    await page.goto('/demo/shop?q=zzzz-nothing-matches-this')
+    await page.goto('/store/shop?q=zzzz-nothing-matches-this')
     await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Clear filters' })).toBeVisible()
     await applyTheme(page, theme)
@@ -1109,7 +1109,7 @@ test.describe('shop reflow at short viewports', () => {
     // both viewports below, and the poll below never becomes true within its timeout.
     test(`no horizontal overflow at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await page.setViewportSize(viewport)
-      await page.goto('/demo/shop')
+      await page.goto('/store/shop')
       await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
       // A web font swapping in after the first paint reflows whatever it sizes -- wait for it to
       // settle, then poll rather than measuring once: a single-shot read right after load can
@@ -1131,7 +1131,7 @@ test.describe('shop reflow at short viewports', () => {
   // this measurement at all.)
   test('no horizontal overflow at 320x256 with the Filters sheet open', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 256 })
-    await page.goto('/demo/shop')
+    await page.goto('/store/shop')
     await page.getByRole('button', { name: 'Filters' }).click()
     await expect(page.getByRole('dialog', { name: 'Filters' })).toBeVisible()
     await page.evaluate(() => document.fonts.ready)
@@ -1148,12 +1148,12 @@ test.describe('shop reflow at short viewports', () => {
 // starts there, through the breadcrumb trail, to the first radio in each fieldset. Both fieldsets
 // start with nothing selected, so both need a real Space press, not just a tab-through.
 // Mutation: change the toast action's `onAction` in Product.tsx's `submit` from
-// `navigate('/demo/cart')` to a no-op -> the URL assertion at the end below fails (still on the
+// `navigate('/store/cart')` to a no-op -> the URL assertion at the end below fails (still on the
 // product page).
 test('the full listing-to-detail-to-cart journey works from the keyboard', async ({ page }) => {
   // Filtered to Tactical equipment by the URL: the bump helmet is the one product with both a
   // size and a colour to choose, and it is not on the first page of the unfiltered listing.
-  await page.goto('/demo/shop?category=tactical')
+  await page.goto('/store/shop?category=tactical')
   const productLink = page.getByRole('link', { name: 'Bump helmet' })
   // A fresh load starts the tab order at the very top of the shell (skip link, Brand, nav,
   // account/cart/theme controls), then the whole sidebar FilterPanel, well before the grid --
@@ -1187,21 +1187,21 @@ test('the full listing-to-detail-to-cart journey works from the keyboard', async
   const viewCart = page.getByRole('button', { name: 'View cart' })
   await tabTo(page, viewCart)
   await page.keyboard.press('Enter')
-  // `/demo/cart` doesn't exist yet (a later task builds it) -- only the URL is this journey's own
+  // `/store/cart` doesn't exist yet (a later task builds it) -- only the URL is this journey's own
   // concern, not what renders once it gets there.
-  await expect(page).toHaveURL(/\/demo\/cart$/)
+  await expect(page).toHaveURL(/\/store\/cart$/)
 })
 
 // Mutation: change the breadcrumb's `renderLink` prop on `Breadcrumbs` in Product.tsx from
 // `routerLink` to nothing (the default plain `<a>`) -> the anchor's own full navigation reloads
 // the document, resetting `window.__marker`, and the assertion below fails.
 test('the breadcrumb trail back to the shop is a router link, not a full page reload', async ({ page }) => {
-  await page.goto('/demo/shop/bump-helmet')
+  await page.goto('/store/shop/bump-helmet')
   await page.evaluate(() => {
     ;(window as unknown as { __marker: boolean }).__marker = true
   })
   await page.getByRole('navigation', { name: 'Breadcrumb' }).getByRole('link', { name: 'Shop' }).click()
-  await expect(page).toHaveURL(/\/demo\/shop$/)
+  await expect(page).toHaveURL(/\/store\/shop$/)
   expect(await page.evaluate(() => (window as unknown as { __marker?: boolean }).__marker)).toBe(true)
 })
 
@@ -1209,7 +1209,7 @@ test('the breadcrumb trail back to the shop is a router link, not a full page re
 // `errors.validateAll`/`hasErrors` guard) -> the ErrorSummary this test looks for never appears.
 for (const theme of THEMES) {
   test(`the size/colour validation error is axe clean, in ${theme} theme`, async ({ page }) => {
-    await page.goto('/demo/shop/bump-helmet')
+    await page.goto('/store/shop/bump-helmet')
     await page.getByRole('button', { name: 'Add to cart', exact: true }).click()
     await expect(page.getByRole('group', { name: 'There is a problem' })).toBeVisible()
     await applyTheme(page, theme)
@@ -1226,7 +1226,7 @@ for (const theme of THEMES) {
 // element"), both themes.
 for (const theme of THEMES) {
   test(`a sold-out product page is axe clean, in ${theme} theme`, async ({ page }) => {
-    await page.goto('/demo/shop/kestrel-l')
+    await page.goto('/store/shop/kestrel-l')
     await expect(page.getByRole('heading', { level: 1, name: 'Kestrel L rifle replica' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Sold out' })).toBeVisible()
     await applyTheme(page, theme)
@@ -1246,7 +1246,7 @@ for (const theme of THEMES) {
 // Mutation: remove the `if (product.soldOut) return` line from `submit` in Product.tsx -> the
 // "You already have the most we can sell of" toast appears below.
 test('pressing Enter in Quantity on a sold-out product does not add it to the cart', async ({ page }) => {
-  await page.goto('/demo/shop/kestrel-l')
+  await page.goto('/store/shop/kestrel-l')
   await page.getByRole('radio', { name: 'Black' }).click()
   await page.getByRole('spinbutton', { name: 'Quantity' }).click()
   await page.keyboard.press('Enter')
@@ -1258,7 +1258,7 @@ test('pressing Enter in Quantity on a sold-out product does not add it to the ca
 // `page-has-heading-one` violation, in either theme.
 for (const theme of THEMES) {
   test(`an unknown product id is axe clean on its own not-found page, in ${theme} theme`, async ({ page }) => {
-    await page.goto('/demo/shop/does-not-exist')
+    await page.goto('/store/shop/does-not-exist')
     await expect(page.getByRole('heading', { level: 1, name: 'Product not found' })).toBeVisible()
     await applyTheme(page, theme)
     await settleAnimations(page)
@@ -1276,7 +1276,7 @@ test.describe('product page reflow at short viewports', () => {
       // than both viewports below, and the poll never becomes true within its timeout.
       test(`no horizontal overflow at ${viewport.width}x${viewport.height}, ${theme} theme`, async ({ page }) => {
         await page.setViewportSize(viewport)
-        await page.goto('/demo/shop/bump-helmet')
+        await page.goto('/store/shop/bump-helmet')
         await expect(page.getByRole('heading', { level: 1, name: 'Bump helmet' })).toBeVisible()
         await applyTheme(page, theme)
         await page.evaluate(() => document.fonts.ready)

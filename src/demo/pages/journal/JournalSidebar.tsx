@@ -4,7 +4,7 @@ import { Search, SectionHeading } from '../../../components/molecules'
 import { cn } from '../../../lib/cn'
 import { journalArchive, journalTagCounts } from '../../content/journal'
 
-const JOURNAL_INDEX = '/demo/journal'
+const JOURNAL_INDEX = '/store/journal'
 
 /** A tag's weight in the cloud: by how many notes carry it. Three steps, so the cloud reads as a
  *  cloud without a size for every count; sizes are plain Tailwind text sizes, all 14px or more. */

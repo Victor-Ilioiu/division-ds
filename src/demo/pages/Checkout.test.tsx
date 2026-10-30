@@ -52,7 +52,7 @@ const ORDER: CheckoutOrder = {
  *  guard in `Checkout.tsx` ever gets to look at an empty cart. Adding through the real `add()`
  *  after mount, as Product.test.tsx and Cart.test.tsx both do, is one render too late here: the
  *  guard runs on the FIRST render, when the cart is still empty, and once it has already
- *  navigated to `/demo/cart` there is nothing that ever routes back. */
+ *  navigated to `/store/cart` there is nothing that ever routes back. */
 function seedCart() {
   sessionStorage.setItem(
     'hexline-cart',
@@ -61,7 +61,7 @@ function seedCart() {
         id: 'bump-helmet:S/M:black',
         productId: 'bump-helmet',
         name: 'Bump helmet',
-        href: '/demo/shop/bump-helmet',
+        href: '/store/shop/bump-helmet',
         detail: 'Size S/M · Black',
         unitPrice: 6900,
         quantity: 1,
@@ -90,14 +90,14 @@ function CartProbe() {
 
 function renderCheckout() {
   return render(
-    <MemoryRouter initialEntries={['/demo/checkout']}>
+    <MemoryRouter initialEntries={['/store/checkout']}>
       <Toaster>
         <CartProvider>
           <CartProbe />
           <Routes>
-            <Route path="/demo/checkout" element={<Checkout />} />
-            <Route path="/demo/checkout/confirmation" element={<Stub name="Confirmation" />} />
-            <Route path="/demo/cart" element={<Stub name="Cart" />} />
+            <Route path="/store/checkout" element={<Checkout />} />
+            <Route path="/store/checkout/confirmation" element={<Stub name="Confirmation" />} />
+            <Route path="/store/cart" element={<Stub name="Cart" />} />
           </Routes>
         </CartProvider>
       </Toaster>
@@ -120,7 +120,7 @@ function renderToggleableCheckout() {
     )
   }
   return render(
-    <MemoryRouter initialEntries={['/demo/checkout']}>
+    <MemoryRouter initialEntries={['/store/checkout']}>
       <Toaster>
         <CartProvider>
           <CartProbe />
@@ -141,7 +141,7 @@ describe('Checkout', () => {
   // Mutation: drop the `placedLines === null && lines.length === 0` guard in Checkout.tsx (render
   // CheckoutForm unconditionally) -> the stub route below never mounts, and the notice is never
   // carried.
-  it('an empty cart on direct load redirects to /demo/cart with a notice', async () => {
+  it('an empty cart on direct load redirects to /store/cart with a notice', async () => {
     renderCheckout()
     expect(await screen.findByRole('heading', { level: 1, name: 'Cart' })).toBeInTheDocument()
     expect(screen.getByTestId('state').textContent).toContain(

@@ -83,6 +83,7 @@ export function SiteChart({ siteId, range, readings }: { siteId: string; range: 
       headingLevel={2}
       summary={chartSummary(a, b, rows, range)}
       kind="line"
+      area
       curve="smooth"
       data={rows}
       xKey="time"

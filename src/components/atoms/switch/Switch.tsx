@@ -48,6 +48,9 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
         // 44x24 track — clears the 24x24 minimum target size on its own, no ::before needed.
         // `group`: the thumb reads the root's state and its pressed state (see below).
         'group relative inline-flex shrink-0 items-center w-11 h-6 p-0.5',
+        // With the cut off (the theme builder's shape) the track takes the radius and the thumb a
+        // concentric one, 3px smaller: the gap between them.
+        'rounded-[var(--shape-radius,0px)]',
         // The track keeps the control fill on and off. What says "on" is the thumb's position,
         // the thumb's colour and the border's colour; the track itself does not change.
         'border bg-[var(--component-control-fill-rest)]',
@@ -84,7 +87,7 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
           accent.signal.indicator-ink on an accent track: thumb and track both changed colour at the
           instant of the flip, mid-flight, and the motion read as a twitch. Now one thing changes
           colour, and it fades over the travel. On the control fill the accent measures 5.51:1 in
-          the dark theme and 2.15:1 in the light one, under SC 1.4.11's 3:1; that is the pair
+          the dark theme and 2.80:1 in the light one, under SC 1.4.11's 3:1; that is the pair
           Radio's indicator already carries, accepted and gated at a 2:1 floor
           (scripts/lib/contrast-pairs.mjs).
 
@@ -122,7 +125,7 @@ export function Switch({ className, ref, onCheckedChange, ...rest }: SwitchProps
         <span
           ref={body}
           className={cn(
-            'block h-full w-full bg-[var(--color-text-primary)]',
+            'block h-full w-full bg-[var(--color-text-primary)] rounded-[max(0px,calc(var(--shape-radius,0px)-3px))]',
             'group-data-[state=checked]:bg-[var(--color-accent-signal-indicator)]',
             'transition-[background-color] [transition-duration:var(--duration-base)] motion-reduce:transition-none'
           )}

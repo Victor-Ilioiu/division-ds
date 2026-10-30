@@ -18,10 +18,10 @@ describe('DemoLayout, where WebGL2 exists', () => {
   // `backdrop={undefined}` -> the layer is null and the first assertion fails.
   it('puts the terrain in the footer`s backdrop layer, behind the wordmark, hidden from assistive technology, and stays axe clean', async () => {
     const { container } = render(
-      <MemoryRouter initialEntries={['/demo']}>
+      <MemoryRouter initialEntries={['/store']}>
         <Routes>
           <Route element={<DemoLayout />}>
-            <Route path="/demo/*" element={<h1>Home</h1>} />
+            <Route path="/store/*" element={<h1>Home</h1>} />
           </Route>
         </Routes>
       </MemoryRouter>

@@ -37,7 +37,7 @@ async function waitForLenisReady(page: Page) {
  *  copies): written after a first, throwaway navigation, since `sessionStorage` needs an origin
  *  to belong to and outlives the caller's own subsequent `goto`. */
 async function seedTwoCartLines(page: Page) {
-  await page.goto('/demo')
+  await page.goto('/store')
   await page.evaluate(() => {
     sessionStorage.setItem(
       'hexline-cart',
@@ -46,7 +46,7 @@ async function seedTwoCartLines(page: Page) {
           id: 'bump-helmet:S/M:black',
           productId: 'bump-helmet',
           name: 'Bump helmet',
-          href: '/demo/shop/bump-helmet',
+          href: '/store/shop/bump-helmet',
           detail: 'Size S/M · Black',
           unitPrice: 6900,
           quantity: 1,
@@ -58,7 +58,7 @@ async function seedTwoCartLines(page: Page) {
           id: 'bump-helmet:M/L:black',
           productId: 'bump-helmet',
           name: 'Bump helmet',
-          href: '/demo/shop/bump-helmet',
+          href: '/store/shop/bump-helmet',
           detail: 'Size M/L · Black',
           unitPrice: 6900,
           quantity: 1,
@@ -73,7 +73,7 @@ async function seedTwoCartLines(page: Page) {
 
 test.describe('smooth scroll (Lenis), on the demo site', () => {
   test('a wheel scroll eases scrollY across several frames rather than jumping straight there', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
     await waitForLenisReady(page)
@@ -106,14 +106,14 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('PageDown moves the page', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.keyboard.press('PageDown')
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
   })
 
   test('the skip link focuses #main natively, with Lenis running, and lands it at the top', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
     await waitForLenisReady(page)
@@ -126,14 +126,15 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
     await expect(page.locator('#main')).toBeFocused()
     // Not just focused: actually scrolled back to the top the click's own hash jump promised,
     // rather than left wherever the 1500px scroll (or Lenis still easing from it) happened to be.
+    // The Navbar is sticky, so "the top" is just under it (scroll-padding-top, tailwind.css).
     await expect
-      .poll(() => page.evaluate(() => document.getElementById('main')!.getBoundingClientRect().top))
+      .poll(() => page.evaluate(() => document.getElementById('main')!.getBoundingClientRect().top - document.querySelector('header')!.getBoundingClientRect().bottom))
       .toBeLessThan(5)
   })
 
   test('reduced motion: scrollY jumps directly and <html> never gets the lenis class', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     expect(await hasLenisClass(page)).toBe(false)
 
@@ -147,7 +148,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('flipping reduced motion mid-session adds and removes the lenis class', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
 
@@ -159,7 +160,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('a wheel event over an open CartSheet leaves the page behind it unscrolled', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
     await waitForLenisReady(page)
@@ -178,7 +179,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   test('a wheel event inside the CartSheet\'s own scrollable list still scrolls it', async ({ page }) => {
     await seedTwoCartLines(page)
     await page.setViewportSize({ width: 1280, height: 360 })
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
     await waitForLenisReady(page)
@@ -193,7 +194,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   test('a keyboard focus move right after a wheel scroll is not fought by the easing still in flight', async ({
     page,
   }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await waitForLenisReady(page)
     await page.mouse.wheel(0, 150)
@@ -211,7 +212,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('End right after a wheel scroll reaches the real scroll max, not a stale eased target', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await waitForLenisReady(page)
     await page.mouse.wheel(0, 150)
@@ -224,7 +225,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('a route change resets scroll; a query-only change keeps it', async ({ page }) => {
-    await page.goto('/demo/shop')
+    await page.goto('/store/shop')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     const firstCategory = page.getByRole('checkbox').first()
     await firstCategory.scrollIntoViewIfNeeded()
@@ -234,7 +235,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
     await firstCategory.click()
     await expect(page).toHaveURL(/category=/)
     expect(await page.evaluate(() => Math.round(scrollY))).toBe(before)
-    const link = page.locator('main a[href^="/demo/shop/"]').first()
+    const link = page.locator('main a[href^="/store/shop/"]').first()
     await link.evaluate(el => (el as HTMLElement).focus({ preventScroll: true }))
     await page.evaluate(() => window.scrollTo(0, 500))
     await page.keyboard.press('Enter')
@@ -249,7 +250,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   // assertion below fails, since nothing ever resets scroll on a route change that never passes
   // through the Hexline demo shell at all.
   test('scroll resets on a route change in both directions: demo to docs, and docs to docs', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.mouse.wheel(0, 800)
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
@@ -258,7 +259,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
     const docsLink = page.getByRole('link', { name: 'Documentation' })
     await docsLink.scrollIntoViewIfNeeded()
     await docsLink.click()
-    await expect(page).toHaveURL(/^[^?]*\/$/)
+    await expect(page).toHaveURL(/^[^?]*\/components$/)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     // Not a strict 0: focus landing on #main (useFocusMainOnNavigate, right after this reset)
     // can nudge it into view under a sticky header by a few px of its own -- the same tolerance
@@ -295,7 +296,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   })
 
   test('the docs shell never gets the lenis class', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/components')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.mouse.wheel(0, 1000)
     await page.waitForTimeout(200)
@@ -306,7 +307,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
   // own synchronous `cleanUpClassName()` -- `<html>` still carries a lenis class here on this
   // build, and the poll below times out instead of settling to `false`.
   test('a native scroll right before leaving the demo shell leaves no lenis class on <html>', async ({ page }) => {
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect.poll(() => hasLenisClass(page)).toBe(true)
     await waitForLenisReady(page)
@@ -319,7 +320,7 @@ test.describe('smooth scroll (Lenis), on the demo site', () => {
       const link = Array.from(document.querySelectorAll('a')).find(a => a.textContent?.trim() === 'Documentation')
       link?.click()
     })
-    await expect(page).toHaveURL(/^[^?]*\/$/)
+    await expect(page).toHaveURL(/^[^?]*\/components$/)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     // Past the 450ms delayed sweep, not just the instant after Lenis's own synchronous cleanup.
     await expect.poll(() => hasAnyLenisClass(page), { timeout: 2000 }).toBe(false)

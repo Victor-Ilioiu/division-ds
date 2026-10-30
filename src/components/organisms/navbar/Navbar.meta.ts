@@ -28,7 +28,12 @@ export const meta: ComponentMeta = {
   props: [
     { name: 'label', type: 'string', description: 'Required. The name screen readers give the navigation region.' },
     { name: 'brand', type: 'ReactNode', description: 'Required. The wordmark or logo, usually a link to the home page.' },
-    { name: 'items', type: 'NavbarItem[]', description: 'Required. Each item has label, href and current.' },
+    {
+      name: 'items',
+      type: 'NavbarItem[]',
+      description:
+        "Required. A link is { label, href, current }. A menu among the links is { label, menu, current }: menu lists { label, href, description } entries, opened from a dropdown on a wide bar and listed as a labelled group in the menu sheet on a narrow one.",
+    },
     {
       name: 'actions',
       type: 'ReactNode',
@@ -52,7 +57,14 @@ export const meta: ComponentMeta = {
       name: 'menuFooter',
       type: 'ReactNode',
       description:
-        "Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex.",
+        "Shown in the menu sheet under the links. Use it for an action that doesn't fit in actions on a narrow bar. Hide the matching copy in actions below the breakpoint by wrapping it in an element with the classes hidden @2xl:flex (hidden @4xl:flex when collapseBelow is '4xl').",
+    },
+    {
+      name: 'collapseBelow',
+      type: "'2xl' | '4xl'",
+      default: "'2xl'",
+      description:
+        "The bar's own width below which the links fold into the menu sheet: 2xl is 42rem, 4xl is 56rem. Pick the one at which the brand, every link and the actions still fit on one row with room to spare.",
     },
     {
       name: 'className',

@@ -25,13 +25,13 @@ function NameReadout() {
 
 function renderApp() {
   return render(
-    <MemoryRouter initialEntries={['/demo/account/settings']}>
+    <MemoryRouter initialEntries={['/store/account/settings']}>
       <Toaster>
         <SessionProvider>
           <NameReadout />
           <Routes>
-            <Route path="/demo/account/settings" element={<Settings />} />
-            <Route path="/demo/sign-in" element={<h1>Hexline account</h1>} />
+            <Route path="/store/account/settings" element={<Settings />} />
+            <Route path="/store/sign-in" element={<h1>Hexline account</h1>} />
           </Routes>
         </SessionProvider>
       </Toaster>
@@ -96,12 +96,12 @@ describe('Settings', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/account/settings']}>
+        <MemoryRouter initialEntries={['/store/account/settings']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/account/settings" element={present ? <Settings /> : <p>Left the page</p>} />
+                <Route path="/store/account/settings" element={present ? <Settings /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>

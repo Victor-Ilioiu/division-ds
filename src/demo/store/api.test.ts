@@ -34,11 +34,11 @@ function orderWith(postalCode: string, email = 'rae@hexline.test'): CheckoutOrde
 }
 
 describe('catalog', () => {
-  it('has 22 products with unique ids, each href matching /demo/shop/:id', () => {
+  it('has 22 products with unique ids, each href matching /store/shop/:id', () => {
     expect(CATALOG).toHaveLength(22)
     expect(new Set(CATALOG.map(product => product.id)).size).toBe(22)
     CATALOG.forEach(product => {
-      expect(product.href).toBe(`/demo/shop/${product.id}`)
+      expect(product.href).toBe(`/store/shop/${product.id}`)
     })
   })
 

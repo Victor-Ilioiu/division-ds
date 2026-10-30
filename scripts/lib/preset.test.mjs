@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_PRESET, WHITE_INK, buildTheme, decodePreset, encodePreset, inkFor, themeCss } from './preset.mjs'
+import { ACCENT_PRESETS, DEFAULT_PRESET, WHITE_INK, buildTheme, decodePreset, encodePreset, inkFor, themeCss } from './preset.mjs'
 import { resolveTokens } from './resolve-tokens.mjs'
 import { checkPairs } from './contrast.mjs'
 import { pairsForTheme } from './contrast-pairs.mjs'
@@ -12,6 +12,18 @@ const docs = {
   light: read('tokens/semantic/color.light.json'),
   control: read('tokens/component/control.json'),
 }
+
+describe('the Themes page accent swatches', () => {
+  it('each passes every contrast check with the default neutral', () => {
+    for (const { name, signal } of ACCENT_PRESETS) {
+      expect(buildTheme({ signal, neutral: DEFAULT_PRESET.neutral }, docs).failures, name).toEqual([])
+    }
+  })
+
+  it('starts with the default accent', () => {
+    expect(ACCENT_PRESETS[0].signal).toBe(DEFAULT_PRESET.signal)
+  })
+})
 
 describe('preset codes', () => {
   it('encodes the shipped anchors as a short versioned string', () => {

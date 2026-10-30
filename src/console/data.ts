@@ -462,7 +462,12 @@ function baselineFn(sensor: Sensor): (offset: number, noise: number) => number {
   const rand = seeded(hashString(`${sensor.id}:phase`))
   const phase = rand() * Math.PI * 2
   const level = rand() - 0.5
-  const wave = (offset: number) => Math.sin((offset / DAY) * Math.PI * 2 + phase)
+  // The day's slow swing plus a faster one three times a day: three peaks a day, each a different
+  // height. The two amplitudes sum to 1, so the range is what the single wave gave.
+  const wave = (offset: number) => {
+    const t = (offset / DAY) * Math.PI * 2 + phase
+    return 0.6 * Math.sin(t) + 0.4 * Math.sin(3 * t + phase * 2)
+  }
   if (sensor.kind === 'temperature' && sensor.band === FREEZER) {
     return (offset, noise) => -21.2 + level * 0.8 + 0.6 * wave(offset) + noise * 0.25
   }

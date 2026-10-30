@@ -55,6 +55,9 @@ export type DropdownMenuItemProps = Omit<
    *  the page that owns the action does. */
   shortcut?: string
   ref?: Ref<HTMLDivElement>
+  /** Renders the one child (a link) as the item, for a menu of links. `icon` and `shortcut` are
+   *  ignored then: put the content inside the child. */
+  asChild?: boolean
   /** The hyphenated-key rule (design.md): this component computes aria-keyshortcuts from
    *  `shortcut` and then spreads `{...rest}` after it, so `Omit<>` alone cannot stop a caller
    *  overriding it — TypeScript's JSX checker exempts hyphenated (`aria-*`, `data-*`) attribute
@@ -70,8 +73,21 @@ export function DropdownMenuItem({
   className,
   children,
   ref,
+  asChild = false,
   ...rest
 }: DropdownMenuItemProps) {
+  const classes = cn(
+    ITEM_CLASSES,
+    tone === 'hostile' &&
+      'text-[var(--color-accent-hostile-text)] data-[highlighted]:bg-[var(--color-accent-hostile-fill)] data-[highlighted]:text-[var(--color-accent-hostile-ink)]',
+    className
+  )
+  if (asChild)
+    return (
+      <RadixMenu.Item ref={ref} asChild className={cn(classes, 'cursor-pointer')} {...rest}>
+        {children}
+      </RadixMenu.Item>
+    )
   return (
     <RadixMenu.Item
       ref={ref}

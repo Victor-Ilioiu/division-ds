@@ -39,7 +39,7 @@ export function CreateAccount() {
   }, [])
 
   if (signedInOnArrival) {
-    return <Navigate to="/demo/shop" replace state={{ notice: "You're already signed in." }} />
+    return <Navigate to="/store/shop" replace state={{ notice: "You're already signed in." }} />
   }
 
   const handleSubmit = async (values: AuthValues): Promise<void | AuthErrors> => {
@@ -56,7 +56,7 @@ export function CreateAccount() {
       }
       if ('errors' in result) return result.errors
       signInAs(result.user)
-      navigate('/demo/onboarding')
+      navigate('/store/onboarding')
       return undefined
     } catch (e) {
       if (!mounted.current) {

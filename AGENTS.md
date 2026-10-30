@@ -1,6 +1,6 @@
 # Division DS: instructions for coding agents
 
-A React 19 + Tailwind 4 + Radix design system: 72 components, tokens in three layers, light and
+A React 19 + Tailwind 4 + Radix design system: 74 components, tokens in three layers, light and
 dark themes, WCAG 2.2 AA. This file is the entry point. It is short on purpose; everything it
 points to is generated from the code, so it is current.
 

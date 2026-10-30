@@ -103,7 +103,7 @@ export function Product() {
       <div className="px-gutter py-12 flex flex-col gap-4">
         <h1 className="font-display font-semibold text-2xl text-[var(--color-text-primary)]">Product not found</h1>
         <p className="font-body text-sm text-[var(--color-text-secondary)]">
-          <RouterLink to="/demo/shop" className={linkVariants()}>
+          <RouterLink to="/store/shop" className={linkVariants()}>
             Back to the shop
           </RouterLink>
         </p>
@@ -174,7 +174,7 @@ export function Product() {
       action: {
         label: 'View cart',
         altText: 'Open your cart with the Cart button in the header.',
-        onAction: () => navigate('/demo/cart'),
+        onAction: () => navigate('/store/cart'),
       },
     })
   }
@@ -194,8 +194,8 @@ export function Product() {
       <Breadcrumbs
         items={[
           { label: 'Home', href: DEMO_HOME },
-          { label: 'Shop', href: '/demo/shop' },
-          { label: categoryLabel, href: `/demo/shop?category=${product.category}` },
+          { label: 'Shop', href: '/store/shop' },
+          { label: categoryLabel, href: `/store/shop?category=${product.category}` },
           { label: product.name },
         ]}
         renderLink={routerLink}
@@ -365,11 +365,11 @@ export function Product() {
             </p>
             <p>
               {guide ? (
-                <RouterLink to={`/demo/journal/${guide.slug}`} className={linkVariants()}>
+                <RouterLink to={`/store/journal/${guide.slug}`} className={linkVariants()}>
                   Read the field guide: {guide.title}
                 </RouterLink>
               ) : (
-                <RouterLink to="/demo/journal" className={linkVariants()}>
+                <RouterLink to="/store/journal" className={linkVariants()}>
                   Read the field guides
                 </RouterLink>
               )}

@@ -16,7 +16,6 @@ export type DocsPage = {
 export const DOCS_PAGES: DocsPage[] = [
   { path: '/guidelines/install', Component: lazy(() => import('./pages/guidelines/InstallGuideline').then(module => ({ default: module.InstallGuideline }))) },
   { path: '/guidelines/color', Component: lazy(() => import('./pages/guidelines/ColorGuideline').then(module => ({ default: module.ColorGuideline }))) },
-  { path: '/guidelines/theme', Component: lazy(() => import('./pages/guidelines/ThemeGuideline').then(module => ({ default: module.ThemeGuideline }))) },
   { path: '/guidelines/typography', Component: lazy(() => import('./pages/guidelines/TypographyGuideline').then(module => ({ default: module.TypographyGuideline }))) },
   { path: '/guidelines/spacing', Component: lazy(() => import('./pages/guidelines/SpacingGuideline').then(module => ({ default: module.SpacingGuideline }))) },
   { path: '/guidelines/shape', Component: lazy(() => import('./pages/guidelines/ShapeGuideline').then(module => ({ default: module.ShapeGuideline }))) },
@@ -37,6 +36,7 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/kbd', Component: lazy(() => import('./components/atoms/kbd/KbdDocs').then(module => ({ default: module.KbdDocs }))) },
   { path: '/components/link', Component: lazy(() => import('./components/atoms/link/LinkDocs').then(module => ({ default: module.LinkDocs }))) },
   { path: '/components/loading-animation', Component: lazy(() => import('./components/atoms/loading-animation/LoadingAnimationDocs').then(module => ({ default: module.LoadingAnimationDocs }))) },
+  { path: '/components/panel', Component: lazy(() => import('./components/atoms/panel/PanelDocs').then(module => ({ default: module.PanelDocs }))) },
   { path: '/components/progress', Component: lazy(() => import('./components/atoms/progress/ProgressDocs').then(module => ({ default: module.ProgressDocs }))) },
   { path: '/components/radio', Component: lazy(() => import('./components/atoms/radio/RadioDocs').then(module => ({ default: module.RadioDocs }))) },
   { path: '/components/score-ring', Component: lazy(() => import('./components/atoms/score-ring/ScoreRingDocs').then(module => ({ default: module.ScoreRingDocs }))) },
@@ -54,6 +54,7 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/approval-request', Component: lazy(() => import('./components/molecules/approval-request/ApprovalRequestDocs').then(module => ({ default: module.ApprovalRequestDocs }))) },
   { path: '/components/avatar-group', Component: lazy(() => import('./components/molecules/avatar-group/AvatarGroupDocs').then(module => ({ default: module.AvatarGroupDocs }))) },
   { path: '/components/breadcrumbs', Component: lazy(() => import('./components/molecules/breadcrumbs/BreadcrumbsDocs').then(module => ({ default: module.BreadcrumbsDocs }))) },
+  { path: '/components/code-block', Component: lazy(() => import('./components/molecules/code-block/CodeBlockDocs').then(module => ({ default: module.CodeBlockDocs }))) },
   { path: '/components/card', Component: lazy(() => import('./components/molecules/card/CardDocs').then(module => ({ default: module.CardDocs }))) },
   { path: '/components/chat-message', Component: lazy(() => import('./components/molecules/chat-message/ChatMessageDocs').then(module => ({ default: module.ChatMessageDocs }))) },
   { path: '/components/date-picker', Component: lazy(() => import('./components/molecules/date-picker/DatePickerDocs').then(module => ({ default: module.DatePickerDocs }))) },

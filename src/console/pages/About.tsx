@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Link, linkVariants } from '../../components/atoms/link/Link'
 import { Link as RouterLink } from 'react-router-dom'
-import { Card, CardBody, CardTitle } from '../../components/molecules/card/Card'
 import { PageHeader } from '../../components/molecules/page-header/PageHeader'
 import { SectionHeading } from '../../components/molecules/section-heading/SectionHeading'
 import { WORKSPACE } from '../data'
@@ -11,14 +11,14 @@ import { REPO, SKILL_INSTALL } from '../../links'
 export const CASE_STUDY_URL = 'https://victor-ilioiu.vercel.app/work/division-ds'
 
 /** Every Division DS component Halden Console imports, counted from the import lines under
- *  src/console (named imports matched against public/manifest/components.json), this page's Card
- *  included. Recount when a page starts or stops using one. */
+ *  src/console (named imports matched against public/manifest/components.json), this page's
+ *  CodeBlock included. Recount when a page starts or stops using one. */
 export const CONSOLE_COMPONENTS = [
   'Alert', 'ApprovalRequest', 'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card', 'ChartPanel', 'ChatMessage',
-  'ChatThread', 'CommandPalette', 'DataTable', 'DescriptionList', 'EmptyState', 'FormField', 'IconButton', 'Kbd',
-  'Link', 'ListItem', 'PageHeader', 'PromptInput', 'SectionHeading', 'SegmentedControl', 'Select', 'Sheet',
-  'Sidebar', 'Skeleton', 'Sparkline', 'Spinner', 'Stat', 'StatusTracker', 'Textarea', 'Timeline', 'Toast',
-  'ToolCall', 'Tooltip',
+  'ChatThread', 'CodeBlock', 'CommandPalette', 'DataTable', 'DescriptionList', 'EmptyState', 'FormField',
+  'IconButton', 'Kbd', 'Link', 'ListItem', 'PageHeader', 'PromptInput', 'SectionHeading', 'SegmentedControl',
+  'Select', 'Sheet', 'Sidebar', 'Skeleton', 'Sparkline', 'Spinner', 'Stat', 'StatusTracker', 'Textarea',
+  'Timeline', 'Toast', 'ToolCall', 'Tooltip',
 ]
 
 const PROMPTS = [
@@ -42,12 +42,9 @@ const PROMPTS = [
 
 const P = 'font-body text-base text-[var(--color-text-primary)] max-w-3xl'
 
-function Command({ children }: { children: ReactNode }) {
-  return (
-    <pre className="whitespace-pre-wrap break-all font-mono text-sm text-[var(--color-text-primary)] bg-[var(--color-surface-sunken)] border border-[var(--color-border-hairline)] px-4 py-3 max-w-3xl">
-      <code>{children}</code>
-    </pre>
-  )
+/** A command to copy: the system's CodeBlock, named by its first line. */
+function Command({ children }: { children: string }) {
+  return <CodeBlock title="bash" label={children.split('\n')[0]} code={children} className="max-w-3xl" />
 }
 
 function Step({ title, children }: { title: string; children: ReactNode }) {
@@ -122,12 +119,10 @@ export function About() {
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {PROMPTS.map(prompt => (
-            <Card key={prompt.title}>
-              <CardBody className="flex flex-col gap-3">
-                <CardTitle level={3}>{prompt.title}</CardTitle>
-                <p className="font-body text-sm text-[var(--color-text-secondary)]">{prompt.text}</p>
-              </CardBody>
-            </Card>
+            <div key={prompt.title} className="flex min-w-0 flex-col gap-3">
+              <h3 className="font-display text-lg font-semibold">{prompt.title}</h3>
+              <CodeBlock code={prompt.text} label={`the prompt: ${prompt.title}`} title="Prompt" wrap lineNumbers={false} />
+            </div>
           ))}
         </div>
       </section>

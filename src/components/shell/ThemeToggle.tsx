@@ -30,6 +30,9 @@ export function ThemeToggle() {
   // qualify ("Dark, toggle button, pressed" says no more than "Dark" did). Naming the action
   // removes the ambiguity outright. The visible word is the destination theme and the accessible
   // name contains it verbatim, which is what SC 2.5.3 (label in name) requires of a visible label.
+  //
+  // `sm` (32px, `--component-control-height-sm`): every header control beside it -- the site
+  // search, the Design system link, the cart -- is the sm height, so the row is one height.
   return (
     <Button
       variant="secondary"

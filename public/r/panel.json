@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "panel",
+  "type": "registry:item",
+  "title": "Panel",
+  "description": "Panel. Best for: Framing content that has no title, body and footer structure: a feature tile, a demo area, or a tile that is one link.",
+  "dependencies": [
+    "radix-ui@^1.6.7",
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/panel/Panel.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/panel/Panel.tsx",
+      "content": "import type { HTMLAttributes, Ref } from 'react'\nimport { Slot } from 'radix-ui'\nimport { cn } from '../../../lib/cn'\n\nexport type PanelProps = HTMLAttributes<HTMLDivElement> & {\n  ref?: Ref<HTMLDivElement>\n  /** Inner spacing: none 0, sm 12px, md 20px, lg 32px. */\n  padding?: 'none' | 'sm' | 'md' | 'lg'\n  /** base: the page surface. raised: one step up (the default). signal: the brand wash, for the one panel that leads. */\n  tone?: 'base' | 'raised' | 'signal'\n  /** The crosshair marks at the corners. */\n  crosshair?: boolean\n  /** Cuts the bottom-right corner, with the border following the cut. */\n  cut?: boolean\n  /** Hover and focus states for a panel that is one link or button. Use with asChild. */\n  interactive?: boolean\n  /** Renders the single child element (an a, a router Link, a button) with the panel's classes. */\n  asChild?: boolean\n}\n\nconst PADDING = { none: 'p-0', sm: 'p-3', md: 'p-5', lg: 'p-8' } as const\n\n// The tone is set through `.panel`'s two variables, not bg-/border- utilities: `.panel` is\n// unlayered CSS and would outrank them (the same reason Card's docs say to set a border inline).\nconst TONE = {\n  base: '[--panel-bg:var(--color-surface-base)]',\n  raised: '[--panel-bg:var(--color-surface-raised)]',\n  signal: '[--panel-bg:var(--color-accent-signal-wash)] [--panel-border:var(--color-border-selection)]',\n} as const\n\nconst FOCUS = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]'\n\n/**\n * The system's framed surface: `.panel` as a component. Card is a Panel with a title, a body and\n * a footer; reach for Panel when the content has none of those (a feature tile, a demo frame, a\n * link tile).\n *\n * `cut` uses `.panel-cut`, not `.bevel-md`, so the crosshair and a focus outline outside the box\n * survive the clip, and `.bevel-edge` for the border along the diagonal (the bare diagonal was the\n * bug in the hand-rolled homepage tiles). See src/styles/elevation.css.\n */\nexport function Panel({\n  padding = 'md',\n  tone = 'raised',\n  crosshair = false,\n  cut = false,\n  interactive = false,\n  asChild = false,\n  className,\n  ref,\n  ...rest\n}: PanelProps) {\n  const Comp = asChild ? Slot.Root : 'div'\n  return (\n    <Comp\n      ref={ref}\n      className={cn(\n        'panel block',\n        PADDING[padding],\n        TONE[tone],\n        crosshair && 'crosshair',\n        cut && 'panel-cut bevel-edge',\n        interactive && cn('panel-interactive', FOCUS),\n        className\n      )}\n      {...rest}\n    />\n  )\n}\n"
+    }
+  ]
+}

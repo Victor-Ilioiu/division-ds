@@ -23,12 +23,12 @@ function OrdersStub() {
 
 function renderApp() {
   return render(
-    <MemoryRouter initialEntries={['/demo/account']}>
+    <MemoryRouter initialEntries={['/store/account']}>
       <SessionProvider>
         <Routes>
-          <Route path="/demo/account" element={<Overview />} />
-          <Route path="/demo/account/orders" element={<OrdersStub />} />
-          <Route path="/demo/sign-in" element={<SignInStub />} />
+          <Route path="/store/account" element={<Overview />} />
+          <Route path="/store/account/orders" element={<OrdersStub />} />
+          <Route path="/store/sign-in" element={<SignInStub />} />
         </Routes>
       </SessionProvider>
     </MemoryRouter>
@@ -107,8 +107,8 @@ describe('Overview', () => {
     expect(within(table).queryAllByRole('button')).toHaveLength(0)
   })
 
-  // Mutation: change the "View all orders" link's `to` from '/demo/account/orders' to
-  // '/demo/account' -> the Orders stub below never renders; the account page renders again instead.
+  // Mutation: change the "View all orders" link's `to` from '/store/account/orders' to
+  // '/store/account' -> the Orders stub below never renders; the account page renders again instead.
   it('links to the full orders list', async () => {
     signIn()
     renderApp()

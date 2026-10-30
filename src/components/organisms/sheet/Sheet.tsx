@@ -66,7 +66,7 @@ export function SheetContent({
           stretching the surface past the viewport. The title and close button sit outside it, so
           they stay put while only the body scrolls. pt-1 gives a focus ring on the body's first
           focusable child room to draw. */}
-      <div className="flex-1 min-h-0 overflow-y-auto pt-1 px-6 pb-6 font-body text-sm text-[var(--color-text-primary)]">
+      <div className="flex-1 min-h-0 overflow-y-auto pt-[max(0.25rem,var(--reticle-reach))] px-6 pb-6 font-body text-sm text-[var(--color-text-primary)]">
         {children}
       </div>
     </OverlayFrame>

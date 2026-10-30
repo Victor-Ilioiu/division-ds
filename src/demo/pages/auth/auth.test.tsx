@@ -59,12 +59,12 @@ function renderApp(path: string, { pendingEmail }: { pendingEmail?: string } = {
       <Toaster>
         <SessionProvider>
           <Routes>
-            <Route path="/demo/sign-in" element={<SignIn />} />
-            <Route path="/demo/sign-in/verify" element={<Verify />} />
-            <Route path="/demo/reset-password" element={<ResetPassword />} />
-            <Route path="/demo/create-account" element={<CreateAccount />} />
-            <Route path="/demo/shop" element={<Stub name="Shop" />} />
-            <Route path="/demo/onboarding" element={<Stub name="Onboarding" />} />
+            <Route path="/store/sign-in" element={<SignIn />} />
+            <Route path="/store/sign-in/verify" element={<Verify />} />
+            <Route path="/store/reset-password" element={<ResetPassword />} />
+            <Route path="/store/create-account" element={<CreateAccount />} />
+            <Route path="/store/shop" element={<Stub name="Shop" />} />
+            <Route path="/store/onboarding" element={<Stub name="Onboarding" />} />
           </Routes>
         </SessionProvider>
       </Toaster>
@@ -81,7 +81,7 @@ describe('SignIn', () => {
   // Mutation: drop `<PageHeading>Hexline account</PageHeading>` from SignIn.tsx -> the level-1
   // heading query finds nothing.
   it('reads as a page h1 above AuthForm’s own mode heading', () => {
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     expect(screen.getByRole('heading', { level: 1, name: 'Hexline account' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Sign in' })).toBeInTheDocument()
   })
@@ -89,7 +89,7 @@ describe('SignIn', () => {
   // Mutation: empty the Email field's label in AuthForm.tsx (`field('email', '', ...)`) -> a
   // real axe violation (`label`, WCAG 1.3.1/4.1.2).
   it('is axe clean', async () => {
-    const { container } = renderApp('/demo/sign-in')
+    const { container } = renderApp('/store/sign-in')
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
@@ -98,7 +98,7 @@ describe('SignIn', () => {
   // of showing the error.
   it('shows a wrong password as a field error, and never navigates', async () => {
     vi.mocked(signIn).mockResolvedValueOnce({ errors: { password: 'That password is not right.' } })
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     await userEvent.type(byLabel('Email'), 'rae@hexline.test')
     await userEvent.type(byLabel('Password'), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
@@ -112,7 +112,7 @@ describe('SignIn', () => {
   // code')` never appears; it redirects back to sign-in instead.
   it('moves a correct password on to the two-step code, with the address remembered', async () => {
     vi.mocked(signIn).mockResolvedValueOnce({ needsCode: true })
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     await userEvent.type(byLabel('Email'), 'rae@hexline.test')
     await userEvent.type(byLabel('Password'), 'hexline')
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
@@ -123,7 +123,7 @@ describe('SignIn', () => {
   // the generic alert text below never appears.
   it('lets an offline rejection propagate, so AuthForm shows the generic alert', async () => {
     vi.mocked(signIn).mockRejectedValueOnce(new ApiError('Network unavailable'))
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     await userEvent.type(byLabel('Email'), 'offline@hexline.test')
     await userEvent.type(byLabel('Password'), 'hexline')
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
@@ -134,11 +134,11 @@ describe('SignIn', () => {
   // Mutation: make SignIn's `handleModeChange` a no-op (`() => {}`) -> neither `findByRole`
   // below ever resolves.
   it('moves to reset password and to create account through the mode links', async () => {
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     await userEvent.click(screen.getByRole('button', { name: 'Forgot your password?' }))
     expect(await screen.findByRole('heading', { level: 2, name: 'Reset your password' })).toBeInTheDocument()
 
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     await userEvent.click(screen.getByRole('button', { name: 'No account yet? Create one' }))
     expect(await screen.findByRole('heading', { level: 2, name: 'Create an account' })).toBeInTheDocument()
   })
@@ -147,11 +147,11 @@ describe('SignIn', () => {
   // `<RouteNotice />` from SignIn.tsx) -> this notice never appears.
   it('shows a notice a redirect left in router state', () => {
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/demo/sign-in', state: { notice: 'Start by signing in.' } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/store/sign-in', state: { notice: 'Start by signing in.' } }]}>
         <Toaster>
           <SessionProvider>
             <Routes>
-              <Route path="/demo/sign-in" element={<SignIn />} />
+              <Route path="/store/sign-in" element={<SignIn />} />
             </Routes>
           </SessionProvider>
         </Toaster>
@@ -168,7 +168,7 @@ describe('SignIn', () => {
       'hexline-session',
       JSON.stringify({ user: { name: 'Rae', email: 'rae@hexline.test' }, pendingEmail: null })
     )
-    renderApp('/demo/sign-in')
+    renderApp('/store/sign-in')
     expect(await screen.findByRole('heading', { level: 1, name: 'Shop' })).toBeInTheDocument()
     expect(screen.getByText("You're already signed in.")).toBeInTheDocument()
   })
@@ -185,12 +185,12 @@ describe('SignIn', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in']}>
+        <MemoryRouter initialEntries={['/store/sign-in']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
+                <Route path="/store/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -223,12 +223,12 @@ describe('SignIn', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in']}>
+        <MemoryRouter initialEntries={['/store/sign-in']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
+                <Route path="/store/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -256,7 +256,7 @@ describe('SignIn', () => {
   // assertion can look right even with this page's own guard removed if `navigate` never reaches
   // a route the harness registered. `<Probe/>` reads the literal path.
   // Mutation: drop the `if (!mounted.current) return undefined` line in SignIn.tsx -> `pendingEmail`
-  // reads back as the typed address instead of null, and the path moves to `/demo/sign-in/verify`.
+  // reads back as the typed address instead of null, and the path moves to `/store/sign-in/verify`.
   it('drops a sign-in result that resolves after the page is gone, without setting pendingEmail', async () => {
     let resolveSignIn: (value: { needsCode: true }) => void = () => {}
     vi.mocked(signIn).mockImplementationOnce(() => new Promise(resolve => (resolveSignIn = resolve)))
@@ -264,14 +264,14 @@ describe('SignIn', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in']}>
+        <MemoryRouter initialEntries={['/store/sign-in']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Probe />
               <Routes>
-                <Route path="/demo/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
-                <Route path="/demo/sign-in/verify" element={<p>Verify</p>} />
+                <Route path="/store/sign-in" element={present ? <SignIn /> : <p>Left the page</p>} />
+                <Route path="/store/sign-in/verify" element={<p>Verify</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -296,7 +296,7 @@ describe('SignIn', () => {
     })
     const stored = JSON.parse(sessionStorage.getItem('hexline-session') ?? 'null')
     expect(stored?.pendingEmail ?? null).toBeNull()
-    expect(screen.getByTestId('path')).toHaveTextContent('/demo/sign-in')
+    expect(screen.getByTestId('path')).toHaveTextContent('/store/sign-in')
   })
 })
 
@@ -304,7 +304,7 @@ describe('Verify', () => {
   // Mutation: drop the `if (!email)` guard in Verify.tsx (render the form regardless) -> a
   // direct load renders "Enter your code" with nothing behind it instead of redirecting.
   it('bounces a direct load with no pending email back to sign-in, with a notice', async () => {
-    renderApp('/demo/sign-in/verify')
+    renderApp('/store/sign-in/verify')
     expect(await screen.findByRole('heading', { level: 2, name: 'Sign in' })).toBeInTheDocument()
     expect(screen.getByText('Start by signing in.')).toBeInTheDocument()
   })
@@ -312,7 +312,7 @@ describe('Verify', () => {
   // Mutation: empty the Code field's label in AuthForm.tsx (`field('code', '', ...)`) -> a real
   // axe violation (`label`, WCAG 1.3.1/4.1.2).
   it('is axe clean with a pending email', async () => {
-    const { container } = renderApp('/demo/sign-in/verify', { pendingEmail: 'rae@hexline.test' })
+    const { container } = renderApp('/store/sign-in/verify', { pendingEmail: 'rae@hexline.test' })
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
@@ -321,26 +321,26 @@ describe('Verify', () => {
   // mocked `verifyCode`, and this assertion, which reads that second argument, fails.
   it('sends the snapshotted email and the typed code to verifyCode', async () => {
     vi.mocked(verifyCode).mockResolvedValueOnce({ errors: { code: 'That code is not right. Check your app and try again.' } })
-    renderApp('/demo/sign-in/verify', { pendingEmail: 'rae@hexline.test' })
+    renderApp('/store/sign-in/verify', { pendingEmail: 'rae@hexline.test' })
     await userEvent.type(byLabel('Code'), '000000')
     await userEvent.click(screen.getByRole('button', { name: 'Verify' }))
     await screen.findAllByText('That code is not right. Check your app and try again.')
     expect(verifyCode).toHaveBeenCalledWith('rae@hexline.test', '000000')
   })
 
-  // Mutation: change the destination in Verify's onSubmit from `from ?? '/demo/shop'` to plain
-  // `/demo/shop` -> the Cart stub never renders; Shop does instead.
+  // Mutation: change the destination in Verify's onSubmit from `from ?? '/store/shop'` to plain
+  // `/store/shop` -> the Cart stub never renders; Shop does instead.
   it('signs in and returns to `from` when SignIn forwarded a same-app path', async () => {
     vi.mocked(verifyCode).mockResolvedValueOnce({ user: { name: 'Rae', email: 'rae@hexline.test' } })
     sessionStorage.setItem('hexline-session', JSON.stringify({ user: null, pendingEmail: 'rae@hexline.test' }))
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/demo/sign-in/verify', state: { from: '/demo/cart' } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/store/sign-in/verify', state: { from: '/store/cart' } }]}>
         <Toaster>
           <SessionProvider>
             <Routes>
-              <Route path="/demo/sign-in/verify" element={<Verify />} />
-              <Route path="/demo/shop" element={<Stub name="Shop" />} />
-              <Route path="/demo/cart" element={<Stub name="Cart" />} />
+              <Route path="/store/sign-in/verify" element={<Verify />} />
+              <Route path="/store/shop" element={<Stub name="Shop" />} />
+              <Route path="/store/cart" element={<Stub name="Cart" />} />
             </Routes>
           </SessionProvider>
         </Toaster>
@@ -356,18 +356,18 @@ describe('Verify', () => {
   // direct visit to sign-in, never bounced here by RequireSession) -- both fall back to the shop.
   // Mutation: drop the `safeReturnTo` validation from `returnToFrom`, trusting `from` as given ->
   // the Evil stub renders instead of Shop for the first case below.
-  it('lands on /demo/shop when there is no `from`, or an untrusted one', async () => {
+  it('lands on /store/shop when there is no `from`, or an untrusted one', async () => {
     vi.mocked(verifyCode)
       .mockResolvedValueOnce({ user: { name: 'Rae', email: 'rae@hexline.test' } })
       .mockResolvedValueOnce({ user: { name: 'Rae', email: 'rae@hexline.test' } })
     sessionStorage.setItem('hexline-session', JSON.stringify({ user: null, pendingEmail: 'rae@hexline.test' }))
     const { unmount } = render(
-      <MemoryRouter initialEntries={[{ pathname: '/demo/sign-in/verify', state: { from: 'https://evil.example' } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/store/sign-in/verify', state: { from: 'https://evil.example' } }]}>
         <Toaster>
           <SessionProvider>
             <Routes>
-              <Route path="/demo/sign-in/verify" element={<Verify />} />
-              <Route path="/demo/shop" element={<Stub name="Shop" />} />
+              <Route path="/store/sign-in/verify" element={<Verify />} />
+              <Route path="/store/shop" element={<Stub name="Shop" />} />
             </Routes>
           </SessionProvider>
         </Toaster>
@@ -379,7 +379,7 @@ describe('Verify', () => {
     unmount()
 
     sessionStorage.setItem('hexline-session', JSON.stringify({ user: null, pendingEmail: 'rae@hexline.test' }))
-    renderApp('/demo/sign-in/verify')
+    renderApp('/store/sign-in/verify')
     await userEvent.type(byLabel('Code'), '123456')
     await userEvent.click(screen.getByRole('button', { name: 'Verify' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Shop' })).toBeInTheDocument()
@@ -401,7 +401,7 @@ describe('Verify', () => {
       'hexline-session',
       JSON.stringify({ user: { name: 'Rae', email: 'rae@hexline.test' }, pendingEmail: 'rae@hexline.test' })
     )
-    renderApp('/demo/sign-in/verify')
+    renderApp('/store/sign-in/verify')
     expect(await screen.findByRole('heading', { level: 1, name: 'Shop' })).toBeInTheDocument()
     expect(screen.getByText("You're already signed in.")).toBeInTheDocument()
   })
@@ -417,12 +417,12 @@ describe('Verify', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in/verify']}>
+        <MemoryRouter initialEntries={['/store/sign-in/verify']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
+                <Route path="/store/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -454,12 +454,12 @@ describe('Verify', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in/verify']}>
+        <MemoryRouter initialEntries={['/store/sign-in/verify']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
+                <Route path="/store/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -482,7 +482,7 @@ describe('Verify', () => {
   // Same reasoning as SignIn's own stale-result test: two independent assertions, storage AND
   // the literal path, since neither alone proves the guard.
   // Mutation: drop the `if (!mounted.current) return undefined` line in Verify.tsx -> `user`
-  // reads back signed in instead of null, and the path moves to `/demo/shop`.
+  // reads back signed in instead of null, and the path moves to `/store/shop`.
   it('drops a verify result that resolves after the page is gone, without signing in', async () => {
     let resolveVerify: (value: { user: { name: string; email: string } }) => void = () => {}
     vi.mocked(verifyCode).mockImplementationOnce(() => new Promise(resolve => (resolveVerify = resolve)))
@@ -491,14 +491,14 @@ describe('Verify', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/sign-in/verify']}>
+        <MemoryRouter initialEntries={['/store/sign-in/verify']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Probe />
               <Routes>
-                <Route path="/demo/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
-                <Route path="/demo/shop" element={<p>Shop</p>} />
+                <Route path="/store/sign-in/verify" element={present ? <Verify /> : <p>Left the page</p>} />
+                <Route path="/store/shop" element={<p>Shop</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -517,7 +517,7 @@ describe('Verify', () => {
     })
     const stored = JSON.parse(sessionStorage.getItem('hexline-session') ?? 'null')
     expect(stored?.user ?? null).toBeNull()
-    expect(screen.getByTestId('path')).toHaveTextContent('/demo/sign-in/verify')
+    expect(screen.getByTestId('path')).toHaveTextContent('/store/sign-in/verify')
   })
 })
 
@@ -525,7 +525,7 @@ describe('ResetPassword', () => {
   // Mutation: empty the Email field's label in AuthForm.tsx (`field('email', '', ...)`) -> a
   // real axe violation (`label`, WCAG 1.3.1/4.1.2).
   it('is axe clean', async () => {
-    const { container } = renderApp('/demo/reset-password')
+    const { container } = renderApp('/store/reset-password')
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
@@ -534,7 +534,7 @@ describe('ResetPassword', () => {
   // `onSubmit` resolves without errors) never appears either.
   it('requests a reset and shows AuthForm’s own neutral confirmation', async () => {
     vi.mocked(requestPasswordReset).mockResolvedValueOnce(undefined)
-    renderApp('/demo/reset-password')
+    renderApp('/store/reset-password')
     await userEvent.type(byLabel('Email'), 'rae@hexline.test')
     await userEvent.click(screen.getByRole('button', { name: 'Send reset link' }))
     expect(
@@ -547,7 +547,7 @@ describe('ResetPassword', () => {
   // try/catch that swallows the rejection -> the generic alert text below never appears.
   it('lets an offline rejection propagate to AuthForm’s generic alert', async () => {
     vi.mocked(requestPasswordReset).mockRejectedValueOnce(new ApiError('Network unavailable'))
-    renderApp('/demo/reset-password')
+    renderApp('/store/reset-password')
     await userEvent.type(byLabel('Email'), 'offline@hexline.test')
     await userEvent.click(screen.getByRole('button', { name: 'Send reset link' }))
     // sr-only and visible duplicates of the same alert, both carrying the text.
@@ -557,7 +557,7 @@ describe('ResetPassword', () => {
   // Mutation: make ResetPassword's `handleModeChange` a no-op (`() => {}`) -> the `findByRole`
   // below never resolves.
   it('moves back to sign in through the mode link', async () => {
-    renderApp('/demo/reset-password')
+    renderApp('/store/reset-password')
     await userEvent.click(screen.getByRole('button', { name: 'Back to sign in' }))
     expect(await screen.findByRole('heading', { level: 2, name: 'Sign in' })).toBeInTheDocument()
   })
@@ -567,7 +567,7 @@ describe('CreateAccount', () => {
   // Mutation: empty the Email field's label in AuthForm.tsx (`field('email', '', ...)`) -> a
   // real axe violation (`label`, WCAG 1.3.1/4.1.2).
   it('is axe clean', async () => {
-    const { container } = renderApp('/demo/create-account')
+    const { container } = renderApp('/store/create-account')
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
@@ -576,7 +576,7 @@ describe('CreateAccount', () => {
   // onboarding instead of showing the error.
   it('shows a taken address as an email error', async () => {
     vi.mocked(createAccount).mockResolvedValueOnce({ errors: { email: 'That email is already registered.' } })
-    renderApp('/demo/create-account')
+    renderApp('/store/create-account')
     await userEvent.type(byLabel('Name'), 'Rae')
     await userEvent.type(byLabel('Email'), 'taken@hexline.test')
     await userEvent.type(byLabel('Password'), 'longenough')
@@ -585,11 +585,11 @@ describe('CreateAccount', () => {
     expect(await screen.findAllByText('That email is already registered.')).toHaveLength(2)
   })
 
-  // Mutation: change the destination in CreateAccount's onSubmit from `/demo/onboarding` to
-  // `/demo/shop` -> the Onboarding stub never renders.
+  // Mutation: change the destination in CreateAccount's onSubmit from `/store/onboarding` to
+  // `/store/shop` -> the Onboarding stub never renders.
   it('signs a fresh address straight in and moves on to onboarding', async () => {
     vi.mocked(createAccount).mockResolvedValueOnce({ user: { name: 'Rae', email: 'rae@hexline.test' } })
-    renderApp('/demo/create-account')
+    renderApp('/store/create-account')
     await userEvent.type(byLabel('Name'), 'Rae')
     await userEvent.type(byLabel('Email'), 'rae@hexline.test')
     await userEvent.type(byLabel('Password'), 'longenough')
@@ -601,7 +601,7 @@ describe('CreateAccount', () => {
   // swallows the rejection -> the generic alert text below never appears.
   it('lets an offline rejection propagate to AuthForm’s generic alert', async () => {
     vi.mocked(createAccount).mockRejectedValueOnce(new ApiError('Network unavailable'))
-    renderApp('/demo/create-account')
+    renderApp('/store/create-account')
     await userEvent.type(byLabel('Name'), 'Rae')
     await userEvent.type(byLabel('Email'), 'offline@hexline.test')
     await userEvent.type(byLabel('Password'), 'longenough')
@@ -619,7 +619,7 @@ describe('CreateAccount', () => {
       'hexline-session',
       JSON.stringify({ user: { name: 'Rae', email: 'rae@hexline.test' }, pendingEmail: null })
     )
-    renderApp('/demo/create-account')
+    renderApp('/store/create-account')
     expect(await screen.findByRole('heading', { level: 1, name: 'Shop' })).toBeInTheDocument()
     expect(screen.getByText("You're already signed in.")).toBeInTheDocument()
   })
@@ -634,12 +634,12 @@ describe('CreateAccount', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/create-account']}>
+        <MemoryRouter initialEntries={['/store/create-account']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
+                <Route path="/store/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -672,12 +672,12 @@ describe('CreateAccount', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/create-account']}>
+        <MemoryRouter initialEntries={['/store/create-account']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Routes>
-                <Route path="/demo/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
+                <Route path="/store/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -712,14 +712,14 @@ describe('CreateAccount', () => {
     function Harness() {
       const [present, setPresent] = useState(true)
       return (
-        <MemoryRouter initialEntries={['/demo/create-account']}>
+        <MemoryRouter initialEntries={['/store/create-account']}>
           <Toaster>
             <SessionProvider>
               <button onClick={() => setPresent(false)}>Leave the page</button>
               <Probe />
               <Routes>
-                <Route path="/demo/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
-                <Route path="/demo/onboarding" element={<p>Onboarding</p>} />
+                <Route path="/store/create-account" element={present ? <CreateAccount /> : <p>Left the page</p>} />
+                <Route path="/store/onboarding" element={<p>Onboarding</p>} />
               </Routes>
             </SessionProvider>
           </Toaster>
@@ -741,7 +741,7 @@ describe('CreateAccount', () => {
     const stored = JSON.parse(sessionStorage.getItem('hexline-session') ?? 'null')
     expect(stored?.user).toEqual({ name: 'Rae', email: 'rae@hexline.test' })
     // Never navigated: the path stays exactly where the person left it.
-    expect(screen.getByTestId('path')).toHaveTextContent('/demo/create-account')
+    expect(screen.getByTestId('path')).toHaveTextContent('/store/create-account')
     expect(await screen.findByText("Your account was created and you're signed in.")).toBeInTheDocument()
   })
 })

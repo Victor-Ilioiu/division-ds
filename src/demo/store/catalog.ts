@@ -57,7 +57,7 @@ type CatalogSource = Omit<CatalogProduct, 'href' | 'soldOut' | 'image'>
 function toEntry(source: CatalogSource): CatalogProduct {
   return {
     ...source,
-    href: `/demo/shop/${source.id}`,
+    href: `/store/shop/${source.id}`,
     soldOut: source.stock === 0,
     image: { src: publicPath(`/media/products/${source.id}.webp`), alt: '' },
   }

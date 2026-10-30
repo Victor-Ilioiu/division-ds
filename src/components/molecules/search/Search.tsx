@@ -112,7 +112,7 @@ export function Search({
             <X aria-hidden="true" className="w-3.5 h-3.5" />
           </IconButton>
         ) : shortcut ? (
-          <Kbd aria-hidden="true" className="mr-1">
+          <Kbd aria-hidden="true" size="sm" className="mr-1">
             {shortcut}
           </Kbd>
         ) : null}

@@ -25,7 +25,7 @@ function CartProbe() {
 
 function renderHome() {
   return render(
-    <MemoryRouter initialEntries={['/demo']}>
+    <MemoryRouter initialEntries={['/store']}>
       <Toaster>
         <CartProvider>
           <Home />
@@ -119,7 +119,7 @@ describe('Home', () => {
     it('replaces Assemble with a plain link to the kit', () => {
       renderHome()
       expect(screen.queryByRole('button', { name: HOME.hero.assemble })).not.toBeInTheDocument()
-      expect(within(hero()).getByRole('link', { name: HOME.hero.seeKit })).toHaveAttribute('href', '/demo/shop/kestrel-c-kit')
+      expect(within(hero()).getByRole('link', { name: HOME.hero.seeKit })).toHaveAttribute('href', '/store/shop/kestrel-c-kit')
     })
 
     it('does not tell anyone to drag a picture', () => {
@@ -178,7 +178,7 @@ describe('Home', () => {
       expect(names.map(name => name.textContent)).toEqual(topRatedReplicas().map(product => product.name))
       expect(within(section).getByRole('link', { name: HOME.replicas.action })).toHaveAttribute(
         'href',
-        '/demo/shop?category=replicas&sort=rating'
+        '/store/shop?category=replicas&sort=rating'
       )
     })
 
@@ -199,11 +199,11 @@ describe('Home', () => {
       categoryTiles().forEach((tile, index) => {
         expect(within(tiles[index]).getByRole('link', { name: tile.category.label })).toHaveAttribute(
           'href',
-          `/demo/shop?category=${tile.category.id}`
+          `/store/shop?category=${tile.category.id}`
         )
         expect(tiles[index]).toHaveTextContent(`${tile.count} products`)
       })
-      expect(within(section).getByRole('link', { name: HOME.categories.action })).toHaveAttribute('href', '/demo/shop')
+      expect(within(section).getByRole('link', { name: HOME.categories.action })).toHaveAttribute('href', '/store/shop')
     })
 
     it('shows the top-rated accessories in a carousel, under a link to both categories by rating', () => {
@@ -213,7 +213,7 @@ describe('Home', () => {
       expect(names).toEqual(topRatedAccessories().map(product => product.name))
       expect(screen.getByRole('link', { name: HOME.accessories.action })).toHaveAttribute(
         'href',
-        '/demo/shop?category=optics&category=parts&sort=rating'
+        '/store/shop?category=optics&category=parts&sort=rating'
       )
     })
 
@@ -231,7 +231,7 @@ describe('Home', () => {
         // interactive treatment. Mutation: pass `interactive` to these cards -> fails.
         expect(cards[index]).not.toHaveClass('card-interactive')
       })
-      expect(within(section).getByRole('link', { name: HOME.rules.action.label })).toHaveAttribute('href', '/demo/journal')
+      expect(within(section).getByRole('link', { name: HOME.rules.action.label })).toHaveAttribute('href', '/store/journal')
     })
 
     // The fourth card says what the store is and links to the case study. The study is not

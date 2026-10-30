@@ -14,18 +14,18 @@ function renderAt(path: string) {
 
 describe('NotFound', () => {
   it('names the page and the missing path', () => {
-    renderAt('/demo/nope')
+    renderAt('/store/nope')
     expect(screen.getByRole('heading', { level: 1, name: 'Page not found' })).toBeInTheDocument()
-    const code = screen.getByText('/demo/nope', { selector: 'code' })
+    const code = screen.getByText('/store/nope', { selector: 'code' })
     expect(code.tagName).toBe('CODE')
   })
   it('links back to the Hexline home and the docs', () => {
-    renderAt('/demo/nope')
-    expect(screen.getByRole('link', { name: 'Back to the Hexline home' })).toHaveAttribute('href', '/demo')
-    expect(screen.getByRole('link', { name: 'Open the design system docs' })).toHaveAttribute('href', '/')
+    renderAt('/store/nope')
+    expect(screen.getByRole('link', { name: 'Back to the Hexline home' })).toHaveAttribute('href', '/store')
+    expect(screen.getByRole('link', { name: 'Open the design system docs' })).toHaveAttribute('href', '/components')
   })
   it('is axe clean', async () => {
-    const { container } = renderAt('/demo/nope')
+    const { container } = renderAt('/store/nope')
     expect(await axeClean(container)).toHaveNoViolations()
   })
 })

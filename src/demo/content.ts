@@ -59,7 +59,7 @@ export const HOME = {
   rules: {
     title: 'House rules',
     description: 'What the store holds itself to, and what it is.',
-    action: { label: 'Read the field guides', href: '/demo/journal' },
+    action: { label: 'Read the field guides', href: '/store/journal' },
     /** `link` is optional: a rule that points somewhere says where, in `label`, and `note` is the
      *  sentence beside the link. Only the fourth has one. */
     items: [

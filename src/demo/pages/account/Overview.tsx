@@ -60,7 +60,7 @@ function OverviewBody() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-display font-semibold text-lg text-[var(--color-text-primary)]">Recent orders</h2>
-          <RouterLink to="/demo/account/orders" className={linkVariants()}>
+          <RouterLink to="/store/account/orders" className={linkVariants()}>
             View all orders
           </RouterLink>
         </div>

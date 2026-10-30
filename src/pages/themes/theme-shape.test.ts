@@ -5,6 +5,8 @@ describe('theme shape', () => {
   it('reads the offered radii and treats anything else as the cut', () => {
     expect(readShape('r0')).toBe(0)
     expect(readShape('r12')).toBe(12)
+    expect(readShape('r999')).toBe(999)
+    expect(readShape('r8')).toBeNull()
     expect(readShape(null)).toBeNull()
     expect(readShape('cut')).toBeNull()
     expect(readShape('r5')).toBeNull()

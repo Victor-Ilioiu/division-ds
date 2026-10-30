@@ -66,6 +66,40 @@ describe('Navbar', () => {
     expect(menu).toHaveFocus()
   })
 
+  it('opens a menu item as a dropdown of links, in place among the links', async () => {
+    const items = [...ITEMS, { label: 'Guides', menu: [{ label: 'Sizing', href: '#sizing', description: 'Fit charts' }, { label: 'Returns', href: '#returns' }] }]
+    render(<Store items={items} />)
+    const nav = screen.getByRole('navigation', { name: 'Store' })
+    const trigger = within(nav).getByRole('button', { name: 'Guides' })
+    expect(within(nav).getAllByRole('listitem').at(-1)).toContainElement(trigger)
+    await userEvent.click(trigger)
+    const menu = await screen.findByRole('menu')
+    const entries = within(menu).getAllByRole('menuitem')
+    expect(entries.map(entry => entry.getAttribute('href'))).toEqual(['#sizing', '#returns'])
+    expect(entries[0]).toHaveTextContent('Fit charts')
+    expect(await axeClean(document.body)).toHaveNoViolations()
+  })
+
+  it('lists a menu item as a labelled group of links in the sheet', async () => {
+    const items = [...ITEMS, { label: 'Guides', menu: [{ label: 'Sizing', href: '#sizing' }] }]
+    render(<Store items={items} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    const sheet = await screen.findByRole('dialog', { name: 'Menu' })
+    const group = within(sheet).getByRole('list', { name: 'Guides' })
+    await userEvent.click(within(group).getByRole('link', { name: 'Sizing' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  it('folds the links into the sheet below collapseBelow (2xl unless set)', () => {
+    const { container, rerender } = render(<Store />)
+    expect(container.querySelector('nav')).toHaveClass('@2xl:block')
+    rerender(<Store collapseBelow="4xl" />)
+    const nav = container.querySelector('nav')!
+    expect(nav).toHaveClass('hidden', '@4xl:block')
+    expect(nav).not.toHaveClass('@2xl:block')
+    expect(screen.getByRole('button', { name: 'Menu' }).closest('.\\@4xl\\:hidden')).not.toBeNull()
+  })
+
   it('forwards a ref to the header', () => {
     const ref = createRef<HTMLElement>()
     const { container } = render(<Store ref={ref} />)

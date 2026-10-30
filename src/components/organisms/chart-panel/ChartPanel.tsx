@@ -113,6 +113,9 @@ const SERIES_DASH = [undefined, '6 3'] as const
 /** The area gradient's top opacity per series: the second series fills fainter, so where the two
  *  areas overlap the first still reads as the one in front. */
 const AREA_OPACITY = [0.4, 0.22] as const
+/** Under a line the gradient starts fainter still and is gone by 85% of the way down: a tint
+ *  that says "area", never a fill competing with the line. */
+const LINE_AREA_OPACITY = [0.16, 0.09] as const
 const TICK = { fill: 'var(--color-text-secondary)', fontSize: 12, fontFamily: 'var(--font-mono)' }
 const NUMBER = new Intl.NumberFormat('en-IE')
 const formatNumber = (value: number) => NUMBER.format(value)
@@ -413,8 +416,8 @@ export function ChartPanel<Row extends Record<string, string | number>>({
           <defs>
             {series.map((_, index) => (
               <linearGradient key={index} id={`${svgId}-area-${index}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={SERIES_COLOURS[index]} stopOpacity={AREA_OPACITY[index]} />
-                <stop offset="100%" stopColor={SERIES_COLOURS[index]} stopOpacity={0} />
+                <stop offset="0%" stopColor={SERIES_COLOURS[index]} stopOpacity={LINE_AREA_OPACITY[index]} />
+                <stop offset="85%" stopColor={SERIES_COLOURS[index]} stopOpacity={0} />
               </linearGradient>
             ))}
           </defs>

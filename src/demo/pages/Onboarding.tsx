@@ -117,7 +117,7 @@ export function Onboarding() {
   }, [step])
 
   if (!user) {
-    return <Navigate to="/demo/create-account" replace state={{ notice: 'Create an account first.' }} />
+    return <Navigate to="/store/create-account" replace state={{ notice: 'Create an account first.' }} />
   }
 
   const fieldsFor = (at: number): readonly Field[] => (at === 0 ? ['activities'] : at === 1 ? ['size'] : [])
@@ -153,7 +153,7 @@ export function Onboarding() {
       await saveOnboarding(user.email, prefs)
       if (!mounted.current) return
       toast({ title: 'Your account is set up.' })
-      navigate('/demo/shop')
+      navigate('/store/shop')
     } catch {
       if (!mounted.current) {
         // Never dropped silently: the page isn't there anymore to show the retryable alert, so

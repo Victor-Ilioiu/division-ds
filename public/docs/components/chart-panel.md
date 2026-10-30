@@ -59,20 +59,26 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 type Week = { week: string; online: number; store: number }
 
 const WEEKS: Week[] = [
-  { week: 'W1', online: 120, store: 160 },
-  { week: 'W2', online: 131, store: 158 },
-  { week: 'W3', online: 142, store: 163 },
-  { week: 'W4', online: 150, store: 155 },
-  { week: 'W5', online: 171, store: 162 },
-  { week: 'W6', online: 188, store: 159 },
-  { week: 'W7', online: 197, store: 166 },
-  { week: 'W8', online: 214, store: 161 },
+  { week: 'W1', online: 118, store: 150 },
+  { week: 'W2', online: 149, store: 172 },
+  { week: 'W3', online: 168, store: 158 },
+  { week: 'W4', online: 141, store: 131 },
+  { week: 'W5', online: 126, store: 128 },
+  { week: 'W6', online: 174, store: 150 },
+  { week: 'W7', online: 231, store: 141 },
+  { week: 'W8', online: 183, store: 122 },
+  { week: 'W9', online: 139, store: 149 },
+  { week: 'W10', online: 162, store: 185 },
+  { week: 'W11', online: 196, store: 163 },
+  { week: 'W12', online: 170, store: 140 },
 ]
 
 <ChartPanel<Week>
   title="Weekly orders"
-  summary="Online orders rose from 120 to 214 over eight weeks and passed in-store orders in week 5."
+  summary="Online orders peaked three times in twelve weeks, highest at 231 in week 7; in-store orders peaked highest at 185 in week 10."
   kind="line"
+  area
+  curve="smooth"
   data={WEEKS}
   xKey="week"
   xLabel="Week"
@@ -116,17 +122,17 @@ type Day = { day: string; visits: number; orders: number }
 
 const DAYS: Day[] = [
   { day: 'Mon', visits: 1840, orders: 61 },
-  { day: 'Tue', visits: 2210, orders: 74 },
-  { day: 'Wed', visits: 1960, orders: 58 },
-  { day: 'Thu', visits: 2650, orders: 92 },
-  { day: 'Fri', visits: 3120, orders: 118 },
+  { day: 'Tue', visits: 2960, orders: 104 },
+  { day: 'Wed', visits: 2210, orders: 74 },
+  { day: 'Thu', visits: 1720, orders: 55 },
+  { day: 'Fri', visits: 2650, orders: 92 },
   { day: 'Sat', visits: 3890, orders: 141 },
-  { day: 'Sun', visits: 3370, orders: 126 },
+  { day: 'Sun', visits: 3120, orders: 118 },
 ]
 
 <ChartPanel<Day>
   title="Visits this week"
-  summary="Visits climbed from 1,840 on Monday to a Saturday peak of 3,890."
+  summary="Visits peaked on Tuesday at 2,960, fell to a Thursday low of 1,720, then peaked higher on Saturday at 3,890."
   kind="line"
   area
   curve="smooth"
@@ -134,7 +140,7 @@ const DAYS: Day[] = [
   xKey="day"
   xLabel="Day"
   series={[{ key: 'visits', label: 'Visits' }]}
-  headline="19,040"
+  headline="18,390"
   headingLevel={4}
 />
 ```
@@ -145,19 +151,23 @@ const DAYS: Day[] = [
 type Week = { week: string; online: number; store: number }
 
 const WEEKS: Week[] = [
-  { week: 'W1', online: 120, store: 160 },
-  { week: 'W2', online: 131, store: 158 },
-  { week: 'W3', online: 142, store: 163 },
-  { week: 'W4', online: 150, store: 155 },
-  { week: 'W5', online: 171, store: 162 },
-  { week: 'W6', online: 188, store: 159 },
-  { week: 'W7', online: 197, store: 166 },
-  { week: 'W8', online: 214, store: 161 },
+  { week: 'W1', online: 118, store: 150 },
+  { week: 'W2', online: 149, store: 172 },
+  { week: 'W3', online: 168, store: 158 },
+  { week: 'W4', online: 141, store: 131 },
+  { week: 'W5', online: 126, store: 128 },
+  { week: 'W6', online: 174, store: 150 },
+  { week: 'W7', online: 231, store: 141 },
+  { week: 'W8', online: 183, store: 122 },
+  { week: 'W9', online: 139, store: 149 },
+  { week: 'W10', online: 162, store: 185 },
+  { week: 'W11', online: 196, store: 163 },
+  { week: 'W12', online: 170, store: 140 },
 ]
 
 <ChartPanel<Week>
   title="Weekly orders, gridless"
-  summary="Online orders rose from 120 to 214 over eight weeks and passed in-store orders in week 5."
+  summary="Online orders peaked three times in twelve weeks, highest at 231 in week 7; in-store orders peaked highest at 185 in week 10."
   kind="line"
   area
   curve="smooth"
@@ -206,30 +216,34 @@ type Week = { week: string; online: number; store: number }
 type Day = { day: string; visits: number; orders: number }
 
 const WEEKS: Week[] = [
-  { week: 'W1', online: 120, store: 160 },
-  { week: 'W2', online: 131, store: 158 },
-  { week: 'W3', online: 142, store: 163 },
-  { week: 'W4', online: 150, store: 155 },
-  { week: 'W5', online: 171, store: 162 },
-  { week: 'W6', online: 188, store: 159 },
-  { week: 'W7', online: 197, store: 166 },
-  { week: 'W8', online: 214, store: 161 },
+  { week: 'W1', online: 118, store: 150 },
+  { week: 'W2', online: 149, store: 172 },
+  { week: 'W3', online: 168, store: 158 },
+  { week: 'W4', online: 141, store: 131 },
+  { week: 'W5', online: 126, store: 128 },
+  { week: 'W6', online: 174, store: 150 },
+  { week: 'W7', online: 231, store: 141 },
+  { week: 'W8', online: 183, store: 122 },
+  { week: 'W9', online: 139, store: 149 },
+  { week: 'W10', online: 162, store: 185 },
+  { week: 'W11', online: 196, store: 163 },
+  { week: 'W12', online: 170, store: 140 },
 ]
 
 const DAYS: Day[] = [
   { day: 'Mon', visits: 1840, orders: 61 },
-  { day: 'Tue', visits: 2210, orders: 74 },
-  { day: 'Wed', visits: 1960, orders: 58 },
-  { day: 'Thu', visits: 2650, orders: 92 },
-  { day: 'Fri', visits: 3120, orders: 118 },
+  { day: 'Tue', visits: 2960, orders: 104 },
+  { day: 'Wed', visits: 2210, orders: 74 },
+  { day: 'Thu', visits: 1720, orders: 55 },
+  { day: 'Fri', visits: 2650, orders: 92 },
   { day: 'Sat', visits: 3890, orders: 141 },
-  { day: 'Sun', visits: 3370, orders: 126 },
+  { day: 'Sun', visits: 3120, orders: 118 },
 ]
 
 <ChartPanel<Day>
   title="Visits"
-  headline="19,040"
-  summary="Up every day but Wednesday and Sunday."
+  headline="18,390"
+  summary="Two peaks: Tuesday, then a higher Saturday."
   kind="line"
   area
   curve="smooth"
@@ -254,9 +268,10 @@ const DAYS: Day[] = [
 />
 <ChartPanel<Week>
   title="Online orders"
-  headline="214"
-  summary="Eight weeks of growth, from 120 a week."
+  headline="170"
+  summary="Three peaks in twelve weeks; the highest, 231, in week 7."
   kind="line"
+  area
   curve="smooth"
   size="sm"
   data={WEEKS}

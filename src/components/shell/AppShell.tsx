@@ -1,8 +1,7 @@
 import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Sidebar } from './Sidebar'
-import { ThemeToggle } from './ThemeToggle'
-import { DocsSearch } from '../../search/DocsSearch'
+import { SiteHeader } from './SiteHeader'
+import { DocsNav, Sidebar } from './Sidebar'
 import { Spinner } from '../atoms/spinner/Spinner'
 import { TooltipProvider } from '../atoms/tooltip/Tooltip'
 import { Toaster } from '../molecules/toast/Toast'
@@ -14,7 +13,7 @@ export function AppShell({ title = 'Division DS' }: { title?: string } = {}) {
   // load renders settled, every sidebar click after it animates in (see `.anim-route-in`).
   const navigated = location.key !== 'default'
   // The shell that renders owns its own title. No dependency array: any AppShell render is a
-  // docs route, and this needs to win back the title unconditionally after a /demo visit has
+  // docs route, and this needs to win back the title unconditionally after a /store visit has
   // changed it, on every path this shell renders -- including a trailing-slash docs URL, which a
   // path-keyed check would have missed, and including the docs 404's own title (`title` here,
   // passed by the route that renders `DocsNotFound`) once a real page's render wins it back.
@@ -29,25 +28,15 @@ export function AppShell({ title = 'Division DS' }: { title?: string } = {}) {
           <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:bg-[var(--color-accent-signal-fill)] focus:text-[var(--color-accent-signal-ink)] focus:px-3 focus:py-2" href="#main">
             Skip to content
           </a>
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 px-4 md:px-6 border-b border-[var(--color-border-hairline)] bg-[var(--color-surface-base)]">
-            {/* The wordmark sat at 14px semibold, the same step as the old section headings and
-                barely above the 12px sidebar. It is the only thing in the top bar and it names the
-                product, so it takes weight and tracking rather than colour: the accent is reserved
-                for selection and state, and a tinted wordmark would be decoration. */}
-            <span className="font-display font-bold uppercase tracking-[0.14em] text-base leading-none">
-              Division DS
-            </span>
-            <div className="flex items-center gap-2">
-              <DocsSearch />
-              <ThemeToggle />
-            </div>
-          </header>
-          {/* Column on a phone, row from md up — the sidebar switches to a disclosure below that
-              breakpoint (see Sidebar.tsx). `min-w-0` on <main> is not cosmetic: a flex item
+          {/* The site header, shared with the homepage (SiteHeader). Below the sidebar's
+              breakpoint its menu sheet carries the docs nav too. */}
+          <SiteHeader sheetExtra={<DocsNav />} />
+          {/* Column on a phone, row from md up — below that breakpoint the sidebar is not drawn
+              and the nav lives in the top bar's menu sheet (see Sidebar.tsx). `min-w-0` on <main> is not cosmetic: a flex item
               defaults to `min-width: auto`, so wide content (a docs table, a long type signature)
               refuses to shrink and overflows the page horizontally no matter what the sidebar
               does. Both halves of the 320px reflow failure needed fixing, not just the sidebar. */}
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col min-[42rem]:flex-row">
             <Sidebar />
             <main id="main" tabIndex={-1} className="flex-1 min-w-0 p-4 md:px-10 md:py-12">
               {/* Keyed on the pathname, so only this view remounts on a route change -- and so its

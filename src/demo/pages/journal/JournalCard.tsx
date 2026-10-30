@@ -35,7 +35,7 @@ export function JournalCard({
       <CardBody className="flex flex-col gap-3">
         <CardTitle level={headingLevel} className={compact ? 'text-base' : 'text-lg'}>
           <RouterLink
-            to={`/demo/journal/${post.slug}`}
+            to={`/store/journal/${post.slug}`}
             className={cn(linkVariants({ tone: 'quiet' }), STRETCHED, 'rounded-none')}
           >
             {post.title}

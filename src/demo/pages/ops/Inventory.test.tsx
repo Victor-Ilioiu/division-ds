@@ -11,13 +11,13 @@ import { Inventory } from './Inventory'
 
 const TOTAL = CATALOG.length
 
-function renderInventory(path = '/demo/ops/inventory') {
+function renderInventory(path = '/store/ops/inventory') {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <TooltipProvider>
         <Toaster>
           <Routes>
-            <Route path="/demo/ops/inventory" element={<Inventory />} />
+            <Route path="/store/ops/inventory" element={<Inventory />} />
           </Routes>
         </Toaster>
       </TooltipProvider>
@@ -57,7 +57,7 @@ describe('Ops inventory', () => {
   })
 
   it('starts filtered to a status from the URL', () => {
-    renderInventory('/demo/ops/inventory?status=low')
+    renderInventory('/store/ops/inventory?status=low')
     expect(screen.getByText(/^\d+ of \d+ items match$/)).toBeInTheDocument()
     for (const cell of within(table()).getAllByText('Low stock')) expect(cell).toBeInTheDocument()
     expect(within(table()).queryByText('In stock')).toBeNull()

@@ -19,7 +19,7 @@ function Boom({ throwNow, message = 'boom' }: { throwNow: boolean; message?: str
 // `onCaughtError` exists for, at the real root.
 function renderBoundary(
   children: React.ReactNode,
-  { onRetry = () => {}, resetKey = '/demo' }: { onRetry?: () => void; resetKey?: string } = {}
+  { onRetry = () => {}, resetKey = '/store' }: { onRetry?: () => void; resetKey?: string } = {}
 ) {
   return render(
     <MemoryRouter>
@@ -101,11 +101,11 @@ describe('DemoErrorBoundary', () => {
   // "All good" (the new child, mounted once the parent's `resetKey` prop changes without ever
   // remounting this boundary itself) never appears; the crashed heading stays in the DOM instead.
   it('clears its own caught error when resetKey changes, without remounting', async () => {
-    const { rerender } = renderBoundary(<Boom throwNow />, { resetKey: '/demo/shop' })
+    const { rerender } = renderBoundary(<Boom throwNow />, { resetKey: '/store/shop' })
     await screen.findByRole('heading', { level: 1, name: 'Something went wrong' })
     rerender(
       <MemoryRouter>
-        <DemoErrorBoundary onRetry={() => {}} resetKey="/demo">
+        <DemoErrorBoundary onRetry={() => {}} resetKey="/store">
           <Boom throwNow={false} />
         </DemoErrorBoundary>
       </MemoryRouter>

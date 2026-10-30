@@ -113,7 +113,7 @@ function CategoryTileCard({ tile }: { tile: CategoryTile }) {
 }
 
 /**
- * The `/demo` homepage: the hero (`HomeHero.tsx`: the kit offer over the three.js scene, or its
+ * The `/store` homepage: the hero (`HomeHero.tsx`: the kit offer over the three.js scene, or its
  * still), then five sections, each opened by a `SectionHeading`: a grid of the top-rated replicas,
  * a slider of the other offers, the categories, a slider of the top-rated accessories and the
  * house rules as four cards (the fourth says what this store is). The Footer follows, from

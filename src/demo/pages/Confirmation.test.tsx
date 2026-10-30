@@ -15,7 +15,7 @@ const ORDER = {
 
 function renderWithState(state?: unknown) {
   return render(
-    <MemoryRouter initialEntries={[{ pathname: '/demo/checkout/confirmation', state }]}>
+    <MemoryRouter initialEntries={[{ pathname: '/store/checkout/confirmation', state }]}>
       <Confirmation />
     </MemoryRouter>
   )
@@ -40,7 +40,7 @@ describe('Confirmation', () => {
     expect(screen.getByText('Delivery')).toBeInTheDocument()
     expect(screen.getByText('€12.00')).toBeInTheDocument()
     expect(screen.getByText('€81.00')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/demo/shop')
+    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/store/shop')
   })
 
   // Standard delivery is free, and this page's own figure should read the way Checkout's own
@@ -60,7 +60,7 @@ describe('Confirmation', () => {
     renderWithState(undefined)
     expect(screen.getByRole('heading', { level: 1, name: 'No recent order' })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { level: 1, name: 'Order placed' })).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/demo/shop')
+    expect(screen.getByRole('link', { name: 'Back to the shop' })).toHaveAttribute('href', '/store/shop')
   })
 
   // Mutation: change `orderFrom` to accept `state.order` with no shape check at all (drop every

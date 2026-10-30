@@ -11,7 +11,7 @@ import { cn } from '../../../lib/cn'
 // primitive stop for every tone.
 //
 // EXCEPT signal, by Victor's decision on 2026-09-22: it paints `accent.signal.indicator` so the bar is
-// the same orange as Slider's range in both themes. In light theme that measures 2.15:1 on the
+// the same orange as Slider's range in both themes. In light theme that measures 2.80:1 on the
 // track, BELOW SC 1.4.11's 3:1, and this was accepted knowingly over two passing alternatives (a
 // dark light-theme track, or keeping the darker `.text` step). The contrast gate records it as a
 // named exception rather than measuring a token this file no longer reads. A caller who needs

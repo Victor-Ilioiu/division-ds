@@ -1,11 +1,9 @@
-import { useState, type ReactNode } from 'react'
-import { Check, Copy } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { PageHeader } from '../../components/docs/PageChrome'
-import { IconButton } from '../../components/atoms/icon-button/IconButton'
+import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Link } from '../../components/atoms/link/Link'
 import { SectionHeading } from '../../components/molecules/section-heading/SectionHeading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/molecules/tabs/Tabs'
-import { useToast } from '../../components/molecules/toast/Toast'
 import { REGISTRY, REPO, REPO_SLUG, SKILL_INSTALL } from '../../links'
 
 const FONTS =
@@ -18,39 +16,6 @@ const APP_ROOT = `<TooltipProvider>
     </div>
   </Toaster>
 </TooltipProvider>`
-
-/** A command in a box, with a button that copies it. The copy is confirmed twice: the icon turns
- *  into a tick, and a toast says so for anyone who cannot see the icon change. */
-/** Copies `text` and confirms with a toast; `copied` flips back after a moment. */
-export function useCopy(text: string, label: string) {
-  const { toast } = useToast()
-  const [copied, setCopied] = useState(false)
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      toast({ title: `Copied: ${label}` })
-      window.setTimeout(() => setCopied(false), 1600)
-    } catch {
-      toast({ tone: 'warning', title: 'Copying is blocked here. Select the text and copy it yourself.' })
-    }
-  }
-  return { copied, copy }
-}
-
-export function CopyCommand({ command, label }: { command: string; label: string }) {
-  const { copied, copy } = useCopy(command, label)
-  return (
-    <div className="flex max-w-3xl items-start gap-2 border border-[var(--color-border-hairline)] bg-[var(--color-surface-sunken)] py-2 pl-4 pr-2">
-      <pre className="min-w-0 flex-1 whitespace-pre-wrap break-all py-1 font-mono text-sm text-[var(--color-text-primary)]">
-        <code>{command}</code>
-      </pre>
-      <IconButton label={`Copy ${label}`} variant="ghost" size="sm" onClick={copy}>
-        {copied ? <Check /> : <Copy />}
-      </IconButton>
-    </div>
-  )
-}
 
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
   return (
@@ -153,7 +118,7 @@ export function InstallGuideline() {
                 assistants on your computer should get it. Add <code className="font-mono text-sm">-g</code> to
                 install it for every project instead of this one.
               </p>
-              <CopyCommand label="the skill install command" command={SKILL_INSTALL} />
+              <CodeBlock title="bash" className="max-w-3xl" label="the skill install command" code={SKILL_INSTALL} />
               <p className={prose}>
                 An AI assistant or a script cannot answer its questions: add{' '}
                 <code className="font-mono text-sm">-y</code> to skip them, or{' '}
@@ -162,8 +127,8 @@ export function InstallGuideline() {
             </TabsContent>
             <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
               <p className={prose}>Type these two lines into Claude Code, one after the other.</p>
-              <CopyCommand label="the add marketplace command" command={`/plugin marketplace add ${REPO_SLUG}`} />
-              <CopyCommand label="the plugin install command" command="/plugin install division-ds@division-ds" />
+              <CodeBlock title="Claude Code" className="max-w-3xl" label="the add marketplace command" code={`/plugin marketplace add ${REPO_SLUG}`} />
+              <CodeBlock title="Claude Code" className="max-w-3xl" label="the plugin install command" code="/plugin install division-ds@division-ds" />
             </TabsContent>
             <TabsContent value="manual" className="flex flex-col gap-4 pt-6">
               <p className={prose}>
@@ -192,23 +157,23 @@ export function InstallGuideline() {
                 <Link href={`${REGISTRY}/registry.json`}>registry index</Link> lists all 67. No{' '}
                 <code className="font-mono text-sm">components.json</code> is needed.
               </p>
-              <CopyCommand label="the add Button command" command={`npx shadcn@latest add ${REGISTRY}/button.json`} />
+              <CodeBlock title="bash" className="max-w-3xl" label="the add Button command" code={`npx shadcn@latest add ${REGISTRY}/button.json`} />
               <p className={prose}>Or every component at once:</p>
-              <CopyCommand label="the add everything command" command={`npx shadcn@latest add ${REGISTRY}/division-ds-all.json`} />
+              <CodeBlock title="bash" className="max-w-3xl" label="the add everything command" code={`npx shadcn@latest add ${REGISTRY}/division-ds-all.json`} />
             </Step>
             <Step n={2} title="Import the styles, once">
               <p className={prose}>
                 In your main CSS file, on the line after <code className="font-mono text-sm">@import &quot;tailwindcss&quot;;</code>.
                 Adjust the path if that file is not in <code className="font-mono text-sm">src/</code>.
               </p>
-              <CopyCommand label="the styles import" command={'@import "./division-ds/styles/division-ds.css";'} />
+              <CodeBlock title="css" className="max-w-3xl" label="the styles import" code={'@import "./division-ds/styles/division-ds.css";'} />
             </Step>
             <Step n={3} title="Load the typefaces, once">
               <p className={prose}>
                 In the <code className="font-mono text-sm">&lt;head&gt;</code> of your{' '}
                 <code className="font-mono text-sm">index.html</code>. Without them the text falls back to a system font.
               </p>
-              <CopyCommand label="the font link" command={FONTS} />
+              <CodeBlock title="html" className="max-w-3xl" label="the font link" code={FONTS} />
             </Step>
             <Step n={4} title="Give your app a root, once">
               <p className={prose}>
@@ -219,7 +184,7 @@ export function InstallGuideline() {
                 <code className="font-mono text-sm">Toaster</code> from their files under{' '}
                 <code className="font-mono text-sm">src/division-ds/components/</code>.
               </p>
-              <CopyCommand label="the app root" command={APP_ROOT} />
+              <CodeBlock title="tsx" className="max-w-3xl" label="the app root" code={APP_ROOT} />
             </Step>
           </ol>
           <p className={prose}>
@@ -239,7 +204,7 @@ export function InstallGuideline() {
             title="Check your screens"
             description="Run it from your project before you call a screen done. It finds a raw colour, a token name that does not exist, two buttons with no space between them, a prop the component does not take and a value it does not accept, and says what to write instead. You need Node.js 22 or newer."
           />
-          <CopyCommand label="the check command" command="npx division-ds check src" />
+          <CodeBlock title="bash" className="max-w-3xl" label="the check command" code="npx division-ds check src" />
           <p className={prose}>
             It reads the code, not the running page. How the screen behaves is still yours to try in a browser.
           </p>
@@ -260,14 +225,14 @@ export function InstallGuideline() {
             </TabsList>
             <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
               <p className={prose}>Run this once in a terminal. It is ready the next time you start Claude Code.</p>
-              <CopyCommand label="the MCP add command" command="claude mcp add division-ds -- npx -y division-ds@0.3.1 mcp" />
+              <CodeBlock title="bash" className="max-w-3xl" label="the MCP add command" code="claude mcp add division-ds -- npx -y division-ds@0.3.1 mcp" />
             </TabsContent>
             <TabsContent value="other" className="flex flex-col gap-4 pt-6">
               <p className={prose}>
                 Add this to your assistant&apos;s MCP settings. For Cursor that is{' '}
                 <code className="font-mono text-sm">.cursor/mcp.json</code> in your project.
               </p>
-              <CopyCommand label="the MCP settings" command={MCP_CONFIG} />
+              <CodeBlock title="json" className="max-w-3xl" label="the MCP settings" code={MCP_CONFIG} />
             </TabsContent>
           </Tabs>
           <p className={prose}>The tools it gets:</p>
@@ -290,15 +255,15 @@ export function InstallGuideline() {
           />
           <ol className="flex flex-col gap-8">
             <Step n={1} title="Copy the repository and install it">
-              <CopyCommand label="the clone and install commands" command={`git clone ${REPO}.git\ncd division-ds\nnpm install`} />
+              <CodeBlock title="bash" className="max-w-3xl" label="the clone and install commands" code={`git clone ${REPO}.git\ncd division-ds\nnpm install`} />
             </Step>
             <Step n={2} title="Start it">
-              <p className={prose}>Open the address it prints. The demos are at /demo, /crm and /console.</p>
-              <CopyCommand label="the start command" command="npm run dev" />
+              <p className={prose}>Open the address it prints. The demos are at /store, /crm and /console.</p>
+              <CodeBlock title="bash" className="max-w-3xl" label="the start command" code="npm run dev" />
             </Step>
             <Step n={3} title="Check everything">
               <p className={prose}>Types, every build gate and the unit tests, in one command.</p>
-              <CopyCommand label="the check command" command="npm run verify" />
+              <CodeBlock title="bash" className="max-w-3xl" label="the check command" code="npm run verify" />
             </Step>
           </ol>
         </section>

@@ -80,5 +80,5 @@ export function categoryTiles(): CategoryTile[] {
  */
 export function shopHref(filters: Partial<Pick<Filters, 'categories' | 'sort'>> = {}): string {
   const query = toParams({ q: '', categories: [], max: null, inStock: false, sort: 'featured', page: 1, ...filters }).toString()
-  return query ? `/demo/shop?${query}` : '/demo/shop'
+  return query ? `/store/shop?${query}` : '/store/shop'
 }

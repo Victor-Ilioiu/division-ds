@@ -27,9 +27,9 @@ describe('DocsNotFound', () => {
   // "/components/button" to "/components/badge") -> the href assertion below fails.
   it('links to the design system overview, a real component page, and the Hexline demo store', () => {
     renderAt('/components/nope')
-    expect(screen.getByRole('link', { name: 'Design system overview' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'All components' })).toHaveAttribute('href', '/components')
     expect(screen.getByRole('link', { name: 'Components: Button' })).toHaveAttribute('href', '/components/button')
-    expect(screen.getByRole('link', { name: 'The Hexline demo store' })).toHaveAttribute('href', '/demo')
+    expect(screen.getByRole('link', { name: 'The Hexline demo store' })).toHaveAttribute('href', '/store')
   })
 
   it('is axe clean', async () => {

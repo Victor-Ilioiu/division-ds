@@ -6,13 +6,13 @@ import { axeClean } from '../../../test/axe'
 import { SessionProvider } from '../../store/session'
 import { Orders } from './Orders'
 
-function renderApp(initialPath = '/demo/account/orders') {
+function renderApp(initialPath = '/store/account/orders') {
   return render(
     <MemoryRouter initialEntries={[initialPath]}>
       <SessionProvider>
         <Routes>
-          <Route path="/demo/account/orders" element={<Orders />} />
-          <Route path="/demo/sign-in" element={<h1>Hexline account</h1>} />
+          <Route path="/store/account/orders" element={<Orders />} />
+          <Route path="/store/sign-in" element={<h1>Hexline account</h1>} />
         </Routes>
       </SessionProvider>
     </MemoryRouter>
@@ -54,7 +54,7 @@ describe('Orders', () => {
   // incidentally already on page 1.
   it('filters by status, resetting to page 1', async () => {
     signIn()
-    renderApp('/demo/account/orders?page=3')
+    renderApp('/store/account/orders?page=3')
     expect(screen.getByRole('button', { name: 'Page 3' })).toHaveAttribute('aria-current', 'page')
     await userEvent.click(screen.getByRole('combobox', { name: 'Status' }))
     await userEvent.click(screen.getByRole('option', { name: 'Delivered' }))
@@ -99,7 +99,7 @@ describe('Orders', () => {
   // list instead of resetting, and the `Page 1` assertion below fails.
   it('sorts, resetting to page 1', async () => {
     signIn()
-    renderApp('/demo/account/orders?page=3')
+    renderApp('/store/account/orders?page=3')
     expect(screen.getByRole('button', { name: 'Page 3' })).toHaveAttribute('aria-current', 'page')
     await userEvent.click(screen.getByRole('button', { name: 'Total' }))
     expect(screen.getByRole('button', { name: 'Page 1' })).toHaveAttribute('aria-current', 'page')
@@ -117,7 +117,7 @@ describe('Orders', () => {
     // "Survives a reload" for a page backed by the URL means a fresh mount at that same URL
     // reproduces the same state -- there is no real reload inside jsdom, so a fresh render at the
     // captured path is the unit-level proof; the e2e reflow test covers an actual page.reload().
-    renderApp('/demo/account/orders?sort=total-asc')
+    renderApp('/store/account/orders?sort=total-asc')
     expect(screen.getByRole('columnheader', { name: 'Total' })).toHaveAttribute('aria-sort', 'ascending')
   })
 

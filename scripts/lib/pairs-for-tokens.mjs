@@ -3,7 +3,7 @@ import { composite, contrastRatio } from './contrast.mjs'
 
 /** Every gated colour pair, per theme, from tokens already resolved: no file access, so the
  *  browser can run the same gate. `contrast-pairs.mjs` is the Node wrapper that reads the token
- *  files; the configurator page (src/pages/guidelines/ThemeGuideline.tsx) calls this one with a
+ *  files; the configurator page (src/pages/Themes.tsx) calls this one with a
  *  preset's tokens. One pair list, two callers, so the page cannot drift from the CLI gate.
  *
  *  @param t resolved semantic tokens for one theme (`resolveTokens` output)

@@ -22,9 +22,9 @@ function renderAt(path: string) {
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route element={<DemoLayout />}>
-          {/* The splat also matches the bare `/demo` -- one route stub covers the exact path and
+          {/* The splat also matches the bare `/store` -- one route stub covers the exact path and
               every path under it. */}
-          <Route path="/demo/*" element={<h1>Home</h1>} />
+          <Route path="/store/*" element={<h1>Home</h1>} />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -33,7 +33,7 @@ function renderAt(path: string) {
 
 describe('DemoLayout', () => {
   it('has one banner, one main, one contentinfo and a skip link to #main', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1, name: 'Home' })
     expect(screen.getAllByRole('banner')).toHaveLength(1)
     expect(screen.getAllByRole('main')).toHaveLength(1)
@@ -42,26 +42,26 @@ describe('DemoLayout', () => {
     expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main')
   })
   it('marks the current page in the Hexline navigation', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     const nav = await screen.findByRole('navigation', { name: 'Hexline' })
     expect(nav.querySelector('[aria-current="page"]')).toHaveTextContent('Home')
   })
-  // `/demo/home/*` held the hero-variant routes until 2026-10-02. Nothing is registered there now,
+  // `/store/home/*` held the hero-variant routes until 2026-10-02. Nothing is registered there now,
   // and Home has no descendants at all (see `isDescendantOf`).
-  it('does not mark Home current on an unregistered /demo/home/* path', async () => {
-    renderAt('/demo/home/parallax')
+  it('does not mark Home current on an unregistered /store/home/* path', async () => {
+    renderAt('/store/home/parallax')
     const nav = await screen.findByRole('navigation', { name: 'Hexline' })
     expect(nav.querySelector('[aria-current="page"]')).toBeNull()
   })
   it('is axe clean', async () => {
-    const { container } = renderAt('/demo')
+    const { container } = renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     expect(await axeClean(container)).toHaveNoViolations()
   })
-  it('lists Shop in the Hexline navigation and marks it current on /demo/shop', async () => {
-    renderAt('/demo/shop')
+  it('lists Shop in the Hexline navigation and marks it current on /store/shop', async () => {
+    renderAt('/store/shop')
     const nav = await screen.findByRole('navigation', { name: 'Hexline' })
-    expect(within(nav).getAllByRole('link', { name: 'Shop' })[0]).toHaveAttribute('href', '/demo/shop')
+    expect(within(nav).getAllByRole('link', { name: 'Shop' })[0]).toHaveAttribute('href', '/store/shop')
     expect(nav.querySelector('[aria-current="page"]')).toHaveTextContent('Shop')
   })
   // The footer's groups come from the catalogue and from a short list of guides held equal to
@@ -70,13 +70,13 @@ describe('DemoLayout', () => {
   // Mutation: drop the `...CATEGORIES.map(...)` line from FOOTER_COLUMNS -> the Shop list has one
   // link and the first block fails.
   it('lists the shop`s five categories as filtered shop links, and the four field guides', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     const footer = screen.getByRole('contentinfo')
     const shop = within(footer).getByRole('list', { name: 'Shop' })
     expect(within(shop).getAllByRole('link').map(link => [link.textContent, link.getAttribute('href')])).toEqual([
-      ['All products', '/demo/shop'],
-      ...CATEGORIES.map(category => [category.label, `/demo/shop?category=${category.id}`]),
+      ['All products', '/store/shop'],
+      ...CATEGORIES.map(category => [category.label, `/store/shop?category=${category.id}`]),
     ])
     expect(CATEGORIES).toHaveLength(5)
     // The parameter is the shop's own: each link parses to exactly its category.
@@ -85,13 +85,13 @@ describe('DemoLayout', () => {
     }
     const guides = within(footer).getByRole('list', { name: 'Guides' })
     expect(within(guides).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual([
-      '/demo/journal',
-      ...JOURNAL_POSTS.map(post => `/demo/journal/${post.slug}`),
+      '/store/journal',
+      ...JOURNAL_POSTS.map(post => `/store/journal/${post.slug}`),
     ])
     expect(JOURNAL_POSTS).toHaveLength(4)
     // The footer's own short list of guides is the real list: same guides, same order, same titles.
     expect(FOOTER_GUIDES).toEqual(JOURNAL_POSTS.map(post => ({ slug: post.slug, title: post.title })))
-    expect(within(footer).getByRole('link', { name: 'Care' })).toHaveAttribute('href', '/demo/care')
+    expect(within(footer).getByRole('link', { name: 'Care' })).toHaveAttribute('href', '/store/care')
   })
   // The name, once. The footer's wordmark is the brand: one image named "Hexline", no small
   // brand link beside it (the Navbar's is the link home), and the name nowhere else in the
@@ -99,7 +99,7 @@ describe('DemoLayout', () => {
   // Mutation: pass `brand={<Brand />}` to the Footer again in DemoLayout.tsx -> the link assertion
   // fails.
   it('states the name once in the footer: the wordmark, an image, and no second brand', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     const footer = screen.getByRole('contentinfo')
     expect(within(footer).getAllByRole('img')).toHaveLength(1)
@@ -107,7 +107,7 @@ describe('DemoLayout', () => {
     expect(within(footer).queryByRole('link', { name: 'Hexline' })).toBeNull()
     expect(within(footer).queryByText('Hexline')).toBeNull()
     // The link home is the Navbar's brand.
-    expect(within(screen.getByRole('banner')).getByRole('link', { name: 'Hexline' })).toHaveAttribute('href', '/demo')
+    expect(within(screen.getByRole('banner')).getByRole('link', { name: 'Hexline' })).toHaveAttribute('href', '/store')
   })
   describe('the newsletter sign-up in the footer', () => {
     const footer = () => screen.getByRole('contentinfo')
@@ -115,7 +115,7 @@ describe('DemoLayout', () => {
     const submit = () => within(footer()).getByRole('button', { name: new RegExp(NEWSLETTER.submit) })
 
     it('is the footer`s second section: a heading, the description, and a named form with the consent line', async () => {
-      const { container } = renderAt('/demo/care')
+      const { container } = renderAt('/store/care')
       await screen.findByRole('heading', { level: 1 })
       const aside = container.querySelector<HTMLElement>('footer [data-footer-aside]')!
       expect(within(aside).getByRole('heading', { level: 2, name: NEWSLETTER.title })).toBeInTheDocument()
@@ -135,7 +135,7 @@ describe('DemoLayout', () => {
     // -> the offline address succeeds, and the test after this one fails.
     it('subscribes an address through the demo API and shows the success message', async () => {
       setLatency(0)
-      renderAt('/demo')
+      renderAt('/store')
       await screen.findByRole('heading', { level: 1 })
       await userEvent.type(field(), 'rae@hexline.test')
       await userEvent.click(submit())
@@ -147,7 +147,7 @@ describe('DemoLayout', () => {
 
     it('shows the alert and keeps the address when the demo API rejects', async () => {
       setLatency(0)
-      renderAt('/demo')
+      renderAt('/store')
       await screen.findByRole('heading', { level: 1 })
       await userEvent.type(field(), 'offline@hexline.test')
       await userEvent.click(submit())
@@ -162,20 +162,20 @@ describe('DemoLayout', () => {
   // The line the footer's small print used to carry ("A concept store ... Nothing here is for
   // sale.") is the homepage's fourth house rule now, and is not repeated here.
   it('carries no concept-store line in the footer', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     expect(within(screen.getByRole('contentinfo')).queryByText(/Nothing here is for sale/)).toBeNull()
   })
   // No dead links: every footer link is a route this app registers. A demo link has to match a
   // DEMO_PAGES path; a docs link has to be a page in the docs sidebar's own list.
-  // Mutation: add `{ label: 'Returns', href: '/demo/returns' }` to a group -> this fails, naming it.
+  // Mutation: add `{ label: 'Returns', href: '/store/returns' }` to a group -> this fails, naming it.
   it('links only to pages that exist', () => {
     const docs = new Set(NAV.flatMap(group => group.items.map(item => item.to)))
     const links = FOOTER_COLUMNS.flatMap(column => column.links)
     expect(links.length).toBeGreaterThan(0)
     for (const link of links) {
       const path = link.href.split('?')[0]
-      const known = path.startsWith('/demo')
+      const known = path.startsWith('/store')
         ? DEMO_PAGES.some(page => matchPath({ path: page.path, end: true }, path))
         : docs.has(path)
       expect(known, `${link.label} -> ${link.href}`).toBe(true)
@@ -187,7 +187,7 @@ describe('DemoLayout', () => {
   // the Footer closes on its wordmark alone. The other half, with WebGL2, is
   // DemoLayout.terrain.test.tsx.
   it('passes the footer no backdrop where there is no WebGL2, and it still ends on the wordmark', async () => {
-    const { container } = renderAt('/demo')
+    const { container } = renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     expect(container.querySelector('[data-footer-backdrop]')).toBeNull()
     expect(container.querySelector('footer canvas')).toBeNull()
@@ -198,16 +198,16 @@ describe('DemoLayout', () => {
   // small print. Mutation: change `legal={DISCLAIMER}` in DemoLayout.tsx to any other string ->
   // this fails.
   it('states the disclaimer in the footer', async () => {
-    renderAt('/demo/sign-in')
+    renderAt('/store/sign-in')
     await screen.findByRole('heading', { level: 1 })
     expect(within(screen.getByRole('contentinfo')).getByText(DISCLAIMER)).toBeInTheDocument()
   })
-  it('offers a Sign in link to /demo/sign-in when no one is signed in, in a compact and a full form', async () => {
-    renderAt('/demo')
+  it('offers a Sign in link to /store/sign-in when no one is signed in, in a compact and a full form', async () => {
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     const links = screen.getAllByRole('link', { name: 'Sign in' })
     expect(links).toHaveLength(2)
-    for (const link of links) expect(link).toHaveAttribute('href', '/demo/sign-in')
+    for (const link of links) expect(link).toHaveAttribute('href', '/store/sign-in')
   })
   // jsdom never computes a Tailwind breakpoint, so this pins the actual classes that decide
   // which control the accessibility tree carries at a given width, rather than the widths
@@ -216,14 +216,14 @@ describe('DemoLayout', () => {
   // its own `display` outside Tailwind's layers and would outrank a breakpoint utility landing on
   // it directly (the same reasoning as Navbar's own `@2xl:hidden` mobile-menu wrapper).
   it('switches the compact and full Sign in controls with opposite width classes on their own wrapping span', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     const [compact, full] = screen.getAllByRole('link', { name: 'Sign in' })
     expect(compact.closest('.bevel-focus-wrap')?.parentElement).toHaveClass('sm:hidden')
     expect(full.closest('.bevel-focus-wrap')?.parentElement).toHaveClass('hidden', 'sm:inline-flex')
   })
   it('carries a cart button, named by its (empty) item count, in the Navbar actions', async () => {
-    renderAt('/demo')
+    renderAt('/store')
     await screen.findByRole('heading', { level: 1 })
     expect(screen.getByRole('button', { name: 'Cart, 0 items' })).toBeInTheDocument()
   })
@@ -244,11 +244,11 @@ describe('DemoLayout', () => {
 
     function renderCrashable() {
       return render(
-        <MemoryRouter initialEntries={['/demo/shop']}>
+        <MemoryRouter initialEntries={['/store/shop']}>
           <Routes>
             <Route element={<DemoLayout />}>
-              <Route path="/demo" element={<h1>Home</h1>} />
-              <Route path="/demo/shop" element={<Crashable />} />
+              <Route path="/store" element={<h1>Home</h1>} />
+              <Route path="/store/shop" element={<Crashable />} />
             </Route>
           </Routes>
         </MemoryRouter>,
@@ -291,7 +291,7 @@ describe('DemoLayout', () => {
     // Mutation: drop the `resetKey={path}` prop from DemoErrorBoundary in DemoLayout.tsx -> the
     // boundary's own `componentDidUpdate` never sees `resetKey` change on a navigation (it stays
     // whatever it was passed, permanently undefined), `state.error` is never cleared, and the
-    // fallback from the /demo/shop crash keeps rendering in place of the unrelated Home route.
+    // fallback from the /store/shop crash keeps rendering in place of the unrelated Home route.
     it('clears the error by navigating to a different route', async () => {
       renderCrashable()
       await screen.findByRole('heading', { level: 1, name: 'Crashable' })

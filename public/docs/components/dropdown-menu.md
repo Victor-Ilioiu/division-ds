@@ -29,6 +29,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `onSelect (Item)` | `(event: Event) => void` |  | Called when the item is chosen. |
 | `disabled (Item)` | `boolean` | `false` | The item can't be chosen, and typing letters (typeahead) skips it. |
 | `tone (Item)` | `'default' \| 'hostile'` | `'default'` | Use hostile for a destructive action: hostile-coloured text at rest, the hostile fill with ink text when highlighted. |
+| `asChild (Item)` | `boolean` | `false` | Makes the one child (a link) the item, for a menu of links. icon and shortcut are ignored then; put the content inside the link. |
 | `icon (Item)` | `ReactNode` |  | A small icon before the text, hidden from screen readers (aria-hidden). |
 | `shortcut (Item)` | `string` |  | Shown on the right and passed to screen readers as aria-keyshortcuts. It only displays the key: the menu never makes the key work. |
 | `checked (Checkbox item)` | `boolean` |  | Whether the tick shows. |

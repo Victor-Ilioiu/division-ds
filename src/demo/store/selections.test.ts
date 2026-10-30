@@ -123,7 +123,7 @@ describe('categoryTiles', () => {
   // what the shop's own filter returns for that link, not against a second count of the catalogue.
   it('counts what the shop lists behind its link, and links with the parameter the shop reads', () => {
     for (const tile of categoryTiles()) {
-      expect(tile.href).toBe(`/demo/shop?category=${tile.category.id}`)
+      expect(tile.href).toBe(`/store/shop?category=${tile.category.id}`)
       const ids = listed(tile.href)
       expect(tile.count, tile.category.id).toBe(ids.length)
       expect(tile.count).toBeGreaterThan(0)
@@ -142,12 +142,12 @@ describe('categoryTiles', () => {
 
 describe('shopHref', () => {
   it('is the bare shop with no filters', () => {
-    expect(shopHref()).toBe('/demo/shop')
+    expect(shopHref()).toBe('/store/shop')
   })
 
   it('writes the parameters the shop listing parses back to the same filters', () => {
     const href = shopHref({ categories: ['optics', 'parts'], sort: 'rating' })
-    expect(href).toBe('/demo/shop?category=optics&category=parts&sort=rating')
+    expect(href).toBe('/store/shop?category=optics&category=parts&sort=rating')
     const filters = parseFilters(new URL(href, 'http://hexline.test').searchParams)
     expect(filters.categories).toEqual(['optics', 'parts'])
     expect(filters.sort).toBe('rating')

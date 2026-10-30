@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Link, linkVariants } from '../../components/atoms/link/Link'
 import { Link as RouterLink } from 'react-router-dom'
-import { Card, CardBody, CardTitle } from '../../components/molecules/card/Card'
 import { PageHeader } from '../../components/molecules/page-header/PageHeader'
 import { SectionHeading } from '../../components/molecules/section-heading/SectionHeading'
 import { WORKSPACE } from '../data'
@@ -14,11 +14,11 @@ export const CASE_STUDY_URL = 'https://victor-ilioiu.vercel.app/work/division-ds
  *  imports matched against public/manifest/components.json). Recount when a page starts or stops
  *  using one. */
 export const CORVANE_COMPONENTS = [
-  'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card', 'ChartPanel', 'Checkbox', 'CommandPalette', 'DataTable',
-  'Dialog', 'EmptyState', 'FormField', 'IconButton', 'Input', 'KanbanBoard', 'Kbd', 'Link', 'ListItem',
-  'MultiSelect', 'PageHeader', 'Pagination', 'Progress', 'QuantityStepper', 'Search', 'SectionHeading', 'Select',
-  'Sheet', 'Sidebar', 'Spinner', 'Stat', 'Stepper', 'Switch', 'Tabs', 'Tag', 'Textarea', 'Timeline', 'Toast',
-  'Tooltip',
+  'Avatar', 'Badge', 'Breadcrumbs', 'Button', 'Card', 'ChartPanel', 'Checkbox', 'CodeBlock', 'CommandPalette',
+  'DataTable', 'Dialog', 'EmptyState', 'FormField', 'IconButton', 'Input', 'KanbanBoard', 'Kbd', 'Link',
+  'ListItem', 'MultiSelect', 'PageHeader', 'Pagination', 'Progress', 'QuantityStepper', 'Search',
+  'SectionHeading', 'Select', 'Sheet', 'Sidebar', 'Spinner', 'Stat', 'Stepper', 'Switch', 'Tabs', 'Tag',
+  'Textarea', 'Timeline', 'Toast', 'Tooltip',
 ]
 
 const PROMPTS = [
@@ -42,12 +42,9 @@ const PROMPTS = [
 
 const P = 'font-body text-base text-[var(--color-text-primary)] max-w-3xl'
 
-function Command({ children }: { children: ReactNode }) {
-  return (
-    <pre className="whitespace-pre-wrap break-all font-mono text-sm text-[var(--color-text-primary)] bg-[var(--color-surface-sunken)] border border-[var(--color-border-hairline)] px-4 py-3 max-w-3xl">
-      <code>{children}</code>
-    </pre>
-  )
+/** A command to copy: the system's CodeBlock, named by its first line. */
+function Command({ children }: { children: string }) {
+  return <CodeBlock title="bash" label={children.split('\n')[0]} code={children} className="max-w-3xl" />
 }
 
 function Step({ title, children }: { title: string; children: ReactNode }) {
@@ -121,12 +118,10 @@ export function About() {
         />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {PROMPTS.map(prompt => (
-            <Card key={prompt.title}>
-              <CardBody className="flex flex-col gap-3">
-                <CardTitle level={3}>{prompt.title}</CardTitle>
-                <p className="font-body text-sm text-[var(--color-text-secondary)]">{prompt.text}</p>
-              </CardBody>
-            </Card>
+            <div key={prompt.title} className="flex min-w-0 flex-col gap-3">
+              <h3 className="font-display text-lg font-semibold">{prompt.title}</h3>
+              <CodeBlock code={prompt.text} label={`the prompt: ${prompt.title}`} title="Prompt" wrap lineNumbers={false} />
+            </div>
           ))}
         </div>
       </section>

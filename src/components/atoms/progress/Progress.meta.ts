@@ -19,7 +19,7 @@ export const meta: ComponentMeta = {
     { name: 'value', type: 'number | null', description: 'null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.' },
     { name: 'max', type: 'number', default: '100', description: 'The value at which the bar is complete.' },
     { name: 'showValue', type: 'boolean', default: 'false', description: 'Shows the percentage (or "In progress") as a readout.' },
-    { name: 'tone', type: "'signal' | 'ok' | 'warning' | 'hostile'", default: "'signal'", description: 'The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.15:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.' },
+    { name: 'tone', type: "'signal' | 'ok' | 'warning' | 'hostile'", default: "'signal'", description: 'The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.' },
     { name: 'className', type: 'string', description: 'Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.' },
     { name: 'ref', type: 'Ref<HTMLDivElement>', description: 'Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.' },
     {

@@ -25,7 +25,7 @@ const LIVE = 'canvas[data-terrain-canvas="live"]'
 const STILL = 'canvas[data-terrain-canvas="still"]'
 
 /** A page with no hero on it, so the terrain is the only scene. */
-const QUIET_PAGE = '/demo/care'
+const QUIET_PAGE = '/store/care'
 
 function sceneRequests(page: Page): string[] {
   const seen: string[] = []
@@ -153,7 +153,7 @@ test.describe('the terrain with the live scene allowed', () => {
   // '100000px 0px' -> the module is requested on load and the first assertion fails.
   test('nothing loads until the footer is near, then it draws without moving the page', async ({ page }) => {
     const requests = sceneRequests(page)
-    await page.goto('/demo')
+    await page.goto('/store')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.evaluate(() => document.fonts.ready)
     await page.waitForTimeout(1500)
@@ -232,7 +232,7 @@ test.describe('the terrain with the live scene allowed', () => {
     await page.mouse.move(point.x, point.y)
     await page.mouse.click(point.x, point.y)
     await expect(page.locator(TERRAIN)).toHaveAttribute('data-terrain', 'live')
-    await expect(page).toHaveURL(/\/demo\/care$/)
+    await expect(page).toHaveURL(/\/store\/care$/)
     expect(await page.evaluate(() => document.activeElement?.closest('[data-footer-closing]') ?? null)).toBeNull()
 
     // The keyboard walks past it: the footer's last tab stop is the sign-up's button, and Tab
@@ -269,7 +269,7 @@ test.describe('the terrain with the live scene allowed', () => {
     expect(await canvas!.evaluate((el: HTMLCanvasElement) => el.getContext('webgl2')!.isContextLost())).toBe(false)
     // A client-side move to the docs shell, by the footer's own link.
     await page.getByRole('contentinfo').getByRole('link', { name: 'Documentation', exact: true }).click()
-    await expect(page).toHaveURL(/\/$/)
+    await expect(page).toHaveURL(/\/components$/)
     await expect(page.locator(TERRAIN)).toHaveCount(0)
     expect(await canvas!.evaluate((el: HTMLCanvasElement) => el.isConnected)).toBe(false)
     expect(await canvas!.evaluate((el: HTMLCanvasElement) => el.getContext('webgl2')!.isContextLost())).toBe(true)
@@ -280,7 +280,7 @@ test.describe('the terrain and the hero on one page', () => {
   test.use({ footerTerrain: 'live', heroScene: 'live' })
   test.describe.configure({ timeout: 240_000 })
 
-  // `/demo` holds two WebGL scenes. Browsers cap live contexts per page and drop the oldest past
+  // `/store` holds two WebGL scenes. Browsers cap live contexts per page and drop the oldest past
   // the cap, so what matters is that both are alive together and that walking round the demo
   // does not leave contexts behind. Every WebGL context the page creates is recorded as it is
   // made; "live" is the ones not yet lost.
@@ -302,7 +302,7 @@ test.describe('the terrain and the hero on one page', () => {
         () => ((window as any).__gl as { canvas: HTMLCanvasElement }[]).filter(entry => entry.canvas.dataset.terrainCanvas === 'live').length
       )
 
-    await page.goto('/demo')
+    await page.goto('/store')
     const heroCanvas = page.locator('[data-hero-stage] canvas')
     await expect(heroCanvas).toHaveCount(1, { timeout: 60_000 })
     await expect(page.locator('[data-loader]')).toHaveCount(0, { timeout: 150_000 })
@@ -325,11 +325,11 @@ test.describe('the terrain and the hero on one page', () => {
     const nav = page.getByRole('navigation', { name: 'Hexline', exact: true })
     for (let lap = 0; lap < 2; lap++) {
       await nav.getByRole('link', { name: 'Care' }).click()
-      await expect(page).toHaveURL(/\/demo\/care$/)
+      await expect(page).toHaveURL(/\/store\/care$/)
       await expect(page.locator('[data-hero-stage] canvas')).toHaveCount(0)
       expect(await live()).toBe(1)
       await nav.getByRole('link', { name: 'Home' }).click()
-      await expect(page).toHaveURL(/\/demo$/)
+      await expect(page).toHaveURL(/\/store$/)
       await expect(heroCanvas).toHaveCount(1, { timeout: 60_000 })
       await expect(page.locator('[data-loader]')).toHaveCount(0, { timeout: 150_000 })
       expect(await live()).toBe(2)

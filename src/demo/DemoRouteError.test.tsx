@@ -47,11 +47,11 @@ describe('DemoRouteError', () => {
     expect(screen.getByText(/ran into a problem while rendering/i)).toBeInTheDocument()
   })
 
-  // Mutation: point the "Go to the store home" link at '/demo/does-not-exist' instead of
+  // Mutation: point the "Go to the store home" link at '/store/does-not-exist' instead of
   // `DEMO_HOME` -> this assertion reads the wrong href.
-  it('links "Go to the store home" to /demo', () => {
+  it('links "Go to the store home" to /store', () => {
     renderError()
-    expect(screen.getByRole('link', { name: 'Go to the store home' })).toHaveAttribute('href', '/demo')
+    expect(screen.getByRole('link', { name: 'Go to the store home' })).toHaveAttribute('href', '/store')
   })
 
   // Mutation: pass `announce` through to the underlying ErrorState -> this query finds a

@@ -2,6 +2,19 @@ import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
 import { applyTheme, expect, expectAxeClean, gotoDocs, settleAnimations, test, THEMES } from './fixtures'
 
+// The page gutter, read off the demo shell: since the headers all moved to a 16px gutter
+// (2026-10-30) the Navbar brand no longer marks where page content starts, the gutter does.
+const pageGutter = (page: import('@playwright/test').Page) =>
+  page.evaluate(() => {
+    const shell = document.querySelector('[data-demo-shell]')!
+    const probe = document.createElement('div')
+    probe.style.width = 'var(--page-gutter)'
+    shell.appendChild(probe)
+    const width = probe.getBoundingClientRect().width
+    probe.remove()
+    return width
+  })
+
 // Real-browser checks jsdom cannot make: overlays measured by axe while OPEN (the page-wide suite
 // only ever sees them closed), focus coming back after they close, and keyboard paths through the
 // organisms. axe treats the page hidden behind an open modal as needing review, not as a
@@ -458,7 +471,7 @@ test.describe('Interactive card', () => {
   test('in a carousel, a hovered card is not clipped by the track and does not move it', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.setViewportSize({ width: 1280, height: 900 })
-    await page.goto('/demo')
+    await page.goto('/store')
     const track = page.getByRole('region', { name: 'Offers' }).getByRole('list')
     await track.scrollIntoViewIfNeeded()
     const card = track.getByRole('article').first()
@@ -673,6 +686,9 @@ for (const theme of THEMES) {
   })
 }
 
+// A line with its gradient underneath is a Recharts Area, whose stroke is the area curve.
+const LINE_CURVE = '.recharts-line-curve, .recharts-area-curve'
+
 test('ChartPanel: the chart is hidden and has no tab stop, two series have two colours, and the table holds the data', async ({ page }) => {
   await page.goto('/components/chart-panel')
   const panel = page.getByRole('region', { name: 'Weekly orders', exact: true })
@@ -691,7 +707,7 @@ test('ChartPanel: the chart is hidden and has no tab stop, two series have two c
     await expect(surface.locator('[tabindex]:not([tabindex="-1"])')).toHaveCount(0)
   }
   const strokes = await panel
-    .locator('.recharts-line-curve')
+    .locator(LINE_CURVE)
     .evaluateAll(paths => paths.map(path => getComputedStyle(path).stroke))
   expect(strokes).toHaveLength(2)
   expect(new Set(strokes).size).toBe(2)
@@ -703,13 +719,13 @@ test('ChartPanel: the chart is hidden and has no tab stop, two series have two c
   // (react-smooth, not a CSS animation settleAnimations' getAnimations() can see), so the final,
   // real dasharray only lands once that animation finishes -- poll for it rather than assert once.
   const dashesAt = () =>
-    panel.locator('.recharts-line-curve').evaluateAll(paths => paths.map(path => path.getAttribute('stroke-dasharray')))
+    panel.locator(LINE_CURVE).evaluateAll(paths => paths.map(path => path.getAttribute('stroke-dasharray')))
   await expect.poll(dashesAt).toEqual([null, '6 3'])
   const toggle = panel.getByRole('button', { name: 'Show as table' })
   await toggle.click()
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
   const table = panel.getByRole('table')
-  await expect(table.getByRole('row')).toHaveCount(9)
+  await expect(table.getByRole('row')).toHaveCount(13)
   await expect(table.getByRole('rowheader', { name: 'W5' })).toBeVisible()
 })
 
@@ -722,7 +738,7 @@ test('ChartPanel: the second line series is dashed, with no draw-in animation to
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/components/chart-panel')
   const panel = page.getByRole('region', { name: 'Weekly orders', exact: true })
-  const lines = panel.locator('.recharts-line-curve')
+  const lines = panel.locator(LINE_CURVE)
   await expect(lines).toHaveCount(2)
   const dashes = await lines.evaluateAll(paths => paths.map(path => path.getAttribute('stroke-dasharray')))
   expect(dashes).toEqual([null, '6 3'])
@@ -1356,16 +1372,13 @@ test.describe('Footer: on the demo store', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 })
-    await page.goto('/demo/care')
+    await page.goto('/store/care')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.evaluate(() => document.fonts.ready)
     const footer = page.getByRole('contentinfo')
     await expect(footer.getByRole('heading', { level: 2, name: 'Field notes by email', exact: true })).toBeVisible()
     await expect(footer.getByRole('form', { name: 'Newsletter sign-up' })).toBeVisible()
-    const brandX = await page
-      .getByRole('banner')
-      .getByRole('link', { name: 'Hexline', exact: true })
-      .evaluate(el => el.getBoundingClientRect().left)
+    const brandX = await pageGutter(page)
     const m = await footer.evaluate(el => {
       const box = (selector: string) => el.querySelector(selector)!.getBoundingClientRect()
       const links = box('[data-footer-links]')
@@ -1406,7 +1419,7 @@ test.describe('Footer: on the demo store', () => {
   for (const width of [1920, 1440, 1024, 768, 390, 320]) {
     test(`at ${width}px the wordmark spans the page, touches its bottom edge and overflows nothing`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto('/demo/care')
+      await page.goto('/store/care')
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       await page.evaluate(() => document.fonts.ready)
       const m = await page.getByRole('contentinfo').evaluate(el => {
@@ -1430,7 +1443,7 @@ test.describe('Footer: on the demo store', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 800 })
-    await page.goto('/demo/care')
+    await page.goto('/store/care')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     const footer = page.getByRole('contentinfo')
     await expect(footer.getByRole('navigation', { name: 'Hexline footer' }).getByRole('button')).toHaveCount(4)

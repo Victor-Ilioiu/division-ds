@@ -9,7 +9,7 @@
 //   public/media/hero-poster.webp       2400 x 1080, the side-by-side layout (from `lg` up)
 //   public/media/hero-poster-960.webp   960 x 720, the stacked 4:3 block (below `lg`)
 //
-// How: loads /demo with the scene forced on (`?fx=force`), started assembled with the clock
+// How: loads /store with the scene forced on (`?fx=force`), started assembled with the clock
 // frozen (`?scene=assembled&scene-t=1`, the switches `HomeHero.tsx` reads), waits for the
 // preloader to leave, hides everything marked `data-hero-chrome` (the copy, the shade, the drag
 // hint) and screenshots the stage element. The shade is not baked in: the page lays it over the
@@ -45,7 +45,7 @@ const SHOTS = [
   { file: 'hero-poster.webp', viewport: { width: 2400, height: 1136 } },
   { file: 'hero-poster-960.webp', viewport: { width: 960, height: 1200 } },
 ]
-const URL_SWITCHES = '/demo?fx=force&scene=assembled&scene-t=1'
+const URL_SWITCHES = '/store?fx=force&scene=assembled&scene-t=1'
 
 function getFreePort() {
   return new Promise((resolve, reject) => {

@@ -59,7 +59,7 @@ export function Confirmation() {
           There's no order to show here. This page only shows one right after it's placed.
         </p>
         <p>
-          <RouterLink to="/demo/shop" className={linkVariants()}>
+          <RouterLink to="/store/shop" className={linkVariants()}>
             Back to the shop
           </RouterLink>
         </p>
@@ -111,7 +111,7 @@ export function Confirmation() {
           </div>
         </dl>
         <p>
-          <RouterLink to="/demo/shop" className={linkVariants()}>
+          <RouterLink to="/store/shop" className={linkVariants()}>
             Back to the shop
           </RouterLink>
         </p>

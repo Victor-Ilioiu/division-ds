@@ -25,7 +25,7 @@ if (!out) {
 const widths = (widthsArg || '1920,1440,1024,768,390,320').split(',').map(Number)
 const themes = (themesArg || 'dark,light').split(',')
 const extras = new Set(extrasArg.split(',').filter(Boolean))
-const PAGE = 'http://localhost:5473/demo/care'
+const PAGE = 'http://localhost:5473/store/care'
 
 mkdirSync(out, { recursive: true })
 const browser = await chromium.launch({

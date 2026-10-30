@@ -1,5 +1,5 @@
 import { PageHeader, SectionHeading, docsItemHeading, docsProse } from '../../components/docs/PageChrome'
-import { Panel } from '../../components/Panel'
+import { Panel } from '../../components/atoms/panel/Panel'
 import { Card, CardBody, CardDescription, CardTitle } from '../../components/molecules/card/Card'
 
 export function ElevationGuideline() {
@@ -26,7 +26,7 @@ export function ElevationGuideline() {
 
       <section>
         <SectionHeading>Corner-crosshair panel</SectionHeading>
-        <Panel className="max-w-sm">
+        <Panel crosshair className="max-w-sm">
           <h3 className={docsItemHeading}>Base of operations</h3>
           <p className={`${docsProse} mt-2`}>
             The panel frame any guideline page&apos;s cards could use: a thin hairline border, a

@@ -6,7 +6,7 @@ type SpecPage = { path: string; title: string; samplePath?: string; sampleTitle?
 
 const PAGES: SpecPage[] = [
   ...DEMO_PAGES.map(p => ({ path: p.path, title: p.title, samplePath: p.samplePath, sampleTitle: p.sampleTitle })),
-  { path: '/demo/does-not-exist', title: 'Hexline — page not found' },
+  { path: '/store/does-not-exist', title: 'Hexline — page not found' },
 ]
 
 for (const theme of THEMES) {
@@ -44,7 +44,7 @@ test.describe('reflow at 320px', () => {
 // The replica rule's rendered half: every page that shows a product states what the products are
 // in the page body, and the Footer states it on every page. One sentence, one form, read from the
 // same `DISCLAIMER` constant the pages render. Checkout only renders with something in the cart
-// (an empty one bounces to /demo/cart), so a line is seeded first, the way flows.spec.ts seeds one:
+// (an empty one bounces to /store/cart), so a line is seeded first, the way flows.spec.ts seeds one:
 // written once after a first navigation, since sessionStorage survives every later `goto`.
 // Mutation: remove `<Disclaimer />` from any one of Home, Shop, Product, Cart or Checkout -> the
 // `main` assertion fails on that route. Change `legal={DISCLAIMER}` in DemoLayout.tsx -> the
@@ -52,7 +52,7 @@ test.describe('reflow at 320px', () => {
 test('the disclaimer is in the body of home, shop, product, cart and checkout, and in the footer everywhere', async ({
   page,
 }) => {
-  await page.goto('/demo')
+  await page.goto('/store')
   await page.evaluate(() => {
     sessionStorage.setItem(
       'hexline-cart',
@@ -68,7 +68,7 @@ test('the disclaimer is in the body of home, shop, product, cart and checkout, a
       ])
     )
   })
-  for (const path of ['/demo', '/demo/shop', '/demo/shop/kestrel-c', '/demo/cart', '/demo/checkout']) {
+  for (const path of ['/store', '/store/shop', '/store/shop/kestrel-c', '/store/cart', '/store/checkout']) {
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     // Still on the route asked for: checkout did not bounce to the cart.
@@ -77,36 +77,36 @@ test('the disclaimer is in the body of home, shop, product, cart and checkout, a
     await expect(page.getByRole('contentinfo').getByText(DISCLAIMER, { exact: true }), `${path} footer`).toBeVisible()
   }
   // A page that shows no product carries it in the footer only.
-  await page.goto('/demo/sign-in')
+  await page.goto('/store/sign-in')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page.locator('main').getByText(DISCLAIMER, { exact: true })).toHaveCount(0)
   await expect(page.getByRole('contentinfo').getByText(DISCLAIMER, { exact: true })).toBeVisible()
 })
 
 test('an in-app navigation moves focus to main, never to body', async ({ page }) => {
-  await page.goto('/demo/does-not-exist')
+  await page.goto('/store/does-not-exist')
   await page.getByRole('link', { name: 'Back to the Hexline home' }).click()
-  await expect(page).toHaveURL(/\/demo$/)
+  await expect(page).toHaveURL(/\/store$/)
   await expect(page.locator('#main')).toBeFocused()
 })
 
-test('leaving /demo for the docs restores the shell title and focuses main', async ({ page }) => {
-  await page.goto('/demo')
+test('leaving /store for the docs restores the shell title and focuses main', async ({ page }) => {
+  await page.goto('/store')
   await page.getByRole('link', { name: 'Documentation' }).click()
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(/\/components$/)
   await expect(page).toHaveTitle('Division DS')
   await expect(page.locator('#main')).toBeFocused()
 })
 
-// A path under /demo that no registered route claims still renders the Hexline shell's own
+// A path under /store that no registered route claims still renders the Hexline shell's own
 // NotFound (Navbar and Footer, "Back to the Hexline home"), not the docs shell's DocsNotFound
-// -- the outer app's catch-all sits BELOW the DemoLayout route in App.tsx, so /demo/* keeps
+// -- the outer app's catch-all sits BELOW the DemoLayout route in App.tsx, so /store/* keeps
 // matching its own fallthrough first.
-// Mutation: remove the `<Route path="/demo/*" element={<NotFound />} />` line from App.tsx ->
+// Mutation: remove the `<Route path="/store/*" element={<NotFound />} />` line from App.tsx ->
 // this path falls through to the docs shell's own 404 instead, and the Hexline nav landmark
 // below is never rendered.
-test('/demo/nope still shows the Hexline page, not the docs shell', async ({ page }) => {
-  await page.goto('/demo/nope')
+test('/store/nope still shows the Hexline page, not the docs shell', async ({ page }) => {
+  await page.goto('/store/nope')
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Hexline', exact: true })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Documentation' })).not.toBeVisible()
@@ -168,7 +168,7 @@ test.describe('the Navbar actions row does not wrap at 320px', () => {
       const role = signedIn ? 'button' : 'link'
 
       await page.setViewportSize({ width: 1280, height: 800 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       // A web font swapping in after the first paint reflows the row it sizes -- wait for it
       // before trusting a boundingBox read, and poll rather than read once, since the resize
@@ -213,7 +213,7 @@ test.describe('the Navbar actions row does not wrap at 320px', () => {
         )
       })
       await page.setViewportSize({ width, height: 800 })
-      await page.goto('/demo')
+      await page.goto('/store')
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
       await page.getByRole('button', { name: 'Account: Alex' }).click()
       await page.getByRole('menuitem', { name: 'Sign out' }).click()
@@ -231,7 +231,7 @@ test('the demo footer is a grid on a desktop and an accordion on a phone, and a 
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/demo/care')
+  await page.goto('/store/care')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   const footer = page.getByRole('contentinfo')
   const nav = footer.getByRole('navigation', { name: 'Hexline footer' })
@@ -251,7 +251,7 @@ test('the demo footer is a grid on a desktop and an accordion on a phone, and a 
   await expect(shop).toHaveAttribute('aria-expanded', 'true')
   await expect(nav.getByRole('link')).toHaveCount(6)
   await nav.getByRole('link', { name: 'Optics', exact: true }).click()
-  await expect(page).toHaveURL(/\/demo\/shop\?category=optics$/)
+  await expect(page).toHaveURL(/\/store\/shop\?category=optics$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Shop' })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Result count' })).toHaveText(/^\d+ products?$/)
   const shown = Number((await page.getByRole('status', { name: 'Result count' }).textContent())!.split(' ')[0])

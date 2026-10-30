@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useSession } from './store/session'
 
 /**
- * Guards every route under the Account menu (`/demo/account*`). With no one signed in it bounces
+ * Guards every route under the Account menu (`/store/account*`). With no one signed in it bounces
  * to sign-in with a notice, exactly the way Onboarding bounces to account creation -- a direct
  * load or a refresh with no session has nothing of the caller's to show.
  *
@@ -36,7 +36,7 @@ export function RequireSession({ children }: { children: ReactNode }) {
   if (!user) {
     return (
       <Navigate
-        to="/demo/sign-in"
+        to="/store/sign-in"
         replace
         state={{
           notice: hadUser.current ? "You've signed out." : 'Sign in to see your account.',

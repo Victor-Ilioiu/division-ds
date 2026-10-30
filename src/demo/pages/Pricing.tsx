@@ -60,7 +60,7 @@ function TierFeatures({ tier }: { tier: CareTier }) {
 
 function TierCard({ tier, annual }: { tier: CareTier; annual: boolean }) {
   const { user } = useSession()
-  const ctaHref = user ? '/demo/account' : '/demo/create-account'
+  const ctaHref = user ? '/store/account' : '/store/create-account'
   const price = annual ? tier.monthlyPrice * 10 : tier.monthlyPrice
   return (
     <Card

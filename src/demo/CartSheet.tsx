@@ -66,10 +66,10 @@ export function CartSheet() {
           footer={
             <>
               <Button asChild variant="secondary" size="sm" onClick={close}>
-                <RouterLink to="/demo/cart">View cart</RouterLink>
+                <RouterLink to="/store/cart">View cart</RouterLink>
               </Button>
               <Button asChild variant="primary" size="sm" onClick={close}>
-                <RouterLink to="/demo/checkout">Checkout</RouterLink>
+                <RouterLink to="/store/checkout">Checkout</RouterLink>
               </Button>
             </>
           }

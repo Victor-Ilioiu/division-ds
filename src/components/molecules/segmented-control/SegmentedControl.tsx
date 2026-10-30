@@ -88,6 +88,9 @@ export function SegmentedControl({
         // w-fit: as wide as its options, even as a child of a flex column, which would stretch it.
         'inline-flex w-fit max-w-full overflow-x-auto p-0.5 gap-0.5',
         'border border-[var(--color-border-control)]',
+        // With the cut off (the theme builder's shape): the frame takes the radius, the options a
+        // concentric one, 3px smaller (the frame's border and padding).
+        'rounded-[var(--shape-radius,0px)]',
         className
       )}
     >
@@ -100,7 +103,7 @@ export function SegmentedControl({
           value={option.value}
           onKeyDown={event => onKeyDown(event, index)}
           className={cn(
-            'inline-flex shrink-0 items-center justify-center whitespace-nowrap',
+            'inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-[max(0px,calc(var(--shape-radius,0px)-3px))]',
             'font-mono text-xs uppercase tracking-[0.12em]',
             'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-control',
             'data-[state=checked]:bg-[var(--color-accent-signal-indicator)] data-[state=checked]:font-semibold',

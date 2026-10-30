@@ -2,7 +2,7 @@ import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import { Home } from './pages/Home'
 
 export type DemoPage = {
-  /** Absolute path, no trailing slash. May carry a react-router param (`/demo/shop/:id`). */
+  /** Absolute path, no trailing slash. May carry a react-router param (`/store/shop/:id`). */
   path: string
   /** Navbar / sidebar label. */
   label: string
@@ -25,7 +25,7 @@ export type DemoPage = {
   titleFromPage?: true
 }
 
-export const DEMO_HOME = '/demo'
+export const DEMO_HOME = '/store'
 
 // `Home` is a plain, eager import (top of this file), not `lazy()`: the one deliberate exception
 // to every other route here. `DEMO_HOME` is the app's own default landing page, reached directly
@@ -74,14 +74,14 @@ const OpsDashboard = lazy(() => import('./pages/ops/Dashboard').then(m => ({ def
 const OpsInventory = lazy(() => import('./pages/ops/Inventory').then(m => ({ default: m.Inventory })))
 const OpsSettings = lazy(() => import('./pages/ops/Settings').then(m => ({ default: m.Settings })))
 
-/** Shared with `sampleTitle` below: a direct load of `/demo/sign-in/verify` with no address
+/** Shared with `sampleTitle` below: a direct load of `/store/sign-in/verify` with no address
  *  pending redirects straight back here, so that is the title demo.spec actually finds there. */
 const SIGN_IN_TITLE = 'Hexline — sign in'
-/** Shared the same way: a direct load of `/demo/onboarding` with no one signed in redirects
+/** Shared the same way: a direct load of `/store/onboarding` with no one signed in redirects
  *  straight back here, so that is the title demo.spec actually finds there. */
 const CREATE_ACCOUNT_TITLE = 'Hexline — create an account'
 /** Shared with checkout's own `sampleTitle` below: an empty cart sends a direct load of
- *  `/demo/checkout` straight back here, so this is the title demo.spec actually finds there. */
+ *  `/store/checkout` straight back here, so this is the title demo.spec actually finds there. */
 const CART_TITLE = 'Hexline — cart'
 
 /**
@@ -91,40 +91,40 @@ const CART_TITLE = 'Hexline — cart'
  */
 export const DEMO_PAGES: DemoPage[] = [
   { path: DEMO_HOME, label: 'Home', title: 'Hexline — home', Component: Home, inNav: true },
-  { path: '/demo/shop', label: 'Shop', title: 'Hexline — shop', Component: Shop, inNav: true },
+  { path: '/store/shop', label: 'Shop', title: 'Hexline — shop', Component: Shop, inNav: true },
   {
-    path: '/demo/shop/:id',
+    path: '/store/shop/:id',
     label: 'Product',
     title: 'Hexline — product',
     Component: Product,
     inNav: false,
     // Unlisted in the Navbar itself (see isNavCurrent/isDescendantOf in DemoLayout.tsx): Shop
     // stays current on its own unlisted product pages.
-    samplePath: '/demo/shop/bump-helmet',
+    samplePath: '/store/shop/bump-helmet',
     sampleTitle: 'Hexline — Bump helmet',
     titleFromPage: true,
   },
-  { path: '/demo/cart', label: 'Cart', title: CART_TITLE, Component: Cart, inNav: false },
+  { path: '/store/cart', label: 'Cart', title: CART_TITLE, Component: Cart, inNav: false },
   {
-    path: '/demo/checkout',
+    path: '/store/checkout',
     label: 'Checkout',
     title: 'Hexline — checkout',
     Component: Checkout,
     inNav: false,
-    // An empty cart bounces a direct load straight to /demo/cart (see Checkout.tsx), so that is
+    // An empty cart bounces a direct load straight to /store/cart (see Checkout.tsx), so that is
     // the title the generic demo.spec pass actually finds here, not this route's own.
     sampleTitle: CART_TITLE,
   },
   {
-    path: '/demo/checkout/confirmation',
+    path: '/store/checkout/confirmation',
     label: 'Order confirmation',
     title: 'Hexline — order confirmation',
     Component: Confirmation,
     inNav: false,
   },
-  { path: '/demo/sign-in', label: 'Sign in', title: SIGN_IN_TITLE, Component: SignIn, inNav: false },
+  { path: '/store/sign-in', label: 'Sign in', title: SIGN_IN_TITLE, Component: SignIn, inNav: false },
   {
-    path: '/demo/sign-in/verify',
+    path: '/store/sign-in/verify',
     label: 'Verify your code',
     title: 'Hexline — verify your code',
     Component: Verify,
@@ -134,21 +134,21 @@ export const DEMO_PAGES: DemoPage[] = [
     sampleTitle: SIGN_IN_TITLE,
   },
   {
-    path: '/demo/reset-password',
+    path: '/store/reset-password',
     label: 'Reset password',
     title: 'Hexline — reset your password',
     Component: ResetPassword,
     inNav: false,
   },
   {
-    path: '/demo/create-account',
+    path: '/store/create-account',
     label: 'Create account',
     title: CREATE_ACCOUNT_TITLE,
     Component: CreateAccount,
     inNav: false,
   },
   {
-    path: '/demo/onboarding',
+    path: '/store/onboarding',
     label: 'Onboarding',
     title: 'Hexline — set up your account',
     Component: Onboarding,
@@ -158,28 +158,28 @@ export const DEMO_PAGES: DemoPage[] = [
     sampleTitle: CREATE_ACCOUNT_TITLE,
   },
   {
-    path: '/demo/journal',
+    path: '/store/journal',
     label: 'Field notes',
     title: 'Hexline — field notes',
     Component: Journal,
     inNav: false,
   },
   {
-    path: '/demo/journal/:slug',
+    path: '/store/journal/:slug',
     label: 'Field note',
     title: 'Hexline — field note',
     Component: Article,
     inNav: false,
     // A route registered with a param needs a concrete URL demo.spec can `goto` -- see the
     // module doc comment on `samplePath` above.
-    samplePath: '/demo/journal/cleaning-after-a-field-day',
+    samplePath: '/store/journal/cleaning-after-a-field-day',
     sampleTitle: 'Hexline — Cleaning a replica after a field day',
     titleFromPage: true,
   },
-  { path: '/demo/care', label: 'Care', title: 'Hexline — Care', Component: Pricing, inNav: true },
-  { path: '/demo/about', label: 'About', title: 'Hexline — about', Component: About, inNav: true },
+  { path: '/store/care', label: 'Care', title: 'Hexline — Care', Component: Pricing, inNav: true },
+  { path: '/store/about', label: 'About', title: 'Hexline — about', Component: About, inNav: true },
   {
-    path: '/demo/status/error',
+    path: '/store/status/error',
     label: 'Error states',
     title: 'Hexline — error states',
     Component: StatusError,
@@ -190,7 +190,7 @@ export const DEMO_PAGES: DemoPage[] = [
   // direct load or the demo.spec generic pass both bounce straight to sign-in; that redirect's
   // own title is what demo.spec actually finds at any of these three paths, hence sampleTitle.
   {
-    path: '/demo/account',
+    path: '/store/account',
     label: 'Overview',
     title: 'Hexline — your account',
     Component: AccountOverview,
@@ -198,7 +198,7 @@ export const DEMO_PAGES: DemoPage[] = [
     sampleTitle: SIGN_IN_TITLE,
   },
   {
-    path: '/demo/account/orders',
+    path: '/store/account/orders',
     label: 'Orders',
     title: 'Hexline — orders',
     Component: AccountOrders,
@@ -206,7 +206,7 @@ export const DEMO_PAGES: DemoPage[] = [
     sampleTitle: SIGN_IN_TITLE,
   },
   {
-    path: '/demo/account/settings',
+    path: '/store/account/settings',
     label: 'Settings',
     title: 'Hexline — settings',
     Component: AccountSettings,
@@ -216,16 +216,16 @@ export const DEMO_PAGES: DemoPage[] = [
   // The Hexline back office: the tool that runs the store, reached from the footer's Service
   // column. All three are inNav: false (the store's Navbar is for shoppers) and none asks for a
   // session (see OpsLayout), so demo.spec's direct load lands on each page itself.
-  { path: '/demo/ops', label: 'Dashboard', title: 'Hexline ops — dashboard', Component: OpsDashboard, inNav: false },
+  { path: '/store/ops', label: 'Dashboard', title: 'Hexline ops — dashboard', Component: OpsDashboard, inNav: false },
   {
-    path: '/demo/ops/inventory',
+    path: '/store/ops/inventory',
     label: 'Inventory',
     title: 'Hexline ops — inventory',
     Component: OpsInventory,
     inNav: false,
   },
   {
-    path: '/demo/ops/settings',
+    path: '/store/ops/settings',
     label: 'Settings',
     title: 'Hexline ops — settings',
     Component: OpsSettings,

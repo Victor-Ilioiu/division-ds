@@ -17,8 +17,8 @@ const TAB_ACTIVE = 'border-[var(--color-accent-signal-indicator)] text-[var(--co
  *
  * `NavLink`, not a plain router `Link`: it computes `aria-current="page"` on the active item for
  * free, needed for a person using a screen reader to tell which of the three sub-nav pages is
- * showing. `end` on Overview only -- `/demo/account` is a literal
- * prefix of `/demo/account/orders` and `/demo/account/settings`, so without `end` Overview would
+ * showing. `end` on Overview only -- `/store/account` is a literal
+ * prefix of `/store/account/orders` and `/store/account/settings`, so without `end` Overview would
  * stay marked current on every other account page too, the same prefix hazard DemoLayout's own
  * `isNavCurrent`/`isDescendantOf` comment documents for the main Navbar.
  */
@@ -27,13 +27,13 @@ export function AccountLayout({ children }: { children: ReactNode }) {
     <div className={cn(DEFAULT_PAGE, 'py-12 flex flex-col gap-6')}>
       <h1 className="font-display font-semibold text-2xl text-[var(--color-text-primary)]">Your account</h1>
       <nav aria-label="Account" className="flex gap-6 border-b border-[var(--color-border-hairline)]">
-        <NavLink end to="/demo/account" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
+        <NavLink end to="/store/account" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
           Overview
         </NavLink>
-        <NavLink to="/demo/account/orders" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
+        <NavLink to="/store/account/orders" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
           Orders
         </NavLink>
-        <NavLink to="/demo/account/settings" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
+        <NavLink to="/store/account/settings" className={({ isActive }) => cn(TAB, RING, isActive && TAB_ACTIVE)}>
           Settings
         </NavLink>
       </nav>
