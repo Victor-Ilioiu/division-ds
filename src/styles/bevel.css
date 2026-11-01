@@ -107,37 +107,44 @@
    Opt out with `.no-reticle` on the wrapper, for a control nested so tightly inside another
    element (Tag's dismiss button) that brackets outside it would land on its parent's border. */
 .bevel-focus-wrap { position: relative; }
+/* Painted as an outline cut down to its four corners, never as a box placed outside the wrapper. A
+   box out there is scrollable overflow, so every scroller holding a Button grew scrollbars on both
+   axes during a hover, and asking each scroller to opt in (`.reticle-room`) only moved the bug to
+   whoever had not heard of it. An outline is not scrollable overflow, which is also why the focus
+   ring beside it never had this problem. So this box stays exactly on the wrapper and adds none. */
 .bevel-focus-wrap::before {
   content: "";
   position: absolute;
-  inset: calc(-1 * var(--reticle-from, 12px));
+  inset: 0;
   pointer-events: none;
   opacity: 0;
-  /* At rest the bracket is not rendered: an invisible box 12px out still counts as overflow and
-     gave every scroll pane holding a Button a 7px scrollbar on both axes. */
-  display: none;
+  --reticle-now: var(--reticle-from, 12px);
   --reticle-arm: 10px;
-  --reticle-c: var(--color-accent-signal-fill);
-  background:
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 0 / var(--reticle-arm) 2px,
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 0 / 2px var(--reticle-arm),
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 0 / var(--reticle-arm) 2px,
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 0 / 2px var(--reticle-arm),
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 100% / var(--reticle-arm) 2px,
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 0 100% / 2px var(--reticle-arm),
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 100% / var(--reticle-arm) 2px,
-    linear-gradient(var(--reticle-c), var(--reticle-c)) 100% 100% / 2px var(--reticle-arm);
-  background-repeat: no-repeat;
+  --r: calc(-1 * var(--reticle-now));
+  --a: calc(var(--reticle-arm) - var(--reticle-now));
+  --R: calc(100% + var(--reticle-now));
+  --A: calc(100% - var(--reticle-arm) + var(--reticle-now));
+  outline: 2px solid var(--color-accent-signal-fill);
+  outline-offset: calc(var(--reticle-now) - 2px);
+  /* Four squares, one per corner. Each connecting line runs out from the top-left corner and back
+     along itself, so it encloses no area; a line round the perimeter would enclose the whole box.
+     The outline's 2px shows only inside the squares, which leaves the eight bracket arms. */
+  clip-path: polygon(
+    var(--r) var(--r), var(--a) var(--r), var(--a) var(--a), var(--r) var(--a), var(--r) var(--r),
+    var(--R) var(--r), var(--R) var(--a), var(--A) var(--a), var(--A) var(--r), var(--R) var(--r),
+    var(--r) var(--r),
+    var(--R) var(--R), var(--A) var(--R), var(--A) var(--A), var(--R) var(--A), var(--R) var(--R),
+    var(--r) var(--r),
+    var(--r) var(--R), var(--r) var(--A), var(--a) var(--A), var(--a) var(--R), var(--r) var(--R)
+  );
   /* Leaving: fast and flat, so a pointer sweeping across a toolbar does not leave a trail. */
-  transition: inset var(--duration-fast) linear, opacity var(--duration-fast) linear, display var(--duration-fast) allow-discrete;
+  transition: outline-offset var(--duration-fast) linear, clip-path var(--duration-fast) linear, opacity var(--duration-fast) linear;
 }
 .bevel-focus-wrap:has(> :hover:not(:disabled):not([aria-disabled="true"]))::before {
-  display: block;
-  inset: calc(-1 * var(--reticle-to, 5px));
+  --reticle-now: var(--reticle-to, 5px);
   opacity: 1;
   /* Arriving: the M1 snap curve, over the lock-on window the mood board specifies (160-220ms). */
-  transition: inset var(--duration-base) var(--ease-snap), opacity var(--duration-base) var(--ease-snap), display var(--duration-base) allow-discrete;
-  @starting-style { inset: calc(-1 * var(--reticle-from, 12px)); opacity: 0; }
+  transition: outline-offset var(--duration-base) var(--ease-snap), clip-path var(--duration-base) var(--ease-snap), opacity var(--duration-base) var(--ease-snap);
 }
 .bevel-focus-wrap.no-reticle::before { content: none; }
 
@@ -153,7 +160,8 @@
    (outline-offset 3px + 2px width) land outside the control's box. Both are 5px.
 
    A scroll container (overflow other than visible) clips at its padding box, so a control flush
-   with its edge loses its brackets and ring there. Any scroll container that can hold a Button at
+   with its edge loses its brackets and ring there. Neither makes it scroll; this is about being
+   cut off, not about scrollbars. Any scroll container that can hold a Button at
    its edge carries at least this much padding on that edge. `.reticle-room` does it without moving
    the layout: padding out, the same negative margin back. `-x` / `-y` for one axis only. Do not
    change --reticle-to or the ring without updating this. */
@@ -161,6 +169,3 @@
 .reticle-room   { padding: var(--reticle-reach); margin: calc(-1 * var(--reticle-reach)); }
 .reticle-room-x { padding-inline: var(--reticle-reach); margin-inline: calc(-1 * var(--reticle-reach)); }
 .reticle-room-y { padding-block: var(--reticle-reach); margin-block: calc(-1 * var(--reticle-reach)); }
-/* Inside a scroll pane the bracket fades in where it lands instead of closing in from 12px: for the
-   first frames of the snap it would sit outside the room and flash a scrollbar. */
-:is(.reticle-room, .reticle-room-x, .reticle-room-y) .bevel-focus-wrap::before { --reticle-from: var(--reticle-to, 5px); }
