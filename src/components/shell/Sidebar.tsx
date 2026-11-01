@@ -125,6 +125,7 @@ export const NAV: NavGroup[] = [
       { to: '/components/product-card', label: 'Product card' },
       { to: '/components/sheet', label: 'Sheet' },
       { to: '/components/sidebar', label: 'Sidebar' },
+      { to: '/components/terminal', label: 'Terminal' },
     ],
   },
 ]

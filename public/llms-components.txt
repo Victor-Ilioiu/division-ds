@@ -1664,3 +1664,33 @@ import { Sidebar } from 'src/components/organisms/sidebar/Sidebar'
 - `ref: Ref<HTMLElement>` The nav element.
 
 Page: /docs/components/sidebar.md
+
+### Terminal
+
+A live terminal session in the page, built on xterm.js. It renders the output you write to it and reports what the person types. It knows nothing about the connection: your app owns that.
+
+```tsx
+import { Terminal } from 'src/components/organisms/terminal/Terminal'
+```
+
+Requires: Import it from its own file and load the screen that uses it with React.lazy. It adds about 100 kB of JavaScript after gzip (about 380 kB before) and 1 kB of CSS, so it is not in the organisms barrel.
+
+Requires: A height. It is 24rem by default; set another with className (h-[32rem]), or flex-1 inside a column.
+
+- `label: string` Required. What this session is ("Build agent"). Names the terminal, its input and its status announcements.
+- `status: 'connecting' \| 'live' \| 'reconnecting' \| 'exited' \| 'error'` Required. connecting and reconnecting are info, live is ok, exited is neutral for code 0 and hostile otherwise, error is hostile. Buffered output stays visible in all of them.
+- `exitCode: number` With status exited: shown beside the word, and a non-zero code turns it hostile.
+- `statusMessage: string` Detail beside the status, and announced with it: the reason for an error, the attempt while reconnecting.
+- `readOnly: boolean = false` Blocks input and never fires onData. Selecting and copying keep working, and Tab and Escape leave the terminal as they do anywhere else.
+- `announceOutput: boolean = false` Reads output aloud through xterm’s live region, up to 20 lines at a time. For a single session a screen reader user is working in. Leave it off when several terminals share a page.
+- `onData: (data: string) => void` What the person typed or pasted, plus the replies a program asks the terminal for. Send it to the process.
+- `onResize: (size: { cols: number; rows: number }) => void` The new grid size, debounced by 100ms and only when cols or rows changed. It fires once after mounting.
+- `scrollback: number = 5000` Lines kept above the screen. xterm’s own default is 1000, which a busy agent passes in seconds.
+- `className: string` Merged onto the frame. Set the height here.
+- `ref: Ref<TerminalHandle>` The handle with the four methods below.
+- `write (TerminalHandle): (data: string \| Uint8Array, callback?: () => void) => void` Sends output to the terminal, without a React render. The callback runs when it has been parsed: use it for flow control, because xterm throws data away past 50 MB waiting.
+- `clear (TerminalHandle): () => void` Clears the screen and the scrollback, keeping the line the cursor is on.
+- `focus (TerminalHandle): () => void` Moves keyboard focus into the terminal.
+- `fit (TerminalHandle): () => void` Fits the grid to the frame now. Resizing already does this.
+
+Page: /docs/components/terminal.md

@@ -521,6 +521,17 @@ export function pairsForTokens(t, control) {
       },
     ]),
 
+    // Terminal output is text on surface.base, so all sixteen ANSI colours clear 4.5:1, black and
+    // white included. The selection wash has to be seen (3:1) and read through (4.5:1).
+    ...['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'].flatMap(hue => [hue, `bright-${hue}`]).map(hue => ({
+      name: `terminal ANSI ${hue} (terminal.${hue}) on surface.base`,
+      fg: t[`--color-terminal-${hue}`],
+      bg: page,
+      minRatio: 4.5,
+    })),
+    { name: 'terminal selection (terminal.selection) against surface.base', fg: composite(t['--color-terminal-selection'], page), bg: page, minRatio: 3 },
+    { name: 'terminal text (text.primary) on terminal.selection over surface.base', fg: t['--color-text-primary'], bg: composite(t['--color-terminal-selection'], page), minRatio: 4.5 },
+
     // AI presence. AiLabel's mark and explanation sit on any surface; a field an AI filled paints
     // ai.wash over its own control fill, so the field's pixel is that composite, and its text, its
     // AI glyph and its border are measured against it rather than against the bare fill.

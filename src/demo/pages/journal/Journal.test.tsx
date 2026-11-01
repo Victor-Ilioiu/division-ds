@@ -92,7 +92,8 @@ describe('Journal', () => {
     screen.getAllByRole('article').forEach(card => {
       expect(card.firstElementChild).toHaveAttribute('data-card-media')
     })
-    expect(container.querySelector('img')).toBeNull()
+    expect(container.querySelectorAll('img')).toHaveLength(4)
+    container.querySelectorAll('img').forEach(img => expect(img).toHaveAttribute('alt', ''))
     expect(screen.getByRole('heading', { level: 1, name: 'Field notes' }).closest('.mx-auto')).toHaveClass('max-w-[1200px]')
   })
 

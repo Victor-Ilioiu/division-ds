@@ -1,3 +1,4 @@
+import { publicPath } from '../../base-path'
 import type { Category } from '../store/catalog'
 
 /**
@@ -13,7 +14,7 @@ export type JournalBlock =
   | { kind: 'paragraph'; text: string }
   | { kind: 'steps'; items: string[] }
   | { kind: 'callout'; title: string; text: string }
-  /** `src` is optional: `public/media/journal/<slug>-figure.webp` (1200x900) once the picture
+  /** `src` is optional: `public/media/journal/<slug>-figure.webp` (4:3) once the picture
    *  exists. Until then the figure renders its placeholder box, so the layout is already final. */
   | { kind: 'figure'; caption: string; src?: string }
 
@@ -32,7 +33,7 @@ export type JournalPost = {
   /** Which catalogue categories this guide answers for -- read by `guideForCategory` below, not
    *  by the index or the article themselves. */
   categories: Category['id'][]
-  /** The cover, 16:9: `public/media/journal/<slug>-cover.webp` (1600x900). Absent until the
+  /** The cover, 16:9: `public/media/journal/<slug>-cover.webp`. Absent until the
    *  picture exists; the index card and the article header then render the placeholder box.
    *  `alt` stays empty unless the picture says something the title does not. */
   image?: { src: string; alt?: string }
@@ -49,6 +50,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readingMinutes: 4,
     tags: ['replicas', 'maintenance', 'quick-job'],
     categories: ['replicas'],
+    image: { src: publicPath('/media/journal/cleaning-after-a-field-day-cover.webp') },
     body: [
       { kind: 'heading', id: 'what-youll-need', text: "What you'll need" },
       {
@@ -78,7 +80,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         text:
           'A clean barrel that still feeds badly, or a motor that sounds strained, is a job for a technician. A Care plan covers the tune and a chrono check on the way out.',
       },
-      { kind: 'figure', caption: 'A replica on a table with its magazine out, a cleaning rod and a row of cotton patches beside it.' },
+      { kind: 'figure', caption: 'A replica on a table with its magazine out, a cleaning rod and a cloth beside it.', src: publicPath('/media/journal/cleaning-after-a-field-day-figure.webp') },
     ],
   },
   {
@@ -89,6 +91,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readingMinutes: 3,
     tags: ['optics', 'rails', 'quick-job'],
     categories: ['optics'],
+    image: { src: publicPath('/media/journal/fitting-an-optic-to-a-rail-cover.webp') },
     body: [
       { kind: 'heading', id: 'what-youll-need', text: "What you'll need" },
       {
@@ -116,7 +119,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         kind: 'paragraph',
         text: 'A dot that drifts after every skirmish, on a clamp that is tight, means the mount itself is worn. That is a replacement mount, not more torque.',
       },
-      { kind: 'figure', caption: 'A window sight seated on a top rail, with the hex key still in the clamp screw.' },
+      { kind: 'figure', caption: 'A window sight seated on a top rail, with the hex key still in the clamp screw.', src: publicPath('/media/journal/fitting-an-optic-to-a-rail-figure.webp') },
     ],
   },
   {
@@ -127,6 +130,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readingMinutes: 5,
     tags: ['ammo', 'setup', 'hop-up'],
     categories: ['ammo'],
+    image: { src: publicPath('/media/journal/choosing-bb-weight-cover.webp') },
     body: [
       { kind: 'heading', id: 'what-youll-need', text: "What you'll need" },
       {
@@ -153,7 +157,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         kind: 'paragraph',
         text: 'If no weight flies flat at any hop-up setting, the hop-up rubber is worn or the barrel is dirty. Clean the barrel first; the rubber is a workshop job.',
       },
-      { kind: 'figure', caption: 'Two bottles of BBs, 0.25 g and 0.28 g, beside a magazine and a speed loader.' },
+      { kind: 'figure', caption: 'Two bottles of BBs, 0.25 g and 0.28 g, beside a magazine and a speed loader.', src: publicPath('/media/journal/choosing-bb-weight-figure.webp') },
     ],
   },
   {
@@ -164,6 +168,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
     readingMinutes: 6,
     tags: ['parts', 'replicas', 'batteries', 'maintenance'],
     categories: ['parts'],
+    image: { src: publicPath('/media/journal/battery-care-and-storage-cover.webp') },
     body: [
       { kind: 'heading', id: 'what-youll-need', text: "What you'll need" },
       {
@@ -190,7 +195,7 @@ export const JOURNAL_POSTS: JournalPost[] = [
         kind: 'paragraph',
         text: 'A battery cannot be serviced, only replaced. If a healthy pack still gives a slow, uneven cycle, the fault is in the wiring or the motor, and that is a workshop job.',
       },
-      { kind: 'figure', caption: 'A stick battery on a balance charger inside an open charging bag, showing 3.8 V per cell.' },
+      { kind: 'figure', caption: 'A stick battery on a balance charger inside an open charging bag, showing 3.8 V per cell.', src: publicPath('/media/journal/battery-care-and-storage-figure.webp') },
     ],
   },
 ]

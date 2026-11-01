@@ -48,7 +48,7 @@ function Block({ block }: { block: JournalBlock }) {
       return (
         <figure className="flex flex-col gap-2">
           {/* The caption describes the picture, so the image itself is decorative. */}
-          <CardMedia src={block.src} aspect="4/3" data-testid="journal-figure">
+          <CardMedia src={block.src} alt="" aspect="4/3" data-testid="journal-figure">
             <JournalPlaceholder />
           </CardMedia>
           <figcaption className="font-body text-xs text-[var(--color-text-secondary)]">{block.caption}</figcaption>
@@ -120,7 +120,7 @@ export function Article() {
               </p>
             </div>
 
-            <CardMedia src={post.image?.src} alt={post.image?.alt} aspect="16/9" data-testid="journal-cover">
+            <CardMedia src={post.image?.src} alt={post.image?.alt ?? ''} aspect="16/9" data-testid="journal-cover">
               <JournalPlaceholder iconClass="w-16 h-16" />
             </CardMedia>
 

@@ -29,7 +29,7 @@ export function JournalCard({
 }) {
   return (
     <Card as="article" interactive className="h-full">
-      <CardMedia src={post.image?.src} alt={post.image?.alt} aspect="16/9">
+      <CardMedia src={post.image?.src} alt={post.image?.alt ?? ''} aspect="16/9">
         <JournalPlaceholder />
       </CardMedia>
       <CardBody className="flex flex-col gap-3">

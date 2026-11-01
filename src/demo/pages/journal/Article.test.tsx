@@ -153,12 +153,16 @@ describe('Article', () => {
     expect(within(side).getByRole('link', { name: /^optics/ })).not.toHaveAccessibleName(/on this note/)
   })
 
-  it('shows the placeholder box for the cover and every figure while no picture exists', () => {
-    const { container } = renderArticle()
-    expect(screen.getByTestId('journal-cover').querySelector('img')).toBeNull()
-    expect(screen.getByTestId('journal-cover').querySelector('svg')).not.toBeNull()
-    expect(screen.getAllByTestId('journal-figure').length).toBeGreaterThan(0)
-    expect(container.querySelectorAll('img')).toHaveLength(0)
+  it('shows the cover picture as decoration', () => {
+    renderArticle('cleaning-after-a-field-day')
+    expect(screen.getByTestId('journal-cover').querySelector('img')).toHaveAttribute('alt', '')
+  })
+
+  it('shows a figure picture as decoration, since its caption describes it', () => {
+    renderArticle('choosing-bb-weight')
+    const img = screen.getByTestId('journal-figure').querySelector('img')
+    expect(img).toHaveAttribute('src', '/media/journal/choosing-bb-weight-figure.webp')
+    expect(img).toHaveAttribute('alt', '')
   })
 
   it('renders the same image card under More field notes, each with a cover box', () => {

@@ -65,6 +65,25 @@
       "chart": {
         "series-1": { "$type": "color", "$value": "{color.primitive.signal.500}", "$description": "First chart series: a line, a bar, a legend swatch. A graphic, 3:1: 5.80:1 on surface.base, 5.05:1 on surface.raised, 4.47:1 nested. Never text." },
         "series-2": { "$type": "color", "$value": "{color.primitive.info.600}", "$description": "Second chart series. 5.52:1 on surface.base, 4.80:1 on surface.raised, 4.25:1 nested. Never text. There is no third: the other hues are status colours." }
+      },
+      "terminal": {
+        "black": { "$type": "color", "$value": "#7b8592", "$description": "Not literal black: ANSI black must stay readable on this page, so it is a grey here." },
+        "red": { "$type": "color", "$value": "#ff6b5e" },
+        "green": { "$type": "color", "$value": "#3ddc84" },
+        "yellow": { "$type": "color", "$value": "#e8b931" },
+        "blue": { "$type": "color", "$value": "#5aa7ff" },
+        "magenta": { "$type": "color", "$value": "#d98cf0" },
+        "cyan": { "$type": "color", "$value": "#3fd0d8" },
+        "white": { "$type": "color", "$value": "#c4ccd6", "$description": "Not literal white: ANSI white must stay readable on this page, so it is a grey here." },
+        "bright-black": { "$type": "color", "$value": "#98a2af" },
+        "bright-red": { "$type": "color", "$value": "#ff9288" },
+        "bright-green": { "$type": "color", "$value": "#7debaa" },
+        "bright-yellow": { "$type": "color", "$value": "#f5d36a" },
+        "bright-blue": { "$type": "color", "$value": "#8cc2ff" },
+        "bright-magenta": { "$type": "color", "$value": "#e8b3f7" },
+        "bright-cyan": { "$type": "color", "$value": "#7fe4ea" },
+        "bright-white": { "$type": "color", "$value": "#f4f7fa" },
+        "selection": { "$type": "color", "$value": "rgba(90, 167, 255, 0.58)", "$description": "A wash over surface.base: at least 3:1 against the page and text.primary at 4.5:1 on it. Gated." }
       }
     }
   }

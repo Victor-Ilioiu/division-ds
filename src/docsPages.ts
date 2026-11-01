@@ -99,4 +99,5 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/product-card', Component: lazy(() => import('./components/organisms/product-card/ProductCardDocs').then(module => ({ default: module.ProductCardDocs }))) },
   { path: '/components/sheet', Component: lazy(() => import('./components/organisms/sheet/SheetDocs').then(module => ({ default: module.SheetDocs }))) },
   { path: '/components/sidebar', Component: lazy(() => import('./components/organisms/sidebar/SidebarDocs').then(module => ({ default: module.SidebarDocs }))) },
+  { path: '/components/terminal', Component: lazy(() => import('./components/organisms/terminal/TerminalDocs').then(module => ({ default: module.TerminalDocs }))) },
 ]

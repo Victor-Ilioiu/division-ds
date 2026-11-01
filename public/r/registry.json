@@ -1993,6 +1993,35 @@
       ]
     },
     {
+      "name": "terminal",
+      "type": "registry:item",
+      "title": "Terminal",
+      "description": "Terminal. Best for: A live, interactive process that needs real terminal behaviour: colour, cursor movement, full-screen programs.",
+      "dependencies": [
+        "@xterm/addon-fit@0.11.0",
+        "@xterm/addon-unicode11@0.9.0",
+        "@xterm/addon-web-links@0.12.0",
+        "@xterm/xterm@6.0.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/kbd.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/panel.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/terminal/Terminal.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/terminal/Terminal.tsx"
+        }
+      ]
+    },
+    {
       "name": "division-ds-all",
       "type": "registry:item",
       "title": "Division DS, every component",
@@ -2072,7 +2101,8 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/newsletter-form.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/product-card.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sheet.json",
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sidebar.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sidebar.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/terminal.json"
       ],
       "files": []
     },

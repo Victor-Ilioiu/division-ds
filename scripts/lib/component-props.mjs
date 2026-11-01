@@ -62,7 +62,16 @@ export function publicExports(root, tier) {
       entry[isType ? 'types' : 'values'].push(element.name.text)
     }
   }
-  return bySlug
+  return { ...bySlug, ...OUTSIDE_BARREL[tier] }
+}
+
+/** Components deliberately not re-exported by their tier's barrel, because a barrel import would
+ *  put a heavy library in every screen that imports the barrel. They are still public: their docs
+ *  page gives the direct import. */
+const OUTSIDE_BARREL = {
+  organisms: {
+    terminal: { values: ['Terminal'], types: ['TerminalHandle', 'TerminalProps', 'TerminalStatus'], from: ['./terminal/Terminal'] },
+  },
 }
 
 /** What a folder's files export, read from the type checker:

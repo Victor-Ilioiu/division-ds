@@ -55,11 +55,14 @@ export async function buildAgentDocs(root = REPO_ROOT) {
     const barrel = readFileSync(join(root, 'src/components', folder.tier, 'index.ts'), 'utf8')
     const imports = barrels[folder.tier][folder.slug].from
       .map(from => {
-        const block = barrel.match(new RegExp(`export \\{([^}]*)\\} from '${from.replace(/[.]/g, '\\.')}'`))[1]
-        const names = block
-          .split(',')
-          .map(name => name.trim())
-          .filter(name => name && !name.startsWith('type '))
+        // No match: a component kept out of the barrel on purpose (OUTSIDE_BARREL).
+        const block = barrel.match(new RegExp(`export \\{([^}]*)\\} from '${from.replace(/[.]/g, '\\.')}'`))?.[1]
+        const names = block === undefined
+          ? barrels[folder.tier][folder.slug].values
+          : block
+              .split(',')
+              .map(name => name.trim())
+              .filter(name => name && !name.startsWith('type '))
         return { names, from: `src/components/${folder.tier}/${from.slice(2)}` }
       })
       .filter(line => line.names.length > 0)

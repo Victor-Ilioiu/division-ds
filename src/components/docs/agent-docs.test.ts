@@ -30,7 +30,7 @@ describe('the generated agent docs', () => {
 
   it('give every component a page with an import line, props and at least one example', () => {
     const pages = Object.entries(files).filter(([path]) => path.startsWith('public/docs/components/'))
-    expect(pages).toHaveLength(74)
+    expect(pages).toHaveLength(75)
     for (const [path, text] of pages) {
       expect(text, path).toMatch(/## Import\n\n```tsx\nimport \{ \w/)
       expect(text, path).toContain('## Props')
@@ -77,8 +77,9 @@ describe('the generated agent docs', () => {
     expect(design).toMatch(/`font-display`: `"Oxanium"/)
     expect(design).toContain('`--color-surface-base`')
     // 18.1 kB when written (2026-10-26). It links the pages rather than inlining them.
+    // Moved to 23.5 kB with Terminal and its 17 tokens (2026-11-01).
     // Moved to 21.5 kB with Panel and CodeBlock (2026-10-30): each component adds a linked line.
-    expect(design.length).toBeLessThan(21_500)
+    expect(design.length).toBeLessThan(23_500)
   })
 
   it('keep the index small enough to read whole', () => {

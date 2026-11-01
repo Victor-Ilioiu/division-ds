@@ -1,6 +1,6 @@
 # Division DS
 
-> A React 19, Tailwind 4 and Radix design system: 74 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
+> A React 19, Tailwind 4 and Radix design system: 75 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. Components are source you read and copy, not a package.
 
 Links below are relative to this file, so they work wherever the site is served. In the repository the same files are under `public/`.
 Read a component page before using the component: it has the props, working examples and the rules.
@@ -96,6 +96,7 @@ Read a component page before using the component: it has the props, working exam
 - [ProductCard](docs/components/product-card.md): One product as one link. Best for: One product in a shop grid, where the whole card opens it and Add to cart sits on it. Not for: A general content panel: use Card. Also: ProductGrid.
 - [Sheet](docs/components/sheet.md): A dialog that slides in from the side and runs the full height of the screen. Best for: Filters, navigation on a narrow screen, or one item's details next to a list, sliding in from the side. Not for: A short confirmation: use Dialog or AlertDialog.
 - [Sidebar](docs/components/sidebar.md): The navigation down the side of an app. Best for: App navigation down the side: grouped pages with icons and counts. Not for: A site header with a few links: use Navbar.
+- [Terminal](docs/components/terminal.md): A live terminal session in the page, built on xterm.js. Best for: A live, interactive process that needs real terminal behaviour: colour, cursor movement, full-screen programs. Not for: Static code or a finished log: use CodeBlock. A conversation shown as messages: use ChatThread.
 
 ## The rules in brief
 

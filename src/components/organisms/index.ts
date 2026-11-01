@@ -1,6 +1,8 @@
 // Division DS — organisms barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Seventeen folders under
+// the component(s) and their exported types and helpers. Eighteen folders under
 // src/components/organisms/ — verify the folder count still matches before trusting either.
+// terminal/ is the one folder left out on purpose: exporting it here would put xterm in every
+// screen that imports this barrel. Import it from its own file.
 // DialogHeading, OverlayFrame and its context are shared between the overlays and are not part of
 // the public surface.
 

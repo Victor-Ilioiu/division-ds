@@ -26,12 +26,12 @@ import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Panel } from '../../components/atoms/panel/Panel'
 import { CabinetHero } from '../hero/CabinetHero'
 
-// Every figure here is read from the repository: 74 components in public/manifest/components.json;
+// Every figure here is read from the repository: 75 components in public/manifest/components.json;
 // the token layers from public/manifest/tokens.json (66 primitive colours plus 8 spacing and
-// 6 motion steps, 39 semantic, 26 component); 8 MCP tools listed in AGENTS.md.
+// 6 motion steps, 56 semantic, 26 component); 8 MCP tools listed in AGENTS.md.
 const FIGURES = [
-  { label: 'Components', value: 74 },
-  { label: 'Semantic tokens', value: 39 },
+  { label: 'Components', value: 75 },
+  { label: 'Semantic tokens', value: 56 },
   { label: 'Component tokens', value: 26 },
   { label: 'MCP tools', value: 8 },
 ]
@@ -50,14 +50,14 @@ const FEATURES: Feature[] = [
   },
   {
     icon: <Blocks aria-hidden="true" />,
-    title: '74 components',
+    title: '75 components',
     body: 'From Button to DataTable, CheckoutForm and a chat thread with tool calls. React 19, Tailwind 4 and Radix underneath.',
     span: 'lg:col-span-2',
   },
   {
     icon: <Layers aria-hidden="true" />,
     title: 'Tokens in three layers',
-    body: 'Primitive ramps feed 39 semantic tokens, which feed 26 component tokens. A gate fails the build when a screen skips a layer.',
+    body: 'Primitive ramps feed 56 semantic tokens, which feed 26 component tokens. A gate fails the build when a screen skips a layer.',
     span: 'lg:col-span-2',
   },
   {
@@ -189,7 +189,7 @@ export function Home() {
               The design system your coding agent can read, use and check.
             </h1>
             <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-[var(--color-text-secondary)]">
-              74 accessible components with docs, a skill and an MCP server, so AI builds screens that follow the rules.
+              75 accessible components with docs, a skill and an MCP server, so AI builds screens that follow the rules.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
