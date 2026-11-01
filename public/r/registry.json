@@ -2120,8 +2120,8 @@
           "card-foreground": "#0b0e13",
           "popover": "#e3e8ef",
           "popover-foreground": "#0b0e13",
-          "primary": "#f2550f",
-          "primary-foreground": "#0a0602",
+          "primary": "#d93e00",
+          "primary-foreground": "#ffffff",
           "secondary": "#e3e8ef",
           "secondary-foreground": "#0b0e13",
           "muted": "#e3e8ef",
@@ -2131,8 +2131,8 @@
           "destructive": "#ae0a0a",
           "border": "rgba(11, 14, 19, 0.12)",
           "input": "#616874",
-          "ring": "#c6440b",
-          "chart-1": "#c6440b",
+          "ring": "#d93e00",
+          "chart-1": "#d93e00",
           "chart-2": "#0063d5"
         },
         "dark": {
@@ -2142,8 +2142,8 @@
           "card-foreground": "#e9eef4",
           "popover": "#0d1016",
           "popover-foreground": "#e9eef4",
-          "primary": "#f2550f",
-          "primary-foreground": "#0a0602",
+          "primary": "#d93e00",
+          "primary-foreground": "#ffffff",
           "secondary": "#0d1016",
           "secondary-foreground": "#e9eef4",
           "muted": "#0d1016",
@@ -2153,8 +2153,8 @@
           "destructive": "#f55b5b",
           "border": "rgba(214, 226, 240, 0.16)",
           "input": "#646b72",
-          "ring": "#f2550f",
-          "chart-1": "#f2550f",
+          "ring": "#ff5512",
+          "chart-1": "#d93e00",
           "chart-2": "#1884ff"
         }
       },

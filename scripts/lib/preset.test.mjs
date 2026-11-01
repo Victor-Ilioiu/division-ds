@@ -27,7 +27,7 @@ describe('the Themes page accent swatches', () => {
 
 describe('preset codes', () => {
   it('encodes the shipped anchors as a short versioned string', () => {
-    expect(encodePreset(DEFAULT_PRESET)).toBe('1-f2550f-283445')
+    expect(encodePreset(DEFAULT_PRESET)).toBe('1-d93e00-283445')
   })
 
   it('round-trips, normalising case and the leading #', () => {
@@ -71,7 +71,7 @@ describe('buildTheme', () => {
     const yellow = buildTheme({ ...DEFAULT_PRESET, signal: '#ffe14d' }, docs).themes
     expect(yellow.dark.tokens['--color-accent-signal-ink']).toBe('#0a0602')
     // The default orange gives white only 3.4:1, so it keeps the shipped dark ink.
-    expect(inkFor(DEFAULT_PRESET.signal, '#0a0602')).toBe('#0a0602')
+    expect(inkFor(DEFAULT_PRESET.signal, '#0a0602')).toBe(WHITE_INK)
   })
 
   it('moves nothing for the default preset', () => {
@@ -115,6 +115,6 @@ describe('themeCss', () => {
     const css = themeCss(DEFAULT_PRESET, themes)
     expect(css).toContain(':root, [data-theme="dark"] {\n  --color-surface-base: #07080b;')
     expect(css).toContain('[data-theme="light"] {\n  --color-surface-base: ')
-    expect(css).toContain('preset 1-f2550f-283445')
+    expect(css).toContain('preset 1-d93e00-283445')
   })
 })

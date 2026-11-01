@@ -4,47 +4,47 @@
       "signal": {
         "50": {
           "$type": "color",
-          "$value": "#fef5f0"
+          "$value": "#fff4f0"
         },
         "100": {
           "$type": "color",
-          "$value": "#fcd5c3"
+          "$value": "#ffccb8"
         },
         "200": {
           "$type": "color",
-          "$value": "#f9b596"
+          "$value": "#ffa581"
         },
         "300": {
           "$type": "color",
-          "$value": "#f79569"
+          "$value": "#ff7d49"
         },
         "400": {
           "$type": "color",
-          "$value": "#f4753c"
+          "$value": "#ff5512"
         },
         "500": {
           "$type": "color",
-          "$value": "#f2550f"
+          "$value": "#d93e00"
         },
         "600": {
           "$type": "color",
-          "$value": "#c6440b"
+          "$value": "#b13200"
         },
         "700": {
           "$type": "color",
-          "$value": "#983508"
+          "$value": "#882700"
         },
         "800": {
           "$type": "color",
-          "$value": "#6a2506"
+          "$value": "#601b00"
         },
         "900": {
           "$type": "color",
-          "$value": "#3c1503"
+          "$value": "#381000"
         },
         "950": {
           "$type": "color",
-          "$value": "#0f0501"
+          "$value": "#0f0400"
         }
       },
       "hostile": {

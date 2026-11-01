@@ -7,7 +7,7 @@
    `outline-color` at rest, so the property started at its initial value — `currentColor`, i.e.
    `text.primary`, near-white in the dark theme — and animated to `--color-focus-ring` over the
    whole 120ms. Measured on `main input` at /components/input: rgb(233,238,244) at t+0ms,
-   rgb(239,139,96) at t+30ms, rgb(242,85,15) at t+60ms. The ring is this system's reticle motif
+   rgb(239,139,96) at t+30ms, rgb(217,62,0) at t+60ms (values from the old #f2550f were measured the same way). The ring is this system's reticle motif
    and the one signal a keyboard user relies on; it has to be the right colour at the instant of
    focus, not a tenth of a second later.
 

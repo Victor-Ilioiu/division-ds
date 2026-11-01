@@ -10,7 +10,7 @@ const COMMITMENTS = [
     id: '2.4.13',
     title: 'Focus appearance',
     status: 'shipped' as const,
-    body: "The focus ring is the outline that shows which item the keyboard is on. Its color comes from the focus.ring token (a named design value), and it stands out from the background by a contrast ratio of at least 3:1 in both themes: 3.14:1 in light and 5.80:1 in dark, measured by the contrast gate, the automated check that tests color pairs. It's at least 2px (pixels) thick and is drawn outside any clip-path shape (the CSS that cuts a component's corners), never inside it. The Shape page has the live demo and explains how it works.",
+    body: "The focus ring is the outline that shows which item the keyboard is on. Its color comes from the focus.ring token (a named design value), and it stands out from the background by a contrast ratio of at least 3:1 in both themes: 4.11:1 in light and 6.26:1 in dark, measured by the contrast gate, the automated check that tests color pairs. It's at least 2px (pixels) thick and is drawn outside any clip-path shape (the CSS that cuts a component's corners), never inside it. The Shape page has the live demo and explains how it works.",
   },
   {
     id: '2.5.8',

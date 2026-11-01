@@ -372,7 +372,7 @@ test('ProductGrid: the grid lays out in more than one column at the default view
 // out, so the border, the transform and "nothing around it moves" are all here. Measured on the
 // Card docs page's own example, three interactive cards in a row.
 test.describe('Interactive card', () => {
-  const SIGNAL = 'rgb(242, 85, 15)' // accent.signal.fill, the same value in both themes
+  const SIGNAL = 'rgb(217, 62, 0)' // accent.signal.fill, the same value in both themes
 
   const style = (card: import('@playwright/test').Locator) =>
     card.evaluate(node => {

@@ -11,16 +11,16 @@ import { pairsForTokens } from './pairs-for-tokens.mjs'
 // The dark theme's neutrals are literal hex values in tokens/semantic/color.dark.json, not ramp
 // aliases, so `neutral` changes the light theme only.
 //
-//   1-f2550f-283445     version 1, signal anchor, neutral anchor
+//   1-d93e00-283445     version 1, signal anchor, neutral anchor
 //
 // No radius: the system has no radius token (cut corners are fixed bevels, see the Shape page).
 
 export const PRESET_VERSION = 1
-export const DEFAULT_PRESET = { signal: '#f2550f', neutral: '#283445' }
+export const DEFAULT_PRESET = { signal: '#d93e00', neutral: '#283445' }
 /** The accent swatches on the Themes page (/themes). Each passes every contrast check with the
  *  default neutral; preset.test.mjs holds that, so a swatch can never offer a theme with no CSS. */
 export const ACCENT_PRESETS = [
-  { name: 'Division orange', signal: '#f2550f' },
+  { name: 'Division orange', signal: '#d93e00' },
   { name: 'Blue', signal: '#2563eb' },
   { name: 'Indigo', signal: '#4f46e5' },
   { name: 'Violet', signal: '#7c3aed' },
@@ -55,11 +55,12 @@ export function decodePreset(code) {
   return { signal: `#${parts[1].toLowerCase()}`, neutral: `#${parts[2].toLowerCase()}` }
 }
 
-// Text on the accent fill: white when it clears AA body text (4.5:1) on the fill, otherwise the
-// shipped dark ink. Division's own orange fails white (3.4:1), so the default stays dark.
+// Text on the accent fill: white when it clears AA body text (4.5:1) on the fill, otherwise dark
+// ink. Division's own orange takes white, at 4.53:1.
 export const WHITE_INK = '#ffffff'
+export const DARK_INK = '#0a0602'
 const INK_MIN_RATIO = 4.5
-export function inkFor(fill, darkInk) {
+export function inkFor(fill, darkInk = DARK_INK) {
   return contrastRatio(WHITE_INK, fill) >= INK_MIN_RATIO ? WHITE_INK : darkInk
 }
 
@@ -90,15 +91,14 @@ export function buildTheme(preset, { primitives, dark, light, control }) {
     },
   }
   const from = `rgba(${rgbOf(DEFAULT_PRESET.signal).join(', ')}, `
-  const shippedInk = Object.fromEntries(Object.entries({ dark, light }).map(([name, semantic]) => [name, resolveTokens(ramps, semantic)['--color-accent-signal-ink']]))
   // One theme's tokens with the signal aliases at `stops`. The wash/glow literals follow the
   // resolved fill rather than the raw anchor, so a fill the solver darkens tints them too.
   function resolve(name, semantic, stops) {
     const raw = resolveTokens(ramps, withStops(semantic, stops))
     const to = `rgba(${rgbOf(raw['--color-accent-signal-fill']).join(', ')}, `
     const tokens = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, value.startsWith(from) ? to + value.slice(from.length) : value]))
-    tokens['--color-accent-signal-ink'] = inkFor(tokens['--color-accent-signal-fill'], shippedInk[name])
-    tokens['--color-accent-signal-indicator-ink'] = inkFor(tokens['--color-accent-signal-indicator'], shippedInk[name])
+    tokens['--color-accent-signal-ink'] = inkFor(tokens['--color-accent-signal-fill'])
+    tokens['--color-accent-signal-indicator-ink'] = inkFor(tokens['--color-accent-signal-indicator'])
     return tokens
   }
 

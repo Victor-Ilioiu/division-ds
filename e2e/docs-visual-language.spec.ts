@@ -216,7 +216,7 @@ test.describe('the motifs are on the components, not only in the docs', () => {
 /**
  * The components index is the one brand-register surface in the app, and the only place extreme scale is
  * licensed. What that buys is a numeral roughly four times the size of a component page's h1, in
- * `accent.signal.fill` -- the theme-INVARIANT step, which measures 3.14:1 on the light page. That
+ * `accent.signal.fill` -- the theme-INVARIANT step, which measures 4.11:1 on the light page. That
  * clears WCAG's 3:1 rule for large text and fails the 4.5:1 body rule, so the pair named in
  * scripts/lib/contrast-pairs.mjs is only legitimate while the type stays large. A shrink does not
  * fail the contrast gate, it silently invalidates it, which is why the size is asserted here as

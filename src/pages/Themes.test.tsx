@@ -23,14 +23,14 @@ const renderAt = (url: string) =>
 
 describe('Themes', () => {
   it('gives the CSS for a preset that passes every pair', () => {
-    renderAt('/themes?preset=1-f2550f-283445')
+    renderAt('/themes?preset=1-d93e00-283445')
     expect(screen.getByText(/contrast checks pass/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Copy the theme CSS' })).toBeInTheDocument()
   })
 
   it('names the failing pairs and withholds the CSS when AA fails', () => {
     // A neutral that wrecks the light page: the solver only moves accent shades, so this stays failed.
-    renderAt('/themes?preset=1-f2550f-ff00ff')
+    renderAt('/themes?preset=1-d93e00-ff00ff')
     expect(screen.getByText(/checks fail AA, so there is no CSS yet/)).toBeInTheDocument()
     expect(screen.getAllByText(/^light: /).length).toBeGreaterThan(0)
     expect(screen.queryByRole('button', { name: 'Copy the theme CSS' })).not.toBeInTheDocument()
@@ -43,7 +43,7 @@ describe('Themes', () => {
   })
 
   it('keeps the preset when a font is picked, and loads that font once', async () => {
-    renderAt('/themes?preset=1-f2550f-283445&shape=x')
+    renderAt('/themes?preset=1-d93e00-283445&shape=x')
     for (const name of ['Heading font', 'Body font']) {
       await userEvent.click(screen.getByRole('combobox', { name }))
       await userEvent.click(await screen.findByRole('option', { name: 'Inter' }))
@@ -61,7 +61,7 @@ describe('Themes', () => {
   })
 
   it('applies a radius from the shape param to the previews', () => {
-    const { container } = renderAt('/themes?preset=1-f2550f-283445&shape=r16')
+    const { container } = renderAt('/themes?preset=1-d93e00-283445&shape=r16')
     expect(screen.getByRole('checkbox', { name: 'Keep the cut corner' })).not.toBeChecked()
     expect(screen.getByRole('combobox', { name: 'Corner radius' })).toHaveTextContent('Large')
     const preview = container.querySelector<HTMLElement>('[data-theme="dark"]')!

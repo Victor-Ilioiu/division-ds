@@ -108,7 +108,7 @@ export function PageHeader({
  *  The index is this system's "numerals as heroes" motif applied to the chrome that frames the
  *  components: tabular figures, the leading zero dimmed to `numeral.pad`, the significant digit in
  *  `accent.signal.indicator`. It renders at 28px, which clears WCAG's large-text threshold of 24px, so
- *  the theme-invariant `signal.fill` step is usable here in BOTH themes: it measures 3.14:1 on
+ *  the theme-invariant `signal.fill` step is usable here in BOTH themes: it measures 4.11:1 on
  *  the light page, which fails 4.5:1 for body copy but clears the 3:1 large-text rule. Gated as
  *  its own named pair in scripts/check-contrast.mjs ("docs section index ..."), because the
  *  obligation is per-use: a use nothing names is a use nothing re-measures when a token moves.

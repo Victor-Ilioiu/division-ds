@@ -28,7 +28,7 @@ export const badgeVariants = cva(
       emphasis: { solid: '', subtle: 'border' },
     },
     compoundVariants: [
-      // Solid: theme-invariant fill with its matching ink. Never white text on a fill.
+      // Solid: theme-invariant fill with its matching ink token. Never a literal white on a fill.
       { tone: 'neutral', emphasis: 'solid', class: 'bg-[var(--color-text-secondary)] text-[var(--color-surface-base)]' },
       { tone: 'signal', emphasis: 'solid', class: 'bg-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-ink)]' },
       { tone: 'ok', emphasis: 'solid', class: 'bg-[var(--color-accent-ok-fill)] text-[var(--color-accent-ok-ink)]' },

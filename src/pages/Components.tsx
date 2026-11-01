@@ -34,7 +34,7 @@ export const OVERVIEW_COUNTS = {
 /** A numeral in the system's own treatment: tabular figures, the leading-zero pad dimmed and
  *  hidden from assistive tech, the significant digits in the theme-invariant `signal.fill` step.
  *
- *  `signal.fill` measures 3.14:1 on the light page, which clears WCAG's 3:1 rule for large text
+ *  `signal.fill` measures 4.11:1 on the light page, which clears WCAG's 3:1 rule for large text
  *  and fails the 4.5:1 body rule. Every use of it here is 52px or larger, the pair is named in
  *  scripts/lib/contrast-pairs.mjs, and the rendered sizes are pinned by
  *  e2e/docs-visual-language.spec.ts, because a pair whose threshold depends on a font size is

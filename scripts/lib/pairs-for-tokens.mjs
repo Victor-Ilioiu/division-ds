@@ -126,10 +126,10 @@ export function pairsForTokens(t, control) {
     // a track that stays dark). It replaced an ink thumb on an accent track, so in the light
     // theme the on state now rests on this accepted exception where it used not to.
     {
-      name: 'checked indicator (accent.signal.indicator) on control fill -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      name: 'checked indicator (accent.signal.indicator) on control fill',
       fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
-      minRatio: 2,
+      minRatio: 3,
     },
     // The sidebar's active nav item is the system's fill-selection grammar applied to the
     // chrome (it used to be a 2px left stripe, which this system's own rules ban and which used
@@ -237,7 +237,10 @@ export function pairsForTokens(t, control) {
     // theme on all four tones; `component.control.progress.fill.<tone>` (theme-adaptive `.text`
     // step) is what Progress now renders.
     //
-    // Signal is the exception. Since 2026-09-22 Progress paints `accent.signal.indicator` for its
+    // Since 2026-11-01 (orange #d93e00) the four signal rows here and around this file clear 3:1 in
+    // both themes (3.68:1 at the lowest), so their floors are 3 and the ACCEPTED label is gone. The
+    // figures in the older notes below describe #f2550f and are kept as history.
+    // Signal was the exception. Since 2026-09-22 Progress paints `accent.signal.indicator` for its
     // signal tone (Victor's call, to match Slider's range): 5.51:1 in dark, 2.15:1 in light.
     // Measured against the colour actually rendered, with a 2:1 floor, so the pair is still
     // re-measured whenever a token moves and a further drop still fails. The name says it is
@@ -246,10 +249,10 @@ export function pairsForTokens(t, control) {
     // DropdownMenu/Select rows just below, the focus-ring row near Toast's own rows below, and
     // the nested-raised button border row further down -- all held below the WCAG floor they cite.
     {
-      name: 'progress fill (signal, accent.signal.indicator) on progress track (surface.sunken) -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      name: 'progress fill (signal, accent.signal.indicator) on progress track (surface.sunken)',
       fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
-      minRatio: 2,
+      minRatio: 3,
     },
     // The highlighted menu/listbox row's FILL, in light theme: signal.indicator on surface.sunken
     // measures 2.15:1, hostile.fill on surface.sunken 2.42:1 -- both below SC 1.4.11's 3:1.
@@ -263,10 +266,10 @@ export function pairsForTokens(t, control) {
     // re-measured. Accepted by Victor, 2026-09-24: both rows stay below SC 1.4.11 in light
     // theme, exactly as they shipped.
     {
-      name: 'highlighted menu/listbox row (signal.indicator) on surface.sunken, Select and DropdownMenu -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      name: 'highlighted menu/listbox row (signal.indicator) on surface.sunken, Select and DropdownMenu',
       fg: t['--color-accent-signal-indicator'],
       bg: controlFill,
-      minRatio: 2,
+      minRatio: 3,
     },
     {
       name: 'highlighted hostile menu row (hostile.fill) on surface.sunken -- ACCEPTED BELOW SC 1.4.11 in light theme',
@@ -376,10 +379,10 @@ export function pairsForTokens(t, control) {
     // exclusivity the token doesn't have). Accepted by Victor, 2026-09-24: the focus ring stays
     // on surface.sunken as-is, below SC 1.4.11 in light theme.
     {
-      name: 'focus ring (focus.ring) on surface.sunken: toasts and popups -- ACCEPTED BELOW SC 1.4.11 in light theme',
+      name: 'focus ring (focus.ring) on surface.sunken: toasts and popups',
       fg: t['--color-focus-ring'],
       bg: controlFill,
-      minRatio: 2,
+      minRatio: 3,
     },
     // The stars are graphical objects that carry the value (SC 1.4.11), not
     // text, so axe's colour-contrast rule (unit jsdom and e2e alike) never reaches either colour.
