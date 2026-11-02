@@ -1,8 +1,8 @@
-import { Boxes, Inbox, LayoutDashboard, Map, Package, Settings, Box, Truck, UserCog, Users, Warehouse } from 'lucide-react'
+import { Boxes, Folder, FolderKanban, Inbox, Plus, LayoutDashboard, Map, Package, Settings, Box, Truck, UserCog, Users, Warehouse } from 'lucide-react'
 import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Sidebar.meta'
 import { Example } from '../../docs/Example'
-import { Button } from '../../atoms'
+import { Button, IconButton } from '../../atoms'
 import type { LinkRenderProps } from '../../../lib/render-link'
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../sheet/Sheet'
 import { Sidebar, type SidebarGroup } from './Sidebar'
@@ -38,6 +38,30 @@ const GROUPS: SidebarGroup[] = [
   },
 ]
 
+// A group with an action in its title row and a footer under its items. The action is an
+// IconButton (the system's icon-only Button), ghost and sm; the footer a ghost sm Button.
+const PROJECT_GROUPS: SidebarGroup[] = [
+  {
+    title: 'Projects',
+    icon: <FolderKanban />,
+    action: (
+      <IconButton label="New project" variant="ghost" size="sm">
+        <Plus aria-hidden="true" />
+      </IconButton>
+    ),
+    items: [
+      { label: 'Spring restock', href: '#spring-restock', icon: <Folder /> },
+      { label: 'Warehouse move', href: '#warehouse-move', icon: <Folder /> },
+    ],
+    footer: (
+      <Button variant="ghost" size="sm">
+        <Plus aria-hidden="true" />
+        New project
+      </Button>
+    ),
+  },
+]
+
 // Contrast: "text.primary on surface.raised (over surface.base)" in the Example wrapper, which is
 // surface.raised, and "text.primary on surface.base" inside the Sheet example, which is base.
 const HEADER = <p className="font-display font-semibold">Hexline ops</p>
@@ -63,6 +87,12 @@ export function SidebarDocs() {
       <Example caption="Dashboard navigation" className="block">
         <div className="max-w-64">
           <Sidebar label="Dashboard navigation" groups={GROUPS} header={HEADER} footer={FOOTER} />
+        </div>
+      </Example>
+
+      <Example caption="A Projects group with an action in its title row and a footer under its items" className="block">
+        <div className="max-w-64">
+          <Sidebar label="Projects navigation" groups={PROJECT_GROUPS} />
         </div>
       </Example>
 

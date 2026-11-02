@@ -20,7 +20,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `label` | `string` |  | Required. The name screen readers give the navigation region. |
-| `groups` | `SidebarGroup[]` |  | Required. Each group has title, icon, items, collapsible and defaultOpen. |
+| `groups` | `SidebarGroup[]` |  | Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded). |
 | `header` | `ReactNode` |  | Sits above the groups: a product name, a workspace switcher. |
 | `footer` | `ReactNode` |  | Pinned below the groups when the Sidebar has a height (h-full in a column layout): the signed-in account, a help link. |
 | `renderLink` | `(props: LinkRenderProps) => ReactNode` | `a plain anchor` | Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through. |
@@ -54,6 +54,13 @@ export type SidebarGroup = {
   collapsible?: boolean
   /** Ignored when the group holds the current item, which always starts open. @default true */
   defaultOpen?: boolean
+  /** Drawn at the far right of the title row: a small icon button, e.g. a ghost size="sm" Button
+   *  with a Plus icon and aria-label="New project". It sits beside the fold toggle, never inside it,
+   *  so pressing it does not open or close the group. The title truncates before it is pushed out. */
+  action?: ReactNode
+  /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an
+   *  "Add project" button. Hidden (and unreachable by Tab) while the group is folded. */
+  footer?: ReactNode
 }
 ```
 
@@ -101,6 +108,36 @@ const FOOTER = <p className="text-xs text-[var(--color-text-secondary)]">Signed 
 
 <div className="max-w-64">
   <Sidebar label="Dashboard navigation" groups={GROUPS} header={HEADER} footer={FOOTER} />
+</div>
+```
+
+### A Projects group with an action in its title row and a footer under its items
+
+```tsx
+const PROJECT_GROUPS: SidebarGroup[] = [
+  {
+    title: 'Projects',
+    icon: <FolderKanban />,
+    action: (
+      <IconButton label="New project" variant="ghost" size="sm">
+        <Plus aria-hidden="true" />
+      </IconButton>
+    ),
+    items: [
+      { label: 'Spring restock', href: '#spring-restock', icon: <Folder /> },
+      { label: 'Warehouse move', href: '#warehouse-move', icon: <Folder /> },
+    ],
+    footer: (
+      <Button variant="ghost" size="sm">
+        <Plus aria-hidden="true" />
+        New project
+      </Button>
+    ),
+  },
+]
+
+<div className="max-w-64">
+  <Sidebar label="Projects navigation" groups={PROJECT_GROUPS} />
 </div>
 ```
 
@@ -189,5 +226,7 @@ const closeOnChoose = ({ onClick, ...props }: LinkRenderProps) => (
 - **nav**: The navigation region. Screen readers call it by the label prop.
 - **Group title**: A disclosure button (one that shows and hides the list) when the group can fold, plain text when it can't. It's text.secondary, so it still reads on a raised panel. Its list opens and closes by animating its height. Opening also fades and slides each item in, each one a little later than the one before (capped, so a long group never feels slow). Closing fades everything out together, all at once. If someone has asked their system for less motion (prefers-reduced-motion: reduce), both happen instantly.
 - **Item**: An icon, a label and an optional count. The current page gets the fill, plus aria-current, an ARIA attribute (Accessible Rich Internet Applications, the labels screen readers rely on) that tells screen readers this is the page you are on.
+- **Group action**: Optional. A small icon button at the right end of the title row, such as New project. It sits next to the fold toggle, not inside it, so pressing it never folds the group. A long title is cut short before it can push the action out.
+- **Group footer**: Optional. Under the group's items and lined up with them: an Add project button. It folds away with the items.
 - **Header**: Sits above the groups: a product name, a workspace switcher.
 - **Footer**: Pinned below the groups: the signed-in account, a help link.

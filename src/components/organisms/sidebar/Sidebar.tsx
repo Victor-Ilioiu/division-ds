@@ -23,6 +23,13 @@ export type SidebarGroup = {
   collapsible?: boolean
   /** Ignored when the group holds the current item, which always starts open. @default true */
   defaultOpen?: boolean
+  /** Drawn at the far right of the title row: a small icon button, e.g. a ghost size="sm" Button
+   *  with a Plus icon and aria-label="New project". It sits beside the fold toggle, never inside it,
+   *  so pressing it does not open or close the group. The title truncates before it is pushed out. */
+  action?: ReactNode
+  /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an
+   *  "Add project" button. Hidden (and unreachable by Tab) while the group is folded. */
+  footer?: ReactNode
 }
 
 export type SidebarProps = {
@@ -95,16 +102,21 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
     </span>
   )
 
-  return (
-    <div className="flex flex-col gap-2">
-      {collapsible ? (
+  const title = collapsible ? (
         <button
           type="button"
           id={titleId}
           aria-expanded={open}
           aria-controls={listId}
           onClick={() => setOpen(value => !value)}
-          className={cn(TITLE, 'flex w-full items-center justify-between min-h-6 px-3 cursor-pointer hover:text-[var(--color-text-primary)]', RING)}
+          className={cn(
+            TITLE,
+            'flex w-full items-center justify-between min-h-6 px-3 cursor-pointer hover:text-[var(--color-text-primary)]',
+            // With an action beside it, the toggle shrinks first, so the title truncates rather than
+            // pushing the action off the row.
+            group.action ? 'flex-1 min-w-0' : undefined,
+            RING
+          )}
         >
           {heading}
           <ChevronDown
@@ -113,9 +125,22 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
           />
         </button>
       ) : (
-        <p id={titleId} className={cn(TITLE, 'px-3')}>
+        <p id={titleId} className={cn(TITLE, 'px-3', group.action ? 'flex-1 min-w-0' : undefined)}>
           {heading}
         </p>
+      )
+
+  return (
+    <div className="flex flex-col gap-2">
+      {group.action ? (
+        // The toggle and the action are siblings in one row: no interactive element nests inside
+        // another, and a click on the action never reaches the toggle's onClick.
+        <div className="flex items-center gap-1">
+          {title}
+          <div className="shrink-0 flex items-center">{group.action}</div>
+        </div>
+      ) : (
+        title
       )}
       {/* inert sits on this wrapper, not the ul itself, so the list stays reachable by name from a
           jsdom/Testing Library role query the same way it did under the old `hidden` attribute:
@@ -206,6 +231,8 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
               </li>
             ))}
           </ul>
+          {/* Same p-1 inset as the ul, so a ghost Button's px-3 lines up with each item's px-3. */}
+          {group.footer ? <div className="p-1 pt-0">{group.footer}</div> : null}
         </div>
       </div>
     </div>

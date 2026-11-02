@@ -1656,7 +1656,7 @@ import { Sidebar } from 'src/components/organisms/sidebar/Sidebar'
 ```
 
 - `label: string` Required. The name screen readers give the navigation region.
-- `groups: SidebarGroup[]` Required. Each group has title, icon, items, collapsible and defaultOpen.
+- `groups: SidebarGroup[]` Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded).
 - `header: ReactNode` Sits above the groups: a product name, a workspace switcher.
 - `footer: ReactNode` Pinned below the groups when the Sidebar has a height (h-full in a column layout): the signed-in account, a help link.
 - `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through.

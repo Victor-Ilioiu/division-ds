@@ -11935,7 +11935,7 @@
         {
           "name": "groups",
           "type": "SidebarGroup[]",
-          "description": "Required. Each group has title, icon, items, collapsible and defaultOpen."
+          "description": "Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded)."
         },
         {
           "name": "header",
@@ -11974,7 +11974,7 @@
         {
           "name": "SidebarGroup",
           "kind": "type",
-          "code": "export type SidebarGroup = {\n  /** Also the React key for this group; unique within a Sidebar. */\n  title: string\n  /** Drawn before the title, aria-hidden; the title alone names the group. */\n  icon?: ReactNode\n  items: SidebarItem[]\n  /** @default true */\n  collapsible?: boolean\n  /** Ignored when the group holds the current item, which always starts open. @default true */\n  defaultOpen?: boolean\n}",
+          "code": "export type SidebarGroup = {\n  /** Also the React key for this group; unique within a Sidebar. */\n  title: string\n  /** Drawn before the title, aria-hidden; the title alone names the group. */\n  icon?: ReactNode\n  items: SidebarItem[]\n  /** @default true */\n  collapsible?: boolean\n  /** Ignored when the group holds the current item, which always starts open. @default true */\n  defaultOpen?: boolean\n  /** Drawn at the far right of the title row: a small icon button, e.g. a ghost size=\"sm\" Button\n   *  with a Plus icon and aria-label=\"New project\". It sits beside the fold toggle, never inside it,\n   *  so pressing it does not open or close the group. The title truncates before it is pushed out. */\n  action?: ReactNode\n  /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an\n   *  \"Add project\" button. Hidden (and unreachable by Tab) while the group is folded. */\n  footer?: ReactNode\n}",
           "from": "src/components/organisms/sidebar/Sidebar"
         }
       ],
@@ -12022,6 +12022,14 @@
           "description": "An icon, a label and an optional count. The current page gets the fill, plus aria-current, an ARIA attribute (Accessible Rich Internet Applications, the labels screen readers rely on) that tells screen readers this is the page you are on."
         },
         {
+          "part": "Group action",
+          "description": "Optional. A small icon button at the right end of the title row, such as New project. It sits next to the fold toggle, not inside it, so pressing it never folds the group. A long title is cut short before it can push the action out."
+        },
+        {
+          "part": "Group footer",
+          "description": "Optional. Under the group's items and lined up with them: an Add project button. It folds away with the items."
+        },
+        {
           "part": "Header",
           "description": "Sits above the groups: a product name, a workspace switcher."
         },
@@ -12034,6 +12042,10 @@
         {
           "caption": "Dashboard navigation",
           "source": "const GROUPS: SidebarGroup[] = [\n  {\n    title: 'Operations',\n    icon: <Warehouse />,\n    items: [\n      { label: 'Overview', href: '#overview', icon: <LayoutDashboard /> },\n      { label: 'Orders', href: '#orders', icon: <Package />, current: true, count: 12 },\n      { label: 'Shipments', href: '#shipments', icon: <Truck /> },\n      { label: 'Returns', href: '#returns', icon: <Inbox />, count: 3 },\n    ],\n  },\n  {\n    title: 'Catalogue',\n    icon: <Boxes />,\n    defaultOpen: false,\n    items: [\n      { label: 'Products', href: '#products', icon: <Box /> },\n      { label: 'Inventory', href: '#inventory', icon: <Map /> },\n    ],\n  },\n  {\n    title: 'Account',\n    icon: <UserCog />,\n    collapsible: false,\n    items: [\n      { label: 'Settings', href: '#settings', icon: <Settings /> },\n      { label: 'Team', href: '#team', icon: <Users /> },\n    ],\n  },\n]\n\nconst HEADER = <p className=\"font-display font-semibold\">Hexline ops</p>\n\nconst FOOTER = <p className=\"text-xs text-[var(--color-text-secondary)]\">Signed in as Ana Pop</p>\n\n<div className=\"max-w-64\">\n  <Sidebar label=\"Dashboard navigation\" groups={GROUPS} header={HEADER} footer={FOOTER} />\n</div>"
+        },
+        {
+          "caption": "A Projects group with an action in its title row and a footer under its items",
+          "source": "const PROJECT_GROUPS: SidebarGroup[] = [\n  {\n    title: 'Projects',\n    icon: <FolderKanban />,\n    action: (\n      <IconButton label=\"New project\" variant=\"ghost\" size=\"sm\">\n        <Plus aria-hidden=\"true\" />\n      </IconButton>\n    ),\n    items: [\n      { label: 'Spring restock', href: '#spring-restock', icon: <Folder /> },\n      { label: 'Warehouse move', href: '#warehouse-move', icon: <Folder /> },\n    ],\n    footer: (\n      <Button variant=\"ghost\" size=\"sm\">\n        <Plus aria-hidden=\"true\" />\n        New project\n      </Button>\n    ),\n  },\n]\n\n<div className=\"max-w-64\">\n  <Sidebar label=\"Projects navigation\" groups={PROJECT_GROUPS} />\n</div>"
         },
         {
           "caption": "In a sheet on a narrow screen: picking a link closes the sheet, through renderLink",

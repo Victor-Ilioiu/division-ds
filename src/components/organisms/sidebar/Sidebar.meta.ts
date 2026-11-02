@@ -22,6 +22,15 @@ export const meta: ComponentMeta = {
       description:
         'An icon, a label and an optional count. The current page gets the fill, plus aria-current, an ARIA attribute (Accessible Rich Internet Applications, the labels screen readers rely on) that tells screen readers this is the page you are on.',
     },
+    {
+      part: 'Group action',
+      description:
+        "Optional. A small icon button at the right end of the title row, such as New project. It sits next to the fold toggle, not inside it, so pressing it never folds the group. A long title is cut short before it can push the action out.",
+    },
+    {
+      part: 'Group footer',
+      description: "Optional. Under the group's items and lined up with them: an Add project button. It folds away with the items.",
+    },
     { part: 'Header', description: 'Sits above the groups: a product name, a workspace switcher.' },
     { part: 'Footer', description: 'Pinned below the groups: the signed-in account, a help link.' },
   ],
@@ -34,7 +43,8 @@ export const meta: ComponentMeta = {
     {
       name: 'groups',
       type: 'SidebarGroup[]',
-      description: 'Required. Each group has title, icon, items, collapsible and defaultOpen.',
+      description:
+        'Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded).',
     },
     { name: 'header', type: 'ReactNode', description: 'Sits above the groups: a product name, a workspace switcher.' },
     {

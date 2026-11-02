@@ -117,6 +117,66 @@ describe('Sidebar', () => {
     expect(screen.getByText('Signed in as Ana')).toBeInTheDocument()
   })
 
+  describe('group action and footer', () => {
+    const projects = (extra: Partial<SidebarGroup> = {}): SidebarGroup[] => [
+      {
+        title: 'Projects',
+        items: [{ label: 'Spring restock', href: '#spring' }],
+        action: <button type="button" aria-label="New project" />,
+        footer: <button type="button">Add project</button>,
+        ...extra,
+      },
+    ]
+
+    it('draws the action in the title row, beside the toggle, not inside it', () => {
+      render(<Sidebar label="Dashboard" groups={projects()} />)
+      const toggle = screen.getByRole('button', { name: 'Projects' })
+      const action = screen.getByRole('button', { name: 'New project' })
+      expect(toggle.contains(action)).toBe(false)
+      expect(action.closest('div')!.parentElement).toBe(toggle.parentElement)
+    })
+
+    it('draws the action beside a fixed title too', () => {
+      render(<Sidebar label="Dashboard" groups={projects({ collapsible: false })} />)
+      const action = screen.getByRole('button', { name: 'New project' })
+      expect(action.closest('div')!.parentElement).toBe(screen.getByText('Projects').closest('p')!.parentElement)
+    })
+
+    it('does not fold the group when the action is pressed', async () => {
+      let pressed = 0
+      const groups = projects({
+        action: <button type="button" aria-label="New project" onClick={() => pressed++} />,
+      })
+      render(<Sidebar label="Dashboard" groups={groups} />)
+      const toggle = screen.getByRole('button', { name: 'Projects' })
+      expect(toggle).toHaveAttribute('aria-expanded', 'true')
+      await userEvent.click(screen.getByRole('button', { name: 'New project' }))
+      expect(pressed).toBe(1)
+      expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    it('hides the footer, inert with the items, when the group is folded', async () => {
+      render(<Sidebar label="Dashboard" groups={projects()} />)
+      const footer = screen.getByRole('button', { name: 'Add project' })
+      expect(footer.closest('[inert]')).toBeNull()
+      await userEvent.click(screen.getByRole('button', { name: 'Projects' }))
+      expect(footer.closest('[inert]')).not.toBeNull()
+    })
+
+    it('renders a group without them exactly as before', () => {
+      const { container } = render(<Sidebar label="Dashboard" groups={[GROUPS[0]]} />)
+      const section = container.querySelector('nav > div')!
+      expect(section.children).toHaveLength(2)
+      expect(section.firstElementChild!.tagName).toBe('BUTTON')
+      expect(screen.getByRole('list', { name: 'Operations' }).nextElementSibling).toBeNull()
+    })
+
+    it('is axe clean with an action and a footer', async () => {
+      const { container } = render(<Sidebar label="Dashboard" groups={projects()} />)
+      expect(await axeClean(container)).toHaveNoViolations()
+    })
+  })
+
   it('forwards a ref to the nav', () => {
     const ref = createRef<HTMLElement>()
     render(<Sidebar ref={ref} label="Dashboard" groups={GROUPS} />)
