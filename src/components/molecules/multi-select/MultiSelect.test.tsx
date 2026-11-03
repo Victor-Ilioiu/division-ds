@@ -152,6 +152,69 @@ describe('MultiSelect', () => {
     expect(scroller.parentElement).not.toHaveClass('overflow-y-auto')
   })
 
+  it('creatable: offers a create row for new text, and Enter calls onCreate with the trimmed text', async () => {
+    const onCreate = vi.fn()
+    render(<MultiSelect label="Kit" options={KIT} creatable onCreate={onCreate} />)
+    const field = screen.getByRole('combobox')
+    await userEvent.type(field, '  Smoke  ')
+    const create = screen.getByRole('option', { name: 'Create "Smoke"' })
+    expect(create).toHaveAttribute('aria-selected', 'false')
+    expect(field).toHaveAttribute('aria-activedescendant', create.id)
+    await userEvent.keyboard('{Enter}')
+    expect(onCreate).toHaveBeenCalledWith('Smoke')
+    expect(field).toHaveValue('')
+  })
+
+  it('creatable: the create row comes last, after matches, and is reachable by arrows and click', async () => {
+    const onCreate = vi.fn()
+    render(<MultiSelect label="Kit" options={KIT} creatable onCreate={onCreate} createLabel={t => `Add ${t}`} />)
+    const field = screen.getByRole('combobox')
+    await userEvent.type(field, 'glo')
+    expect(screen.getAllByRole('option').map(o => o.textContent)).toEqual(['Gloves', 'Add glo'])
+    await userEvent.keyboard('{ArrowDown}')
+    expect(field).toHaveAttribute('aria-activedescendant', screen.getByRole('option', { name: 'Add glo' }).id)
+    await userEvent.click(screen.getByRole('option', { name: 'Add glo' }))
+    expect(onCreate).toHaveBeenCalledWith('glo')
+    expect(field).toHaveValue('')
+  })
+
+  it('creatable: no create row for blank text or an existing option, case-insensitive', async () => {
+    render(<MultiSelect label="Kit" options={KIT} creatable onCreate={() => {}} />)
+    const field = screen.getByRole('combobox')
+    await userEvent.type(field, '   ')
+    expect(screen.queryByRole('option', { name: /^Create/ })).toBeNull()
+    await userEvent.clear(field)
+    await userEvent.type(field, 'gLoVeS')
+    expect(screen.getAllByRole('option').map(o => o.textContent)).toEqual(['Gloves'])
+  })
+
+  it('creatable, controlled: the parent adds the new option and its value', async () => {
+    function Labels() {
+      const [options, setOptions] = useState(KIT)
+      const [value, setValue] = useState<string[]>([])
+      return (
+        <>
+          <MultiSelect
+            label="Kit"
+            options={options}
+            value={value}
+            onValueChange={setValue}
+            creatable
+            onCreate={text => {
+              setOptions(o => [...o, { value: text, label: text }])
+              setValue(v => [...v, text])
+            }}
+          />
+          <output>{value.join(',')}</output>
+        </>
+      )
+    }
+    render(<Labels />)
+    await userEvent.type(screen.getByRole('combobox'), 'Smoke{Enter}')
+    expect(screen.getByRole('status')).toHaveTextContent('Smoke')
+    expect(screen.getByRole('button', { name: 'Remove Smoke' })).toBeInTheDocument()
+  })
+
   it('has no axe violations, closed and open', async () => {
     const { container } = render(<MultiSelect label="Kit" options={KIT} defaultValue={['mags']} />)
     expect(await axeClean(container)).toHaveNoViolations()

@@ -29,7 +29,13 @@ export const meta: ComponentMeta = {
       name: 'tone',
       type: "'neutral' | 'signal' | 'ok' | 'warning' | 'hostile' | 'info'",
       default: "'neutral'",
-      description: 'The status the badge shows.',
+      description: 'The status the badge shows. Leave it out when you pass color.',
+    },
+    {
+      name: 'color',
+      type: "'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'",
+      description:
+        "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.",
     },
     {
       name: 'emphasis',
@@ -67,18 +73,22 @@ export const meta: ComponentMeta = {
     },
   ],
   keyboard: [],
-  useWhen: 'You need to label a status with a word and a tone, like an order state or a sync result.',
+  useWhen:
+    'You need to label a status with a word and a tone, like an order state or a sync result. Or a label someone made, like a project tag: then pass color instead of tone.',
   notFor: 'A filter or selection someone can remove. Use Tag for that.',
   dos: [
     'Give every badge a word.',
     'Go easy on solid. One solid badge in a row reads as the exception. Six read as noise.',
     "Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.",
     'Use size md when the badge sits next to a headline figure, so the two read as one statement.',
+    'Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.',
+    'Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created.',
   ],
   donts: [
     "Don't build a badge that's colour only, even with a tooltip.",
     "Don't put a badge inside a button. It muddies what the clickable target is.",
     "Don't use hostile for something that's only pending.",
+    "Don't use a category colour to show a status. A red project label is not an error, and an error is tone=\"hostile\", so it means the same thing on every screen.",
     "Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.",
     "Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.",
     "Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.",

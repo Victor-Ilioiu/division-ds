@@ -59,6 +59,7 @@ useEffect(() => {
     { name: 'exitCode', type: 'number', description: 'With status exited: shown beside the word, and a non-zero code turns it hostile.' },
     { name: 'statusMessage', type: 'string', description: 'Detail beside the status, and announced with it: the reason for an error, the attempt while reconnecting.' },
     { name: 'readOnly', type: 'boolean', default: 'false', description: 'Blocks input and never fires onData. Selecting and copying keep working, and Tab and Escape leave the terminal as they do anywhere else.' },
+    { name: 'shiftEnter', type: "'newline' | 'default'", default: "'default'", description: 'What Shift+Enter sends. xterm sends the same carriage return as Enter, so a chat program inside submits. newline sends ESC then carriage return instead, which Claude Code and similar programs read as a new line. Not sent while readOnly or composing with an input method.' },
     { name: 'announceOutput', type: 'boolean', default: 'false', description: 'Reads output aloud through xterm’s live region, up to 20 lines at a time. For a single session a screen reader user is working in. Leave it off when several terminals share a page.' },
     { name: 'onData', type: '(data: string) => void', description: 'What the person typed or pasted, plus the replies a program asks the terminal for. Send it to the process.' },
     { name: 'onResize', type: '(size: { cols: number; rows: number }) => void', description: 'The new grid size, debounced by 100ms and only when cols or rows changed. It fires once after mounting.' },
@@ -75,12 +76,14 @@ useEffect(() => {
     { keys: ['Ctrl', 'Shift', 'L'], does: 'Moves focus out of the terminal to the next tab stop. Tab and Escape belong to the program, so this is the way out.' },
     { keys: ['Ctrl', 'C'], does: 'With text selected, copies it and clears the selection. With nothing selected, goes to the program as an interrupt.' },
     { keys: ['Ctrl', 'Shift', 'C'], does: 'Copies the selection and keeps it.' },
+    { keys: ['Shift', 'Enter'], does: 'Sends Enter to the program, unless shiftEnter is newline, when it sends ESC then Enter: a new line in chat programs such as Claude Code.' },
     { keys: ['Ctrl', 'V'], does: 'Pastes. Ctrl+Shift+V does the same. A program that wants a literal Ctrl+V does not get it.' },
   ],
   dos: [
     'Give each terminal a label that says which session it is, so a page of them can be told apart.',
     'Set readOnly when nobody can usefully type: a finished process, a session someone else owns.',
     'Say why in statusMessage when status is error.',
+    'Set shiftEnter="newline" when the session runs a chat program, such as Claude Code, where Shift+Enter should start a new line.',
     'Use write’s callback to pause the source when output arrives faster than the page can draw it.',
   ],
   donts: [

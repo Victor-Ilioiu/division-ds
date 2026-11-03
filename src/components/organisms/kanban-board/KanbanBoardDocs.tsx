@@ -2,7 +2,17 @@ import { useState } from 'react'
 import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './KanbanBoard.meta'
 import { Example } from '../../docs/Example'
+import { docsProse } from '../../docs/PageChrome'
+import { ArrowRightLeft, Eye, Pencil, Tag, Trash2 } from 'lucide-react'
 import { Avatar, Badge } from '../../atoms'
+import {
+  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from '../../molecules/dropdown-menu/DropdownMenu'
 import { KanbanBoard, applyKanbanMove, type KanbanColumn } from './KanbanBoard'
 
 type Stage = 'applied' | 'screen' | 'interview' | 'offer'
@@ -115,6 +125,91 @@ function WorkOrders() {
   )
 }
 
+const ORDER_LABELS = ['Urgent', 'Safety', 'Contractor'] as const
+
+/** A card menu of the app's own: what an order needs besides moving, with the move kept as a
+ *  submenu built on `moveTo`. */
+function WorkOrdersWithMenu() {
+  const [orders, setOrders] = useState(ORDERS)
+  const [labels, setLabels] = useState<Record<string, string[]>>({ 'wo-31': ['Safety'] })
+  const [note, setNote] = useState('')
+  const toggleLabel = (id: string, label: string, on: boolean) =>
+    setLabels(current => ({
+      ...current,
+      [id]: on ? [...(current[id] ?? []), label] : (current[id] ?? []).filter(other => other !== label),
+    }))
+  return (
+    <div className="w-full min-w-0 flex flex-col gap-3">
+      <KanbanBoard
+        label="Depot work orders, with a card menu"
+        columns={ORDER_COLUMNS}
+        items={orders}
+        getItemId={orderAccessors.getItemId}
+        getColumnId={orderAccessors.getColumnId}
+        getItemLabel={order => order.title}
+        renderCard={order => (
+          <div className="flex flex-col gap-1">
+            <p className="font-semibold">{order.title}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+              {[order.bay, ...(labels[order.id] ?? [])].join(' · ')}
+            </p>
+          </div>
+        )}
+        renderCardMenu={(order, moveTo, columnId) => (
+          <>
+            <DropdownMenuItem icon={<Eye />} onSelect={() => setNote(`Opened ${order.title}.`)}>
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem icon={<Pencil />} onSelect={() => setNote(`Editing ${order.title}.`)}>
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger icon={<Tag />}>Labels</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {ORDER_LABELS.map(label => (
+                  <DropdownMenuCheckboxItem
+                    key={label}
+                    checked={(labels[order.id] ?? []).includes(label)}
+                    onCheckedChange={on => toggleLabel(order.id, label, on === true)}
+                    onSelect={event => event.preventDefault()}
+                  >
+                    {label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger icon={<ArrowRightLeft />}>Move to</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {ORDER_COLUMNS.filter(column => column.id !== columnId).map(column => (
+                  <DropdownMenuItem key={column.id} onSelect={() => moveTo(column.id)}>
+                    {column.title}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              tone="hostile"
+              icon={<Trash2 />}
+              onSelect={() => {
+                setOrders(current => current.filter(other => other.id !== order.id))
+                setNote(`Deleted ${order.title}.`)
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </>
+        )}
+        onMove={(id, status, index) => setOrders(current => applyKanbanMove(current, id, status, index, orderAccessors))}
+        emptyColumnMessage="No orders waiting"
+        columnHeadingLevel={4}
+      />
+      <p className={docsProse}>{note}</p>
+    </div>
+  )
+}
+
 export function KanbanBoardDocs() {
   return (
     <ComponentDocs meta={meta}>
@@ -124,6 +219,10 @@ export function KanbanBoardDocs() {
 
       <Example caption="Work orders, with an empty column">
         <WorkOrders />
+      </Example>
+
+      <Example caption="Your own card menu, with renderCardMenu">
+        <WorkOrdersWithMenu />
       </Example>
     </ComponentDocs>
   )

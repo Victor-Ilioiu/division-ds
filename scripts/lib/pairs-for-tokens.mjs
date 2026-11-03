@@ -71,6 +71,19 @@ export function pairsForTokens(t, control) {
       bg: t[`--color-accent-${state}-fill`],
       minRatio: 4.5,
     })),
+    // Categorical label colours (Badge `color`): read from the token set itself, so a colour
+    // added to the theme files is gated the moment it exists. The subtle text sits on the page,
+    // in a menu or a Tag-like sunken surface, and inside a Card; the solid ink sits on its fill.
+    // The subtle border is the same token as the text, so the 4.5:1 text floor covers its 3:1.
+    ...Object.keys(t)
+      .map(key => key.match(/^--color-category-([a-z]+)-text$/)?.[1])
+      .filter(Boolean)
+      .flatMap(c => [
+        { name: `category.${c}.text on surface.base`, fg: t[`--color-category-${c}-text`], bg: page, minRatio: 4.5 },
+        { name: `category.${c}.text on surface.sunken`, fg: t[`--color-category-${c}-text`], bg: t['--color-surface-sunken'], minRatio: 4.5 },
+        { name: `category.${c}.text on surface.raised (over surface.base)`, fg: t[`--color-category-${c}-text`], bg: t['--color-surface-raised'], backdrop: page, minRatio: 4.5 },
+        { name: `category.${c}.ink on category.${c}.fill`, fg: t[`--color-category-${c}-ink`], bg: t[`--color-category-${c}-fill`], minRatio: 4.5 },
+      ]),
     // Text on a selected item: the indicator's own ink, picked with it by the theme builder.
     { name: 'accent.signal.indicator-ink on accent.signal.indicator', fg: t['--color-accent-signal-indicator-ink'], bg: t['--color-accent-signal-indicator'], minRatio: 4.5 },
     { name: 'focus.ring on surface.base', fg: t['--color-focus-ring'], bg: page, minRatio: 3 },

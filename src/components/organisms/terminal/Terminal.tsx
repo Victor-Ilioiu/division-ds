@@ -33,6 +33,8 @@ export type TerminalProps = {
   statusMessage?: string
   /** Blocks input and never fires onData. Selection and copying keep working. */
   readOnly?: boolean
+  /** What Shift+Enter sends. xterm sends Enter's CR for both; newline sends ESC CR instead, which chat programs such as Claude Code read as a new line. */
+  shiftEnter?: 'newline' | 'default'
   /** Reads output aloud through xterm's live region. Off by default: only the status is announced. */
   announceOutput?: boolean
   /** Text the person typed or pasted, and terminal replies, for the app to send to the process. */
@@ -140,6 +142,7 @@ export function Terminal({
   exitCode,
   statusMessage,
   readOnly = false,
+  shiftEnter = 'default',
   announceOutput = false,
   onData,
   onResize,
@@ -150,11 +153,11 @@ export function Terminal({
   const hostRef = useRef<HTMLDivElement>(null)
   const termRef = useRef<XTerm | null>(null)
   const fitRef = useRef<() => void>(() => {})
-  const latest = useRef({ onData, onResize, readOnly })
+  const latest = useRef({ onData, onResize, readOnly, shiftEnter })
 
   // Before the mount effect below, so the terminal's first events see the current callbacks.
   useLayoutEffect(() => {
-    latest.current = { onData, onResize, readOnly }
+    latest.current = { onData, onResize, readOnly, shiftEnter }
     if (termRef.current) termRef.current.options.disableStdin = readOnly
   })
 
@@ -186,6 +189,24 @@ export function Terminal({
     term.loadAddon(new WebLinksAddon((_event, uri) => openLink(uri)))
 
     term.attachCustomKeyEventHandler(event => {
+      // xterm sees keypress and keyup too: all three are held back, or it would still send a CR.
+      if (
+        latest.current.shiftEnter === 'newline' &&
+        !latest.current.readOnly &&
+        event.key === 'Enter' &&
+        event.shiftKey &&
+        !event.ctrlKey &&
+        !event.altKey &&
+        !event.metaKey &&
+        !event.isComposing &&
+        event.keyCode !== 229
+      ) {
+        if (event.type === 'keydown') {
+          event.preventDefault()
+          latest.current.onData?.('\x1b\r')
+        }
+        return false
+      }
       if (event.type !== 'keydown') return true
       const ctrl = event.ctrlKey && !event.altKey && !event.metaKey
       const key = event.key.toLowerCase()

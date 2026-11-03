@@ -44,6 +44,36 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 | `--color-accent-warning-fill` | A solid block for a warning or a degraded state. Put accent.warning.ink on it. | `#ffac2a` |
 | `--color-accent-warning-text` | Warning text or icon on a surface: a pending or degraded status. | `dark #ffac2a, light #804e00` |
 | `--color-accent-warning-ink` | Text and icons on accent.warning.fill. | `#0a0602` |
+| `--color-category-gray-text` | Subtle Badge color="gray": text and border. A label, not a status. | `dark #a3a9b3, light #5c636e` |
+| `--color-category-gray-fill` | Solid Badge color="gray": the fill. | `#9aa1ab` |
+| `--color-category-gray-ink` | Text on category.gray.fill. | `#0a0602` |
+| `--color-category-brown-text` | Subtle Badge color="brown": text and border. A label, not a status. | `dark #c9a383, light #7a5232` |
+| `--color-category-brown-fill` | Solid Badge color="brown": the fill. | `#b98a64` |
+| `--color-category-brown-ink` | Text on category.brown.fill. | `#0a0602` |
+| `--color-category-orange-text` | Subtle Badge color="orange": text and border. A label, not a status. | `dark #f0a060, light #a34a00` |
+| `--color-category-orange-fill` | Solid Badge color="orange": the fill. | `#f0913a` |
+| `--color-category-orange-ink` | Text on category.orange.fill. | `#0a0602` |
+| `--color-category-yellow-text` | Subtle Badge color="yellow": text and border. A label, not a status. | `dark #e6c65a, light #7a5c00` |
+| `--color-category-yellow-fill` | Solid Badge color="yellow": the fill. | `#e8c341` |
+| `--color-category-yellow-ink` | Text on category.yellow.fill. | `#0a0602` |
+| `--color-category-green-text` | Subtle Badge color="green": text and border. A label, not a status. | `dark #6fcf8f, light #1e6b3a` |
+| `--color-category-green-fill` | Solid Badge color="green": the fill. | `#4fbf7a` |
+| `--color-category-green-ink` | Text on category.green.fill. | `#0a0602` |
+| `--color-category-teal-text` | Subtle Badge color="teal": text and border. A label, not a status. | `dark #5ccfc4, light #0d6662` |
+| `--color-category-teal-fill` | Solid Badge color="teal": the fill. | `#3fbfb2` |
+| `--color-category-teal-ink` | Text on category.teal.fill. | `#0a0602` |
+| `--color-category-blue-text` | Subtle Badge color="blue": text and border. A label, not a status. | `dark #7fb2ff, light #1f5fbf` |
+| `--color-category-blue-fill` | Solid Badge color="blue": the fill. | `#6fa3f5` |
+| `--color-category-blue-ink` | Text on category.blue.fill. | `#0a0602` |
+| `--color-category-purple-text` | Subtle Badge color="purple": text and border. A label, not a status. | `dark #b59cf5, light #6a3fbf` |
+| `--color-category-purple-fill` | Solid Badge color="purple": the fill. | `#a88af0` |
+| `--color-category-purple-ink` | Text on category.purple.fill. | `#0a0602` |
+| `--color-category-pink-text` | Subtle Badge color="pink": text and border. A label, not a status. | `dark #f08fc4, light #a3306f` |
+| `--color-category-pink-fill` | Solid Badge color="pink": the fill. | `#ec84bb` |
+| `--color-category-pink-ink` | Text on category.pink.fill. | `#0a0602` |
+| `--color-category-red-text` | Subtle Badge color="red": text and border. A label, not a status. | `dark #f58a8a, light #b42828` |
+| `--color-category-red-fill` | Solid Badge color="red": the fill. | `#f07a7a` |
+| `--color-category-red-ink` | Text on category.red.fill. | `#0a0602` |
 | `--color-numeral-pad` | The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read. | `dark #7b8592, light #627da4` |
 | `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. | `dark #78b7ff, light #004593` |
 | `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. | `dark #78b7ff, light #004593` |

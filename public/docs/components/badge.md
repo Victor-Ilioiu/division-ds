@@ -2,7 +2,7 @@
 
 > A small chip that shows a status. It comes in six tones and two emphases, and it always carries a word. A colour on its own isn't a status anyone can read.
 
-- **Best for:** You need to label a status with a word and a tone, like an order state or a sync result.
+- **Best for:** You need to label a status with a word and a tone, like an order state or a sync result. Or a label someone made, like a project tag: then pass color instead of tone.
 - **Not for:** A filter or selection someone can remove. Use Tag for that.
 - Atom. Source: `src/components/atoms/badge/Badge.tsx`
 - Rendered docs page: `/components/badge`
@@ -10,7 +10,7 @@
 ## Import
 
 ```tsx
-import { Badge, badgeVariants } from 'src/components/atoms/badge/Badge'
+import { Badge, badgeVariants, CATEGORY_COLORS } from 'src/components/atoms/badge/Badge'
 ```
 
 Paths are from the Division DS repository root. Installed with shadcn they start `src/division-ds/` instead of `src/` (`src/division-ds/components/...`); import them relative to your file. An install has no index barrels: import each component from its own file, never from `components/molecules`.
@@ -19,7 +19,8 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `tone` | `'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info'` | `'neutral'` | The status the badge shows. |
+| `tone` | `'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info'` | `'neutral'` | The status the badge shows. Leave it out when you pass color. |
+| `color` | `'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` |  | A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes. |
 | `emphasis` | `'solid' \| 'subtle'` | `'subtle'` | Solid uses the invariant fill (the same in light and dark themes) with its matching ink. Subtle is the outline badge: a 1px border and text in the tone’s theme-adaptive text token, with no fill. There's no separate outline emphasis, because it would be this same look under a second name. |
 | `size` | `'sm' \| 'md'` | `'sm'` | sm (small) is the chip for everyday interface: rows, cards, tables. md (medium) takes the small control height (32px) and the 14px text step. Use it for a badge next to display-size type, like a price. |
 | `dot` | `boolean` | `false` | Adds a marker next to the text. |
@@ -34,6 +35,18 @@ Exported beside the component, from the same file. Import a type with `import ty
 
 ```ts
 export const badgeVariants = cva( …
+```
+
+```ts
+/** Categorical colours for labels people make (a project tag, a topic), in the order a picker
+ *  shows them. Not statuses: a category colour says "same group", never good or bad. Exported so
+ *  an app can give each new label one, for example
+ *  `CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]`. */
+export const CATEGORY_COLORS = ['gray', 'brown', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'red'] as const
+```
+
+```ts
+export type CategoryColor = (typeof CATEGORY_COLORS)[number]
 ```
 
 ## Examples
@@ -60,6 +73,26 @@ const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 {TONES.map(tone => (
   <Badge key={tone} tone={tone} emphasis="solid">
     {tone}
+  </Badge>
+))}
+```
+
+### Category colours, subtle: labels people make, not statuses
+
+```tsx
+{CATEGORY_COLORS.map(color => (
+  <Badge key={color} color={color}>
+    {color}
+  </Badge>
+))}
+```
+
+### Category colours, solid
+
+```tsx
+{CATEGORY_COLORS.map(color => (
+  <Badge key={color} color={color} emphasis="solid">
+    {color}
   </Badge>
 ))}
 ```
@@ -158,12 +191,15 @@ Not focusable. No keyboard behaviour of its own.
 - Go easy on solid. One solid badge in a row reads as the exception. Six read as noise.
 - Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.
 - Use size md when the badge sits next to a headline figure, so the two read as one statement.
+- Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.
+- Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created.
 
 ## Don't
 
 - Don't build a badge that's colour only, even with a tooltip.
 - Don't put a badge inside a button. It muddies what the clickable target is.
 - Don't use hostile for something that's only pending.
+- Don't use a category colour to show a status. A red project label is not an error, and an error is tone="hostile", so it means the same thing on every screen.
 - Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.
 - Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.
 - Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.

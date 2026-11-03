@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axeClean } from '../../../test/axe'
+import { DropdownMenuItem } from '../../molecules/dropdown-menu/DropdownMenu'
 import {
   KanbanBoard,
   applyKanbanMove,
@@ -148,6 +149,55 @@ describe('KanbanBoard', () => {
     expect(within(offer).getByRole('link', { name: 'Ilse Varga' })).toBeInTheDocument()
     expect(within(offer).getByRole('button', { name: 'Move Ilse Varga' })).toHaveFocus()
     expect(screen.getByText('Ilse Varga moved to Offer, position 1 of 1.')).toBeInTheDocument()
+  })
+
+  it('keeps the default Move menu when renderCardMenu is not given', async () => {
+    render(<Board />)
+    await userEvent.click(screen.getByRole('button', { name: 'Move Ilse Varga' }))
+    const menu = await screen.findByRole('menu')
+    expect(within(menu).getByText('Ilse Varga')).toBeInTheDocument()
+    expect(within(menu).getAllByRole('menuitem').map(item => item.textContent)).toEqual([
+      'Move to Interview',
+      'Move to Offer',
+    ])
+  })
+
+  it("renders renderCardMenu's items in place of the default ones, with the card's column", async () => {
+    const renderCardMenu = vi.fn((job: Job) => (
+      <>
+        <DropdownMenuItem>View {job.name}</DropdownMenuItem>
+        <DropdownMenuItem>Delete</DropdownMenuItem>
+      </>
+    ))
+    render(<Board renderCardMenu={renderCardMenu} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Move Ilse Varga' }))
+    const menu = await screen.findByRole('menu')
+    expect(within(menu).getAllByRole('menuitem').map(item => item.textContent)).toEqual(['View Ilse Varga', 'Delete'])
+    expect(renderCardMenu).toHaveBeenCalledWith(JOBS[0], expect.any(Function), 'applied')
+  })
+
+  it("moveTo from renderCardMenu moves the card to the end of the column, announces it and refocuses its Move control", async () => {
+    const onMove = vi.fn()
+    function CustomMenuBoard() {
+      const [jobs, setJobs] = useState(JOBS)
+      return (
+        <Board
+          items={jobs}
+          renderCardMenu={(_job, moveTo) => <DropdownMenuItem onSelect={() => moveTo('interview')}>Send to interview</DropdownMenuItem>}
+          onMove={(id, stage, index) => {
+            onMove(id, stage, index)
+            setJobs(current => applyKanbanMove(current, id, stage, index, accessors))
+          }}
+        />
+      )
+    }
+    render(<CustomMenuBoard />)
+    await userEvent.click(screen.getByRole('button', { name: 'Move Ilse Varga' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Send to interview' }))
+    expect(onMove).toHaveBeenCalledExactlyOnceWith('a', 'interview', 1)
+    const interview = columnList('Interview')
+    expect(within(interview).getByRole('button', { name: 'Move Ilse Varga' })).toHaveFocus()
+    expect(screen.getByText('Ilse Varga moved to Interview, position 2 of 2.')).toBeInTheDocument()
   })
 
   it('opens the menu with Enter, and lifts the card with Space, announcing it in plain words', async () => {

@@ -25,7 +25,13 @@ export const meta: ComponentMeta = {
     },
   ],
   props: [
-    { name: 'tone', type: "'signal' | 'quiet'", default: "'signal'", description: 'Which colour treatment to use.' },
+    {
+      name: 'tone',
+      type: "'signal' | 'quiet' | 'neutral'",
+      default: "'signal'",
+      description:
+        'Which colour treatment to use. neutral is primary text with no underline until hover or keyboard focus, for a clickable title in a list or on a card, where it is clear from position that the title is a link. Keep signal for links inside running text.',
+    },
     {
       name: 'external',
       type: 'boolean',

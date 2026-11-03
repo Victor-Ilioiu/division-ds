@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { createRef } from 'react'
 import { render, screen } from '@testing-library/react'
 import { axeClean } from '../../../test/axe'
-import { Badge } from './Badge'
+import darkTheme from '../../../../tokens/semantic/color.dark.json'
+import lightTheme from '../../../../tokens/semantic/color.light.json'
+import { Badge, CATEGORY_COLORS } from './Badge'
 
 const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 
@@ -132,6 +134,50 @@ describe('Badge', () => {
       )
       const badge = screen.getByText('Live')
       expect(badge.children[0]).toBe(screen.getByTestId('icon').parentElement)
+    })
+  })
+
+  describe('category colour', () => {
+    it.each(CATEGORY_COLORS)('pairs %s solid with its own fill and ink, and no status tone', color => {
+      render(<Badge color={color} emphasis="solid">{color}</Badge>)
+      const cls = screen.getByText(color).className
+      expect(cls).toContain(`--color-category-${color}-fill`)
+      expect(cls).toContain(`--color-category-${color}-ink`)
+      expect(cls).not.toContain('--color-accent-')
+      expect(cls).not.toContain('--color-text-secondary')
+    })
+
+    it.each(CATEGORY_COLORS)('uses %s text token for text and border when subtle', color => {
+      render(<Badge color={color}>{color}</Badge>)
+      const cls = screen.getByText(color).className
+      expect(cls).toContain(`text-[var(--color-category-${color}-text)]`)
+      expect(cls).toContain(`border-[var(--color-category-${color}-text)]`)
+      expect(cls).not.toContain('--color-border-hairline-strong')
+    })
+
+    it('rejects tone and color together in the types', () => {
+      // @ts-expect-error a badge is a status or a category, never both
+      render(<Badge tone="ok" color="blue">Both</Badge>)
+    })
+
+    it('lists exactly the colours the theme files define, in both themes', () => {
+      for (const theme of [darkTheme, lightTheme]) {
+        expect(Object.keys(theme.color.semantic.category).filter(k => !k.startsWith('$'))).toEqual([...CATEGORY_COLORS])
+      }
+    })
+
+    it('is axe clean in every colour and emphasis', async () => {
+      const { container } = render(
+        <div>
+          {CATEGORY_COLORS.map(color => (
+            <span key={color}>
+              <Badge color={color}>{color}</Badge>
+              <Badge color={color} emphasis="solid" size="md" dot>{color}</Badge>
+            </span>
+          ))}
+        </div>
+      )
+      expect(await axeClean(container)).toHaveNoViolations()
     })
   })
 

@@ -52,6 +52,19 @@ export function ButtonDocs() {
         </p>
       </Example>
 
+      <Example caption="Neutral link: a kanban card title">
+        <div className="w-64 flex items-start gap-2 p-3 border border-[var(--color-border-hairline)] bg-[var(--color-surface-raised)]">
+          <div className="min-w-0 flex-1 text-sm">
+            <Button variant="link" tone="neutral">
+              Replace the hop-up bucking on the second-line support rifles before Saturday
+            </Button>
+          </div>
+          <Button variant="ghost" size="xs">
+            Move
+          </Button>
+        </div>
+      </Example>
+
       <Example caption="Full width">
         <div className="w-80">
           <Button fullWidth>Dispatch team</Button>

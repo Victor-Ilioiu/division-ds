@@ -165,6 +165,34 @@ describe('Button', () => {
       expect(screen.getByRole('button').parentElement).toHaveClass('bevel-focus-wrap', 'no-reticle')
     })
 
+    it('has a neutral tone: primary text, underlined only on hover and keyboard focus', () => {
+      render(
+        <Button variant="link" tone="neutral">
+          Card title
+        </Button>
+      )
+      const button = screen.getByRole('button')
+      expect(button.className).toContain('--color-text-primary')
+      expect(button.className).not.toContain('--color-accent-signal-text')
+      expect(button).toHaveClass('no-underline', 'hover:underline', 'focus-visible:underline')
+      expect(button).not.toHaveClass('underline')
+    })
+
+    it('wraps a long label inside its column instead of overflowing it', () => {
+      render(<Button variant="link">A long card title</Button>)
+      const button = screen.getByRole('button')
+      expect(button).toHaveClass('whitespace-normal', 'break-words', 'text-left')
+      expect(button).not.toHaveClass('whitespace-nowrap')
+      const wrap = button.parentElement!
+      expect(wrap).toHaveClass('max-w-full', 'min-w-0')
+      // Not block: a link inside a sentence stays in the sentence.
+      expect(wrap).not.toHaveClass('block')
+    })
+
+    it('ignores tone on the other variants', () => {
+      expect(buttonVariants({ variant: 'primary', tone: 'neutral' })).toBe(buttonVariants({ variant: 'primary' }))
+    })
+
     it('keeps the bevel on every other variant', () => {
       render(
         <>

@@ -29,6 +29,34 @@ function ControlledExample() {
   )
 }
 
+const LABELS = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'design', label: 'Design' },
+  { value: 'docs', label: 'Docs' },
+]
+
+/** creatable: the page owns both lists, so onCreate adds the new option and chooses it. */
+function CreatableExample() {
+  const [options, setOptions] = useState(LABELS)
+  const [labels, setLabels] = useState<string[]>(['design'])
+  return (
+    <div className="w-full max-w-md">
+      <FormField label="Labels" help="Type a label that is not in the list, then press Enter to create it.">
+        <MultiSelect
+          options={options}
+          value={labels}
+          onValueChange={setLabels}
+          creatable
+          onCreate={text => {
+            setOptions(current => [...current, { value: text, label: text }])
+            setLabels(current => [...current, text])
+          }}
+        />
+      </FormField>
+    </div>
+  )
+}
+
 export function MultiSelectDocs() {
   return (
     <ComponentDocs meta={meta}>
@@ -42,6 +70,10 @@ export function MultiSelectDocs() {
 
       <Example caption="Controlled: the page holds the chosen options">
         <ControlledExample />
+      </Example>
+
+      <Example caption="Creatable: pick or create labels">
+        <CreatableExample />
       </Example>
 
       <Example caption="Invalid">

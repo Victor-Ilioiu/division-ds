@@ -164,7 +164,7 @@
       "name": "badge",
       "type": "registry:item",
       "title": "Badge",
-      "description": "Badge. Best for: You need to label a status with a word and a tone, like an order state or a sync result.",
+      "description": "Badge. Best for: You need to label a status with a word and a tone, like an order state or a sync result. Or a label someone made, like a project tag: then pass color instead of tone.",
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "react@^19.2.8"

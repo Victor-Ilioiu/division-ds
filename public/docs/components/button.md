@@ -20,6 +20,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `variant` | `'primary' \| 'secondary' \| 'danger' \| 'ghost' \| 'link'` | `'primary'` | Which fill/border treatment to use. link looks like a Link (signal text, underline, no fill, no bevel, no fixed height) but it's still a button. Use it for an action inside a sentence, not for going to another page. |
+| `tone` | `'signal' \| 'neutral'` | `'signal'` | Only the link variant reads it. signal is the signal-coloured, underlined link. neutral is primary text with no underline until hover or keyboard focus: use it for a clickable title on a kanban card or a list row, where a column of signal links would be too loud. A link-variant label wraps onto more lines rather than overflowing its column. |
 | `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'` | 24 / 32 / 40 / 48px (pixels). xs is exactly the 24px minimum target, the smallest area people can reliably click or tap. It isn't a token step (there is no xs control-height token) and it's meant for dense toolbars and table rows. Size has no effect on the link variant, which takes the size of the text around it. |
 | `fullWidth` | `boolean` | `false` | Stretches the wrapper as well as the button. |
 | `loading` | `boolean` | `false` | Sets aria-busy and aria-disabled, blocks the click and the form submit, and shows the spinner. The button stays focusable. |
@@ -100,6 +101,21 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 </p>
 ```
 
+### Neutral link: a kanban card title
+
+```tsx
+<div className="w-64 flex items-start gap-2 p-3 border border-[var(--color-border-hairline)] bg-[var(--color-surface-raised)]">
+  <div className="min-w-0 flex-1 text-sm">
+    <Button variant="link" tone="neutral">
+      Replace the hop-up bucking on the second-line support rifles before Saturday
+    </Button>
+  </div>
+  <Button variant="ghost" size="xs">
+    Move
+  </Button>
+</div>
+```
+
 ### Full width
 
 ```tsx
@@ -147,6 +163,7 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 - Use loading on a submit button. It keeps focus while the form works, so a keyboard user is never thrown back to the top of the page.
 - Pass icons through iconStart and iconEnd, not as children. That way they stay hidden from assistive tech and get sized with the button.
 - Use the link variant for an action that sits in running text or next to a heading (‘Reset filters’). Use Link for anything that goes somewhere.
+- Use variant="link" tone="neutral" for a card or row title that opens something on this page, such as the detail panel of a kanban card.
 
 ## Don't
 
@@ -200,5 +217,5 @@ A busy button stays focusable and tells people it's busy through loading. Native
 - **Focus wrapper**: A span that isn't clipped, carrying .bevel-focus-wrap. It draws the ring on :has(:focus-visible), so a mouse click doesn't show it, plus the reticle brackets (corner marks like a targeting sight) that close in on hover. It's always there and never optional.
 - **Button**: The clipped, bevelled control. It never carries its own outline.
 - **Spinner**: Decoration only, shown while loading. The hidden label is what screen readers announce.
-- **Label**: Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined.
+- **Label**: Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined (or primary text, underlined on hover and focus, with tone="neutral"), and wraps instead of staying on one line.
 - **Icons**: Optional, before and after the label. Each sits in an aria-hidden slot sized to the button (14px at xs and sm, 16px at md, 20px at lg). aria-hidden is an ARIA attribute (Accessible Rich Internet Applications, the labels that tell screen readers what things are) that hides the icon from screen readers. While loading, the spinner takes the leading slot.

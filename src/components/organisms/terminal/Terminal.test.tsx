@@ -125,6 +125,35 @@ describe('input', () => {
     expect(last().key(tab)).toBe(false)
   })
 
+  it('shiftEnter newline sends ESC CR on keydown and holds back keypress and keyup', () => {
+    const onData = vi.fn()
+    const shiftEnter = (type: string, extra: KeyboardEventInit = {}) =>
+      new KeyboardEvent(type, { key: 'Enter', shiftKey: true, cancelable: true, ...extra })
+    const { rerender } = render(<Terminal label="Agent" status="live" onData={onData} />)
+    expect(last().key(shiftEnter('keydown'))).toBe(true) // default: xterm's own CR
+    expect(onData).not.toHaveBeenCalled()
+
+    rerender(<Terminal label="Agent" status="live" shiftEnter="newline" onData={onData} />)
+    const down = shiftEnter('keydown')
+    expect(last().key(down)).toBe(false)
+    expect(down.defaultPrevented).toBe(true)
+    expect(last().key(shiftEnter('keypress'))).toBe(false)
+    expect(last().key(shiftEnter('keyup'))).toBe(false)
+    expect(onData).toHaveBeenCalledTimes(1)
+    expect(onData).toHaveBeenCalledWith('\x1b\r')
+    expect(h.terms).toHaveLength(1)
+
+    // Plain Enter, modifiers, composition and readOnly are left alone.
+    expect(last().key(new KeyboardEvent('keydown', { key: 'Enter' }))).toBe(true)
+    expect(last().key(shiftEnter('keydown', { ctrlKey: true }))).toBe(true)
+    expect(last().key(shiftEnter('keydown', { altKey: true }))).toBe(true)
+    expect(last().key(shiftEnter('keydown', { metaKey: true }))).toBe(true)
+    expect(last().key(shiftEnter('keydown', { isComposing: true }))).toBe(true)
+    rerender(<Terminal label="Agent" status="live" shiftEnter="newline" readOnly onData={onData} />)
+    expect(last().key(shiftEnter('keydown'))).toBe(true)
+    expect(onData).toHaveBeenCalledTimes(1)
+  })
+
   it('Ctrl+Shift+L moves focus to the next tab stop', () => {
     render(
       <>

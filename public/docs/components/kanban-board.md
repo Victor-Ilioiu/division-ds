@@ -31,6 +31,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `getItemLabel` | `(item: T) => string` |  | Required. The card in plain words. The Move control, its menu and every screen reader announcement use it. |
 | `renderCard` | `(item: T) => ReactNode` |  | Required. The card's body. It can hold one link or button. The board draws the frame. |
 | `renderCardCorner` | `(item: T) => ReactNode` |  | A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name. |
+| `renderCardMenu` | `(item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode` |  | Replaces the Move menu's default items (the card's name and a Move to item for each other column) with your own DropdownMenu parts, such as View, Edit or Delete. They go inside the board's menu. Call moveTo(columnId) to move the card the way the default menu does: to the end of that column, with onMove, the announcement and focus back on the Move control. columnId is the card's current column. |
 | `onMove` | `(itemId: string, toColumnId: string, toIndex: number) => void` |  | Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last. |
 | `emptyColumnMessage` | `string` | `'Nothing here'` | Shown in a column with no cards. |
 | `columnHeadingLevel` | `2 \| 3 \| 4` | `3` | The heading level of the column titles. Pick one that sits under the page's own heading outline. |
@@ -234,6 +235,115 @@ function WorkOrders() {
 }
 
 <WorkOrders />
+```
+
+### Your own card menu, with renderCardMenu
+
+```tsx
+type Order = { id: string; title: string; bay: string; status: 'open' | 'parts' | 'done' }
+
+const ORDER_COLUMNS: KanbanColumn[] = [
+  { id: 'open', title: 'Open' },
+  { id: 'parts', title: 'Waiting for parts' },
+  { id: 'done', title: 'Done' },
+]
+
+const ORDERS: Order[] = [
+  { id: 'wo-31', title: 'Replace dock door seal', bay: 'Bay 2', status: 'open' },
+  { id: 'wo-32', title: 'Recalibrate floor scale', bay: 'Bay 5', status: 'open' },
+  { id: 'wo-29', title: 'Service pallet jack', bay: 'Bay 1', status: 'done' },
+]
+
+const orderAccessors = {
+  getItemId: (order: Order) => order.id,
+  getColumnId: (order: Order) => order.status,
+  setColumnId: (order: Order, status: string) => ({ ...order, status: status as Order['status'] }),
+}
+
+const ORDER_LABELS = ['Urgent', 'Safety', 'Contractor'] as const
+
+function WorkOrdersWithMenu() {
+  const [orders, setOrders] = useState(ORDERS)
+  const [labels, setLabels] = useState<Record<string, string[]>>({ 'wo-31': ['Safety'] })
+  const [note, setNote] = useState('')
+  const toggleLabel = (id: string, label: string, on: boolean) =>
+    setLabels(current => ({
+      ...current,
+      [id]: on ? [...(current[id] ?? []), label] : (current[id] ?? []).filter(other => other !== label),
+    }))
+  return (
+    <div className="w-full min-w-0 flex flex-col gap-3">
+      <KanbanBoard
+        label="Depot work orders, with a card menu"
+        columns={ORDER_COLUMNS}
+        items={orders}
+        getItemId={orderAccessors.getItemId}
+        getColumnId={orderAccessors.getColumnId}
+        getItemLabel={order => order.title}
+        renderCard={order => (
+          <div className="flex flex-col gap-1">
+            <p className="font-semibold">{order.title}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+              {[order.bay, ...(labels[order.id] ?? [])].join(' · ')}
+            </p>
+          </div>
+        )}
+        renderCardMenu={(order, moveTo, columnId) => (
+          <>
+            <DropdownMenuItem icon={<Eye />} onSelect={() => setNote(`Opened ${order.title}.`)}>
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem icon={<Pencil />} onSelect={() => setNote(`Editing ${order.title}.`)}>
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger icon={<Tag />}>Labels</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {ORDER_LABELS.map(label => (
+                  <DropdownMenuCheckboxItem
+                    key={label}
+                    checked={(labels[order.id] ?? []).includes(label)}
+                    onCheckedChange={on => toggleLabel(order.id, label, on === true)}
+                    onSelect={event => event.preventDefault()}
+                  >
+                    {label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger icon={<ArrowRightLeft />}>Move to</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {ORDER_COLUMNS.filter(column => column.id !== columnId).map(column => (
+                  <DropdownMenuItem key={column.id} onSelect={() => moveTo(column.id)}>
+                    {column.title}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              tone="hostile"
+              icon={<Trash2 />}
+              onSelect={() => {
+                setOrders(current => current.filter(other => other.id !== order.id))
+                setNote(`Deleted ${order.title}.`)
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </>
+        )}
+        onMove={(id, status, index) => setOrders(current => applyKanbanMove(current, id, status, index, orderAccessors))}
+        emptyColumnMessage="No orders waiting"
+        columnHeadingLevel={4}
+      />
+      <p className={docsProse}>{note}</p>
+    </div>
+  )
+}
+
+<WorkOrdersWithMenu />
 ```
 
 ## Keyboard

@@ -31,6 +31,9 @@ export const meta: ComponentMeta = {
     { name: 'onValueChange', type: '(value: string[]) => void', description: 'Runs with the whole new array every time an option is added or removed.' },
     { name: 'placeholder', type: 'string', default: "'Select…'", description: 'Shown while nothing is chosen.' },
     { name: 'emptyMessage', type: 'string', default: "'No matches'", description: 'Shown in the panel when the typed text matches no option.' },
+    { name: 'creatable', type: 'boolean', default: 'false', description: 'Adds one last row, `Create "<text>"`, when the typed text matches no option (ignoring case). It is never shown for empty text or for text that is already an option. It is an ordinary option in the list: the arrows reach it, Enter or a click chooses it, and screen readers read its label.' },
+    { name: 'onCreate', type: '(text: string) => void', description: 'Runs with the typed text, trimmed, when the create row is chosen. The text field is then cleared. The component does not add anything itself: add the new option to options and its value to value here.' },
+    { name: 'createLabel', type: '(text: string) => string', default: '(text) => `Create "${text}"`', description: "The create row's label, for other wording or another language." },
     { name: 'inputSize', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Matches Input and Select: a minimum height of 32, 40 or 48px (pixels), with text at size xs, sm or base. It also sets the size of the typed text and of the option rows in the list (28, 32 or 40px). The tags come in one size, so sm fits a single row of them snugly, and md and lg add room around it. The field grows past the minimum as tags wrap.' },
     { name: 'invalid', type: 'boolean', default: 'false', description: 'Sets aria-invalid (which tells screen readers the value has a problem) and the invalid border. FormField sets it from error.' },
     { name: 'disabled', type: 'boolean', default: 'false', description: 'Turns the field off. The chosen tags stay visible, without their remove buttons.' },
@@ -44,6 +47,7 @@ export const meta: ComponentMeta = {
   keyboard: [
     { keys: ['↓', '↑'], does: 'Opens the list, then moves the highlight, skipping rows that are turned off.' },
     { keys: ['Enter'], does: 'Adds or removes the highlighted option. The list stays open.' },
+    { keys: ['Enter'], does: 'On the create row (creatable): runs onCreate with the typed text and clears the text field.' },
     { keys: ['Backspace'], does: 'When the text field is empty, removes the last tag.' },
     { keys: ['Esc'], does: 'Closes the list. Press it again to clear the typed text.' },
     { keys: ['Tab'], does: 'Moves through the tags’ remove buttons and the text field, and closes the list on the way out.' },

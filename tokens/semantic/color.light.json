@@ -51,6 +51,59 @@
           "ink": { "$type": "color", "$value": "#0a0602", "$description": "10.76:1 on accent.warning.fill" }
         }
       },
+      "category": {
+        "$description": "Categorical colours for labels people make themselves (a project tag, a topic). Not statuses: a colour here means 'same group', never good or bad. Light text values are measured by the gate on surface.base, surface.sunken and surface.raised; fill is the same in both themes, ink on it is gated at 4.5:1.",
+        "gray": {
+          "text": { "$type": "color", "$value": "#5c636e" },
+          "fill": { "$type": "color", "$value": "#9aa1ab" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "brown": {
+          "text": { "$type": "color", "$value": "#7a5232" },
+          "fill": { "$type": "color", "$value": "#b98a64" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "orange": {
+          "text": { "$type": "color", "$value": "#a34a00" },
+          "fill": { "$type": "color", "$value": "#f0913a" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "yellow": {
+          "text": { "$type": "color", "$value": "#7a5c00" },
+          "fill": { "$type": "color", "$value": "#e8c341" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "green": {
+          "text": { "$type": "color", "$value": "#1e6b3a" },
+          "fill": { "$type": "color", "$value": "#4fbf7a" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "teal": {
+          "text": { "$type": "color", "$value": "#0d6662" },
+          "fill": { "$type": "color", "$value": "#3fbfb2" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "blue": {
+          "text": { "$type": "color", "$value": "#1f5fbf" },
+          "fill": { "$type": "color", "$value": "#6fa3f5" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "purple": {
+          "text": { "$type": "color", "$value": "#6a3fbf" },
+          "fill": { "$type": "color", "$value": "#a88af0" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "pink": {
+          "text": { "$type": "color", "$value": "#a3306f" },
+          "fill": { "$type": "color", "$value": "#ec84bb" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "red": {
+          "text": { "$type": "color", "$value": "#b42828" },
+          "fill": { "$type": "color", "$value": "#f07a7a" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        }
+      },
       "numeral": {
         "pad": { "$type": "color", "$value": "{color.primitive.neutral.300}", "$description": "The dimmed leading-zero pad. 3.82:1 on surface.base, 22% of text.primary's 17.55:1 there, against the dark theme's 31%. Light theme needs a LIGHTER step than text.muted for the same role: muted aliases neutral.500 and measures 11.44:1 here, 65% of ink, which does not read as dimmed and out-shouts the signal.fill numeral it is padding (4.11:1 on this surface). neutral.400 would land at 6.58:1 and 38% of ink, closer to dark's share but more than twice the contrast of the digits beside it, so neutral.300 is the step that keeps the pad quieter than what it pads." }
       },

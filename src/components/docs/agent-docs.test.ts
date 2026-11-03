@@ -79,7 +79,9 @@ describe('the generated agent docs', () => {
     // 18.1 kB when written (2026-10-26). It links the pages rather than inlining them.
     // Moved to 23.5 kB with Terminal and its 17 tokens (2026-11-01).
     // Moved to 21.5 kB with Panel and CodeBlock (2026-10-30): each component adds a linked line.
-    expect(design.length).toBeLessThan(23_500)
+    // Moved to 27 kB with the 30 category colour tokens (Badge `color`, 2026-11-03): one table
+    // row each, with the shortest use line that still says "a label, not a status".
+    expect(design.length).toBeLessThan(27_000)
   })
 
   it('keep the index small enough to read whole', () => {

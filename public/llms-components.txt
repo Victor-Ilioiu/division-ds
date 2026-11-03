@@ -45,10 +45,11 @@ Page: /docs/components/avatar.md
 A small chip that shows a status. It comes in six tones and two emphases, and it always carries a word. A colour on its own isn't a status anyone can read.
 
 ```tsx
-import { Badge, badgeVariants } from 'src/components/atoms/badge/Badge'
+import { Badge, badgeVariants, CATEGORY_COLORS } from 'src/components/atoms/badge/Badge'
 ```
 
-- `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` The status the badge shows.
+- `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` The status the badge shows. Leave it out when you pass color.
+- `color: 'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.
 - `emphasis: 'solid' \| 'subtle' = 'subtle'` Solid uses the invariant fill (the same in light and dark themes) with its matching ink. Subtle is the outline badge: a 1px border and text in the tone’s theme-adaptive text token, with no fill. There's no separate outline emphasis, because it would be this same look under a second name.
 - `size: 'sm' \| 'md' = 'sm'` sm (small) is the chip for everyday interface: rows, cards, tables. md (medium) takes the small control height (32px) and the 14px text step. Use it for a badge next to display-size type, like a price.
 - `dot: boolean = false` Adds a marker next to the text.
@@ -68,6 +69,7 @@ import { Button, buttonVariants } from 'src/components/atoms/button/Button'
 ```
 
 - `variant: 'primary' \| 'secondary' \| 'danger' \| 'ghost' \| 'link' = 'primary'` Which fill/border treatment to use. link looks like a Link (signal text, underline, no fill, no bevel, no fixed height) but it's still a button. Use it for an action inside a sentence, not for going to another page.
+- `tone: 'signal' \| 'neutral' = 'signal'` Only the link variant reads it. signal is the signal-coloured, underlined link. neutral is primary text with no underline until hover or keyboard focus: use it for a clickable title on a kanban card or a list row, where a column of signal links would be too loud. A link-variant label wraps onto more lines rather than overflowing its column.
 - `size: 'xs' \| 'sm' \| 'md' \| 'lg' = 'md'` 24 / 32 / 40 / 48px (pixels). xs is exactly the 24px minimum target, the smallest area people can reliably click or tap. It isn't a token step (there is no xs control-height token) and it's meant for dense toolbars and table rows. Size has no effect on the link variant, which takes the size of the text around it.
 - `fullWidth: boolean = false` Stretches the wrapper as well as the button.
 - `loading: boolean = false` Sets aria-busy and aria-disabled, blocks the click and the form submit, and shows the spinner. The button stays focusable.
@@ -196,7 +198,7 @@ A link inside text. It's underlined, because in a paragraph colour alone isn't e
 import { Link, linkVariants } from 'src/components/atoms/link/Link'
 ```
 
-- `tone: 'signal' \| 'quiet' = 'signal'` Which colour treatment to use.
+- `tone: 'signal' \| 'quiet' \| 'neutral' = 'signal'` Which colour treatment to use. neutral is primary text with no underline until hover or keyboard focus, for a clickable title in a list or on a card, where it is clear from position that the title is a link. Keep signal for links inside running text.
 - `external: boolean = false` Opens the link in a new tab. It adds target="_blank", the rel hardening (attributes that stop the new page reaching back into yours), a trailing icon and the hidden "(opens in a new tab)" warning. Using it together with target or rel is a type error, so it can't fail silently. external already sets those values, so those props are removed from the type instead of being quietly overwritten while the page runs.
 - `href: string` Where the link goes.
 - `className: string` Merged with the component classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with).
@@ -902,6 +904,9 @@ Requires: A <FormField> around it. FormField supplies the visible label, the hel
 - `onValueChange: (value: string[]) => void` Runs with the whole new array every time an option is added or removed.
 - `placeholder: string = 'Select…'` Shown while nothing is chosen.
 - `emptyMessage: string = 'No matches'` Shown in the panel when the typed text matches no option.
+- `creatable: boolean = false` Adds one last row, `Create "<text>"`, when the typed text matches no option (ignoring case). It is never shown for empty text or for text that is already an option. It is an ordinary option in the list: the arrows reach it, Enter or a click chooses it, and screen readers read its label.
+- `onCreate: (text: string) => void` Runs with the typed text, trimmed, when the create row is chosen. The text field is then cleared. The component does not add anything itself: add the new option to options and its value to value here.
+- `createLabel: (text: string) => string = (text) => `Create "${text}"`` The create row's label, for other wording or another language.
 - `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` Matches Input and Select: a minimum height of 32, 40 or 48px (pixels), with text at size xs, sm or base. It also sets the size of the typed text and of the option rows in the list (28, 32 or 40px). The tags come in one size, so sm fits a single row of them snugly, and md and lg add room around it. The field grows past the minimum as tags wrap.
 - `invalid: boolean = false` Sets aria-invalid (which tells screen readers the value has a problem) and the invalid border. FormField sets it from error.
 - `disabled: boolean = false` Turns the field off. The chosen tags stay visible, without their remove buttons.
@@ -1548,6 +1553,7 @@ Requires: A parent that holds items in state and applies each onMove (applyKanba
 - `getItemLabel: (item: T) => string` Required. The card in plain words. The Move control, its menu and every screen reader announcement use it.
 - `renderCard: (item: T) => ReactNode` Required. The card's body. It can hold one link or button. The board draws the frame.
 - `renderCardCorner: (item: T) => ReactNode` A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name.
+- `renderCardMenu: (item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode` Replaces the Move menu's default items (the card's name and a Move to item for each other column) with your own DropdownMenu parts, such as View, Edit or Delete. They go inside the board's menu. Call moveTo(columnId) to move the card the way the default menu does: to the end of that column, with onMove, the announcement and focus back on the Move control. columnId is the card's current column.
 - `onMove: (itemId: string, toColumnId: string, toIndex: number) => void` Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last.
 - `emptyColumnMessage: string = 'Nothing here'` Shown in a column with no cards.
 - `columnHeadingLevel: 2 \| 3 \| 4 = 3` The heading level of the column titles. Pick one that sits under the page's own heading outline.
@@ -1682,6 +1688,7 @@ Requires: A height. It is 24rem by default; set another with className (h-[32rem
 - `exitCode: number` With status exited: shown beside the word, and a non-zero code turns it hostile.
 - `statusMessage: string` Detail beside the status, and announced with it: the reason for an error, the attempt while reconnecting.
 - `readOnly: boolean = false` Blocks input and never fires onData. Selecting and copying keep working, and Tab and Escape leave the terminal as they do anywhere else.
+- `shiftEnter: 'newline' \| 'default' = 'default'` What Shift+Enter sends. xterm sends the same carriage return as Enter, so a chat program inside submits. newline sends ESC then carriage return instead, which Claude Code and similar programs read as a new line. Not sent while readOnly or composing with an input method.
 - `announceOutput: boolean = false` Reads output aloud through xterm’s live region, up to 20 lines at a time. For a single session a screen reader user is working in. Leave it off when several terminals share a page.
 - `onData: (data: string) => void` What the person typed or pasted, plus the replies a program asks the terminal for. Send it to the process.
 - `onResize: (size: { cols: number; rows: number }) => void` The new grid size, debounced by 100ms and only when cols or rows changed. It fires once after mounting.

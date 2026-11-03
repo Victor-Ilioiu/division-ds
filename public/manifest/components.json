@@ -266,7 +266,7 @@
       "tier": "atoms",
       "slug": "badge",
       "summary": "A small chip that shows a status. It comes in six tones and two emphases, and it always carries a word. A colour on its own isn't a status anyone can read.",
-      "useWhen": "You need to label a status with a word and a tone, like an order state or a sync result.",
+      "useWhen": "You need to label a status with a word and a tone, like an order state or a sync result. Or a label someone made, like a project tag: then pass color instead of tone.",
       "notFor": "A filter or selection someone can remove. Use Tag for that.",
       "source": "src/components/atoms/badge/Badge.tsx",
       "docs": "/docs/components/badge.md",
@@ -274,7 +274,8 @@
         {
           "names": [
             "Badge",
-            "badgeVariants"
+            "badgeVariants",
+            "CATEGORY_COLORS"
           ],
           "from": "src/components/atoms/badge/Badge"
         }
@@ -284,7 +285,12 @@
           "name": "tone",
           "type": "'neutral' | 'signal' | 'ok' | 'warning' | 'hostile' | 'info'",
           "default": "'neutral'",
-          "description": "The status the badge shows."
+          "description": "The status the badge shows. Leave it out when you pass color."
+        },
+        {
+          "name": "color",
+          "type": "'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'",
+          "description": "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes."
         },
         {
           "name": "emphasis",
@@ -331,6 +337,18 @@
           "kind": "const",
           "code": "export const badgeVariants = cva( …",
           "from": "src/components/atoms/badge/Badge"
+        },
+        {
+          "name": "CATEGORY_COLORS",
+          "kind": "const",
+          "code": "/** Categorical colours for labels people make (a project tag, a topic), in the order a picker\n *  shows them. Not statuses: a category colour says \"same group\", never good or bad. Exported so\n *  an app can give each new label one, for example\n *  `CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]`. */\nexport const CATEGORY_COLORS = ['gray', 'brown', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'red'] as const",
+          "from": "src/components/atoms/badge/Badge"
+        },
+        {
+          "name": "CategoryColor",
+          "kind": "type",
+          "code": "export type CategoryColor = (typeof CATEGORY_COLORS)[number]",
+          "from": "src/components/atoms/badge/Badge"
         }
       ],
       "keyboard": [],
@@ -338,12 +356,15 @@
         "Give every badge a word.",
         "Go easy on solid. One solid badge in a row reads as the exception. Six read as noise.",
         "Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.",
-        "Use size md when the badge sits next to a headline figure, so the two read as one statement."
+        "Use size md when the badge sits next to a headline figure, so the two read as one statement.",
+        "Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.",
+        "Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created."
       ],
       "donts": [
         "Don't build a badge that's colour only, even with a tooltip.",
         "Don't put a badge inside a button. It muddies what the clickable target is.",
         "Don't use hostile for something that's only pending.",
+        "Don't use a category colour to show a status. A red project label is not an error, and an error is tone=\"hostile\", so it means the same thing on every screen.",
         "Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.",
         "Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.",
         "Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.",
@@ -376,6 +397,14 @@
         {
           "caption": "Tones, solid",
           "source": "const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const\n\n{TONES.map(tone => (\n  <Badge key={tone} tone={tone} emphasis=\"solid\">\n    {tone}\n  </Badge>\n))}"
+        },
+        {
+          "caption": "Category colours, subtle: labels people make, not statuses",
+          "source": "{CATEGORY_COLORS.map(color => (\n  <Badge key={color} color={color}>\n    {color}\n  </Badge>\n))}"
+        },
+        {
+          "caption": "Category colours, solid",
+          "source": "{CATEGORY_COLORS.map(color => (\n  <Badge key={color} color={color} emphasis=\"solid\">\n    {color}\n  </Badge>\n))}"
         },
         {
           "caption": "With a dot",
@@ -425,6 +454,12 @@
           "type": "'primary' | 'secondary' | 'danger' | 'ghost' | 'link'",
           "default": "'primary'",
           "description": "Which fill/border treatment to use. link looks like a Link (signal text, underline, no fill, no bevel, no fixed height) but it's still a button. Use it for an action inside a sentence, not for going to another page."
+        },
+        {
+          "name": "tone",
+          "type": "'signal' | 'neutral'",
+          "default": "'signal'",
+          "description": "Only the link variant reads it. signal is the signal-coloured, underlined link. neutral is primary text with no underline until hover or keyboard focus: use it for a clickable title on a kanban card or a list row, where a column of signal links would be too loud. A link-variant label wraps onto more lines rather than overflowing its column."
         },
         {
           "name": "size",
@@ -528,7 +563,8 @@
         "Use loading instead of disabling the button and swapping the label yourself.",
         "Use loading on a submit button. It keeps focus while the form works, so a keyboard user is never thrown back to the top of the page.",
         "Pass icons through iconStart and iconEnd, not as children. That way they stay hidden from assistive tech and get sized with the button.",
-        "Use the link variant for an action that sits in running text or next to a heading (‘Reset filters’). Use Link for anything that goes somewhere."
+        "Use the link variant for an action that sits in running text or next to a heading (‘Reset filters’). Use Link for anything that goes somewhere.",
+        "Use variant=\"link\" tone=\"neutral\" for a card or row title that opens something on this page, such as the detail panel of a kanban card."
       ],
       "donts": [
         "Don't add bevel-* or an outline class yourself. You'll clip the ring off.",
@@ -567,7 +603,7 @@
         },
         {
           "part": "Label",
-          "description": "Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined."
+          "description": "Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined (or primary text, underlined on hover and focus, with tone=\"neutral\"), and wraps instead of staying on one line."
         },
         {
           "part": "Icons",
@@ -594,6 +630,10 @@
         {
           "caption": "Link variant",
           "source": "<p className=\"text-sm text-[var(--color-text-secondary)] max-w-md\">\n  No replicas match these filters.{' '}\n  <Button variant=\"link\">\n    Reset filters\n  </Button>{' '}\n  to see the full catalogue.\n</p>"
+        },
+        {
+          "caption": "Neutral link: a kanban card title",
+          "source": "<div className=\"w-64 flex items-start gap-2 p-3 border border-[var(--color-border-hairline)] bg-[var(--color-surface-raised)]\">\n  <div className=\"min-w-0 flex-1 text-sm\">\n    <Button variant=\"link\" tone=\"neutral\">\n      Replace the hop-up bucking on the second-line support rifles before Saturday\n    </Button>\n  </div>\n  <Button variant=\"ghost\" size=\"xs\">\n    Move\n  </Button>\n</div>"
         },
         {
           "caption": "Full width",
@@ -1327,9 +1367,9 @@
       "props": [
         {
           "name": "tone",
-          "type": "'signal' | 'quiet'",
+          "type": "'signal' | 'quiet' | 'neutral'",
           "default": "'signal'",
-          "description": "Which colour treatment to use."
+          "description": "Which colour treatment to use. neutral is primary text with no underline until hover or keyboard focus, for a clickable title in a list or on a card, where it is clear from position that the title is a link. Keep signal for links inside running text."
         },
         {
           "name": "external",
@@ -1417,7 +1457,7 @@
         },
         {
           "caption": "Tones",
-          "source": "<Link href=\"/kits\" tone=\"signal\">\n  Field kits\n</Link>\n<Link href=\"/kits\" tone=\"quiet\">\n  Field kits\n</Link>"
+          "source": "<Link href=\"/kits\" tone=\"signal\">\n  Field kits\n</Link>\n<Link href=\"/kits\" tone=\"quiet\">\n  Field kits\n</Link>\n<Link href=\"/kits\" tone=\"neutral\">\n  Field kits\n</Link>"
         },
         {
           "caption": "External",
@@ -6284,6 +6324,23 @@
           "description": "Shown in the panel when the typed text matches no option."
         },
         {
+          "name": "creatable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Adds one last row, `Create \"<text>\"`, when the typed text matches no option (ignoring case). It is never shown for empty text or for text that is already an option. It is an ordinary option in the list: the arrows reach it, Enter or a click chooses it, and screen readers read its label."
+        },
+        {
+          "name": "onCreate",
+          "type": "(text: string) => void",
+          "description": "Runs with the typed text, trimmed, when the create row is chosen. The text field is then cleared. The component does not add anything itself: add the new option to options and its value to value here."
+        },
+        {
+          "name": "createLabel",
+          "type": "(text: string) => string",
+          "default": "(text) => `Create \"${text}\"`",
+          "description": "The create row's label, for other wording or another language."
+        },
+        {
           "name": "inputSize",
           "type": "'sm' | 'md' | 'lg'",
           "default": "'md'",
@@ -6349,6 +6406,12 @@
         },
         {
           "keys": [
+            "Enter"
+          ],
+          "does": "On the create row (creatable): runs onCreate with the typed text and clears the text field."
+        },
+        {
+          "keys": [
             "Backspace"
           ],
           "does": "When the text field is empty, removes the last tag."
@@ -6410,6 +6473,10 @@
         {
           "caption": "Controlled: the page holds the chosen options",
           "source": "const LOADOUT = [\n  { value: 'mags', label: 'Spare magazines' },\n  { value: 'goggles', label: 'Full-seal goggles' },\n  { value: 'mesh', label: 'Mesh face guard' },\n  { value: 'radio', label: 'Team radio', disabled: true },\n  { value: 'gloves', label: 'Gloves' },\n  { value: 'loader', label: 'Speed loader' },\n  { value: 'tracer', label: 'Tracer unit' },\n  { value: 'pouch', label: 'Dump pouch' },\n]\n\nfunction ControlledExample() {\n  const [kit, setKit] = useState<string[]>(['mags', 'goggles', 'gloves'])\n  return (\n    <div className=\"flex flex-col gap-2 w-full max-w-md\">\n      <FormField label=\"Loadout\" help=\"Remove a tag and watch the others close the gap.\">\n        <MultiSelect options={LOADOUT} value={kit} onValueChange={setKit} />\n      </FormField>\n      <span className=\"font-mono text-xs text-[var(--color-text-secondary)]\">value: [{kit.join(', ')}]</span>\n    </div>\n  )\n}\n\n<ControlledExample />"
+        },
+        {
+          "caption": "Creatable: pick or create labels",
+          "source": "const LABELS = [\n  { value: 'bug', label: 'Bug' },\n  { value: 'design', label: 'Design' },\n  { value: 'docs', label: 'Docs' },\n]\n\nfunction CreatableExample() {\n  const [options, setOptions] = useState(LABELS)\n  const [labels, setLabels] = useState<string[]>(['design'])\n  return (\n    <div className=\"w-full max-w-md\">\n      <FormField label=\"Labels\" help=\"Type a label that is not in the list, then press Enter to create it.\">\n        <MultiSelect\n          options={options}\n          value={labels}\n          onValueChange={setLabels}\n          creatable\n          onCreate={text => {\n            setOptions(current => [...current, { value: text, label: text }])\n            setLabels(current => [...current, text])\n          }}\n        />\n      </FormField>\n    </div>\n  )\n}\n\n<CreatableExample />"
         },
         {
           "caption": "Invalid",
@@ -11092,6 +11159,11 @@
           "description": "A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name."
         },
         {
+          "name": "renderCardMenu",
+          "type": "(item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode",
+          "description": "Replaces the Move menu's default items (the card's name and a Move to item for each other column) with your own DropdownMenu parts, such as View, Edit or Delete. They go inside the board's menu. Call moveTo(columnId) to move the card the way the default menu does: to the end of that column, with onMove, the announcement and focus back on the Move control. columnId is the card's current column."
+        },
+        {
           "name": "onMove",
           "type": "(itemId: string, toColumnId: string, toIndex: number) => void",
           "description": "Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last."
@@ -11271,6 +11343,10 @@
         {
           "caption": "Work orders, with an empty column",
           "source": "type Order = { id: string; title: string; bay: string; status: 'open' | 'parts' | 'done' }\n\nconst ORDER_COLUMNS: KanbanColumn[] = [\n  { id: 'open', title: 'Open' },\n  { id: 'parts', title: 'Waiting for parts' },\n  { id: 'done', title: 'Done' },\n]\n\nconst ORDERS: Order[] = [\n  { id: 'wo-31', title: 'Replace dock door seal', bay: 'Bay 2', status: 'open' },\n  { id: 'wo-32', title: 'Recalibrate floor scale', bay: 'Bay 5', status: 'open' },\n  { id: 'wo-29', title: 'Service pallet jack', bay: 'Bay 1', status: 'done' },\n]\n\nconst orderAccessors = {\n  getItemId: (order: Order) => order.id,\n  getColumnId: (order: Order) => order.status,\n  setColumnId: (order: Order, status: string) => ({ ...order, status: status as Order['status'] }),\n}\n\nfunction WorkOrders() {\n  const [orders, setOrders] = useState(ORDERS)\n  return (\n    <div className=\"w-full min-w-0\">\n      <KanbanBoard\n        label=\"Depot work orders\"\n        columns={ORDER_COLUMNS}\n        items={orders}\n        getItemId={orderAccessors.getItemId}\n        getColumnId={orderAccessors.getColumnId}\n        getItemLabel={order => order.title}\n        renderCard={order => (\n          <div className=\"flex flex-col gap-1\">\n            <p className=\"font-semibold\">{order.title}</p>\n            <p className=\"font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)]\">{order.bay}</p>\n          </div>\n        )}\n        onMove={(id, status, index) => setOrders(current => applyKanbanMove(current, id, status, index, orderAccessors))}\n        emptyColumnMessage=\"No orders waiting\"\n        columnHeadingLevel={4}\n      />\n    </div>\n  )\n}\n\n<WorkOrders />"
+        },
+        {
+          "caption": "Your own card menu, with renderCardMenu",
+          "source": "type Order = { id: string; title: string; bay: string; status: 'open' | 'parts' | 'done' }\n\nconst ORDER_COLUMNS: KanbanColumn[] = [\n  { id: 'open', title: 'Open' },\n  { id: 'parts', title: 'Waiting for parts' },\n  { id: 'done', title: 'Done' },\n]\n\nconst ORDERS: Order[] = [\n  { id: 'wo-31', title: 'Replace dock door seal', bay: 'Bay 2', status: 'open' },\n  { id: 'wo-32', title: 'Recalibrate floor scale', bay: 'Bay 5', status: 'open' },\n  { id: 'wo-29', title: 'Service pallet jack', bay: 'Bay 1', status: 'done' },\n]\n\nconst orderAccessors = {\n  getItemId: (order: Order) => order.id,\n  getColumnId: (order: Order) => order.status,\n  setColumnId: (order: Order, status: string) => ({ ...order, status: status as Order['status'] }),\n}\n\nconst ORDER_LABELS = ['Urgent', 'Safety', 'Contractor'] as const\n\nfunction WorkOrdersWithMenu() {\n  const [orders, setOrders] = useState(ORDERS)\n  const [labels, setLabels] = useState<Record<string, string[]>>({ 'wo-31': ['Safety'] })\n  const [note, setNote] = useState('')\n  const toggleLabel = (id: string, label: string, on: boolean) =>\n    setLabels(current => ({\n      ...current,\n      [id]: on ? [...(current[id] ?? []), label] : (current[id] ?? []).filter(other => other !== label),\n    }))\n  return (\n    <div className=\"w-full min-w-0 flex flex-col gap-3\">\n      <KanbanBoard\n        label=\"Depot work orders, with a card menu\"\n        columns={ORDER_COLUMNS}\n        items={orders}\n        getItemId={orderAccessors.getItemId}\n        getColumnId={orderAccessors.getColumnId}\n        getItemLabel={order => order.title}\n        renderCard={order => (\n          <div className=\"flex flex-col gap-1\">\n            <p className=\"font-semibold\">{order.title}</p>\n            <p className=\"font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)]\">\n              {[order.bay, ...(labels[order.id] ?? [])].join(' · ')}\n            </p>\n          </div>\n        )}\n        renderCardMenu={(order, moveTo, columnId) => (\n          <>\n            <DropdownMenuItem icon={<Eye />} onSelect={() => setNote(`Opened ${order.title}.`)}>\n              View\n            </DropdownMenuItem>\n            <DropdownMenuItem icon={<Pencil />} onSelect={() => setNote(`Editing ${order.title}.`)}>\n              Edit\n            </DropdownMenuItem>\n            <DropdownMenuSub>\n              <DropdownMenuSubTrigger icon={<Tag />}>Labels</DropdownMenuSubTrigger>\n              <DropdownMenuSubContent>\n                {ORDER_LABELS.map(label => (\n                  <DropdownMenuCheckboxItem\n                    key={label}\n                    checked={(labels[order.id] ?? []).includes(label)}\n                    onCheckedChange={on => toggleLabel(order.id, label, on === true)}\n                    onSelect={event => event.preventDefault()}\n                  >\n                    {label}\n                  </DropdownMenuCheckboxItem>\n                ))}\n              </DropdownMenuSubContent>\n            </DropdownMenuSub>\n            <DropdownMenuSub>\n              <DropdownMenuSubTrigger icon={<ArrowRightLeft />}>Move to</DropdownMenuSubTrigger>\n              <DropdownMenuSubContent>\n                {ORDER_COLUMNS.filter(column => column.id !== columnId).map(column => (\n                  <DropdownMenuItem key={column.id} onSelect={() => moveTo(column.id)}>\n                    {column.title}\n                  </DropdownMenuItem>\n                ))}\n              </DropdownMenuSubContent>\n            </DropdownMenuSub>\n            <DropdownMenuSeparator />\n            <DropdownMenuItem\n              tone=\"hostile\"\n              icon={<Trash2 />}\n              onSelect={() => {\n                setOrders(current => current.filter(other => other.id !== order.id))\n                setNote(`Deleted ${order.title}.`)\n              }}\n            >\n              Delete\n            </DropdownMenuItem>\n          </>\n        )}\n        onMove={(id, status, index) => setOrders(current => applyKanbanMove(current, id, status, index, orderAccessors))}\n        emptyColumnMessage=\"No orders waiting\"\n        columnHeadingLevel={4}\n      />\n      <p className={docsProse}>{note}</p>\n    </div>\n  )\n}\n\n<WorkOrdersWithMenu />"
         }
       ],
       "closed": true
@@ -12104,6 +12180,12 @@
           "description": "Blocks input and never fires onData. Selecting and copying keep working, and Tab and Escape leave the terminal as they do anywhere else."
         },
         {
+          "name": "shiftEnter",
+          "type": "'newline' | 'default'",
+          "default": "'default'",
+          "description": "What Shift+Enter sends. xterm sends the same carriage return as Enter, so a chat program inside submits. newline sends ESC then carriage return instead, which Claude Code and similar programs read as a new line. Not sent while readOnly or composing with an input method."
+        },
+        {
           "name": "announceOutput",
           "type": "boolean",
           "default": "false",
@@ -12202,6 +12284,13 @@
         },
         {
           "keys": [
+            "Shift",
+            "Enter"
+          ],
+          "does": "Sends Enter to the program, unless shiftEnter is newline, when it sends ESC then Enter: a new line in chat programs such as Claude Code."
+        },
+        {
+          "keys": [
             "Ctrl",
             "V"
           ],
@@ -12212,6 +12301,7 @@
         "Give each terminal a label that says which session it is, so a page of them can be told apart.",
         "Set readOnly when nobody can usefully type: a finished process, a session someone else owns.",
         "Say why in statusMessage when status is error.",
+        "Set shiftEnter=\"newline\" when the session runs a chat program, such as Claude Code, where Shift+Enter should start a new line.",
         "Use write’s callback to pause the source when output arrives faster than the page can draw it."
       ],
       "donts": [

@@ -19,7 +19,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `tone` | `'signal' \| 'quiet'` | `'signal'` | Which colour treatment to use. |
+| `tone` | `'signal' \| 'quiet' \| 'neutral'` | `'signal'` | Which colour treatment to use. neutral is primary text with no underline until hover or keyboard focus, for a clickable title in a list or on a card, where it is clear from position that the title is a link. Keep signal for links inside running text. |
 | `external` | `boolean` | `false` | Opens the link in a new tab. It adds target="_blank", the rel hardening (attributes that stop the new page reaching back into yours), a trailing icon and the hidden "(opens in a new tab)" warning. Using it together with target or rel is a type error, so it can't fail silently. external already sets those values, so those props are removed from the type instead of being quietly overwritten while the page runs. |
 | `href` | `string` |  | Where the link goes. |
 | `className` | `string` |  | Merged with the component classes. If two clash, the later Tailwind utility wins (Tailwind is the CSS framework this system styles with). |
@@ -57,6 +57,9 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
   Field kits
 </Link>
 <Link href="/kits" tone="quiet">
+  Field kits
+</Link>
+<Link href="/kits" tone="neutral">
   Field kits
 </Link>
 ```

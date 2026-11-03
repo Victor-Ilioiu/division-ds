@@ -6,7 +6,7 @@
 
 export { AiLabel, type AiLabelProps, type AiLabelSource } from './ai-label/AiLabel'
 export { Avatar, avatarVariants, initialsFrom, type AvatarProps, type AvatarStatus } from './avatar/Avatar'
-export { Badge, badgeVariants, type BadgeProps } from './badge/Badge'
+export { Badge, badgeVariants, CATEGORY_COLORS, type BadgeProps, type CategoryColor } from './badge/Badge'
 export { Button, buttonVariants, type ButtonProps } from './button/Button'
 export { Checkbox, type CheckboxProps } from './checkbox/Checkbox'
 export { Divider, type DividerProps } from './divider/Divider'

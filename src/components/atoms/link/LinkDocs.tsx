@@ -23,6 +23,9 @@ export function LinkDocs() {
         <Link href="/kits" tone="quiet">
           Field kits
         </Link>
+        <Link href="/kits" tone="neutral">
+          Field kits
+        </Link>
       </Example>
 
       <Example caption="External">

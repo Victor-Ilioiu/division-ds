@@ -2,7 +2,7 @@ import { Check, Clock, Truck, Zap } from 'lucide-react'
 import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Badge.meta'
 import { Example } from '../../docs/Example'
-import { Badge } from './Badge'
+import { Badge, CATEGORY_COLORS } from './Badge'
 
 const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 
@@ -21,6 +21,22 @@ export function BadgeDocs() {
         {TONES.map(tone => (
           <Badge key={tone} tone={tone} emphasis="solid">
             {tone}
+          </Badge>
+        ))}
+      </Example>
+
+      <Example caption="Category colours, subtle: labels people make, not statuses">
+        {CATEGORY_COLORS.map(color => (
+          <Badge key={color} color={color}>
+            {color}
+          </Badge>
+        ))}
+      </Example>
+
+      <Example caption="Category colours, solid">
+        {CATEGORY_COLORS.map(color => (
+          <Badge key={color} color={color} emphasis="solid">
+            {color}
           </Badge>
         ))}
       </Example>

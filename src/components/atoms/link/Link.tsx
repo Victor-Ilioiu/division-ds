@@ -5,7 +5,7 @@ import { cn } from '../../../lib/cn'
 
 export const linkVariants = cva(
   cn(
-    'inline underline underline-offset-2 decoration-1',
+    'inline underline-offset-2 decoration-1',
     // `transition-control`, not `transition-colors`: Tailwind v4's colour transition
     // includes `outline-color`, which made the focus ring animate in from currentColor
     // (near-white) instead of painting the ring token at the instant of focus. See
@@ -18,8 +18,14 @@ export const linkVariants = cva(
   {
     variants: {
       tone: {
-        signal: 'text-[var(--color-accent-signal-text)] hover:decoration-2',
-        quiet: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]',
+        signal: 'underline text-[var(--color-accent-signal-text)] hover:decoration-2',
+        quiet: 'underline text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]',
+        // A clickable title (kanban card, list row): primary text, underlined only on hover and
+        // keyboard focus, so a column of titles does not read as a column of signal links.
+        neutral: cn(
+          'text-[var(--color-text-primary)] no-underline',
+          'hover:underline hover:decoration-2 focus-visible:underline focus-visible:decoration-2'
+        ),
       },
     },
     defaultVariants: { tone: 'signal' },

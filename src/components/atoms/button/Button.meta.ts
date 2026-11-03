@@ -39,7 +39,7 @@ export const meta: ComponentMeta = {
     {
       part: 'Label',
       description:
-        'Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined.',
+        'Oxanium semibold, uppercase: the display type role. The link variant switches to the body role, in the signal text colour, underlined (or primary text, underlined on hover and focus, with tone="neutral"), and wraps instead of staying on one line.',
     },
     {
       part: 'Icons',
@@ -54,6 +54,13 @@ export const meta: ComponentMeta = {
       default: "'primary'",
       description:
         "Which fill/border treatment to use. link looks like a Link (signal text, underline, no fill, no bevel, no fixed height) but it's still a button. Use it for an action inside a sentence, not for going to another page.",
+    },
+    {
+      name: 'tone',
+      type: "'signal' | 'neutral'",
+      default: "'signal'",
+      description:
+        "Only the link variant reads it. signal is the signal-coloured, underlined link. neutral is primary text with no underline until hover or keyboard focus: use it for a clickable title on a kanban card or a list row, where a column of signal links would be too loud. A link-variant label wraps onto more lines rather than overflowing its column.",
     },
     {
       name: 'size',
@@ -125,6 +132,7 @@ export const meta: ComponentMeta = {
     "Use loading on a submit button. It keeps focus while the form works, so a keyboard user is never thrown back to the top of the page.",
     'Pass icons through iconStart and iconEnd, not as children. That way they stay hidden from assistive tech and get sized with the button.',
     'Use the link variant for an action that sits in running text or next to a heading (‘Reset filters’). Use Link for anything that goes somewhere.',
+    'Use variant="link" tone="neutral" for a card or row title that opens something on this page, such as the detail panel of a kanban card.',
   ],
   donts: [
     "Don't add bevel-* or an outline class yourself. You'll clip the ring off.",

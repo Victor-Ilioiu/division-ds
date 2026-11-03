@@ -67,6 +67,12 @@ export const meta: ComponentMeta = {
       description: "A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name.",
     },
     {
+      name: 'renderCardMenu',
+      type: '(item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode',
+      description:
+        "Replaces the Move menu's default items (the card's name and a Move to item for each other column) with your own DropdownMenu parts, such as View, Edit or Delete. They go inside the board's menu. Call moveTo(columnId) to move the card the way the default menu does: to the end of that column, with onMove, the announcement and focus back on the Move control. columnId is the card's current column.",
+    },
+    {
       name: 'onMove',
       type: '(itemId: string, toColumnId: string, toIndex: number) => void',
       description: "Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last.",

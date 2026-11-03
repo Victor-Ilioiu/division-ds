@@ -68,6 +68,11 @@ export type KanbanBoardProps<T> = {
   /** A small mark for the card's bottom-right corner, under the Move control: the owner's avatar,
    *  a priority icon. About 2rem square; decorative or named on its own. */
   renderCardCorner?: (item: T) => ReactNode
+  /** The Move control's menu, replacing the default (the card's label and a "Move to" item per
+   *  other column). Return DropdownMenu parts; they go inside the board's DropdownMenuContent.
+   *  `moveTo` is the menu move: the card goes to the end of that column, `onMove` runs, the move is
+   *  announced and focus returns to the card's Move control. `columnId` is the card's column now. */
+  renderCardMenu?: (item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode
   /** Controlled: the board never reorders `items` itself. `toIndex` is the card's position in the
    *  destination column once it is there (0 is the top). `applyKanbanMove` does the update. */
   onMove: (itemId: string, toColumnId: string, toIndex: number) => void
@@ -238,7 +243,8 @@ const SIDE = 'flex flex-col items-center justify-between gap-2 self-stretch shri
  *   drops, Escape or Tab cancels;
  * - the Move control's menu (Enter, or a click), which lists the other columns and puts the card
  *   at the end of the one chosen. The path that needs no drag at all (SC 2.5.7, Dragging
- *   Movements).
+ *   Movements). `renderCardMenu` replaces that menu with the app's own (View, Edit, Delete) and
+ *   hands it the same move as `moveTo`.
  *
  * The Move control is one IconButton doing two jobs: the menu's trigger and the keyboard drag's
  * activator. They share it by key: dnd-kit is set to start on Space only and calls
@@ -279,6 +285,7 @@ export function KanbanBoard<T>({
   getItemLabel,
   renderCard,
   renderCardCorner,
+  renderCardMenu,
   onMove,
   emptyColumnMessage = 'Nothing here',
   columnHeadingLevel = 3,
@@ -460,16 +467,20 @@ export function KanbanBoard<T>({
                           else if (moveButtons.current.get(itemId)?.isConnected === false) moveButtons.current.delete(itemId)
                         }}
                         menu={
-                          <>
-                            <DropdownMenuLabel>{itemLabel}</DropdownMenuLabel>
-                            {columns
-                              .filter(other => other.id !== column.id)
-                              .map(other => (
-                                <DropdownMenuItem key={other.id} onSelect={() => moveByMenu(itemId, other.id)}>
-                                  Move to {other.title}
-                                </DropdownMenuItem>
-                              ))}
-                          </>
+                          renderCardMenu ? (
+                            renderCardMenu(item, toColumnId => moveByMenu(itemId, toColumnId), column.id)
+                          ) : (
+                            <>
+                              <DropdownMenuLabel>{itemLabel}</DropdownMenuLabel>
+                              {columns
+                                .filter(other => other.id !== column.id)
+                                .map(other => (
+                                  <DropdownMenuItem key={other.id} onSelect={() => moveByMenu(itemId, other.id)}>
+                                    Move to {other.title}
+                                  </DropdownMenuItem>
+                                ))}
+                            </>
+                          )
                         }
                         onMenuCloseAutoFocus={event => {
                           if (pendingFocus.current === itemId) event.preventDefault()

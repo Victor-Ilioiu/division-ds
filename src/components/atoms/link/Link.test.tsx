@@ -10,6 +10,18 @@ describe('Link', () => {
     expect(screen.getByRole('link', { name: 'Field kits' })).toHaveAttribute('href', '/kits')
   })
 
+  it('has a neutral tone for titles: primary text, underlined on hover and focus only', () => {
+    render(
+      <Link href="/x" tone="neutral">
+        Card title
+      </Link>
+    )
+    const link = screen.getByRole('link')
+    expect(link.className).toContain('--color-text-primary')
+    expect(link).toHaveClass('no-underline', 'hover:underline', 'focus-visible:underline')
+    expect(link).not.toHaveClass('underline')
+  })
+
   it('is underlined by default so colour is not the only signal', () => {
     render(<Link href="/kits">Field kits</Link>)
     expect(screen.getByRole('link')).toHaveClass('underline')

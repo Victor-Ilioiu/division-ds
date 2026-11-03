@@ -29,6 +29,13 @@ export type MultiSelectProps = {
   placeholder?: string
   /** Shown in the panel when the typed text matches no option. */
   emptyMessage?: string
+  /** Adds a last row that offers the typed text as a new option, when it matches none. */
+  creatable?: boolean
+  /** Runs with the trimmed text when the create row is chosen. The parent adds the option and
+   *  its value; the component only clears the text field. */
+  onCreate?: (text: string) => void
+  /** The create row's label. @default text => `Create "${text}"` */
+  createLabel?: (text: string) => string
   /** @default 'md' */
   inputSize?: 'sm' | 'md' | 'lg'
   invalid?: boolean
@@ -71,6 +78,9 @@ export function MultiSelect({
   onValueChange,
   placeholder = 'Select…',
   emptyMessage = 'No matches',
+  creatable = false,
+  onCreate,
+  createLabel = text => `Create "${text}"`,
   inputSize = 'md',
   invalid = false,
   disabled = false,
@@ -96,6 +106,17 @@ export function MultiSelect({
     option.label.toLowerCase().includes(query.trim().toLowerCase())
   )
   const byValue = new Map(options.map(option => [option.value, option]))
+  // The create row: offered for non-blank text that is not already an option's label, and kept
+  // in the same list as the options so the arrows, Enter and aria-activedescendant treat it as one.
+  const typed = query.trim()
+  const canCreate =
+    creatable &&
+    typed !== '' &&
+    !options.some(option => option.label.toLowerCase() === typed.toLowerCase())
+  const rows: SelectOption[] = canCreate
+    ? [...visible, { value: `create-row:${typed}`, label: createLabel(typed) }]
+    : visible
+  const isCreateRow = (index: number) => canCreate && index === visible.length
 
   const commit = (next: string[]) => {
     if (value === undefined) setInternal(next)
@@ -112,11 +133,21 @@ export function MultiSelect({
     setQuery('')
   }
 
+  const choose = (index: number) => {
+    if (isCreateRow(index)) {
+      onCreate?.(typed)
+      setQuery('')
+      setActive(0)
+    } else if (rows[index]) {
+      toggle(rows[index])
+    }
+  }
+
   // The next enabled option from `from` in direction `step`, wrapping; `from` itself when none is.
   const nextEnabled = (from: number, step: 1 | -1) => {
-    for (let i = 1; i <= visible.length; i++) {
-      const index = (from + step * i + visible.length) % visible.length
-      if (!visible[index].disabled) return index
+    for (let i = 1; i <= rows.length; i++) {
+      const index = (from + step * i + rows.length) % rows.length
+      if (!rows[index].disabled) return index
     }
     return from
   }
@@ -124,7 +155,7 @@ export function MultiSelect({
   const openList = () => {
     if (disabled || open) return
     setOpen(true)
-    setActive(visible[0]?.disabled ? nextEnabled(0, 1) : 0)
+    setActive(rows[0]?.disabled ? nextEnabled(0, 1) : 0)
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -133,13 +164,13 @@ export function MultiSelect({
       case 'ArrowUp': {
         event.preventDefault()
         if (!open) return openList()
-        if (visible.length) setActive(nextEnabled(active, event.key === 'ArrowDown' ? 1 : -1))
+        if (rows.length) setActive(nextEnabled(active, event.key === 'ArrowDown' ? 1 : -1))
         return
       }
       case 'Enter': {
-        if (!open || !visible[active]) return
+        if (!open || !rows[active]) return
         event.preventDefault()
-        toggle(visible[active])
+        choose(active)
         return
       }
       case 'Escape': {
@@ -212,7 +243,7 @@ export function MultiSelect({
             aria-expanded={open && !disabled}
             aria-controls={open ? listboxId : undefined}
             aria-autocomplete="list"
-            aria-activedescendant={open && visible[active] ? optionId(active) : undefined}
+            aria-activedescendant={open && rows[active] ? optionId(active) : undefined}
             autoComplete="off"
             disabled={disabled}
             value={query}
@@ -264,12 +295,12 @@ export function MultiSelect({
           )}
         >
           <div className="max-h-72 overflow-y-auto overflow-x-hidden">
-          {visible.length === 0 ? (
+          {rows.length === 0 ? (
             <p className="px-2 py-2 font-body text-sm text-[var(--color-text-secondary)]">{emptyMessage}</p>
           ) : null}
           <ul id={listboxId} role="listbox" aria-label={label} aria-multiselectable="true">
-            {visible.map((option, index) => {
-              const isSelected = selected.includes(option.value)
+            {rows.map((option, index) => {
+              const isSelected = !isCreateRow(index) && selected.includes(option.value)
               return (
                 <li
                   key={option.value}
@@ -282,7 +313,7 @@ export function MultiSelect({
                   onMouseMove={() => {
                     if (!option.disabled) setActive(index)
                   }}
-                  onClick={() => toggle(option)}
+                  onClick={() => choose(index)}
                   className={cn(
                     'relative flex items-center gap-2 px-2 pr-8 select-none cursor-default',
                     SIZES[inputSize].row,

@@ -30,6 +30,9 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `onValueChange` | `(value: string[]) => void` |  | Runs with the whole new array every time an option is added or removed. |
 | `placeholder` | `string` | `'Select…'` | Shown while nothing is chosen. |
 | `emptyMessage` | `string` | `'No matches'` | Shown in the panel when the typed text matches no option. |
+| `creatable` | `boolean` | `false` | Adds one last row, `Create "<text>"`, when the typed text matches no option (ignoring case). It is never shown for empty text or for text that is already an option. It is an ordinary option in the list: the arrows reach it, Enter or a click chooses it, and screen readers read its label. |
+| `onCreate` | `(text: string) => void` |  | Runs with the typed text, trimmed, when the create row is chosen. The text field is then cleared. The component does not add anything itself: add the new option to options and its value to value here. |
+| `createLabel` | `(text: string) => string` | `(text) => `Create "${text}"`` | The create row's label, for other wording or another language. |
 | `inputSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Matches Input and Select: a minimum height of 32, 40 or 48px (pixels), with text at size xs, sm or base. It also sets the size of the typed text and of the option rows in the list (28, 32 or 40px). The tags come in one size, so sm fits a single row of them snugly, and md and lg add room around it. The field grows past the minimum as tags wrap. |
 | `invalid` | `boolean` | `false` | Sets aria-invalid (which tells screen readers the value has a problem) and the invalid border. FormField sets it from error. |
 | `disabled` | `boolean` | `false` | Turns the field off. The chosen tags stay visible, without their remove buttons. |
@@ -92,6 +95,39 @@ function ControlledExample() {
 }
 
 <ControlledExample />
+```
+
+### Creatable: pick or create labels
+
+```tsx
+const LABELS = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'design', label: 'Design' },
+  { value: 'docs', label: 'Docs' },
+]
+
+function CreatableExample() {
+  const [options, setOptions] = useState(LABELS)
+  const [labels, setLabels] = useState<string[]>(['design'])
+  return (
+    <div className="w-full max-w-md">
+      <FormField label="Labels" help="Type a label that is not in the list, then press Enter to create it.">
+        <MultiSelect
+          options={options}
+          value={labels}
+          onValueChange={setLabels}
+          creatable
+          onCreate={text => {
+            setOptions(current => [...current, { value: text, label: text }])
+            setLabels(current => [...current, text])
+          }}
+        />
+      </FormField>
+    </div>
+  )
+}
+
+<CreatableExample />
 ```
 
 ### Invalid
@@ -161,6 +197,7 @@ const LOADOUT = [
 |---|---|
 | `↓` `↑` | Opens the list, then moves the highlight, skipping rows that are turned off. |
 | `Enter` | Adds or removes the highlighted option. The list stays open. |
+| `Enter` | On the create row (creatable): runs onCreate with the typed text and clears the text field. |
 | `Backspace` | When the text field is empty, removes the last tag. |
 | `Esc` | Closes the list. Press it again to clear the typed text. |
 | `Tab` | Moves through the tags’ remove buttons and the text field, and closes the list on the way out. |

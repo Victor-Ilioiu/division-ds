@@ -66,10 +66,14 @@ export const buttonVariants = cva(
         // offset, the thicker underline on hover), and the type drops to the body role. No fill,
         // no bevel, no control height: the compound variant below strips size's height, padding
         // and text step, so it takes the size of the sentence it sits in, as Link does.
+        // Colour and underline come from `tone` (compound variants below). It wraps: a long
+        // card or row title must break onto a second line inside its column, never run past it
+        // under the controls beside it. text-left because a wrapped centred title reads badly.
         link: cn(
-          'bg-transparent text-[var(--color-accent-signal-text)]',
+          'bg-transparent',
           'font-body font-normal normal-case tracking-normal',
-          'underline underline-offset-2 decoration-1 hover:decoration-2'
+          'whitespace-normal break-words text-left max-w-full',
+          'underline-offset-2 decoration-1'
         ),
       },
       size: {
@@ -85,12 +89,29 @@ export const buttonVariants = cva(
         lg: 'h-[var(--component-control-height-lg)] px-7 text-base [--cap-shift:1px]',
       },
       fullWidth: { true: 'w-full', false: '' },
+      // Only the link variant reads it. signal: Link's signal look, underlined at rest. neutral:
+      // primary text, underline only on hover and keyboard focus, for a clickable title (a kanban
+      // card, a list row) where a signal-coloured underline on every row is too loud.
+      tone: { signal: '', neutral: '' },
     },
     compoundVariants: [
       // Last in cva's output, so `cn()` lets these beat size's height and padding.
       { variant: 'link', class: 'h-auto px-0 pt-0 text-[length:inherit]' },
+      {
+        variant: 'link',
+        tone: 'signal',
+        class: 'text-[var(--color-accent-signal-text)] underline hover:decoration-2',
+      },
+      {
+        variant: 'link',
+        tone: 'neutral',
+        class: cn(
+          'text-[var(--color-text-primary)] no-underline',
+          'hover:underline hover:decoration-2 focus-visible:underline focus-visible:decoration-2'
+        ),
+      },
     ],
-    defaultVariants: { variant: 'primary', size: 'md', fullWidth: false },
+    defaultVariants: { variant: 'primary', size: 'md', fullWidth: false, tone: 'signal' },
   }
 )
 
@@ -177,6 +198,7 @@ const WHILE_LOADING = {
 
 export function Button({
   variant,
+  tone,
   size,
   fullWidth,
   asChild = false,
@@ -206,6 +228,9 @@ export function Button({
       className={cn(
         'bevel-focus-wrap',
         variant === 'link' && 'no-reticle',
+        // Stays inline-block so a link inside a sentence stays in the sentence; max-w-full lets
+        // a long label wrap inside its column instead of overflowing it.
+        variant === 'link' && 'max-w-full min-w-0',
         fullWidth && 'block w-full',
         wrapperClassName
       )}
@@ -214,7 +239,7 @@ export function Button({
         ref={ref}
         {...(native ? { type, disabled } : {})}
         aria-busy={loading || undefined}
-        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+        className={cn(buttonVariants({ variant, tone, size, fullWidth }), className)}
         {...rest}
         // After rest, so neither a caller's onClick nor its aria-disabled can re-enable a busy
         // button.
