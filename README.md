@@ -1,7 +1,7 @@
 # Division DS
 
 A design system for dense, dark interfaces: one loud orange, hairline panels, cut corners, big
-numbers. 75 React components in a light and a dark theme, 162 design tokens, and a build that
+numbers. 75 React components in a light and a dark theme, 192 design tokens, and a build that
 fails when a rule is broken.
 
 **Documentation and live demos:** https://victor-ilioiu.vercel.app/systems/division-ds/
