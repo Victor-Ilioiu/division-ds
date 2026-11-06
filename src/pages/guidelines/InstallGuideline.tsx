@@ -35,7 +35,8 @@ const MCP_CONFIG = `{
   }
 }`
 
-// The eight tools `division-ds mcp` serves (scripts/lib/mcp-tools.mjs), in the order it lists them.
+// The ten tools `division-ds mcp` serves (scripts/lib/mcp-tools.mjs, then scripts/lib/intake.mjs), in
+// the order it lists them.
 // Not a DescriptionList: its terms render in capitals, and a tool name is case-sensitive.
 const MCP_TOOLS = [
   { term: 'list_components', description: 'Every component, with when to use it.' },
@@ -46,6 +47,8 @@ const MCP_TOOLS = [
   { term: 'check_contrast', description: 'Whether two colours or tokens are readable together, in both themes (WCAG 2.2 AA).' },
   { term: 'get_add_command', description: 'The command that installs a component.' },
   { term: 'get_review_checklist', description: 'What to check in the browser before a screen is done.' },
+  { term: 'request_change', description: 'Asks for a missing prop, variant, token or component as a GitHub issue, instead of patching the installed copy.' },
+  { term: 'report_drift', description: 'Reports a check rule your project keeps failing when the system looks wrong.' },
 ] as const
 
 // The five ways in, in page order. `id` is the <section>'s, not the heading's: the section takes

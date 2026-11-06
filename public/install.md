@@ -118,3 +118,5 @@ The tools:
 - `check_contrast`: whether two colours or tokens are readable together, in both themes (WCAG 2.2 AA).
 - `get_add_command`: the command that installs a component.
 - `get_review_checklist`: what to check in the browser before a screen is done.
+- `request_change`: asks Division DS for a missing prop, variant, token or component. It opens a GitHub issue (or adds to a matching one) when `DIVISION_DS_GITHUB_TOKEN` is set, and otherwise saves the request under `division-ds-requests/`.
+- `report_drift`: reports a check rule your project keeps failing when the system looks wrong, one issue per rule and project.

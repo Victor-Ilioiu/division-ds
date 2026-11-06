@@ -189,8 +189,7 @@ async function mcp(options) {
       const dir = resolve('division-ds-requests')
       mkdirSync(dir, { recursive: true })
       const path = join(dir, `${new Date().toISOString().replace(/[:.]/g, '-')}-${name}`)
-      writeFileSync(path, JSON.stringify(record, null, 2) + '
-')
+      writeFileSync(path, `${JSON.stringify(record, null, 2)}\n`)
       return path
     },
   })

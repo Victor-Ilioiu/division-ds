@@ -91,9 +91,11 @@ claude mcp add division-ds -- npx -y division-ds mcp
 \`\`\`
 
 Any MCP client works the same way: the command is \`npx -y division-ds mcp\`, on stdio. It gives the
-agent eight tools: \`list_components\`, \`get_component\`, \`search\`, \`get_tokens\`,
+agent ten tools: \`list_components\`, \`get_component\`, \`search\`, \`get_tokens\`,
 \`validate_code\` (the checks above, on code the agent just wrote), \`check_contrast\` (WCAG 2.2 AA,
-both themes), \`get_add_command\` and \`get_review_checklist\`.
+both themes), \`get_add_command\`, \`get_review_checklist\`, and \`request_change\` and
+\`report_drift\`, which open an issue on the public repository (set \`DIVISION_DS_GITHUB_TOKEN\`;
+without it they save the request under \`division-ds-requests/\`).
 
 The components, the docs and the agent skill: https://github.com/Victor-Ilioiu/division-ds
 `)
