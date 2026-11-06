@@ -2374,6 +2374,10 @@
           "source": "const DELIVERY_GROUPS: SelectGroup[] = [\n  {\n    label: 'Courier',\n    options: [\n      { value: 'standard', label: 'Standard', icon: <Truck /> },\n      { value: 'priority', label: 'Priority', icon: <Zap /> },\n    ],\n  },\n  {\n    label: 'Collect',\n    options: [\n      { value: 'depot', label: 'Brasov depot', icon: <Package /> },\n      { value: 'field', label: 'At the field', icon: <Crosshair /> },\n    ],\n  },\n]\n\n<Select label=\"Delivery\" groups={DELIVERY_GROUPS} placeholder=\"Choose delivery\" />"
         },
         {
+          "caption": "Long list",
+          "source": "const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {\n  const date = new Date(Date.UTC(2026, 10 - i, 1))\n  const label = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })\n  return { value: date.toISOString().slice(0, 7), label }\n})\n\n<Select label=\"Billing month\" options={MONTH_OPTIONS} placeholder=\"Choose a month\" />"
+        },
+        {
           "caption": "Sizes",
           "source": "const TERRAIN_OPTIONS = [\n  { value: 'woodland', label: 'Woodland' },\n  { value: 'urban', label: 'Urban' },\n  { value: 'desert', label: 'Desert' },\n  { value: 'indoor', label: 'Indoor' },\n]\n\n<Select label=\"Terrain (small)\" inputSize=\"sm\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\n<Select label=\"Terrain (medium)\" inputSize=\"md\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\n<Select label=\"Terrain (large)\" inputSize=\"lg\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />"
         },

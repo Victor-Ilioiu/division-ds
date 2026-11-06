@@ -113,7 +113,7 @@ const INSTALL_STEPS = [
     value: 'mcp',
     label: 'MCP server',
     intro: 'Register the docs and the checks as tools in Claude Code. Any agent that speaks MCP can run the same command.',
-    code: 'claude mcp add division-ds -- npx -y division-ds@0.7.0 mcp',
+    code: 'claude mcp add division-ds -- npx -y division-ds@0.7.1 mcp',
     title: 'Claude Code',
   },
   {

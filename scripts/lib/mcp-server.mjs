@@ -45,17 +45,24 @@ export function createServer({ tools, version }) {
     const args = params.arguments ?? {}
     const problem = argumentProblem(tool.inputSchema, args)
     if (problem) return { content: [{ type: 'text', text: `${tool.name}: ${problem}` }], isError: true }
-    try {
-      return { content: [{ type: 'text', text: tool.run(args) }] }
-    } catch (error) {
-      // A ToolError is the agent's mistake and says how to fix it. Anything else is ours; it is
-      // still reported as a tool result, so one bad call does not take the session down.
+    // A ToolError is the agent's mistake and says how to fix it. Anything else is ours; it is
+    // still reported as a tool result, so one bad call does not take the session down.
+    const failed = error => {
       const text = error instanceof ToolError ? error.message : `division-ds ${version} failed on ${tool.name}: ${error.message}`
       return { content: [{ type: 'text', text }], isError: true }
     }
+    try {
+      const out = tool.run(args)
+      // The intake tools (request_change, report_drift) call GitHub, so they answer later.
+      if (out && typeof out.then === 'function') return out.then(text => ({ content: [{ type: 'text', text }] }), failed)
+      return { content: [{ type: 'text', text: out }] }
+    } catch (error) {
+      return failed(error)
+    }
   }
 
-  /** One parsed message in; the reply to send, or undefined for a notification. */
+  /** One parsed message in; the reply to send (a promise for a tool that calls out), or undefined
+   *  for a notification. */
   function handle(message) {
     if (message === null || typeof message !== 'object' || message.jsonrpc !== '2.0' || typeof message.method !== 'string') {
       return failure(message?.id ?? null, -32600, 'Invalid request.')
@@ -81,8 +88,10 @@ export function createServer({ tools, version }) {
         return { jsonrpc: '2.0', id, result: {} }
       case 'tools/list':
         return { jsonrpc: '2.0', id, result: { tools: tools.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) } }
-      case 'tools/call':
-        return { jsonrpc: '2.0', id, result: call(params) }
+      case 'tools/call': {
+        const result = call(params)
+        return typeof result?.then === 'function' ? result.then(r => ({ jsonrpc: '2.0', id, result: r })) : { jsonrpc: '2.0', id, result }
+      }
       default:
         return failure(id, -32601, `Method not found: ${method}`)
     }
@@ -107,7 +116,9 @@ export function createServer({ tools, version }) {
           send(failure(null, -32700, 'Parse error: each line must be one JSON-RPC message.'))
           continue
         }
-        send(handle(message))
+        const reply = handle(message)
+        if (typeof reply?.then === 'function') reply.then(send)
+        else send(reply)
       }
     })
   }

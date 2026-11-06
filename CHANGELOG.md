@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.1 — 2026-11-06
+
+### Fixed
+- **Select: a long list scrolls.** The list is capped at 24rem or the room left on screen, whichever is smaller, keeps 16px from the window edges (`collisionPadding`), and scrolls inside the Viewport, so the crosshair stays on the frame's corners and there is no horizontal scrollbar. New docs example: "Long list" (30 months).
+- **DropdownMenu: the same fix** for `DropdownMenuContent` and `DropdownMenuSubContent`: an inner scroll wrapper capped by `--radix-dropdown-menu-content-available-height`, plus `collisionPadding={16}`. Before, a long menu ran off the screen.
+- **Toast: removal timers are cleared on unmount.**
+
 ## 0.7.0 — 2026-11-03
 
 ### Added

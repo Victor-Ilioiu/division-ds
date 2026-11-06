@@ -85,14 +85,31 @@ export function Toaster({ children }: { children?: ReactNode }) {
   // Outlets inside open overlays, innermost last. A ref: which outlet is on top never changes what
   // renders until a toast is raised.
   const outlets = useRef<string[]>([])
+  // Removal timers. Cleared on unmount so a toast closed just before the Toaster goes away (a
+  // route change, a test ending) never calls setToasts on an unmounted tree.
+  const timers = useRef(new Set<number>())
+  const later = useCallback((fn: () => void) => {
+    const id = window.setTimeout(() => {
+      timers.current.delete(id)
+      fn()
+    }, 400)
+    timers.current.add(id)
+  }, [])
+  useEffect(() => {
+    const pending = timers.current
+    return () => {
+      pending.forEach(id => window.clearTimeout(id))
+      pending.clear()
+    }
+  }, [])
 
   const dismiss = useCallback((id: string) => {
     // Close first so Radix can play its exit, then drop it from the list. A timeout rather than
     // onAnimationEnd: under reduced motion (and in jsdom) no animation runs, the event never
     // fires, and the list would grow for the life of the page.
     setToasts(list => list.map(t => (t.id === id ? { ...t, open: false } : t)))
-    window.setTimeout(() => setToasts(list => list.filter(t => t.id !== id)), 400)
-  }, [])
+    later(() => setToasts(list => list.filter(t => t.id !== id)))
+  }, [later])
 
   const toast = useCallback((options: ToastOptions) => {
     const id = `toast-${++counter}`
@@ -101,9 +118,9 @@ export function Toaster({ children }: { children?: ReactNode }) {
     setToasts(list => [...list.map(t => (replaced(t) ? { ...t, open: false } : t)), { ...options, id, open: true, outlet }])
     // Closed above, so Radix plays its exit; dropped once it has.
     if (options.replace !== undefined)
-      window.setTimeout(() => setToasts(list => list.filter(t => t.open || t.replace !== options.replace)), 400)
+      later(() => setToasts(list => list.filter(t => t.open || t.replace !== options.replace)))
     return id
-  }, [])
+  }, [later])
 
   const register = useCallback((outlet: string) => {
     outlets.current = [...outlets.current, outlet]

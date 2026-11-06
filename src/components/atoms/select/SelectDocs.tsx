@@ -35,6 +35,13 @@ const DELIVERY_GROUPS: SelectGroup[] = [
   },
 ]
 
+// Thirty months, newest first: longer than any screen, so the list scrolls.
+const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {
+  const date = new Date(Date.UTC(2026, 10 - i, 1))
+  const label = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  return { value: date.toISOString().slice(0, 7), label }
+})
+
 export function SelectDocs() {
   return (
     <ComponentDocs meta={meta}>
@@ -48,6 +55,10 @@ export function SelectDocs() {
 
       <Example caption="Groups with headings and icons">
         <Select label="Delivery" groups={DELIVERY_GROUPS} placeholder="Choose delivery" />
+      </Example>
+
+      <Example caption="Long list">
+        <Select label="Billing month" options={MONTH_OPTIONS} placeholder="Choose a month" />
       </Example>
 
       <Example caption="Sizes">

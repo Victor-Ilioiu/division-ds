@@ -116,6 +116,18 @@ const DELIVERY_GROUPS: SelectGroup[] = [
 <Select label="Delivery" groups={DELIVERY_GROUPS} placeholder="Choose delivery" />
 ```
 
+### Long list
+
+```tsx
+const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {
+  const date = new Date(Date.UTC(2026, 10 - i, 1))
+  const label = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  return { value: date.toISOString().slice(0, 7), label }
+})
+
+<Select label="Billing month" options={MONTH_OPTIONS} placeholder="Choose a month" />
+```
+
 ### Sizes
 
 ```tsx

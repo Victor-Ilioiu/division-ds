@@ -224,6 +224,7 @@ export function Select({
         <RadixSelect.Content
           position="popper"
           sideOffset={4}
+          collisionPadding={16}
           className={cn(
             'z-50 min-w-[var(--radix-select-trigger-width)]',
             'border border-[var(--color-border-hairline-strong)]',
@@ -238,7 +239,9 @@ export function Select({
             'anim-popover'
           )}
         >
-          <RadixSelect.Viewport className="p-1">
+          {/* A long list scrolls inside the room left on screen. The scroll sits on the Viewport, not
+              on Content, so the crosshair stays on the frame's corners instead of scrolling with the rows. */}
+          <RadixSelect.Viewport className="p-1 max-h-[min(24rem,calc(var(--radix-select-content-available-height)-0.5rem))] overflow-y-auto overflow-x-hidden">
             {groups
               ? groups.map((group, index) => (
                   <Fragment key={group.label}>

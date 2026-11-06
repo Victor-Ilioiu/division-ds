@@ -126,11 +126,14 @@ const fileEntry = (path, content) => ({ path, type: 'registry:file', target: TAR
 
 const items = []
 
+// Every readdirSync is sorted: Windows lists a folder alphabetically, Linux in disk order, and
+// CI (Linux) then saw a "stale" registry that was only in a different order (2026-11-06).
+
 // The base item: helpers, generated tokens and style sheets, and one CSS entry for consumers.
-const libFiles = readdirSync('src/lib').filter(f => /\.tsx?$/.test(f) && !isSkipped(`src/lib/${f}`)).map(f => `src/lib/${f}`)
+const libFiles = readdirSync('src/lib').sort().filter(f => /\.tsx?$/.test(f) && !isSkipped(`src/lib/${f}`)).map(f => `src/lib/${f}`)
 // tokens.css is generated and gitignored, so a fresh clone has none yet. Make it rather than fail.
 if (!existsSync('src/styles/tokens.css')) execFileSync(process.execPath, ['scripts/build-tokens.mjs'], { stdio: 'inherit' })
-const styleFiles = readdirSync('src/styles').filter(f => f.endsWith('.css') && f !== 'tailwind.css').map(f => `src/styles/${f}`)
+const styleFiles = readdirSync('src/styles').sort().filter(f => f.endsWith('.css') && f !== 'tailwind.css').map(f => `src/styles/${f}`)
 const baseWalk = walk(libFiles, null)
 // A file outside every component folder that two components reach (src/fx/core/gate.ts: Switch
 // and LoadingAnimation) would ship in both items, and `division-ds-all` then reported "Skipped 1
@@ -138,7 +141,7 @@ const baseWalk = walk(libFiles, null)
 // which every component already depends on.
 const componentWalks = manifest.map(component => {
   const dir = posix.dirname(component.source) + '/'
-  const entries = readdirSync(dir).map(f => dir + f).filter(p => /\.tsx?$/.test(p) && !isSkipped(p))
+  const entries = readdirSync(dir).sort().map(f => dir + f).filter(p => /\.tsx?$/.test(p) && !isSkipped(p))
   return { component, dir, ...walk(entries, dir) }
 })
 const reach = new Map()

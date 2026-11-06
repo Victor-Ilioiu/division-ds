@@ -16,12 +16,13 @@
 // AGENTS.md: scripts/build-cli-package.mjs), so `npx division-ds check src` works anywhere. From a
 // clone, call it by path: `node <path-to-division-ds>/scripts/division-ds.mjs check src`. It needs
 // Node 22+ (fs.globSync) and `typescript`, which the npm package declares as its one dependency.
-import { existsSync, globSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, globSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { DOCS_SITE, extractRules, SKILL_SOURCE } from './lib/agent-docs.mjs'
 import { checkText } from './lib/check-text.mjs'
 import { createServer } from './lib/mcp-server.mjs'
+import { createIntake } from './lib/intake.mjs'
 import { createTools } from './lib/mcp-tools.mjs'
 import { buildIndex } from './lib/props-validator.mjs'
 import { applyPlan, diff, planRules, planSkill, SKILL_TARGETS, TARGETS } from './lib/rules-installer.mjs'
@@ -174,6 +175,26 @@ async function mcp(options) {
     readDoc: slug => readIfThere(join(ROOT, 'public/docs/components', `${slug}.md`)),
     readChecklist: () => readIfThere(join(ROOT, 'skills/division-ds/commands/review.md')),
   })
+  // request_change and report_drift: issues on the public repository, or JSON files without a token.
+  const bySlugOrName = name => {
+    const wanted = String(name ?? '').trim().toLowerCase()
+    return manifest.components.find(c => c.name.toLowerCase() === wanted || c.slug === wanted)
+  }
+  const intake = createIntake({
+    token: process.env.DIVISION_DS_GITHUB_TOKEN,
+    repo: process.env.DIVISION_DS_ISSUES_REPO,
+    fetch: globalThis.fetch,
+    findComponent: bySlugOrName,
+    writeLocal: (name, record) => {
+      const dir = resolve('division-ds-requests')
+      mkdirSync(dir, { recursive: true })
+      const path = join(dir, `${new Date().toISOString().replace(/[:.]/g, '-')}-${name}`)
+      writeFileSync(path, JSON.stringify(record, null, 2) + '
+')
+      return path
+    },
+  })
+  tools.push(...intake)
   createServer({ tools, version }).listen(process.stdin, process.stdout)
   // stdout is the protocol channel: this goes to stderr, where MCP clients put server logs.
   console.error(`division-ds ${version} MCP server on stdio: ${tools.length} tools, ${manifest.components.length} components.`)

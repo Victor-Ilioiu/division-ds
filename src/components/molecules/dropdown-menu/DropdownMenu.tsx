@@ -20,7 +20,7 @@ export const DropdownMenuTrigger = RadixMenu.Trigger
 // (a surface framing several items, not a single cut object), M7 slide (down in, up out). Never `panel`: it sits
 // outside Tailwind's layers and would override these utilities.
 const CONTENT_CLASSES =
-  'crosshair z-50 min-w-[12rem] p-1 bg-[var(--color-surface-sunken)] border border-[var(--color-border-hairline-strong)] backdrop-blur-md anim-popover'
+  'crosshair z-50 min-w-[12rem] bg-[var(--color-surface-sunken)] border border-[var(--color-border-hairline-strong)] backdrop-blur-md anim-popover'
 
 const ITEM_CLASSES = cn(
   'group relative flex items-center gap-2 min-h-[36px] px-2.5 font-body text-sm select-none outline-none cursor-default',
@@ -30,15 +30,29 @@ const ITEM_CLASSES = cn(
   disabledText
 )
 
+// A long menu scrolls inside the room left on screen. The scroll sits on this inner wrapper, not on
+// Content, so the crosshair (drawn just outside Content) stays on the frame's corners.
+const SCROLL_CLASSES =
+  'p-1 max-h-[min(24rem,calc(var(--radix-dropdown-menu-content-available-height)-0.5rem))] overflow-y-auto overflow-x-hidden'
+
 export function DropdownMenuContent({
   className,
+  children,
   sideOffset = 4,
   ref,
   ...rest
 }: ComponentPropsWithoutRef<typeof RadixMenu.Content> & { ref?: Ref<HTMLDivElement> }) {
   return (
     <RadixMenu.Portal>
-      <RadixMenu.Content ref={ref} sideOffset={sideOffset} className={cn(CONTENT_CLASSES, className)} {...rest} />
+      <RadixMenu.Content
+        ref={ref}
+        sideOffset={sideOffset}
+        collisionPadding={16}
+        className={cn(CONTENT_CLASSES, className)}
+        {...rest}
+      >
+        <div className={SCROLL_CLASSES}>{children}</div>
+      </RadixMenu.Content>
     </RadixMenu.Portal>
   )
 }
@@ -221,6 +235,7 @@ export function DropdownMenuSubContent({
   sideOffset = 4,
   // Minus the content's padding and border, so the submenu's first row lines up with its trigger.
   alignOffset = -5,
+  children,
   ref,
   ...rest
 }: ComponentPropsWithoutRef<typeof RadixMenu.SubContent> & { ref?: Ref<HTMLDivElement> }) {
@@ -230,9 +245,12 @@ export function DropdownMenuSubContent({
         ref={ref}
         sideOffset={sideOffset}
         alignOffset={alignOffset}
+        collisionPadding={16}
         className={cn(CONTENT_CLASSES, className)}
         {...rest}
-      />
+      >
+        <div className={SCROLL_CLASSES}>{children}</div>
+      </RadixMenu.SubContent>
     </RadixMenu.Portal>
   )
 }

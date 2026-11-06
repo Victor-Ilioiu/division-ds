@@ -299,14 +299,14 @@
       ],
       "files": [
         {
-          "path": "src/components/atoms/input/ai-field.tsx",
-          "type": "registry:file",
-          "target": "src/division-ds/components/atoms/input/ai-field.tsx"
-        },
-        {
           "path": "src/components/atoms/input/Input.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/input/Input.tsx"
+        },
+        {
+          "path": "src/components/atoms/input/ai-field.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/input/ai-field.tsx"
         }
       ]
     },
@@ -375,14 +375,14 @@
       ],
       "files": [
         {
-          "path": "src/components/atoms/loading-animation/kit.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/components/atoms/loading-animation/kit.ts"
-        },
-        {
           "path": "src/components/atoms/loading-animation/LoadingAnimation.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/loading-animation/LoadingAnimation.tsx"
+        },
+        {
+          "path": "src/components/atoms/loading-animation/kit.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/loading-animation/kit.ts"
         },
         {
           "path": "src/components/atoms/loading-animation/palette.ts",
@@ -639,14 +639,14 @@
       ],
       "files": [
         {
-          "path": "src/components/atoms/switch/squash.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/components/atoms/switch/squash.ts"
-        },
-        {
           "path": "src/components/atoms/switch/Switch.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/switch/Switch.tsx"
+        },
+        {
+          "path": "src/components/atoms/switch/squash.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/switch/squash.ts"
         }
       ]
     },
@@ -883,11 +883,6 @@
       ],
       "files": [
         {
-          "path": "src/components/molecules/chat-message/announcer.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/components/molecules/chat-message/announcer.ts"
-        },
-        {
           "path": "src/components/molecules/chat-message/ChatMessage.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/chat-message/ChatMessage.tsx"
@@ -896,6 +891,11 @@
           "path": "src/components/molecules/chat-message/ResponseFeedback.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/chat-message/ResponseFeedback.tsx"
+        },
+        {
+          "path": "src/components/molecules/chat-message/announcer.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/chat-message/announcer.ts"
         }
       ]
     },
@@ -949,11 +949,6 @@
           "target": "src/division-ds/components/molecules/date-picker/Calendar.tsx"
         },
         {
-          "path": "src/components/molecules/date-picker/date-utils.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/components/molecules/date-picker/date-utils.ts"
-        },
-        {
           "path": "src/components/molecules/date-picker/DateField.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/date-picker/DateField.tsx"
@@ -962,6 +957,11 @@
           "path": "src/components/molecules/date-picker/DatePicker.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/date-picker/DatePicker.tsx"
+        },
+        {
+          "path": "src/components/molecules/date-picker/date-utils.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/date-picker/date-utils.ts"
         }
       ]
     },
