@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-0b1120?style=flat-square&logo=tailwindcss&logoColor=38bdf8" alt="Tailwind CSS 4">
   <img src="https://img.shields.io/badge/Radix-primitives-161618?style=flat-square&logo=radixui&logoColor=white" alt="Radix">
   <img src="https://img.shields.io/badge/shadcn-registry-111?style=flat-square&logo=shadcnui&logoColor=white" alt="shadcn registry">
-  <img src="https://img.shields.io/badge/MCP-8_tools-111?style=flat-square" alt="MCP server, 8 tools">
+  <img src="https://img.shields.io/badge/MCP-10_tools-111?style=flat-square" alt="MCP server, 10 tools">
 </p>
 
 <p align="center">
@@ -93,7 +93,8 @@ In Claude Code you can also install it as a plugin:
 
 Or give it the MCP server, which serves the docs and runs the same checks as tools
 (`list_components`, `get_component`, `search`, `get_tokens`, `validate_code`, `check_contrast`,
-`get_add_command`, `get_review_checklist`):
+`get_add_command`, `get_review_checklist`, plus `request_change` and `report_drift`, which file an
+issue here instead of patching the installed copy):
 
 ```bash
 claude mcp add division-ds -- npx -y division-ds@latest mcp

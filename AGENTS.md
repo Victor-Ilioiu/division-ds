@@ -51,7 +51,7 @@ installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rul
 `.claude/skills/` (Claude Code).
 
 An agent that supports MCP can have the docs and the same checks as tools instead:
-`claude mcp add division-ds -- npx -y division-ds@0.7.1 mcp` (`list_components`, `get_component`,
+`claude mcp add division-ds -- npx -y division-ds@0.8.0 mcp` (`list_components`, `get_component`,
 `search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
 `get_review_checklist`, and two that report back: `request_change` and `report_drift`, which open
 an issue on the public repository instead of patching the installed copy).

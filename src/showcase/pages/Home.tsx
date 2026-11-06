@@ -28,12 +28,12 @@ import { CabinetHero } from '../hero/CabinetHero'
 
 // Every figure here is read from the repository: 75 components in public/manifest/components.json;
 // the token layers from public/manifest/tokens.json (66 primitive colours plus 8 spacing and
-// 6 motion steps, 56 semantic, 26 component); 8 MCP tools listed in AGENTS.md.
+// 6 motion steps, 56 semantic, 26 component); 10 MCP tools listed in AGENTS.md.
 const FIGURES = [
   { label: 'Components', value: 75 },
   { label: 'Semantic tokens', value: 56 },
   { label: 'Component tokens', value: 26 },
-  { label: 'MCP tools', value: 8 },
+  { label: 'MCP tools', value: 10 },
 ]
 
 type Feature = { icon: ReactNode; title: string; body: string; span: string; tone?: 'signal' | 'raised' | 'base' }
@@ -113,7 +113,7 @@ const INSTALL_STEPS = [
     value: 'mcp',
     label: 'MCP server',
     intro: 'Register the docs and the checks as tools in Claude Code. Any agent that speaks MCP can run the same command.',
-    code: 'claude mcp add division-ds -- npx -y division-ds@0.7.1 mcp',
+    code: 'claude mcp add division-ds -- npx -y division-ds@0.8.0 mcp',
     title: 'Claude Code',
   },
   {

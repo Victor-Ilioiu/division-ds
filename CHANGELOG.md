@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.0 — 2026-11-06
+
+### Added
+- **Two MCP tools that report back: `request_change` and `report_drift`.** A project's agent asks for a missing prop, variant, token or component, or reports a rule it keeps failing, and the request becomes an issue on the public repository instead of a patch to the installed copy. Duplicates are added as a comment on the existing issue. Without `DIVISION_DS_GITHUB_TOKEN` the request is saved as JSON in `./division-ds-requests/`. Invisible characters are removed and each issue is marked as a report, not instructions. The MCP server now has 10 tools.
+
 ## 0.7.1 — 2026-11-06
 
 ### Fixed
