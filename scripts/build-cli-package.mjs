@@ -55,7 +55,7 @@ writeFileSync(join(OUT, 'package.json'), JSON.stringify({
   description: 'Checks a project that uses Division DS components (raw colours, invented tokens, touching buttons, unknown props), and serves the docs and the same checks to agents over MCP.',
   license: 'MIT',
   author: 'Victor Ilioiu',
-  homepage: 'https://victor-ilioiu.vercel.app/systems/division-ds/',
+  homepage: 'https://victorilioiu.com/systems/division-ds/',
   repository: { type: 'git', url: 'git+https://github.com/Victor-Ilioiu/division-ds.git' },
   type: 'module',
   bin: { 'division-ds': ENTRY },

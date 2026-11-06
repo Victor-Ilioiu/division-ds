@@ -83,7 +83,7 @@ export const HOME = {
         body: 'Hexline is a concept store, built to show the Division design system at work. Nothing here is for sale.',
         link: {
           label: 'Read the case study',
-          href: 'https://victor-ilioiu.vercel.app',
+          href: 'https://victorilioiu.com',
           note: 'Coming soon: until it is published, the link opens the portfolio it will be on.',
         },
       },

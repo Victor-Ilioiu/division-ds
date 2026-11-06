@@ -131,7 +131,7 @@ describe('createTools', () => {
   it('points fix hints at places a consumer project can reach', () => {
     const code = "import { Badge } from '../components/atoms/badge/Badge'\nexport const X = () => <Badge colour=\"red\" className=\"text-[var(--color-nope)]\">x</Badge>"
     const out = t.validate_code.run({ code })
-    expect(out).toContain('https://victor-ilioiu.vercel.app/systems/division-ds/docs/components/badge.md')
+    expect(out).toContain('https://victorilioiu.com/systems/division-ds/docs/components/badge.md')
     expect(out).toContain('get_tokens over MCP')
     expect(out).not.toContain('public/manifest')
   })

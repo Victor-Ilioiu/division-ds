@@ -23,7 +23,7 @@ Before writing a screen, list its regions and, for each, its states: empty, load
 | Shared helpers: form errors, money, links, theme, streamed text | `public/docs/helpers.md` |
 | The same as data | `public/manifest/components.json`, `public/manifest/tokens.json` |
 
-Outside this repository, read the same files online: `https://victor-ilioiu.vercel.app/systems/division-ds/llms.txt`, `https://victor-ilioiu.vercel.app/systems/division-ds/docs/components/<slug>.md`, and so on. Add a component to a project with `npx shadcn@latest add https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/<slug>.json`, or every component with `division-ds-all` as the slug. The setup steps, in plain text: `https://victor-ilioiu.vercel.app/systems/division-ds/install.md`.
+Outside this repository, read the same files online: `https://victorilioiu.com/systems/division-ds/llms.txt`, `https://victorilioiu.com/systems/division-ds/docs/components/<slug>.md`, and so on. Add a component to a project with `npx shadcn@latest add https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/<slug>.json`, or every component with `division-ds-all` as the slug. The setup steps, in plain text: `https://victorilioiu.com/systems/division-ds/install.md`.
 
 ## Check your work
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "division-ds",
-  "homepage": "https://victor-ilioiu.vercel.app/systems/division-ds/",
+  "homepage": "https://victorilioiu.com/systems/division-ds/",
   "items": [
     {
       "name": "division-ds-base",

@@ -193,7 +193,7 @@ describe('Corvane about', () => {
     const nav = screen.getAllByRole('navigation', { name: 'Corvane' })[0]
     expect(within(nav).getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'page')
     const link = screen.getByRole('link', { name: 'Division design system case study' })
-    expect(link).toHaveAttribute('href', 'https://victor-ilioiu.vercel.app/work/division-ds')
+    expect(link).toHaveAttribute('href', 'https://victorilioiu.com/work/division-ds')
     expect(link).not.toHaveAttribute('target')
     expect(screen.getByText('npm run verify')).toBeInTheDocument()
   })

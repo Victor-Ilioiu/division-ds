@@ -245,7 +245,7 @@ describe('Home', () => {
       expect(concept).toHaveTextContent('Nothing here is for sale.')
       expect(concept).toHaveTextContent('Division design system')
       const link = within(concept).getByRole('link', { name: 'Read the case study (opens in a new tab)' })
-      expect(link).toHaveAttribute('href', 'https://victor-ilioiu.vercel.app')
+      expect(link).toHaveAttribute('href', 'https://victorilioiu.com')
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       expect(concept).toHaveTextContent(/Coming soon/)

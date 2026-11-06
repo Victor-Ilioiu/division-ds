@@ -8,7 +8,7 @@ import { DEFAULT_PAGE } from '../DefaultPage'
 import { REPO, SKILL_INSTALL } from '../../links'
 
 /** The case study this page points to. An ordinary external link: it opens in the same tab. */
-export const CASE_STUDY_URL = 'https://victor-ilioiu.vercel.app/work/division-ds'
+export const CASE_STUDY_URL = 'https://victorilioiu.com/work/division-ds'
 
 /** Every Division DS component Hexline imports, counted from the import lines under src/demo
  *  (named imports matched against public/manifest/components.json). Recount when a page starts or

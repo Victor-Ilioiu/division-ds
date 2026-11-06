@@ -257,7 +257,7 @@ const outputs = new Map(items.map(item => [`${item.name}.json`, JSON.stringify({
 outputs.set('registry.json', JSON.stringify({
   $schema: 'https://ui.shadcn.com/schema/registry.json',
   name: 'division-ds',
-  homepage: 'https://victor-ilioiu.vercel.app/systems/division-ds/',
+  homepage: 'https://victorilioiu.com/systems/division-ds/',
   items: items.map(({ files, ...rest }) => ({ ...rest, files: files.map(({ content, ...f }) => f) })),
 }, null, 2) + '\n')
 

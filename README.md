@@ -22,16 +22,16 @@
 </p>
 
 <p align="center">
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/"><b>Documentation</b></a> ·
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/components"><b>Components</b></a> ·
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/store"><b>Hexline demo</b></a> ·
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/crm"><b>CRM demo</b></a> ·
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/console"><b>Console demo</b></a> ·
+  <a href="https://victorilioiu.com/systems/division-ds/"><b>Documentation</b></a> ·
+  <a href="https://victorilioiu.com/systems/division-ds/components"><b>Components</b></a> ·
+  <a href="https://victorilioiu.com/systems/division-ds/store"><b>Hexline demo</b></a> ·
+  <a href="https://victorilioiu.com/systems/division-ds/crm"><b>CRM demo</b></a> ·
+  <a href="https://victorilioiu.com/systems/division-ds/console"><b>Console demo</b></a> ·
   <a href="CHANGELOG.md"><b>Changelog</b></a>
 </p>
 
 <p align="center">
-  <a href="https://victor-ilioiu.vercel.app/systems/division-ds/store">
+  <a href="https://victorilioiu.com/systems/division-ds/store">
     <img src=".github/readme/hero.webp" alt="Hexline, the demo store built with Division DS: a 3D airsoft replica on a lit stage beside the product name, price and two buttons" width="900">
   </a>
 </p>
@@ -56,15 +56,15 @@ Three demo apps share the same components and tokens, and nothing else.
 
 <table>
   <tr>
-    <td width="50%"><a href="https://victor-ilioiu.vercel.app/systems/division-ds/crm"><img src=".github/readme/crm.webp" alt="Corvane CRM: a deal pipeline with headline figures and a kanban board"></a></td>
-    <td width="50%"><a href="https://victor-ilioiu.vercel.app/systems/division-ds/console"><img src=".github/readme/console.webp" alt="Halden Console: warehouse sites with live status, open alerts and a reading chart"></a></td>
+    <td width="50%"><a href="https://victorilioiu.com/systems/division-ds/crm"><img src=".github/readme/crm.webp" alt="Corvane CRM: a deal pipeline with headline figures and a kanban board"></a></td>
+    <td width="50%"><a href="https://victorilioiu.com/systems/division-ds/console"><img src=".github/readme/console.webp" alt="Halden Console: warehouse sites with live status, open alerts and a reading chart"></a></td>
   </tr>
   <tr>
     <td align="center"><b>Corvane</b>, a CRM: pipeline board, tables, forms</td>
     <td align="center"><b>Halden Console</b>, live monitoring: status, alerts, charts</td>
   </tr>
   <tr>
-    <td colspan="2"><a href="https://victor-ilioiu.vercel.app/systems/division-ds/"><img src=".github/readme/home.webp" alt="The Division DS documentation homepage"></a></td>
+    <td colspan="2"><a href="https://victorilioiu.com/systems/division-ds/"><img src=".github/readme/home.webp" alt="The Division DS documentation homepage"></a></td>
   </tr>
   <tr>
     <td colspan="2" align="center"><b>The documentation site</b>: every component with live examples, props, keyboard behaviour, and do and don't</td>

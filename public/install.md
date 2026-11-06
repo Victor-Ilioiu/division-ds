@@ -1,6 +1,6 @@
 # Install Division DS
 
-The same steps as https://victor-ilioiu.vercel.app/systems/division-ds/guidelines/install, in plain text.
+The same steps as https://victorilioiu.com/systems/division-ds/guidelines/install, in plain text.
 
 ## 1. The skill for your AI coding assistant
 

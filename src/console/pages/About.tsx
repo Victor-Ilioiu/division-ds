@@ -8,7 +8,7 @@ import { WORKSPACE } from '../data'
 import { REPO, SKILL_INSTALL } from '../../links'
 
 /** The case study this page points to. An ordinary external link: it opens in the same tab. */
-export const CASE_STUDY_URL = 'https://victor-ilioiu.vercel.app/work/division-ds'
+export const CASE_STUDY_URL = 'https://victorilioiu.com/work/division-ds'
 
 /** Every Division DS component Halden Console imports, counted from the import lines under
  *  src/console (named imports matched against public/manifest/components.json), this page's

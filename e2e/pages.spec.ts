@@ -968,7 +968,7 @@ test.describe('Homepage sections', () => {
     const concept = page.getByRole('list', { name: 'House rules' }).getByRole('article').nth(3)
     await expect(concept).toContainText('Nothing here is for sale.')
     const link = concept.getByRole('link', { name: 'Read the case study (opens in a new tab)' })
-    await expect(link).toHaveAttribute('href', 'https://victor-ilioiu.vercel.app')
+    await expect(link).toHaveAttribute('href', 'https://victorilioiu.com')
     await expect(link).toHaveAttribute('target', '_blank')
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect(concept).toContainText('Coming soon')

@@ -5,7 +5,7 @@ const TIER_NOUN = { atoms: 'Atom', molecules: 'Molecule', organisms: 'Organism' 
 
 /** Where the docs site is hosted. The skill names it so an assistant outside this repository can
  *  still read the component pages; src/links.ts holds the same address for the site itself. */
-export const DOCS_SITE = 'https://victor-ilioiu.vercel.app/systems/division-ds/'
+export const DOCS_SITE = 'https://victorilioiu.com/systems/division-ds/'
 /** Where shadcn downloads the components from: public/r/ in the public GitHub repository. */
 export const REGISTRY = 'https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r'
 /** The skill's files in the public repository, for a reader who has the package but not the skill. */
