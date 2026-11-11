@@ -36,6 +36,10 @@ export type MultiSelectProps = {
   onCreate?: (text: string) => void
   /** The create row's label. @default text => `Create "${text}"` */
   createLabel?: (text: string) => string
+  /** creatable only: shown at the top of the panel while the text field is empty, so people
+   *  learn that typing a new name creates it. `null` hides it.
+   *  @default 'Type to find an option, or to create a new one.' */
+  createHint?: string | null
   /** @default 'md' */
   inputSize?: 'sm' | 'md' | 'lg'
   invalid?: boolean
@@ -81,6 +85,7 @@ export function MultiSelect({
   creatable = false,
   onCreate,
   createLabel = text => `Create "${text}"`,
+  createHint = 'Type to find an option, or to create a new one.',
   inputSize = 'md',
   invalid = false,
   disabled = false,
@@ -295,7 +300,9 @@ export function MultiSelect({
           )}
         >
           <div className="max-h-72 overflow-y-auto overflow-x-hidden">
-          {rows.length === 0 ? (
+          {creatable && createHint && typed === '' ? (
+            <p className="px-2 py-2 font-body text-sm text-[var(--color-text-secondary)]">{createHint}</p>
+          ) : rows.length === 0 ? (
             <p className="px-2 py-2 font-body text-sm text-[var(--color-text-secondary)]">{emptyMessage}</p>
           ) : null}
           <ul id={listboxId} role="listbox" aria-label={label} aria-multiselectable="true">

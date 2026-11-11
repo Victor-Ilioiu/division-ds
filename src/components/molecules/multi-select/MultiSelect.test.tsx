@@ -178,6 +178,23 @@ describe('MultiSelect', () => {
     expect(field).toHaveValue('')
   })
 
+  it('creatable: shows the create hint while the field is empty, and hides it once typing starts', async () => {
+    render(<MultiSelect label="Kit" options={KIT} creatable createHint="Type to find a label, or to create a new one." />)
+    const field = screen.getByRole('combobox')
+    await userEvent.click(field)
+    expect(screen.getByText('Type to find a label, or to create a new one.')).toBeInTheDocument()
+    await userEvent.type(field, 'Sm')
+    expect(screen.queryByText('Type to find a label, or to create a new one.')).not.toBeInTheDocument()
+  })
+
+  it('create hint: absent without creatable, and hidden by null', async () => {
+    const { rerender } = render(<MultiSelect label="Kit" options={KIT} />)
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(screen.queryByText(/to create a new one/)).not.toBeInTheDocument()
+    rerender(<MultiSelect label="Kit" options={KIT} creatable createHint={null} />)
+    expect(screen.queryByText(/to create a new one/)).not.toBeInTheDocument()
+  })
+
   it('creatable: no create row for blank text or an existing option, case-insensitive', async () => {
     render(<MultiSelect label="Kit" options={KIT} creatable onCreate={() => {}} />)
     const field = screen.getByRole('combobox')

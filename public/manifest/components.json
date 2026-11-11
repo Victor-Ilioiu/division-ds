@@ -6334,6 +6334,12 @@
           "description": "Adds one last row, `Create \"<text>\"`, when the typed text matches no option (ignoring case). It is never shown for empty text or for text that is already an option. It is an ordinary option in the list: the arrows reach it, Enter or a click chooses it, and screen readers read its label."
         },
         {
+          "name": "createHint",
+          "type": "string | null",
+          "default": "'Type to find an option, or to create a new one.'",
+          "description": "creatable only. A line of secondary text at the top of the panel while the text field is empty, so people discover that typing a new name creates it. It is not an option: the arrows skip it. Pass a domain wording (e.g. \"Type to find a label, or to create a new one.\") or `null` to hide it."
+        },
+        {
           "name": "onCreate",
           "type": "(text: string) => void",
           "description": "Runs with the typed text, trimmed, when the create row is chosen. The text field is then cleared. The component does not add anything itself: add the new option to options and its value to value here."
