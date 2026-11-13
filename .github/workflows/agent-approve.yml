@@ -1,0 +1,58 @@
+# Victor's "yes, work on this" for an issue on the public repo.
+#
+# Lives in division-ds-src at public-repo/.github/workflows/ and reaches the public
+# repo through the export overlay (a file added straight to the public repo is
+# deleted by the next publish). Human tier: agents may not change it.
+#
+# It does one thing: when Victor-Ilioiu adds the label `approved` to an issue, it
+# tells the private repo's agent-runner which issue. It never reads the issue
+# text, never checks out code and runs no script, so nothing in an issue can
+# change what it does. The runner re-checks the approval itself.
+#
+# The App key is a secret on the public repo. Keep this the ONLY workflow there
+# that names it, and never add a pull_request_target trigger anywhere in that
+# repo: fork pull_request runs get no secrets, pull_request_target runs do.
+name: agent-approve
+
+on:
+  issues:
+    types: [labeled]
+
+permissions: {}
+
+concurrency:
+  group: agent-approve-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    # Only on the real public repo (a fork or copy gets no run), only for the label,
+    # only from Victor, only on issues.
+    if: >-
+      github.repository == 'Victor-Ilioiu/division-ds' &&
+      github.event.label.name == 'approved' &&
+      github.event.sender.login == 'Victor-Ilioiu' &&
+      github.event.issue.pull_request == null
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # A token for the private repo only, with contents:write, which is what
+      # repository_dispatch needs. Nothing else.
+      - id: app
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.DIVISION_DS_AGENT_APP_ID }}
+          private-key: ${{ secrets.DIVISION_DS_AGENT_PRIVATE_KEY }}
+          owner: Victor-Ilioiu
+          repositories: division-ds-src
+          permission-contents: write
+
+      - name: Tell the runner
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh api repos/Victor-Ilioiu/division-ds-src/dispatches \
+            -f event_type=issue-approved \
+            -F "client_payload[issue]=$ISSUE"
+          echo "Dispatched issue #$ISSUE to the runner." >> "$GITHUB_STEP_SUMMARY"

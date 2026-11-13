@@ -49,7 +49,8 @@ import { Badge, badgeVariants, CATEGORY_COLORS } from 'src/components/atoms/badg
 ```
 
 - `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` The status the badge shows. Leave it out when you pass color.
-- `color: 'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.
+- `color: 'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both, or passing it with severity. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.
+- `severity: 1 \| 2 \| 3 \| 4 \| 5 \| 6` A step on the ordered severity scale, from 1 (lowest) to 6, for a measure with more levels than the four status tones, like air quality from Good to Hazardous. The fill goes from green to maroon. It replaces tone and color: the types reject passing two. The steps are exported as SEVERITY_STEPS. The badge still needs the level's word: the step's colour is never the message on its own. Works with both emphases and both sizes.
 - `emphasis: 'solid' \| 'subtle' = 'subtle'` Solid uses the invariant fill (the same in light and dark themes) with its matching ink. Subtle is the outline badge: a 1px border and text in the tone’s theme-adaptive text token, with no fill. There's no separate outline emphasis, because it would be this same look under a second name.
 - `size: 'sm' \| 'md' = 'sm'` sm (small) is the chip for everyday interface: rows, cards, tables. md (medium) takes the small control height (32px) and the 14px text step. Use it for a badge next to display-size type, like a price.
 - `dot: boolean = false` Adds a marker next to the text.
@@ -253,10 +254,11 @@ import { Progress } from 'src/components/atoms/progress/Progress'
 ```
 
 - `label: string` Required. The bar’s accessible name.
-- `value: number \| null` null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.
+- `value: number \| null` null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. Set allowOverMax to show a value above max as it is.
 - `max: number = 100` The value at which the bar is complete.
 - `showValue: boolean = false` Shows the percentage (or "In progress") as a readout.
 - `tone: 'signal' \| 'ok' \| 'warning' \| 'hostile' = 'signal'` The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.
+- `allowOverMax: boolean = false` Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads "112%, 12% over".
 - `className: string` Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.
 - `ref: Ref<HTMLDivElement>` Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.
 - `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'children'>` Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning.
@@ -329,6 +331,7 @@ Requires: A <FormField> around it. On its own the control has no label. FormFiel
 - `name: string` The form field name, for native form submission.
 - `inputSize: 'sm' \| 'md' \| 'lg' = 'md'` Matches Input’s sizes so the two line up.
 - `invalid: boolean = false` Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border.
+- `iconInTrigger: boolean = false` Repeats the chosen row’s icon in the trigger, before its label, still aria-hidden. For icons people recognise the option by, such as a country’s flag; leave it off for decorative ones.
 - `className: string` Merged with the trigger’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win.
 - `ref: Ref<HTMLButtonElement>` Passed through to the trigger button.
 - `id: string` The trigger’s id. FormField sets it.
@@ -1390,7 +1393,7 @@ import { ChartPanel } from 'src/components/organisms/chart-panel/ChartPanel'
 - `centerLabel: string` Donut only. The caption under the total in the centre of the ring.
 - `formatValue: (value: number) => string = Intl.NumberFormat('en-IE')` Formats numbers in the tooltip and the table. It formats the y-axis too, unless you give formatAxisValue.
 - `formatAxisValue: (value: number) => string = formatValue` Formats only the y-axis tick labels. Use a shorter, compact formatter when formatValue's output is too wide for the axis. SpendChart's compact euro formatter is one example.
-- `axisWidth: number = 48` The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off.
+- `axisWidth: number = automatic` An override for the width the y-axis reserves, in px (pixels). By default the axis sizes itself to its widest formatted tick label, never narrower than 48, so a currency symbol is never cut off. Set it only to line up the axes of several panels.
 - `bands: { from: string \| number; to: string \| number; label?: string }[] = []` Line and bar only. Shades stretches of the x-axis, such as night hours on a 24-hour chart. from and to are x-axis values (values of xKey), both included. When from comes after to in the data, the band wraps past the end: 22:00 to 06:00 shades 22:00 to the last point and the first point to 06:00. A band naming a value that isn't in the data is skipped. Every band is listed under the chart with its label, so screen readers hear it too.
 - `limits: { value: number; label?: string }[] = []` Line and bar only, not at size sm. Draws a dashed horizontal line at a y value, such as an alert limit of 35 µg/m³. The y-axis grows to include it, so a limit above every data point stays in view. Every limit is listed under the chart with its label and its value formatted by formatValue, so screen readers hear it too.
 - `headingLevel: 2 \| 3 \| 4 = 3` Pick the level that fits the page's heading outline.

@@ -16,10 +16,11 @@ export const meta: ComponentMeta = {
   ],
   props: [
     { name: 'label', type: 'string', description: 'Required. The bar’s accessible name.' },
-    { name: 'value', type: 'number | null', description: 'null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track.' },
+    { name: 'value', type: 'number | null', description: 'null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. Set allowOverMax to show a value above max as it is.' },
     { name: 'max', type: 'number', default: '100', description: 'The value at which the bar is complete.' },
     { name: 'showValue', type: 'boolean', default: 'false', description: 'Shows the percentage (or "In progress") as a readout.' },
     { name: 'tone', type: "'signal' | 'ok' | 'warning' | 'hostile'", default: "'signal'", description: 'The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there.' },
+    { name: 'allowOverMax', type: 'boolean', default: 'false', description: 'Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads "112%, 12% over".' },
     { name: 'className', type: 'string', description: 'Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win.' },
     { name: 'ref', type: 'Ref<HTMLDivElement>', description: 'Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on.' },
     {
@@ -30,7 +31,7 @@ export const meta: ComponentMeta = {
     },
   ],
   keyboard: [],
-  useWhen: 'Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left.',
+  useWhen: 'Showing how far a measurable task has got, or how much of a limit is used: set allowOverMax so a budget at 112% reads as over, not as 100%.',
   notFor: 'A wait with no measurable work. Use Spinner.',
   dos: [
     'Name what’s progressing, not the act of progressing.',
@@ -41,6 +42,7 @@ export const meta: ComponentMeta = {
     "Don't animate the number up from zero and call that animated value the readout. The real value belongs in the DOM straight away.",
     "Don't use Progress for a wait with no measurable work. That's a Spinner.",
     "Don't put the padded readout into the accessible name. That's exactly why the pad is a separate aria-hidden span, and label is what Radix announces.",
+    "Don't leave allowOverMax off on a spend-against-limit bar. Clamped, an overspent category reads as exactly on budget.",
     "Don't rely on the tone alone to say something failed. Say it in text.",
   ],
 }

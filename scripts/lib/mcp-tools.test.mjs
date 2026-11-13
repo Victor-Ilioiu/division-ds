@@ -128,6 +128,18 @@ describe('createTools', () => {
     expect(t.search.run({ query: 'AI filled field' })).toContain('- Input (component)')
   })
 
+  // Issue #2: an agent asking by intent was steered to DatePicker (whose name contains "pick")
+  // and to anything with "a" or "one" in it. Filler words no longer count, and pick / choose /
+  // select / choice / option are one intent.
+  it('finds the component for a choice asked by intent, not by name', () => {
+    const first = query => t.search.run({ query }).split('\n')[0]
+    for (const query of ['pick a country', 'choose one option from a list', 'single choice', 'select a time zone']) {
+      expect(first(query), query).toMatch(/^- Select \(component\)/)
+    }
+    expect(first('pick several tags')).toMatch(/^- MultiSelect \(component\)/)
+    expect(first('pick a date')).toMatch(/^- DatePicker \(component\)/)
+  })
+
   it('points fix hints at places a consumer project can reach', () => {
     const code = "import { Badge } from '../components/atoms/badge/Badge'\nexport const X = () => <Badge colour=\"red\" className=\"text-[var(--color-nope)]\">x</Badge>"
     const out = t.validate_code.run({ code })

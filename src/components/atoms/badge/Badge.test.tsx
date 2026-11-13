@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { axeClean } from '../../../test/axe'
 import darkTheme from '../../../../tokens/semantic/color.dark.json'
 import lightTheme from '../../../../tokens/semantic/color.light.json'
-import { Badge, CATEGORY_COLORS } from './Badge'
+import { Badge, CATEGORY_COLORS, SEVERITY_STEPS } from './Badge'
 
 const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 
@@ -173,6 +173,60 @@ describe('Badge', () => {
             <span key={color}>
               <Badge color={color}>{color}</Badge>
               <Badge color={color} emphasis="solid" size="md" dot>{color}</Badge>
+            </span>
+          ))}
+        </div>
+      )
+      expect(await axeClean(container)).toHaveNoViolations()
+    })
+  })
+
+  describe('severity', () => {
+    const AQI = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous']
+
+    it.each(SEVERITY_STEPS)('pairs step %s solid with its own fill and ink', step => {
+      render(<Badge severity={step} emphasis="solid">Level</Badge>)
+      const cls = screen.getByText('Level').className
+      expect(cls).toContain(`bg-[var(--color-severity-${step}-fill)]`)
+      expect(cls).toContain(`text-[var(--color-severity-${step}-ink)]`)
+      expect(cls).not.toContain('--color-accent-')
+      expect(cls).not.toContain('--color-text-secondary')
+    })
+
+    it.each(SEVERITY_STEPS)('uses step %s text token for text and border when subtle', step => {
+      render(<Badge severity={step}>Level</Badge>)
+      const cls = screen.getByText('Level').className
+      expect(cls).toContain(`text-[var(--color-severity-${step}-text)]`)
+      expect(cls).toContain(`border-[var(--color-severity-${step}-text)]`)
+      expect(cls).not.toContain('--color-border-hairline-strong')
+    })
+
+    it('gives all six AQI levels six different colours', () => {
+      render(<div>{SEVERITY_STEPS.map(step => <Badge key={step} severity={step} emphasis="solid">{AQI[step - 1]}</Badge>)}</div>)
+      const fills = AQI.map(level => screen.getByText(level).className.match(/bg-\[var\(([^)]+)\)\]/)?.[1])
+      expect(new Set(fills).size).toBe(6)
+    })
+
+    it('rejects severity with tone or color in the types', () => {
+      // @ts-expect-error a badge is a status, a category or a severity step, never two
+      render(<Badge tone="ok" severity={2}>Both</Badge>)
+      // @ts-expect-error a badge is a status, a category or a severity step, never two
+      render(<Badge color="blue" severity={2}>Both</Badge>)
+    })
+
+    it('lists exactly the steps the theme files define, in both themes', () => {
+      for (const theme of [darkTheme, lightTheme]) {
+        expect(Object.keys(theme.color.semantic.severity).filter(k => !k.startsWith('$')).map(Number)).toEqual([...SEVERITY_STEPS])
+      }
+    })
+
+    it('is axe clean at every step and emphasis', async () => {
+      const { container } = render(
+        <div>
+          {SEVERITY_STEPS.map(step => (
+            <span key={step}>
+              <Badge severity={step}>{AQI[step - 1]}</Badge>
+              <Badge severity={step} emphasis="solid" size="md" dot>{AQI[step - 1]}</Badge>
             </span>
           ))}
         </div>

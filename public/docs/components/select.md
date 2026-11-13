@@ -2,7 +2,7 @@
 
 > A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Options come in as an array instead of as children, because the trigger, the panel and the look of each row are decisions the system makes once, not per use.
 
-- **Best for:** One choice from a list of about five options or more.
+- **Best for:** One choice from a list of about five options or more: a country, a time zone, a currency.
 - **Not for:** Several values: use MultiSelect. Fewer than about five options: use Radio.
 - Atom. Source: `src/components/atoms/select/Select.tsx`
 - Rendered docs page: `/components/select`
@@ -35,6 +35,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `name` | `string` |  | The form field name, for native form submission. |
 | `inputSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Matches Input’s sizes so the two line up. |
 | `invalid` | `boolean` | `false` | Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border. |
+| `iconInTrigger` | `boolean` | `false` | Repeats the chosen row’s icon in the trigger, before its label, still aria-hidden. For icons people recognise the option by, such as a country’s flag; leave it off for decorative ones. |
 | `className` | `string` |  | Merged with the trigger’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win. |
 | `ref` | `Ref<HTMLButtonElement>` |  | Passed through to the trigger button. |
 | `id` | `string` |  | The trigger’s id. FormField sets it. |
@@ -55,7 +56,7 @@ export type SelectOption = { value: string; label: string; disabled?: boolean }
  *  an `icon` field on `SelectOption`, because MultiSelect takes `SelectOption[]` too and renders
  *  no icons: widening the shared type would let an icon compile there and vanish. */
 export type SelectOptionWithIcon = SelectOption & {
-  /** Leading glyph, aria-hidden: the label names the row. Not repeated in the trigger. */
+  /** Leading glyph, aria-hidden: the label names the row. Shown in the trigger only with `iconInTrigger`. */
   icon?: ReactNode
 }
 ```
@@ -114,6 +115,49 @@ const DELIVERY_GROUPS: SelectGroup[] = [
 ]
 
 <Select label="Delivery" groups={DELIVERY_GROUPS} placeholder="Choose delivery" />
+```
+
+### Countries
+
+```tsx
+type Stripes = { dir: 'v' | 'h'; colors: string[] }
+
+const FLAGS: Record<string, Stripes> = {
+  at: { dir: 'h', colors: ['#c8102e', '#ffffff', '#c8102e'] }, // token-discipline: allow, Austria's flag colours, not interface colour
+  be: { dir: 'v', colors: ['#000000', '#fdda24', '#ef3340'] }, // token-discipline: allow, Belgium's flag colours, not interface colour
+  de: { dir: 'h', colors: ['#000000', '#dd0000', '#ffce00'] }, // token-discipline: allow, Germany's flag colours, not interface colour
+  es: { dir: 'h', colors: ['#aa151b', '#f1bf00', '#f1bf00', '#aa151b'] }, // token-discipline: allow, Spain's flag colours, not interface colour
+  fr: { dir: 'v', colors: ['#0055a4', '#ffffff', '#ef4135'] }, // token-discipline: allow, France's flag colours, not interface colour
+  ie: { dir: 'v', colors: ['#169b62', '#ffffff', '#ff883e'] }, // token-discipline: allow, Ireland's flag colours, not interface colour
+  it: { dir: 'v', colors: ['#009246', '#ffffff', '#ce2b37'] }, // token-discipline: allow, Italy's flag colours, not interface colour
+  nl: { dir: 'h', colors: ['#ae1c28', '#ffffff', '#21468b'] }, // token-discipline: allow, the Netherlands' flag colours, not interface colour
+  pl: { dir: 'h', colors: ['#ffffff', '#dc143c'] }, // token-discipline: allow, Poland's flag colours, not interface colour
+  ro: { dir: 'v', colors: ['#002b7f', '#fcd116', '#ce1126'] }, // token-discipline: allow, Romania's flag colours, not interface colour
+}
+
+function Flag({ code }: { code: string }) {
+  const { dir, colors } = FLAGS[code]
+  const n = colors.length
+  return (
+    <svg viewBox="0 0 20 14" style={{ width: 20, height: 14 }} className="block">
+      {colors.map((fill, i) =>
+        dir === 'v' ? (
+          <rect key={i} x={(20 / n) * i} y={0} width={20 / n} height={14} fill={fill} />
+        ) : (
+          <rect key={i} x={0} y={(14 / n) * i} width={20} height={14 / n} fill={fill} />
+        )
+      )}
+      <rect x={0.5} y={0.5} width={19} height={13} fill="none" stroke="var(--color-border-hairline-strong)" />
+    </svg>
+  )
+}
+
+const COUNTRY_OPTIONS = [
+  ['at', 'Austria'], ['be', 'Belgium'], ['fr', 'France'], ['de', 'Germany'], ['ie', 'Ireland'],
+  ['it', 'Italy'], ['nl', 'Netherlands'], ['pl', 'Poland'], ['ro', 'Romania'], ['es', 'Spain'],
+].map(([value, label]) => ({ value, label, icon: <Flag code={value} /> }))
+
+<Select label="Country" options={COUNTRY_OPTIONS} iconInTrigger defaultValue="ro" />
 ```
 
 ### Long list
@@ -213,6 +257,7 @@ const TERRAIN_OPTIONS = [
 - Below about five options, use radios instead.
 - Group rows under headings once the list mixes different kinds of thing, and keep each group to a handful.
 - Give every row an icon, or none of them.
+- Set iconInTrigger when the icon is how people recognise the option, such as a flag in a country list.
 - Wrap it in a FormField for a visible label, help and error. FormField hands it the label.
 
 ## Don't
@@ -220,6 +265,7 @@ const TERRAIN_OPTIONS = [
 - Don't build a searchable select out of this. That's the command palette's job.
 - Don't use it for several values. That's MultiSelect, which shows each choice as a removable tag.
 - Don't put more than a couple of dozen options in it without search.
+- Don't use emoji flags. Windows draws them as letter pairs such as RO; pass a small image or SVG as the icon instead.
 - Don't make a group of one. A heading over a single row is just noise.
 - Don't style the trigger differently from Input. A form with mismatched control heights looks broken.
 - Don't bevel the trigger. It shares Input's frame and draws its own focus ring (the outline that shows which control the keyboard is on), and a cut corner would clip it. The listbox carries the crosshair instead: the shape lives on the surface, not on the control.
@@ -232,5 +278,5 @@ const TERRAIN_OPTIONS = [
 - **Content**: Portalled and positioned by Radix, the library of accessible building blocks this sits on. It slides down out of the trigger as it opens (M7; Radix’s Select closes at once, with no exit animation). It’s the one atom that carries the corner crosshair, because it’s a surface framing other content, and that’s what the crosshair marks. It’s also the shape that can’t be cut, since clip-path would clip the crosshair’s arms and the last row’s selection fill along with them.
 - **Item**: Highlighted rows use accent.signal.indicator with accent.signal.indicator-ink. That’s the fill-selection grammar, the system’s rule for how a selection looks.
 - **ItemIndicator**: A tick on the selected row, so selection isn’t shown by the highlight alone.
-- **Item icon**: Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger.
+- **Item icon**: Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger unless iconInTrigger is set.
 - **Group label**: Used with groups: a mono (monospaced font) heading over its rows that names the group for screen readers. It can’t be selected. A hairline separates the groups.

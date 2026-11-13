@@ -1,6 +1,6 @@
 import { createRef } from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axeClean } from '../../../test/axe'
 import { Select, type SelectGroup } from './Select'
@@ -205,6 +205,50 @@ describe('Select', () => {
     const icon = screen.getByTestId('carbine-icon')
     expect(option).toContainElement(icon)
     expect(icon.parentElement).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  const COUNTRIES = [
+    { value: 'at', label: 'Austria', icon: <svg data-testid="flag-at" /> },
+    { value: 'fr', label: 'France', icon: <svg data-testid="flag-fr" /> },
+    { value: 'ro', label: 'Romania', icon: <svg data-testid="flag-ro" /> },
+  ]
+
+  it('keeps the icon out of the trigger by default', () => {
+    render(<Select label="Country" options={COUNTRIES} defaultValue="fr" />)
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toHaveTextContent('France')
+    expect(trigger.querySelector('[data-testid="flag-fr"]')).toBeNull()
+  })
+
+  it('with iconInTrigger, shows the chosen icon hidden in the trigger and names it by the label', async () => {
+    render(<Select label="Country" options={COUNTRIES} iconInTrigger defaultValue="ro" />)
+    const trigger = screen.getByRole('combobox', { name: 'Country' })
+    const flag = trigger.querySelector('[data-testid="flag-ro"]')
+    expect(flag).not.toBeNull()
+    expect(flag!.closest('[aria-hidden="true"]')).not.toBeNull()
+    expect(trigger).toHaveTextContent(/^Romania$/)
+    await userEvent.click(trigger)
+    const option = await screen.findByRole('option', { name: 'France' })
+    expect(option).toContainElement(within(option).getByTestId('flag-fr'))
+    expect(within(option).getByTestId('flag-fr').closest('[aria-hidden="true"]')).not.toBeNull()
+    await userEvent.click(option)
+    expect(screen.getByRole('combobox').querySelector('[data-testid="flag-fr"]')).not.toBeNull()
+  })
+
+  it('with iconInTrigger, typeahead still matches the label', async () => {
+    render(<Select label="Country" options={COUNTRIES} iconInTrigger />)
+    await userEvent.click(screen.getByRole('combobox'))
+    await screen.findByRole('listbox')
+    await userEvent.keyboard('r')
+    expect(screen.getByRole('option', { name: 'Romania' })).toHaveAttribute('data-highlighted')
+  })
+
+  it('is axe clean with icons in the trigger, closed and open', async () => {
+    const { container } = render(<Select label="Country" options={COUNTRIES} iconInTrigger defaultValue="at" />)
+    expect(await axeClean(container)).toHaveNoViolations()
+    await userEvent.click(screen.getByRole('combobox'))
+    await screen.findByRole('listbox')
+    expect(await axeClean(document.body)).toHaveNoViolations()
   })
 
   // Type-only, like the other it.skip blocks above: tsc -b checks the directive.

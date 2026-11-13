@@ -51,8 +51,8 @@ export const meta: ComponentMeta = {
     {
       name: 'axisWidth',
       type: 'number',
-      default: '48',
-      description: "The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off.",
+      default: 'automatic',
+      description: 'An override for the width the y-axis reserves, in px (pixels). By default the axis sizes itself to its widest formatted tick label, never narrower than 48, so a currency symbol is never cut off. Set it only to line up the axes of several panels.',
     },
     {
       name: 'bands',

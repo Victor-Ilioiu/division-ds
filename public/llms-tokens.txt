@@ -72,6 +72,24 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | `--color-category-red-text` | Subtle Badge color="red": text and border. A label, not a status. | `dark #f58a8a, light #b42828` |
 | `--color-category-red-fill` | Solid Badge color="red": the fill. | `#f07a7a` |
 | `--color-category-red-ink` | Text on category.red.fill. | `#0a0602` |
+| `--color-severity-1-text` | Subtle Badge severity=1: text and border. A step, with its word. | `dark #49d092, light #1d714b` |
+| `--color-severity-1-fill` | Solid Badge severity=1: the fill. | `#2fb577` |
+| `--color-severity-1-ink` | Text on severity.1.fill. | `#0a0602` |
+| `--color-severity-2-text` | Subtle Badge severity=2: text and border. A step, with its word. | `dark #ffcb79, light #804e00` |
+| `--color-severity-2-fill` | Solid Badge severity=2: the fill. | `#ffbb52` |
+| `--color-severity-2-ink` | Text on severity.2.fill. | `#0a0602` |
+| `--color-severity-3-text` | Subtle Badge severity=3: text and border. A step, with its word. | `dark #f19300, light #b13200` |
+| `--color-severity-3-fill` | Solid Badge severity=3: the fill. | `#f19300` |
+| `--color-severity-3-ink` | Text on severity.3.fill. | `#0a0602` |
+| `--color-severity-4-text` | Subtle Badge severity=4: text and border. A step, with its word. | `dark #ff5512, light #ae0a0a` |
+| `--color-severity-4-fill` | Solid Badge severity=4: the fill. | `#f33636` |
+| `--color-severity-4-ink` | Text on severity.4.fill. | `#0a0602` |
+| `--color-severity-5-text` | Subtle Badge severity=5: text and border. A step, with its word. | `dark #f55b5b, light #790707` |
+| `--color-severity-5-fill` | Solid Badge severity=5: the fill. | `#ae0a0a` |
+| `--color-severity-5-ink` | Text on severity.5.fill. | `#ffffff` |
+| `--color-severity-6-text` | Subtle Badge severity=6: text and border. A step, with its word. | `dark #f78181, light #440404` |
+| `--color-severity-6-fill` | Solid Badge severity=6: the fill. | `#440404` |
+| `--color-severity-6-ink` | Text on severity.6.fill. | `#ffffff` |
 | `--color-numeral-pad` | The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read. | `dark #7b8592, light #627da4` |
 | `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. | `dark #78b7ff, light #004593` |
 | `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. | `dark #78b7ff, light #004593` |

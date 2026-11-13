@@ -38,6 +38,12 @@ export function ProgressDocs() {
           <Progress label="Battery reserves" value={6} tone="hostile" showValue />
         </div>
       </Example>
+      <Example caption="Over the limit">
+        <div className="flex flex-col gap-4 w-full max-w-sm">
+          <Progress label="Groceries" value={64} tone="ok" allowOverMax showValue />
+          <Progress label="Eating out" value={112} tone="ok" allowOverMax showValue />
+        </div>
+      </Example>
     </ComponentDocs>
   )
 }

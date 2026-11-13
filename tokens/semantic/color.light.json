@@ -104,6 +104,39 @@
           "ink": { "$type": "color", "$value": "#0a0602" }
         }
       },
+      "severity": {
+        "$description": "A six-step ordered severity scale, for a measure with more levels than the four status tones (air quality: Good to Hazardous). Fill is the same in both themes and darkens and reddens step by step, green to maroon; ink on it is gated at 4.5:1. Light text values darken with the step and are measured by the gate on surface.base, surface.sunken and surface.raised. Always beside a word: the step number is never the message.",
+        "1": {
+          "text": { "$type": "color", "$value": "{color.primitive.ok.700}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.ok.500}" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "2": {
+          "text": { "$type": "color", "$value": "{color.primitive.warning.800}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.warning.400}" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "3": {
+          "text": { "$type": "color", "$value": "{color.primitive.signal.600}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.warning.600}" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "4": {
+          "text": { "$type": "color", "$value": "{color.primitive.hostile.700}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.hostile.500}" },
+          "ink": { "$type": "color", "$value": "#0a0602" }
+        },
+        "5": {
+          "text": { "$type": "color", "$value": "{color.primitive.hostile.800}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.hostile.700}" },
+          "ink": { "$type": "color", "$value": "#ffffff" }
+        },
+        "6": {
+          "text": { "$type": "color", "$value": "{color.primitive.hostile.900}" },
+          "fill": { "$type": "color", "$value": "{color.primitive.hostile.900}" },
+          "ink": { "$type": "color", "$value": "#ffffff" }
+        }
+      },
       "numeral": {
         "pad": { "$type": "color", "$value": "{color.primitive.neutral.300}", "$description": "The dimmed leading-zero pad. 3.82:1 on surface.base, 22% of text.primary's 17.55:1 there, against the dark theme's 31%. Light theme needs a LIGHTER step than text.muted for the same role: muted aliases neutral.500 and measures 11.44:1 here, 65% of ink, which does not read as dimmed and out-shouts the signal.fill numeral it is padding (4.11:1 on this surface). neutral.400 would land at 6.58:1 and 38% of ink, closer to dark's share but more than twice the contrast of the digits beside it, so neutral.300 is the step that keeps the pad quieter than what it pads." }
       },

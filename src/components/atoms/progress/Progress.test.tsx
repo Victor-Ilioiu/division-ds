@@ -58,6 +58,39 @@ describe('Progress', () => {
     expect(screen.getByText('100%')).toBeInTheDocument()
   })
 
+  it('keeps clamping a value over max unless allowOverMax is set', () => {
+    render(<Progress label="Eating out" value={112} showValue />)
+    expect(screen.getByRole('progressbar')).not.toHaveAttribute('data-over')
+    expect(screen.getByText('100%')).toBeInTheDocument()
+  })
+
+  it('shows the real value over max with allowOverMax', () => {
+    render(<Progress label="Eating out" value={112} allowOverMax showValue />)
+    const bar = screen.getByRole('progressbar', { name: 'Eating out' })
+    expect(bar).toHaveAttribute('aria-valuenow', '112')
+    expect(bar).toHaveAttribute('aria-valuemax', '100')
+    expect(bar).toHaveAttribute('aria-valuetext', '112%, 12% over')
+    expect(screen.getByText('112%')).toBeInTheDocument()
+    expect(screen.queryByText('12% over')).not.toBeInTheDocument()
+    expect((bar.firstElementChild as HTMLElement).style.transform).toBe('translateX(-0%)')
+    const marker = bar.querySelector('[data-part="max-marker"]') as HTMLElement
+    expect(parseFloat(marker.style.left)).toBeCloseTo((100 / 112) * 100, 3)
+    expect(bar.querySelector('[data-part="overshoot"]')).toBeInTheDocument()
+  })
+
+  it('renders allowOverMax at or below max exactly like the default', () => {
+    render(<Progress label="Groceries" value={64} allowOverMax showValue />)
+    const bar = screen.getByRole('progressbar')
+    expect(bar).toHaveAttribute('aria-valuenow', '64')
+    expect(bar).not.toHaveAttribute('data-over')
+    expect(bar.querySelector('[data-part="max-marker"]')).toBeNull()
+  })
+
+  it('is axe clean over max', async () => {
+    const { container } = render(<Progress label="Eating out" value={112} allowOverMax showValue />)
+    expect(await axeClean(container)).toHaveNoViolations()
+  })
+
   it('falls back to a max of 100 when max is zero or negative, instead of painting NaN', () => {
     // max=0 divides by zero: the readout printed "NaN%" and the fill got translateX(-NaN%).
     const { unmount } = render(<Progress label="Broken max" value={40} max={0} showValue />)

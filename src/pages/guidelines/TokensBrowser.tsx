@@ -3,9 +3,23 @@ import { useMemo, useState } from 'react'
 import colorPrimitives from '../../../tokens/primitive/color.json'
 import spacingPrimitives from '../../../tokens/primitive/spacing.json'
 import motionPrimitives from '../../../tokens/primitive/motion.json'
+import semanticDark from '../../../tokens/semantic/color.dark.json'
+import semanticLight from '../../../tokens/semantic/color.light.json'
 import { readCssVar } from '../../lib/tokens-runtime'
 
 type Row = { name: string; kind: 'color' | 'dimension' | 'duration' | 'ease' }
+
+type TokenTree = { [key: string]: unknown }
+
+/** Every leaf with a $value under a semantic tree, as its CSS variable: the path below
+ *  color.semantic joined with dashes (accent.signal.fill -> --color-accent-signal-fill), the
+ *  same name build-tokens.mjs writes. $-keys ($description, $type) are metadata, not groups. */
+function semanticNames(tree: TokenTree, path: string[] = []): string[] {
+  if ('$value' in tree) return [`--color-${path.join('-')}`]
+  return Object.entries(tree)
+    .filter(([key, child]) => !key.startsWith('$') && typeof child === 'object' && child !== null)
+    .flatMap(([key, child]) => semanticNames(child as TokenTree, [...path, key]))
+}
 
 // Same naming convention build-tokens.mjs uses when it writes tokens.css -- derived here, not
 // hand-duplicated, so this list can never drift from what the pipeline actually generates.
@@ -15,6 +29,12 @@ function deriveRows(): Row[] {
     for (const stop of Object.keys(ramp)) {
       rows.push({ name: `--color-${name}-${stop}`, kind: 'color' })
     }
+  }
+  // Semantic colours: only names both themes define, as build-tokens.mjs requires, so a token
+  // added to one theme file and not the other never shows up here as if it were complete.
+  const light = new Set(semanticNames(semanticLight.color.semantic as TokenTree))
+  for (const name of semanticNames(semanticDark.color.semantic as TokenTree)) {
+    if (light.has(name)) rows.push({ name, kind: 'color' })
   }
   for (const step of Object.keys(spacingPrimitives.spacing)) {
     rows.push({ name: `--spacing-${step}`, kind: 'dimension' })
@@ -41,13 +61,13 @@ export function TokensBrowser() {
             Guidelines <span className="text-[var(--color-accent-signal-text)]">· Tokens browser</span>
           </>
         }
-        title="Every primitive token, live"
+        title="Every primitive and semantic token, live"
       />
       <input
         type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
-        placeholder="Filter, e.g. signal, spacing-4, duration"
+        placeholder="Filter, e.g. accent, severity, spacing-4"
         aria-label="Filter tokens"
         className="font-mono text-sm border border-[var(--color-border-control)] bg-transparent px-3 py-2 min-h-[36px] w-full max-w-sm mb-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
       />

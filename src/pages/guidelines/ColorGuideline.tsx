@@ -90,6 +90,30 @@ const GROUPS: Group[] = [
       ]
     }),
   },
+  {
+    title: 'Severity scale',
+    intro:
+      `Six ordered steps, from 1 (lowest) to 6, for a measure that has more levels than the four status colours, like air quality from Good to Hazardous. Use it when the levels have an order and each needs its own colour; use a status colour when the state is simply good, bad or worth a look. The fills darken from green to maroon in both themes. Each step has the same three roles as a status (fill, text and ink), and a severity badge always carries the level's word: the colour is never the message on its own.`,
+    swatches: ([1, 2, 3, 4, 5, 6] as const).flatMap(step => {
+      const level = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'][step - 1]
+      return [
+        // Like the status fills: always behind its ink, so ink on fill is the measured pair.
+        { token: `severity.${step}.fill`, kind: 'fill' as const, role: `Step ${step} of 6 (air quality: ${level}). The same in both themes. Always behind its ink text, which is the pair that is measured.` },
+        { token: `severity.${step}.text`, kind: 'text' as const, role: `Step ${step} type and outline on the page (a subtle badge).`, on: 'surface.base', min: 4.5 },
+        { token: `severity.${step}.ink`, kind: 'text' as const, role: `Text on the step ${step} fill.`, on: `severity.${step}.fill`, min: 4.5 },
+      ]
+    }),
+  },
+  {
+    title: 'Category',
+    intro:
+      `Ten colours for labels people make themselves, like a project tag or a topic. A category colour means "these belong together", never good or bad, so it is never used for a status. Each has the same three roles (fill, text and ink), and a category badge always carries its label.`,
+    swatches: (['gray', 'brown', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'red'] as const).flatMap(name => [
+      { token: `category.${name}.fill`, kind: 'fill' as const, role: `A solid ${name} label. The same in both themes. Always behind its ink text, which is the pair that is measured.` },
+      { token: `category.${name}.text`, kind: 'text' as const, role: `${name[0].toUpperCase()}${name.slice(1)} label text and outline on the page.`, on: 'surface.base', min: 4.5 },
+      { token: `category.${name}.ink`, kind: 'text' as const, role: `Text on the ${name} fill.`, on: `category.${name}.fill`, min: 4.5 },
+    ]),
+  },
 ]
 
 const RAMPS = ['signal', 'neutral', 'hostile', 'ok', 'info', 'warning'] as const

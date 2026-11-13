@@ -11,7 +11,7 @@ export type SelectOption = { value: string; label: string; disabled?: boolean }
  *  an `icon` field on `SelectOption`, because MultiSelect takes `SelectOption[]` too and renders
  *  no icons: widening the shared type would let an icon compile there and vanish. */
 export type SelectOptionWithIcon = SelectOption & {
-  /** Leading glyph, aria-hidden: the label names the row. Not repeated in the trigger. */
+  /** Leading glyph, aria-hidden: the label names the row. Shown in the trigger only with `iconInTrigger`. */
   icon?: ReactNode
 }
 
@@ -135,6 +135,9 @@ export type SelectProps = Omit<ComponentPropsWithoutRef<typeof RadixSelect.Root>
   placeholder?: string
   inputSize?: 'sm' | 'md' | 'lg'
   invalid?: boolean
+  /** Repeat the chosen row's icon in the trigger, before its label. For icons that ARE the
+   *  recognition cue (a country's flag, a currency's mark), not for decoration. Default false. */
+  iconInTrigger?: boolean
   className?: string
   ref?: Ref<HTMLButtonElement>
   /** The trigger's id, so a FormField's label and error text can point at it. */
@@ -156,18 +159,30 @@ const ITEM_CLASSES = cn(
   'data-[disabled]:pointer-events-none'
 )
 
-function SelectRow({ option }: { option: SelectOptionWithIcon }) {
+function SelectRow({ option, iconInTrigger }: { option: SelectOptionWithIcon; iconInTrigger: boolean }) {
+  const icon =
+    option.icon !== undefined ? (
+      // The icon inherits the row colour, so it follows the highlight to ink with no pair of its own.
+      <span aria-hidden="true" className="inline-flex shrink-0 [&>svg]:w-4 [&>svg]:h-4">
+        {option.icon}
+      </span>
+    ) : null
   return (
-    <RadixSelect.Item value={option.value} disabled={option.disabled} className={ITEM_CLASSES}>
-      {option.icon !== undefined ? (
-        // Outside ItemText on purpose: Radix copies ItemText into the trigger, and the trigger
-        // shows the chosen label only. The icon inherits the row colour, so it follows the
-        // highlight to ink with no pair of its own.
-        <span aria-hidden="true" className="inline-flex shrink-0 [&>svg]:w-4 [&>svg]:h-4">
-          {option.icon}
-        </span>
-      ) : null}
-      <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
+    // textValue pins typeahead to the label, whatever sits inside ItemText.
+    <RadixSelect.Item value={option.value} textValue={option.label} disabled={option.disabled} className={ITEM_CLASSES}>
+      {/* Radix copies ItemText into the trigger. By default the icon sits outside it, so the
+          trigger shows the label only; with iconInTrigger it goes inside, and travels too. */}
+      {iconInTrigger ? null : icon}
+      <RadixSelect.ItemText>
+        {iconInTrigger && icon ? (
+          <span className="inline-flex items-center gap-2">
+            {icon}
+            {option.label}
+          </span>
+        ) : (
+          option.label
+        )}
+      </RadixSelect.ItemText>
       <RadixSelect.ItemIndicator className="absolute right-2">
         <Check aria-hidden="true" className="w-4 h-4" />
       </RadixSelect.ItemIndicator>
@@ -190,6 +205,7 @@ export function Select({
   placeholder = 'Select…',
   inputSize = 'md',
   invalid = false,
+  iconInTrigger = false,
   className,
   ref,
   triggerProps,
@@ -253,12 +269,12 @@ export function Select({
                         {group.label}
                       </RadixSelect.Label>
                       {group.options.map(option => (
-                        <SelectRow key={option.value} option={option} />
+                        <SelectRow key={option.value} option={option} iconInTrigger={iconInTrigger} />
                       ))}
                     </RadixSelect.Group>
                   </Fragment>
                 ))
-              : options.map(option => <SelectRow key={option.value} option={option} />)}
+              : options.map(option => <SelectRow key={option.value} option={option} iconInTrigger={iconInTrigger} />)}
           </RadixSelect.Viewport>
         </RadixSelect.Content>
       </RadixSelect.Portal>

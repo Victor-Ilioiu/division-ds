@@ -46,6 +46,10 @@ export type ProgressProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
   max?: number
   showValue?: boolean
   tone?: keyof typeof TONE_FILL
+  /** Opt-in: a value above `max` is shown as it is (e.g. a budget at 112%) instead of clamped
+   *  to 100%. The track rescales to span the value, a marker sits where `max` falls, the part
+   *  past the marker paints hostile, and the readout shows the real value in hostile; aria-valuetext also says how far over it is. */
+  allowOverMax?: boolean
   className?: string
   ref?: Ref<HTMLDivElement>
   children?: never
@@ -57,6 +61,7 @@ export function Progress({
   max = 100,
   showValue = false,
   tone = 'signal',
+  allowOverMax = false,
   className,
   ref,
   ...rest
@@ -78,7 +83,19 @@ export function Progress({
   // saying the same thing.
   const safeMax = Number.isFinite(max) && max > 0 ? max : 100
   const clampedValue = value === null ? null : Math.min(Math.max(value, 0), safeMax)
-  const pct = clampedValue === null ? null : Math.round((clampedValue / safeMax) * 100)
+  // allowOverMax (issue #4): clamping hides overspending, so a 112% budget read as exactly on
+  // budget. When opted in and value > max, the REAL value drives the readout and aria-valuenow;
+  // Radix still gets the clamped value (it rejects out-of-range values), and its aria attributes
+  // are overridden on Root. The track rescales to span `value`, so the fill stays full and a
+  // marker shows where `max` sits; only the overshoot paints hostile. The part up to max keeps
+  // its tone on purpose: it says "this much was within the limit, this much is over", which a
+  // fully red bar cannot.
+  const over = allowOverMax && value !== null && Number.isFinite(value) && value > safeMax
+  const realPct = value === null ? null : Math.round((value / safeMax) * 100)
+  const pct = over ? realPct : clampedValue === null ? null : Math.round((clampedValue / safeMax) * 100)
+  const overBy = over && realPct !== null ? realPct - 100 : 0
+  // Where max falls on the rescaled track, as a percentage of its width.
+  const markerAt = over ? (safeMax / (value as number)) * 100 : 100
 
   return (
     <div className={cn('w-full', className)} {...rest}>
@@ -101,7 +118,12 @@ export function Progress({
           // zero percent", while the visible readout keeps a constant three-digit width and
           // never reflows the row as the bar advances. That is also what tabular-nums is for;
           // the pad handles the digit COUNT changing, which tabular figures cannot.
-          <span className="font-display text-2xl leading-none tabular-nums text-[var(--color-text-primary)]">
+          <span
+            className={cn(
+              'font-display text-2xl leading-none tabular-nums',
+              over ? 'text-[var(--color-accent-hostile-text)]' : 'text-[var(--color-text-primary)]'
+            )}
+          >
             {pct === null ? (
               <span className="text-sm">In progress</span>
             ) : (
@@ -122,7 +144,15 @@ export function Progress({
         value={clampedValue}
         max={safeMax}
         aria-label={label}
-        className="relative h-1.5 w-full overflow-hidden bg-[var(--color-surface-sunken)]"
+        {...(over
+          ? { 'aria-valuenow': value as number, 'aria-valuetext': `${realPct}%, ${overBy}% over`, 'data-over': '' }
+          : {})}
+        className={cn(
+          'relative h-1.5 w-full bg-[var(--color-surface-sunken)]',
+          // The fill sits at translateX(0) when over, so nothing can leak; the marker needs to
+          // stand proud of the 6px track to read as a limit line, not a seam.
+          over ? 'overflow-visible' : 'overflow-hidden'
+        )}
       >
         <RadixProgress.Indicator
           className={cn(
@@ -141,9 +171,25 @@ export function Progress({
             // prefers-reduced-motion the pulse is disabled and this becomes a plain, static full
             // track — read together with "In progress", that still doesn't claim a completion
             // amount, unlike a static partial fill would.
-            transform: `translateX(-${pct === null ? 0 : 100 - pct}%)`,
+            transform: `translateX(-${pct === null || over ? 0 : 100 - pct}%)`,
           }}
         />
+        {over ? (
+          <>
+            <span
+              aria-hidden="true"
+              data-part="overshoot"
+              className="absolute inset-y-0 right-0 bg-[var(--component-control-progress-fill-hostile)]"
+              style={{ left: `${markerAt}%` }}
+            />
+            <span
+              aria-hidden="true"
+              data-part="max-marker"
+              className="absolute -inset-y-1 w-0.5 -translate-x-1/2 bg-[var(--color-text-primary)]"
+              style={{ left: `${markerAt}%` }}
+            />
+          </>
+        ) : null}
       </RadixProgress.Root>
     </div>
   )

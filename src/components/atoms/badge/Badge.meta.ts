@@ -35,7 +35,13 @@ export const meta: ComponentMeta = {
       name: 'color',
       type: "'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'",
       description:
-        "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.",
+        "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both, or passing it with severity. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes.",
+    },
+    {
+      name: 'severity',
+      type: '1 | 2 | 3 | 4 | 5 | 6',
+      description:
+        "A step on the ordered severity scale, from 1 (lowest) to 6, for a measure with more levels than the four status tones, like air quality from Good to Hazardous. The fill goes from green to maroon. It replaces tone and color: the types reject passing two. The steps are exported as SEVERITY_STEPS. The badge still needs the level's word: the step's colour is never the message on its own. Works with both emphases and both sizes.",
     },
     {
       name: 'emphasis',
@@ -82,6 +88,8 @@ export const meta: ComponentMeta = {
     "Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.",
     'Use size md when the badge sits next to a headline figure, so the two read as one statement.',
     'Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.',
+    'Use severity when a measure has more than four ordered levels, like air quality, so each level gets its own step and no two share a colour. Use the same step for the same level on every screen.',
+    'Prefer solid for a severity scale: the fills darken step by step in both themes, so the order reads at a glance. In the dark theme the subtle text steps are ordered by hue, not lightness.',
     'Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created.',
   ],
   donts: [
@@ -89,6 +97,8 @@ export const meta: ComponentMeta = {
     "Don't put a badge inside a button. It muddies what the clickable target is.",
     "Don't use hostile for something that's only pending.",
     "Don't use a category colour to show a status. A red project label is not an error, and an error is tone=\"hostile\", so it means the same thing on every screen.",
+    "Don't squeeze a six-level scale into the four status tones. Two levels end up sharing a colour, and only the word tells them apart. That's what severity is for.",
+    "Don't use severity for a status that isn't on a scale. A failed payment is tone=\"hostile\", not severity={5}.",
     "Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.",
     "Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.",
     "Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.",

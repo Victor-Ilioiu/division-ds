@@ -84,9 +84,9 @@ export type ChartPanelProps<Row extends Record<string, string | number>> = {
    *  full `formatValue` output ("€1,234.00") where a shorter, compact one ("€1.2K") fits; SpendChart
    *  is why this exists. */
   formatAxisValue?: (value: number) => string
-  /** The y-axis's own reserved width, in px. @default 48 -- Recharts' own YAxis default, named
-   *  here (rather than left to Recharts) so a panel whose tick labels run wider than two figures
-   *  can grow it without the labels clipping. */
+  /** An explicit override for the y-axis's reserved width, in px. @default automatic -- the axis
+   *  sizes itself to its widest formatted tick label (never narrower than 48, Recharts' own
+   *  default), so "€2,200" keeps its "€". Set it only to line several panels' axes up. */
   axisWidth?: number
   /** Line and bar only: shade stretches of the x-axis, such as night hours on a 24-hour chart.
    *  `from` and `to` are values of `xKey`, both included. A band whose `from` comes after its `to`
@@ -117,6 +117,39 @@ const AREA_OPACITY = [0.4, 0.22] as const
  *  that says "area", never a fill competing with the line. */
 const LINE_AREA_OPACITY = [0.16, 0.09] as const
 const TICK = { fill: 'var(--color-text-secondary)', fontSize: 12, fontFamily: 'var(--font-mono)' }
+/** The mono font's advance is 0.6em in every face the system ships (and in the fallback mono
+ *  stacks); the X tick overhang below uses the same figure. */
+const MONO_ADVANCE = 0.6
+/** Recharts' minimum y-axis width, kept as the floor so short labels look exactly as before. */
+const MIN_AXIS_WIDTH = 48
+/** Space Recharts leaves right of a y tick label (tickSize 6 + tickMargin 2) plus a small left
+ *  gutter, so the widest label never touches the card edge. */
+const AXIS_LABEL_PAD = 12
+
+/** The smallest "nice" number (1, 2, 2.5, 5 times a power of ten) at or beyond |value|, signed.
+ *  Recharts rounds its top tick up the same way, so the widest label can be one the data never
+ *  reaches (data peaking at 1,940 gets a 2,000 tick). */
+function niceBound(value: number): number {
+  if (value === 0 || !Number.isFinite(value)) return 0
+  const magnitude = Math.abs(value)
+  const power = 10 ** Math.floor(Math.log10(magnitude))
+  const step = [1, 2, 2.5, 5, 10].find(candidate => candidate * power >= magnitude) ?? 10
+  return Math.sign(value) * step * power
+}
+
+/** The y-axis width that fits every formatted tick label. Estimated from character count times
+ *  the mono advance rather than measured: it is deterministic, needs no DOM (server render,
+ *  tests), and does not change once the web font finishes loading. Exported for the tests. */
+export function autoAxisWidth(values: number[], format: (value: number) => string, fontSize = TICK.fontSize): number {
+  const finite = values.filter(Number.isFinite)
+  if (finite.length === 0) return MIN_AXIS_WIDTH
+  const min = Math.min(0, ...finite)
+  const max = Math.max(0, ...finite)
+  const candidates = [0, min, max, niceBound(min), niceBound(max)]
+  const longest = Math.max(...candidates.map(value => format(value).length))
+  return Math.max(MIN_AXIS_WIDTH, Math.ceil(longest * fontSize * MONO_ADVANCE) + AXIS_LABEL_PAD)
+}
+
 const NUMBER = new Intl.NumberFormat('en-IE')
 const formatNumber = (value: number) => NUMBER.format(value)
 
@@ -292,7 +325,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
   centerLabel,
   formatValue = formatNumber,
   formatAxisValue = formatValue,
-  axisWidth = 48,
+  axisWidth,
   bands = [],
   limits = [],
   headingLevel = 3,
@@ -378,6 +411,13 @@ export function ChartPanel<Row extends Record<string, string | number>>({
     <Tooltip content={<ChartTooltip format={formatValue} />} cursor={cursor} isAnimationActive={false} wrapperStyle={{ zIndex: 10 }} />
   )
 
+  const yAxisWidth =
+    axisWidth ??
+    autoAxisWidth(
+      [...data.flatMap(row => series.map(entry => Number(row[entry.key]))), ...shownLimits.map(limit => limit.value)],
+      formatAxisValue
+    )
+
   // A sparkline has no axis to read a zero from, so a line fills its own height (min to max), the
   // way every stat-card sparkline does; bars keep their zero, because a bar's length is its value.
   const axes = small ? (
@@ -400,7 +440,7 @@ export function ChartPanel<Row extends Record<string, string | number>>({
         tick={TICK}
         tickLine={false}
         axisLine={false}
-        width={axisWidth}
+        width={yAxisWidth}
         tickFormatter={(value: number) => formatAxisValue(value)}
       />
     </>

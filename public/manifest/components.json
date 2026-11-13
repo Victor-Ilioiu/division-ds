@@ -290,7 +290,12 @@
         {
           "name": "color",
           "type": "'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'",
-          "description": "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes."
+          "description": "A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both, or passing it with severity. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes."
+        },
+        {
+          "name": "severity",
+          "type": "1 | 2 | 3 | 4 | 5 | 6",
+          "description": "A step on the ordered severity scale, from 1 (lowest) to 6, for a measure with more levels than the four status tones, like air quality from Good to Hazardous. The fill goes from green to maroon. It replaces tone and color: the types reject passing two. The steps are exported as SEVERITY_STEPS. The badge still needs the level's word: the step's colour is never the message on its own. Works with both emphases and both sizes."
         },
         {
           "name": "emphasis",
@@ -358,6 +363,8 @@
         "Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.",
         "Use size md when the badge sits next to a headline figure, so the two read as one statement.",
         "Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.",
+        "Use severity when a measure has more than four ordered levels, like air quality, so each level gets its own step and no two share a colour. Use the same step for the same level on every screen.",
+        "Prefer solid for a severity scale: the fills darken step by step in both themes, so the order reads at a glance. In the dark theme the subtle text steps are ordered by hue, not lightness.",
         "Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created."
       ],
       "donts": [
@@ -365,6 +372,8 @@
         "Don't put a badge inside a button. It muddies what the clickable target is.",
         "Don't use hostile for something that's only pending.",
         "Don't use a category colour to show a status. A red project label is not an error, and an error is tone=\"hostile\", so it means the same thing on every screen.",
+        "Don't squeeze a six-level scale into the four status tones. Two levels end up sharing a colour, and only the word tells them apart. That's what severity is for.",
+        "Don't use severity for a status that isn't on a scale. A failed payment is tone=\"hostile\", not severity={5}.",
         "Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.",
         "Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.",
         "Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.",
@@ -405,6 +414,14 @@
         {
           "caption": "Category colours, solid",
           "source": "{CATEGORY_COLORS.map(color => (\n  <Badge key={color} color={color} emphasis=\"solid\">\n    {color}\n  </Badge>\n))}"
+        },
+        {
+          "caption": "Severity, solid: the six air quality levels, each with its word",
+          "source": "const AQI_LEVELS = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'] as const\n\n{SEVERITY_STEPS.map(step => (\n  <Badge key={step} severity={step} emphasis=\"solid\">\n    {AQI_LEVELS[step - 1]}\n  </Badge>\n))}"
+        },
+        {
+          "caption": "Severity, subtle",
+          "source": "const AQI_LEVELS = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'] as const\n\n{SEVERITY_STEPS.map(step => (\n  <Badge key={step} severity={step}>\n    {AQI_LEVELS[step - 1]}\n  </Badge>\n))}"
         },
         {
           "caption": "With a dot",
@@ -1719,7 +1736,7 @@
       "tier": "atoms",
       "slug": "progress",
       "summary": "A progress bar that's either determinate (it knows how far along the task is) or indeterminate (it doesn't). The readout is real text in the DOM (the Document Object Model, the live page structure the browser builds) from the very first render. That's motion token M3's rule, and it means a screen reader, the software that reads the page aloud for blind and low-vision people, never hears a number roll.",
-      "useWhen": "Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left.",
+      "useWhen": "Showing how far a measurable task has got, or how much of a limit is used: set allowOverMax so a budget at 112% reads as over, not as 100%.",
       "notFor": "A wait with no measurable work. Use Spinner.",
       "source": "src/components/atoms/progress/Progress.tsx",
       "docs": "/docs/components/progress.md",
@@ -1740,7 +1757,7 @@
         {
           "name": "value",
           "type": "number | null",
-          "description": "null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track."
+          "description": "null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. Set allowOverMax to show a value above max as it is."
         },
         {
           "name": "max",
@@ -1759,6 +1776,12 @@
           "type": "'signal' | 'ok' | 'warning' | 'hostile'",
           "default": "'signal'",
           "description": "The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there."
+        },
+        {
+          "name": "allowOverMax",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads \"112%, 12% over\"."
         },
         {
           "name": "className",
@@ -1786,6 +1809,7 @@
         "Don't animate the number up from zero and call that animated value the readout. The real value belongs in the DOM straight away.",
         "Don't use Progress for a wait with no measurable work. That's a Spinner.",
         "Don't put the padded readout into the accessible name. That's exactly why the pad is a separate aria-hidden span, and label is what Radix announces.",
+        "Don't leave allowOverMax off on a spend-against-limit bar. Clamped, an overspent category reads as exactly on budget.",
         "Don't rely on the tone alone to say something failed. Say it in text."
       ],
       "anatomy": [
@@ -1830,6 +1854,10 @@
         {
           "caption": "Tones",
           "source": "<div className=\"flex flex-col gap-4 w-full max-w-sm\">\n  <Progress label=\"Signal supply run\" value={40} tone=\"signal\" showValue />\n  <Progress label=\"BB reserves\" value={82} tone=\"ok\" showValue />\n  <Progress label=\"Gas reserves\" value={22} tone=\"warning\" showValue />\n  <Progress label=\"Battery reserves\" value={6} tone=\"hostile\" showValue />\n</div>"
+        },
+        {
+          "caption": "Over the limit",
+          "source": "<div className=\"flex flex-col gap-4 w-full max-w-sm\">\n  <Progress label=\"Groceries\" value={64} tone=\"ok\" allowOverMax showValue />\n  <Progress label=\"Eating out\" value={112} tone=\"ok\" allowOverMax showValue />\n</div>"
         }
       ],
       "closed": false
@@ -2135,7 +2163,7 @@
       "tier": "atoms",
       "slug": "select",
       "summary": "A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Options come in as an array instead of as children, because the trigger, the panel and the look of each row are decisions the system makes once, not per use.",
-      "useWhen": "One choice from a list of about five options or more.",
+      "useWhen": "One choice from a list of about five options or more: a country, a time zone, a currency.",
       "notFor": "Several values: use MultiSelect. Fewer than about five options: use Radio.",
       "source": "src/components/atoms/select/Select.tsx",
       "docs": "/docs/components/select.md",
@@ -2215,6 +2243,12 @@
           "description": "Sets aria-invalid, which tells assistive tech the field has an error, and shows the invalid border."
         },
         {
+          "name": "iconInTrigger",
+          "type": "boolean",
+          "default": "false",
+          "description": "Repeats the chosen row’s icon in the trigger, before its label, still aria-hidden. For icons people recognise the option by, such as a country’s flag; leave it off for decorative ones."
+        },
+        {
           "name": "className",
           "type": "string",
           "description": "Merged with the trigger’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system uses) win."
@@ -2255,13 +2289,13 @@
         {
           "name": "SelectOptionWithIcon",
           "kind": "type",
-          "code": "/** A Select row: a `SelectOption` plus an optional leading icon. Kept as its own type rather than\n *  an `icon` field on `SelectOption`, because MultiSelect takes `SelectOption[]` too and renders\n *  no icons: widening the shared type would let an icon compile there and vanish. */\nexport type SelectOptionWithIcon = SelectOption & {\n  /** Leading glyph, aria-hidden: the label names the row. Not repeated in the trigger. */\n  icon?: ReactNode\n}",
+          "code": "/** A Select row: a `SelectOption` plus an optional leading icon. Kept as its own type rather than\r\n *  an `icon` field on `SelectOption`, because MultiSelect takes `SelectOption[]` too and renders\r\n *  no icons: widening the shared type would let an icon compile there and vanish. */\r\nexport type SelectOptionWithIcon = SelectOption & {\r\n  /** Leading glyph, aria-hidden: the label names the row. Shown in the trigger only with `iconInTrigger`. */\r\n  icon?: ReactNode\r\n}",
           "from": "src/components/atoms/select/Select"
         },
         {
           "name": "SelectGroup",
           "kind": "type",
-          "code": "/** A titled run of rows. The heading is not selectable; it names the group for screen readers. */\nexport type SelectGroup = { label: string; options: SelectOptionWithIcon[] }",
+          "code": "/** A titled run of rows. The heading is not selectable; it names the group for screen readers. */\r\nexport type SelectGroup = { label: string; options: SelectOptionWithIcon[] }",
           "from": "src/components/atoms/select/Select"
         }
       ],
@@ -2319,12 +2353,14 @@
         "Below about five options, use radios instead.",
         "Group rows under headings once the list mixes different kinds of thing, and keep each group to a handful.",
         "Give every row an icon, or none of them.",
+        "Set iconInTrigger when the icon is how people recognise the option, such as a flag in a country list.",
         "Wrap it in a FormField for a visible label, help and error. FormField hands it the label."
       ],
       "donts": [
         "Don't build a searchable select out of this. That's the command palette's job.",
         "Don't use it for several values. That's MultiSelect, which shows each choice as a removable tag.",
         "Don't put more than a couple of dozen options in it without search.",
+        "Don't use emoji flags. Windows draws them as letter pairs such as RO; pass a small image or SVG as the icon instead.",
         "Don't make a group of one. A heading over a single row is just noise.",
         "Don't style the trigger differently from Input. A form with mismatched control heights looks broken.",
         "Don't bevel the trigger. It shares Input's frame and draws its own focus ring (the outline that shows which control the keyboard is on), and a cut corner would clip it. The listbox carries the crosshair instead: the shape lives on the surface, not on the control.",
@@ -2353,7 +2389,7 @@
         },
         {
           "part": "Item icon",
-          "description": "Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger."
+          "description": "Optional. Sits before the label and is aria-hidden, an ARIA (Accessible Rich Internet Applications) attribute that hides it from assistive tech. It follows the row colour, so it turns ink on the highlight. It isn’t shown in the trigger unless iconInTrigger is set."
         },
         {
           "part": "Group label",
@@ -2363,35 +2399,39 @@
       "examples": [
         {
           "caption": "Placeholder",
-          "source": "const SPEED_OPTIONS = [\n  { value: 'standard', label: 'Standard' },\n  { value: 'priority', label: 'Priority' },\n  { value: 'overnight', label: 'Overnight', disabled: true },\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} placeholder=\"Choose a speed\" />"
+          "source": "const SPEED_OPTIONS = [\r\n  { value: 'standard', label: 'Standard' },\r\n  { value: 'priority', label: 'Priority' },\r\n  { value: 'overnight', label: 'Overnight', disabled: true },\r\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} placeholder=\"Choose a speed\" />"
         },
         {
           "caption": "With a value",
-          "source": "const SPEED_OPTIONS = [\n  { value: 'standard', label: 'Standard' },\n  { value: 'priority', label: 'Priority' },\n  { value: 'overnight', label: 'Overnight', disabled: true },\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} defaultValue=\"priority\" />"
+          "source": "const SPEED_OPTIONS = [\r\n  { value: 'standard', label: 'Standard' },\r\n  { value: 'priority', label: 'Priority' },\r\n  { value: 'overnight', label: 'Overnight', disabled: true },\r\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} defaultValue=\"priority\" />"
         },
         {
           "caption": "Groups with headings and icons",
-          "source": "const DELIVERY_GROUPS: SelectGroup[] = [\n  {\n    label: 'Courier',\n    options: [\n      { value: 'standard', label: 'Standard', icon: <Truck /> },\n      { value: 'priority', label: 'Priority', icon: <Zap /> },\n    ],\n  },\n  {\n    label: 'Collect',\n    options: [\n      { value: 'depot', label: 'Brasov depot', icon: <Package /> },\n      { value: 'field', label: 'At the field', icon: <Crosshair /> },\n    ],\n  },\n]\n\n<Select label=\"Delivery\" groups={DELIVERY_GROUPS} placeholder=\"Choose delivery\" />"
+          "source": "const DELIVERY_GROUPS: SelectGroup[] = [\r\n  {\r\n    label: 'Courier',\r\n    options: [\r\n      { value: 'standard', label: 'Standard', icon: <Truck /> },\r\n      { value: 'priority', label: 'Priority', icon: <Zap /> },\r\n    ],\r\n  },\r\n  {\r\n    label: 'Collect',\r\n    options: [\r\n      { value: 'depot', label: 'Brasov depot', icon: <Package /> },\r\n      { value: 'field', label: 'At the field', icon: <Crosshair /> },\r\n    ],\r\n  },\r\n]\n\n<Select label=\"Delivery\" groups={DELIVERY_GROUPS} placeholder=\"Choose delivery\" />"
+        },
+        {
+          "caption": "Countries",
+          "source": "type Stripes = { dir: 'v' | 'h'; colors: string[] }\n\nconst FLAGS: Record<string, Stripes> = {\r\n  at: { dir: 'h', colors: ['#c8102e', '#ffffff', '#c8102e'] }, // token-discipline: allow, Austria's flag colours, not interface colour\r\n  be: { dir: 'v', colors: ['#000000', '#fdda24', '#ef3340'] }, // token-discipline: allow, Belgium's flag colours, not interface colour\r\n  de: { dir: 'h', colors: ['#000000', '#dd0000', '#ffce00'] }, // token-discipline: allow, Germany's flag colours, not interface colour\r\n  es: { dir: 'h', colors: ['#aa151b', '#f1bf00', '#f1bf00', '#aa151b'] }, // token-discipline: allow, Spain's flag colours, not interface colour\r\n  fr: { dir: 'v', colors: ['#0055a4', '#ffffff', '#ef4135'] }, // token-discipline: allow, France's flag colours, not interface colour\r\n  ie: { dir: 'v', colors: ['#169b62', '#ffffff', '#ff883e'] }, // token-discipline: allow, Ireland's flag colours, not interface colour\r\n  it: { dir: 'v', colors: ['#009246', '#ffffff', '#ce2b37'] }, // token-discipline: allow, Italy's flag colours, not interface colour\r\n  nl: { dir: 'h', colors: ['#ae1c28', '#ffffff', '#21468b'] }, // token-discipline: allow, the Netherlands' flag colours, not interface colour\r\n  pl: { dir: 'h', colors: ['#ffffff', '#dc143c'] }, // token-discipline: allow, Poland's flag colours, not interface colour\r\n  ro: { dir: 'v', colors: ['#002b7f', '#fcd116', '#ce1126'] }, // token-discipline: allow, Romania's flag colours, not interface colour\r\n}\n\nfunction Flag({ code }: { code: string }) {\r\n  const { dir, colors } = FLAGS[code]\r\n  const n = colors.length\r\n  return (\r\n    <svg viewBox=\"0 0 20 14\" style={{ width: 20, height: 14 }} className=\"block\">\r\n      {colors.map((fill, i) =>\r\n        dir === 'v' ? (\r\n          <rect key={i} x={(20 / n) * i} y={0} width={20 / n} height={14} fill={fill} />\r\n        ) : (\r\n          <rect key={i} x={0} y={(14 / n) * i} width={20} height={14 / n} fill={fill} />\r\n        )\r\n      )}\r\n      <rect x={0.5} y={0.5} width={19} height={13} fill=\"none\" stroke=\"var(--color-border-hairline-strong)\" />\r\n    </svg>\r\n  )\r\n}\n\nconst COUNTRY_OPTIONS = [\r\n  ['at', 'Austria'], ['be', 'Belgium'], ['fr', 'France'], ['de', 'Germany'], ['ie', 'Ireland'],\r\n  ['it', 'Italy'], ['nl', 'Netherlands'], ['pl', 'Poland'], ['ro', 'Romania'], ['es', 'Spain'],\r\n].map(([value, label]) => ({ value, label, icon: <Flag code={value} /> }))\n\n<Select label=\"Country\" options={COUNTRY_OPTIONS} iconInTrigger defaultValue=\"ro\" />"
         },
         {
           "caption": "Long list",
-          "source": "const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {\n  const date = new Date(Date.UTC(2026, 10 - i, 1))\n  const label = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })\n  return { value: date.toISOString().slice(0, 7), label }\n})\n\n<Select label=\"Billing month\" options={MONTH_OPTIONS} placeholder=\"Choose a month\" />"
+          "source": "const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {\r\n  const date = new Date(Date.UTC(2026, 10 - i, 1))\r\n  const label = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })\r\n  return { value: date.toISOString().slice(0, 7), label }\r\n})\n\n<Select label=\"Billing month\" options={MONTH_OPTIONS} placeholder=\"Choose a month\" />"
         },
         {
           "caption": "Sizes",
-          "source": "const TERRAIN_OPTIONS = [\n  { value: 'woodland', label: 'Woodland' },\n  { value: 'urban', label: 'Urban' },\n  { value: 'desert', label: 'Desert' },\n  { value: 'indoor', label: 'Indoor' },\n]\n\n<Select label=\"Terrain (small)\" inputSize=\"sm\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\n<Select label=\"Terrain (medium)\" inputSize=\"md\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\n<Select label=\"Terrain (large)\" inputSize=\"lg\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />"
+          "source": "const TERRAIN_OPTIONS = [\r\n  { value: 'woodland', label: 'Woodland' },\r\n  { value: 'urban', label: 'Urban' },\r\n  { value: 'desert', label: 'Desert' },\r\n  { value: 'indoor', label: 'Indoor' },\r\n]\n\n<Select label=\"Terrain (small)\" inputSize=\"sm\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\r\n<Select label=\"Terrain (medium)\" inputSize=\"md\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />\r\n<Select label=\"Terrain (large)\" inputSize=\"lg\" options={TERRAIN_OPTIONS} placeholder=\"Terrain\" />"
         },
         {
           "caption": "Disabled control",
-          "source": "const SPEED_OPTIONS = [\n  { value: 'standard', label: 'Standard' },\n  { value: 'priority', label: 'Priority' },\n  { value: 'overnight', label: 'Overnight', disabled: true },\n]\n\n<Select label=\"Dispatch speed, unavailable\" options={SPEED_OPTIONS} defaultValue=\"standard\" disabled />"
+          "source": "const SPEED_OPTIONS = [\r\n  { value: 'standard', label: 'Standard' },\r\n  { value: 'priority', label: 'Priority' },\r\n  { value: 'overnight', label: 'Overnight', disabled: true },\r\n]\n\n<Select label=\"Dispatch speed, unavailable\" options={SPEED_OPTIONS} defaultValue=\"standard\" disabled />"
         },
         {
           "caption": "Invalid",
-          "source": "const SPEED_OPTIONS = [\n  { value: 'standard', label: 'Standard' },\n  { value: 'priority', label: 'Priority' },\n  { value: 'overnight', label: 'Overnight', disabled: true },\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} invalid placeholder=\"Choose a speed\" />"
+          "source": "const SPEED_OPTIONS = [\r\n  { value: 'standard', label: 'Standard' },\r\n  { value: 'priority', label: 'Priority' },\r\n  { value: 'overnight', label: 'Overnight', disabled: true },\r\n]\n\n<Select label=\"Dispatch speed\" options={SPEED_OPTIONS} invalid placeholder=\"Choose a speed\" />"
         },
         {
           "caption": "Beside an Input",
-          "source": "const TERRAIN_OPTIONS = [\n  { value: 'woodland', label: 'Woodland' },\n  { value: 'urban', label: 'Urban' },\n  { value: 'desert', label: 'Desert' },\n  { value: 'indoor', label: 'Indoor' },\n]\n\n<label className=\"flex flex-col gap-1 text-sm\">\n  Call sign\n  <Input placeholder=\"Anvil-3\" />\n</label>\n{/* Deliberately NOT a <label>. A <label> associates with a labelable element — input,\n    select, textarea, button among them — but Radix's trigger is a <button>, and a\n    <label> wrapping a button is inert: it neither names it nor forwards a click. The\n    Select's accessible name comes from its required `label` prop, and the visible text\n    here matches it exactly (SC 2.5.3, label in name). Wrapping it in a <label> would\n    have looked correct and done nothing. */}\n<div className=\"flex flex-col gap-1 text-sm\">\n  <span>Terrain</span>\n  <Select label=\"Terrain\" options={TERRAIN_OPTIONS} placeholder=\"Choose terrain\" />\n</div>"
+          "source": "const TERRAIN_OPTIONS = [\r\n  { value: 'woodland', label: 'Woodland' },\r\n  { value: 'urban', label: 'Urban' },\r\n  { value: 'desert', label: 'Desert' },\r\n  { value: 'indoor', label: 'Indoor' },\r\n]\n\n<label className=\"flex flex-col gap-1 text-sm\">\r\n  Call sign\r\n  <Input placeholder=\"Anvil-3\" />\r\n</label>\r\n{/* Deliberately NOT a <label>. A <label> associates with a labelable element — input,\r\n    select, textarea, button among them — but Radix's trigger is a <button>, and a\r\n    <label> wrapping a button is inert: it neither names it nor forwards a click. The\r\n    Select's accessible name comes from its required `label` prop, and the visible text\r\n    here matches it exactly (SC 2.5.3, label in name). Wrapping it in a <label> would\r\n    have looked correct and done nothing. */}\r\n<div className=\"flex flex-col gap-1 text-sm\">\r\n  <span>Terrain</span>\r\n  <Select label=\"Terrain\" options={TERRAIN_OPTIONS} placeholder=\"Choose terrain\" />\r\n</div>"
         }
       ],
       "closed": false,
@@ -9840,8 +9880,8 @@
         {
           "name": "axisWidth",
           "type": "number",
-          "default": "48",
-          "description": "The width the y-axis reserves, in px (pixels). 48 is Recharts' own YAxis default. Make it bigger if formatAxisValue's labels still get cut off."
+          "default": "automatic",
+          "description": "An override for the width the y-axis reserves, in px (pixels). By default the axis sizes itself to its widest formatted tick label, never narrower than 48, so a currency symbol is never cut off. Set it only to line up the axes of several panels."
         },
         {
           "name": "bands",

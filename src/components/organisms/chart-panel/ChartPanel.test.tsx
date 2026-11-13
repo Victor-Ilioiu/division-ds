@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axeClean } from '../../../test/axe'
-import { ChartPanel, type ChartPanelProps } from './ChartPanel'
+import { ChartPanel, autoAxisWidth, type ChartPanelProps } from './ChartPanel'
 
 /** The global stub in `src/test/setup.ts` never calls back, which is exactly what every other
  *  test in this file relies on (Recharts renders nothing at a zero-size container -- see the
@@ -160,6 +160,34 @@ describe('ChartPanel', () => {
     expect(allText.some(text => text?.includes('orders'))).toBe(false)
     const line = container.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')
     expect(line).toHaveAttribute('x1', '96')
+  })
+
+  // Issue division-ds#3: "€2,200" rendered as ":2,200" because the axis was a fixed 48px.
+  // Mutation: restore `axisWidth = 48` as the default -> the offset assertion finds 48, and a
+  // 7-character label needs 7 * 12 * 0.6 = 50.4px of text alone, more than 48 can hold.
+  it('sizes the y-axis to its widest formatted tick label by default, so a currency symbol fits', async () => {
+    const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+    const format = (value: number) => euro.format(value)
+    expect(format(2200)).toBe('€2,200')
+    const width = autoAxisWidth([1200, 1940, 2200], format)
+    // The widest label is the rounded-up top tick (2,500 here), 6 mono characters at 12px.
+    expect(width).toBeGreaterThanOrEqual(Math.ceil('€2,500'.length * 12 * 0.6) + 8)
+    expect(autoAxisWidth([1200, 1940, 2200], value => `€${(value / 1000).toFixed(1)}K`)).toBe(48)
+    expect(autoAxisWidth([120000], format)).toBeGreaterThan(width)
+
+    const { container } = await renderSized(
+      <Weekly data={[{ week: 'W1', online: 1200, store: 900 }, { week: 'W2', online: 2200, store: 1940 }]} formatValue={format} />
+    )
+    const line = container.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')
+    expect(Number(line?.getAttribute('x1'))).toBe(width)
+    expect(width).toBeGreaterThan(48)
+  })
+
+  it('keeps axisWidth as an explicit override of the automatic width', async () => {
+    const { container } = await renderSized(
+      <Weekly data={[{ week: 'W1', online: 0, store: 0 }, { week: 'W2', online: 2200, store: 0 }]} formatValue={v => `€${v}`} axisWidth={30} />
+    )
+    expect(container.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')).toHaveAttribute('x1', '30')
   })
 
   // Mutation: drop the `formatAxisValue = formatValue` default (default it to `formatNumber`

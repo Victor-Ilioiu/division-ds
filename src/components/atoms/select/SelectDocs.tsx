@@ -42,6 +42,45 @@ const MONTH_OPTIONS = Array.from({ length: 30 }, (_, i) => {
   return { value: date.toISOString().slice(0, 7), label }
 })
 
+// Real flag colours, drawn here for the example only: they are not interface colour and do not
+// ship with the system. Simplified (no crests). Each flag is 20x14 with a hairline frame, so a
+// white band still reads on the light theme.
+type Stripes = { dir: 'v' | 'h'; colors: string[] }
+const FLAGS: Record<string, Stripes> = {
+  at: { dir: 'h', colors: ['#c8102e', '#ffffff', '#c8102e'] }, // token-discipline: allow, Austria's flag colours, not interface colour
+  be: { dir: 'v', colors: ['#000000', '#fdda24', '#ef3340'] }, // token-discipline: allow, Belgium's flag colours, not interface colour
+  de: { dir: 'h', colors: ['#000000', '#dd0000', '#ffce00'] }, // token-discipline: allow, Germany's flag colours, not interface colour
+  es: { dir: 'h', colors: ['#aa151b', '#f1bf00', '#f1bf00', '#aa151b'] }, // token-discipline: allow, Spain's flag colours, not interface colour
+  fr: { dir: 'v', colors: ['#0055a4', '#ffffff', '#ef4135'] }, // token-discipline: allow, France's flag colours, not interface colour
+  ie: { dir: 'v', colors: ['#169b62', '#ffffff', '#ff883e'] }, // token-discipline: allow, Ireland's flag colours, not interface colour
+  it: { dir: 'v', colors: ['#009246', '#ffffff', '#ce2b37'] }, // token-discipline: allow, Italy's flag colours, not interface colour
+  nl: { dir: 'h', colors: ['#ae1c28', '#ffffff', '#21468b'] }, // token-discipline: allow, the Netherlands' flag colours, not interface colour
+  pl: { dir: 'h', colors: ['#ffffff', '#dc143c'] }, // token-discipline: allow, Poland's flag colours, not interface colour
+  ro: { dir: 'v', colors: ['#002b7f', '#fcd116', '#ce1126'] }, // token-discipline: allow, Romania's flag colours, not interface colour
+}
+
+function Flag({ code }: { code: string }) {
+  const { dir, colors } = FLAGS[code]
+  const n = colors.length
+  return (
+    <svg viewBox="0 0 20 14" style={{ width: 20, height: 14 }} className="block">
+      {colors.map((fill, i) =>
+        dir === 'v' ? (
+          <rect key={i} x={(20 / n) * i} y={0} width={20 / n} height={14} fill={fill} />
+        ) : (
+          <rect key={i} x={0} y={(14 / n) * i} width={20} height={14 / n} fill={fill} />
+        )
+      )}
+      <rect x={0.5} y={0.5} width={19} height={13} fill="none" stroke="var(--color-border-hairline-strong)" />
+    </svg>
+  )
+}
+
+const COUNTRY_OPTIONS = [
+  ['at', 'Austria'], ['be', 'Belgium'], ['fr', 'France'], ['de', 'Germany'], ['ie', 'Ireland'],
+  ['it', 'Italy'], ['nl', 'Netherlands'], ['pl', 'Poland'], ['ro', 'Romania'], ['es', 'Spain'],
+].map(([value, label]) => ({ value, label, icon: <Flag code={value} /> }))
+
 export function SelectDocs() {
   return (
     <ComponentDocs meta={meta}>
@@ -55,6 +94,10 @@ export function SelectDocs() {
 
       <Example caption="Groups with headings and icons">
         <Select label="Delivery" groups={DELIVERY_GROUPS} placeholder="Choose delivery" />
+      </Example>
+
+      <Example caption="Countries">
+        <Select label="Country" options={COUNTRY_OPTIONS} iconInTrigger defaultValue="ro" />
       </Example>
 
       <Example caption="Long list">

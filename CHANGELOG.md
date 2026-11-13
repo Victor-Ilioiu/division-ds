@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.10.0 — 2026-11-12
+
+Four fixes that came out of the stress-test apps, each filed through `request_change` as a public issue first.
+
+### Added
+- **Progress `allowOverMax`** (issue #4). A value above max shows as it is instead of clamping: a budget at 112% reads "112%" in the hostile text colour, the track rescales to span the value, a marker shows where max sits and the part past it paints hostile. `aria-valuenow` is the real value and `aria-valuetext` reads "112%, 12% over". Off by default, so existing screens do not change.
+- **A six-step severity scale** (issue #5): 18 semantic tokens, `--color-severity-1…6-text|fill|ink`, light and dark, built from existing primitives. Every pair passes 4.5:1 in both themes. **Badge `severity` (1–6)** uses it, for ordered levels such as air quality; the types reject it together with `tone` or `color`. The scale is in Figma (Color collection) and on the Color guideline page.
+- **Select `iconInTrigger`** (issue #2). Shows the chosen option's icon in the closed field too, for options people recognise by their icon. New docs example: countries with flags.
+- **The Color guideline page lists the category colours and the severity scale**; the tokens browser lists every semantic token, not only primitives.
+
+### Changed
+- **ChartPanel: the y-axis sizes itself to its widest tick label** (issue #3). "€2,200" no longer renders as ":2,200" at the default width. `axisWidth` still overrides it.
+- **Search understands intent better** (issue #2), in the MCP `search` tool and on the docs site: filler words are ignored, pick / choose / select / choice / option count as one intent, and an exact name match wins. "pick a country" now returns Select first.
+
+## 0.9.1 — 2026-11-11
+
+### Changed
+- The first release published by the GitHub release workflow (npm trusted publishing). No change to the components.
+
+## 0.9.0 — 2026-11-11
+
+### Added
+- **MultiSelect `createHint`.** In creatable mode, a line at the top of the open panel tells people that typing creates a new option. It came from Command Center's label picker, through `request_change`.
+
+### Changed
+- The portfolio and docs links point to victorilioiu.com.
+
 ## 0.8.0 — 2026-11-06
 
 ### Added

@@ -2,7 +2,9 @@ import { Check, Clock, Truck, Zap } from 'lucide-react'
 import { ComponentDocs } from '../../docs/ComponentDocs'
 import { meta } from './Badge.meta'
 import { Example } from '../../docs/Example'
-import { Badge, CATEGORY_COLORS } from './Badge'
+import { Badge, CATEGORY_COLORS, SEVERITY_STEPS } from './Badge'
+
+const AQI_LEVELS = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'] as const
 
 const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 
@@ -37,6 +39,22 @@ export function BadgeDocs() {
         {CATEGORY_COLORS.map(color => (
           <Badge key={color} color={color} emphasis="solid">
             {color}
+          </Badge>
+        ))}
+      </Example>
+
+      <Example caption="Severity, solid: the six air quality levels, each with its word">
+        {SEVERITY_STEPS.map(step => (
+          <Badge key={step} severity={step} emphasis="solid">
+            {AQI_LEVELS[step - 1]}
+          </Badge>
+        ))}
+      </Example>
+
+      <Example caption="Severity, subtle">
+        {SEVERITY_STEPS.map(step => (
+          <Badge key={step} severity={step}>
+            {AQI_LEVELS[step - 1]}
           </Badge>
         ))}
       </Example>

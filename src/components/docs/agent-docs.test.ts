@@ -81,7 +81,9 @@ describe('the generated agent docs', () => {
     // Moved to 21.5 kB with Panel and CodeBlock (2026-10-30): each component adds a linked line.
     // Moved to 27 kB with the 30 category colour tokens (Badge `color`, 2026-11-03): one table
     // row each, with the shortest use line that still says "a label, not a status".
-    expect(design.length).toBeLessThan(27_000)
+    // Moved to 29 kB with the 18 severity tokens (Badge `severity`, 2026-11-12): one row each,
+    // the use line already cut to "Solid Badge severity=N: the fill."; the rows alone are ~1.4 kB.
+    expect(design.length).toBeLessThan(29_000)
   })
 
   it('keep the index small enough to read whole', () => {

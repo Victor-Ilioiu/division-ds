@@ -443,7 +443,7 @@
       "name": "progress",
       "type": "registry:item",
       "title": "Progress",
-      "description": "Progress. Best for: Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left.",
+      "description": "Progress. Best for: Showing how far a measurable task has got, or how much of a limit is used: set allowOverMax so a budget at 112% reads as over, not as 100%.",
       "dependencies": [
         "radix-ui@^1.6.7",
         "react@^19.2.8"
@@ -511,7 +511,7 @@
       "name": "select",
       "type": "registry:item",
       "title": "Select",
-      "description": "Select. Best for: One choice from a list of about five options or more.",
+      "description": "Select. Best for: One choice from a list of about five options or more: a country, a time zone, a currency.",
       "dependencies": [
         "lucide-react@^1.47.0",
         "radix-ui@^1.6.7",

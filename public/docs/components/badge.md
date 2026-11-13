@@ -20,7 +20,8 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `tone` | `'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info'` | `'neutral'` | The status the badge shows. Leave it out when you pass color. |
-| `color` | `'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` |  | A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes. |
+| `color` | `'gray' \| 'brown' \| 'orange' \| 'yellow' \| 'green' \| 'teal' \| 'blue' \| 'purple' \| 'pink' \| 'red'` |  | A category colour for a label people make themselves, like a project tag or a topic. It replaces tone: the types reject passing both, or passing it with severity. A category colour means 'these belong together', never good or bad. The list is exported as CATEGORY_COLORS, so an app can give each new label one at random. Works with both emphases and both sizes. |
+| `severity` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` |  | A step on the ordered severity scale, from 1 (lowest) to 6, for a measure with more levels than the four status tones, like air quality from Good to Hazardous. The fill goes from green to maroon. It replaces tone and color: the types reject passing two. The steps are exported as SEVERITY_STEPS. The badge still needs the level's word: the step's colour is never the message on its own. Works with both emphases and both sizes. |
 | `emphasis` | `'solid' \| 'subtle'` | `'subtle'` | Solid uses the invariant fill (the same in light and dark themes) with its matching ink. Subtle is the outline badge: a 1px border and text in the tone’s theme-adaptive text token, with no fill. There's no separate outline emphasis, because it would be this same look under a second name. |
 | `size` | `'sm' \| 'md'` | `'sm'` | sm (small) is the chip for everyday interface: rows, cards, tables. md (medium) takes the small control height (32px) and the 14px text step. Use it for a badge next to display-size type, like a price. |
 | `dot` | `boolean` | `false` | Adds a marker next to the text. |
@@ -93,6 +94,30 @@ const TONES = ['neutral', 'signal', 'ok', 'warning', 'hostile', 'info'] as const
 {CATEGORY_COLORS.map(color => (
   <Badge key={color} color={color} emphasis="solid">
     {color}
+  </Badge>
+))}
+```
+
+### Severity, solid: the six air quality levels, each with its word
+
+```tsx
+const AQI_LEVELS = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'] as const
+
+{SEVERITY_STEPS.map(step => (
+  <Badge key={step} severity={step} emphasis="solid">
+    {AQI_LEVELS[step - 1]}
+  </Badge>
+))}
+```
+
+### Severity, subtle
+
+```tsx
+const AQI_LEVELS = ['Good', 'Moderate', 'Unhealthy for sensitive groups', 'Unhealthy', 'Very unhealthy', 'Hazardous'] as const
+
+{SEVERITY_STEPS.map(step => (
+  <Badge key={step} severity={step}>
+    {AQI_LEVELS[step - 1]}
   </Badge>
 ))}
 ```
@@ -192,6 +217,8 @@ Not focusable. No keyboard behaviour of its own.
 - Keep the tone mapping the same across the product. ok is never ‘in progress’ on one screen and ‘done’ on another.
 - Use size md when the badge sits next to a headline figure, so the two read as one statement.
 - Use tone for a status the system knows (paid, failed, syncing) and color for a label a person made (Design, Q3, Home). A colour on its own is not a status.
+- Use severity when a measure has more than four ordered levels, like air quality, so each level gets its own step and no two share a colour. Use the same step for the same level on every screen.
+- Prefer solid for a severity scale: the fills darken step by step in both themes, so the order reads at a glance. In the dark theme the subtle text steps are ordered by hue, not lightness.
 - Store the colour with the label, so it stays the same on every screen. Pick one from CATEGORY_COLORS when the label is created.
 
 ## Don't
@@ -200,6 +227,8 @@ Not focusable. No keyboard behaviour of its own.
 - Don't put a badge inside a button. It muddies what the clickable target is.
 - Don't use hostile for something that's only pending.
 - Don't use a category colour to show a status. A red project label is not an error, and an error is tone="hostile", so it means the same thing on every screen.
+- Don't squeeze a six-level scale into the four status tones. Two levels end up sharing a colour, and only the word tells them apart. That's what severity is for.
+- Don't use severity for a status that isn't on a scale. A failed payment is tone="hostile", not severity={5}.
 - Don't bevel it (give it a cut corner). At 22px a badge is chrome, the frame around content, not an object with its own footprint. Kbd follows the same rule for the same reason.
 - Don't resize a badge with height or text classes. The two sizes are the prop. A third size is a change to the system.
 - Don't use size md in a table row or on a card. It's as tall as a small button, so it starts to look like one.

@@ -2,7 +2,7 @@
 
 > A progress bar that's either determinate (it knows how far along the task is) or indeterminate (it doesn't). The readout is real text in the DOM (the Document Object Model, the live page structure the browser builds) from the very first render. That's motion token M3's rule, and it means a screen reader, the software that reads the page aloud for blind and low-vision people, never hears a number roll.
 
-- **Best for:** Showing how far a measurable task has got. Switch to indeterminate once you no longer know how much is left.
+- **Best for:** Showing how far a measurable task has got, or how much of a limit is used: set allowOverMax so a budget at 112% reads as over, not as 100%.
 - **Not for:** A wait with no measurable work. Use Spinner.
 - Atom. Source: `src/components/atoms/progress/Progress.tsx`
 - Rendered docs page: `/components/progress`
@@ -20,10 +20,11 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `label` | `string` |  | Required. The bar’s accessible name. |
-| `value` | `number \| null` |  | null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. |
+| `value` | `number \| null` |  | null means indeterminate. The value is clamped to [0, max], so an out-of-range value shows as complete instead of overflowing the track. Set allowOverMax to show a value above max as it is. |
 | `max` | `number` | `100` | The value at which the bar is complete. |
 | `showValue` | `boolean` | `false` | Shows the percentage (or "In progress") as a readout. |
 | `tone` | `'signal' \| 'ok' \| 'warning' \| 'hostile'` | `'signal'` | The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there. |
+| `allowOverMax` | `boolean` | `false` | Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads "112%, 12% over". |
 | `className` | `string` |  | Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on. |
 | `...rest` | `Omit<HTMLAttributes<HTMLDivElement>, 'children'>` |  | Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning. |
@@ -75,6 +76,15 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 </div>
 ```
 
+### Over the limit
+
+```tsx
+<div className="flex flex-col gap-4 w-full max-w-sm">
+  <Progress label="Groceries" value={64} tone="ok" allowOverMax showValue />
+  <Progress label="Eating out" value={112} tone="ok" allowOverMax showValue />
+</div>
+```
+
 ## Keyboard
 
 Not focusable. No keyboard behaviour of its own.
@@ -90,6 +100,7 @@ Not focusable. No keyboard behaviour of its own.
 - Don't animate the number up from zero and call that animated value the readout. The real value belongs in the DOM straight away.
 - Don't use Progress for a wait with no measurable work. That's a Spinner.
 - Don't put the padded readout into the accessible name. That's exactly why the pad is a separate aria-hidden span, and label is what Radix announces.
+- Don't leave allowOverMax off on a spend-against-limit bar. Clamped, an overspent category reads as exactly on budget.
 - Don't rely on the tone alone to say something failed. Say it in text.
 
 ## Anatomy

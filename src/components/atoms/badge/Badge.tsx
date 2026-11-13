@@ -69,13 +69,29 @@ const CATEGORY_CLASSES: Record<CategoryColor, { solid: string; subtle: string }>
   red: { solid: 'bg-[var(--color-category-red-fill)] text-[var(--color-category-red-ink)]', subtle: 'text-[var(--color-category-red-text)] border-[var(--color-category-red-text)]' },
 }
 
+/** The steps of the ordered severity scale, lowest first. For a measure with more levels than the
+ *  four status tones, like air quality (Good to Hazardous). The step is never the message: the
+ *  badge still carries the level's word. */
+export const SEVERITY_STEPS = [1, 2, 3, 4, 5, 6] as const
+export type SeverityStep = (typeof SEVERITY_STEPS)[number]
+
+const SEVERITY_CLASSES: Record<SeverityStep, { solid: string; subtle: string }> = {
+  1: { solid: 'bg-[var(--color-severity-1-fill)] text-[var(--color-severity-1-ink)]', subtle: 'text-[var(--color-severity-1-text)] border-[var(--color-severity-1-text)]' },
+  2: { solid: 'bg-[var(--color-severity-2-fill)] text-[var(--color-severity-2-ink)]', subtle: 'text-[var(--color-severity-2-text)] border-[var(--color-severity-2-text)]' },
+  3: { solid: 'bg-[var(--color-severity-3-fill)] text-[var(--color-severity-3-ink)]', subtle: 'text-[var(--color-severity-3-text)] border-[var(--color-severity-3-text)]' },
+  4: { solid: 'bg-[var(--color-severity-4-fill)] text-[var(--color-severity-4-ink)]', subtle: 'text-[var(--color-severity-4-text)] border-[var(--color-severity-4-text)]' },
+  5: { solid: 'bg-[var(--color-severity-5-fill)] text-[var(--color-severity-5-ink)]', subtle: 'text-[var(--color-severity-5-text)] border-[var(--color-severity-5-text)]' },
+  6: { solid: 'bg-[var(--color-severity-6-fill)] text-[var(--color-severity-6-ink)]', subtle: 'text-[var(--color-severity-6-text)] border-[var(--color-severity-6-text)]' },
+}
+
 type BadgeTone = VariantProps<typeof badgeVariants>['tone']
 
-/** `tone` is a status; `color` is a category. A badge is one or the other, never both, so the
- *  types reject passing the two together. */
+/** `tone` is a status, `color` is a category and `severity` is a step on an ordered scale. A badge
+ *  is exactly one of them, so the types reject passing two together. */
 type BadgeColorProps =
-  | { tone?: BadgeTone; color?: never }
-  | { /** A categorical colour for a label someone made. Replaces tone. */ color: CategoryColor; tone?: never }
+  | { tone?: BadgeTone; color?: never; severity?: never }
+  | { /** A categorical colour for a label someone made. Replaces tone. */ color: CategoryColor; tone?: never; severity?: never }
+  | { /** A step from 1 (lowest) to 6 on the ordered severity scale. Replaces tone. */ severity: SeverityStep; tone?: never; color?: never }
 
 export type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, 'color'> &
   Omit<VariantProps<typeof badgeVariants>, 'tone'> &
@@ -93,12 +109,13 @@ export type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, 'color'> &
  *  badge's text. */
 const ICON_SIZE = { sm: '[&_svg]:w-3 [&_svg]:h-3', md: '[&_svg]:w-3.5 [&_svg]:h-3.5' } as const
 
-export function Badge({ tone, color, emphasis, size, dot = false, icon, className, children, ref, ...rest }: BadgeProps) {
+export function Badge({ tone, color, severity, emphasis, size, dot = false, icon, className, children, ref, ...rest }: BadgeProps) {
   // A category colour replaces the tone: `tone: null` switches off cva's neutral default, so no
   // status colour is emitted beside it.
-  const category = color ? CATEGORY_CLASSES[color] : undefined
-  const classes = category
-    ? cn(badgeVariants({ tone: null, emphasis, size }), category[emphasis ?? 'subtle'])
+  // A severity step does the same.
+  const palette = color ? CATEGORY_CLASSES[color] : severity ? SEVERITY_CLASSES[severity] : undefined
+  const classes = palette
+    ? cn(badgeVariants({ tone: null, emphasis, size }), palette[emphasis ?? 'subtle'])
     : badgeVariants({ tone, emphasis, size })
   return (
     <span ref={ref} className={cn(classes, className)} {...rest}>
