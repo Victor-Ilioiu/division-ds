@@ -3,6 +3,7 @@ import { Link as RouterLink, useSearchParams } from 'react-router-dom'
 import { SegmentedControl } from '../components/molecules/segmented-control/SegmentedControl'
 import { PageHeader, docsProse, docsSectionRun } from '../components/docs/PageChrome'
 import { NAV } from '../components/shell/Sidebar'
+import { DS_VERSION } from '../version'
 
 /**
  * The components index at /components, and the front door the old Overview (/design-system, now a
@@ -120,7 +121,8 @@ export function Components() {
               eyebrow={
                 <>
                   Design system{' '}
-                  <span className="text-[var(--color-accent-signal-text)]">· Division DS</span>
+                  <span className="text-[var(--color-accent-signal-text)]">· Division DS</span>{' '}
+                  <span data-version="hero">· v{DS_VERSION}</span>
                 </>
               }
               title="Components"

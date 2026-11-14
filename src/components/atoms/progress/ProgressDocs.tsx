@@ -44,6 +44,12 @@ export function ProgressDocs() {
           <Progress label="Eating out" value={112} tone="ok" allowOverMax showValue />
         </div>
       </Example>
+      <Example caption="Ring">
+        <div className="flex gap-6">
+          <Progress shape="ring" label="Focus session" value={18} max={25} showValue />
+          <Progress shape="ring" label="Break" value={2} max={5} tone="ok" showValue />
+        </div>
+      </Example>
     </ComponentDocs>
   )
 }

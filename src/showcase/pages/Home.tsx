@@ -25,6 +25,7 @@ import { cn } from '../../lib/cn'
 import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Panel } from '../../components/atoms/panel/Panel'
 import { CabinetHero } from '../hero/CabinetHero'
+import { DS_VERSION } from '../../version'
 
 // Every figure here is read from the repository: 75 components in public/manifest/components.json;
 // the token layers from public/manifest/tokens.json (66 primitive colours plus 8 spacing and
@@ -113,7 +114,7 @@ const INSTALL_STEPS = [
     value: 'mcp',
     label: 'MCP server',
     intro: 'Register the docs and the checks as tools in Claude Code. Any agent that speaks MCP can run the same command.',
-    code: 'claude mcp add division-ds -- npx -y division-ds@0.10.0 mcp',
+    code: `claude mcp add division-ds -- npx -y division-ds@${DS_VERSION} mcp`,
     title: 'Claude Code',
   },
   {
@@ -182,9 +183,12 @@ export function Home() {
         <FloorGrid className="pointer-events-none absolute inset-0 -z-10 size-full opacity-80 [[data-theme=light]_&]:opacity-60" />
         <div className="mx-auto grid max-w-[90rem] grid-cols-1 items-center gap-10 px-gutter pt-12 pb-14 lg:grid-cols-2 lg:pt-20 lg:pb-20">
           <div className="anim-snap-in">
-            <Badge tone="signal" emphasis="subtle">
-              React 19, Tailwind 4, Radix
-            </Badge>
+            <div className="flex flex-wrap gap-2">
+              <Badge tone="signal" emphasis="subtle">
+                React 19, Tailwind 4, Radix
+              </Badge>
+              <Badge emphasis="subtle" data-version="hero">v{DS_VERSION}</Badge>
+            </div>
             <h1 id="hero-title" className="mt-6 max-w-2xl font-display text-4xl font-semibold leading-[1.05] tracking-tight md:text-5xl">
               The design system your coding agent can read, use and check.
             </h1>

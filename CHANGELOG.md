@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.0 — 2026-11-14
+
+The first change written by the agent runner: Victor approved issue #6, the runner opened the pull request as division-ds-agent, Victor reviewed and merged it.
+
+### Added
+- **Progress `shape="ring"`** (issue #6). A circular indicator with the readout in its centre and the label beneath, for a countdown or session timer. Same `value`/`max`/`tone`/`showValue` contract as the bar; `allowOverMax` does not apply (the value is clamped). It is not a live region, so a timer that ticks every second stays quiet; announce milestones from the app's own status message. The default is still `bar`, so existing screens do not change.
+
 ## 0.10.0 — 2026-11-12
 
 Four fixes that came out of the stress-test apps, each filed through `request_change` as a public issue first.

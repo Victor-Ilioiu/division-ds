@@ -29,6 +29,16 @@ describe('Progress', () => {
     expect(screen.getByRole('progressbar')).not.toHaveAttribute('aria-valuenow')
   })
 
+  it('draws a ring with the same value contract and no live region', async () => {
+    const { container } = render(<Progress shape="ring" label="Focus session" value={18} max={25} showValue />)
+    const bar = screen.getByRole('progressbar', { name: 'Focus session' })
+    expect(bar).toHaveAttribute('aria-valuenow', '18')
+    expect(bar).toHaveAttribute('aria-valuemax', '25')
+    expect(screen.getByText('72%')).toBeInTheDocument()
+    expect(screen.queryByRole('status')).toBeNull()
+    expect(await axeClean(container)).toHaveNoViolations()
+  })
+
   it('is axe clean', async () => {
     const { container } = render(
       <div>

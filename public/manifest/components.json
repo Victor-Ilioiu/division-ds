@@ -1784,6 +1784,12 @@
           "description": "Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads \"112%, 12% over\"."
         },
         {
+          "name": "shape",
+          "type": "'bar' | 'ring'",
+          "default": "'bar'",
+          "description": "ring draws a circular indicator with the readout in its centre and the label beneath, for a countdown or session timer. It takes the same value and max, It is not a live region, so a ticking timer stays quiet; announce milestones from your own status message. allowOverMax does not apply to it: the value is clamped."
+        },
+        {
           "name": "className",
           "type": "string",
           "description": "Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win."
@@ -1858,6 +1864,10 @@
         {
           "caption": "Over the limit",
           "source": "<div className=\"flex flex-col gap-4 w-full max-w-sm\">\n  <Progress label=\"Groceries\" value={64} tone=\"ok\" allowOverMax showValue />\n  <Progress label=\"Eating out\" value={112} tone=\"ok\" allowOverMax showValue />\n</div>"
+        },
+        {
+          "caption": "Ring",
+          "source": "<div className=\"flex gap-6\">\n  <Progress shape=\"ring\" label=\"Focus session\" value={18} max={25} showValue />\n  <Progress shape=\"ring\" label=\"Break\" value={2} max={5} tone=\"ok\" showValue />\n</div>"
         }
       ],
       "closed": false

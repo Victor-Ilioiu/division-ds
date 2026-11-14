@@ -5,6 +5,7 @@ import { Link } from '../../components/atoms/link/Link'
 import { SectionHeading } from '../../components/molecules/section-heading/SectionHeading'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/molecules/tabs/Tabs'
 import { REGISTRY, REPO, REPO_SLUG, SKILL_INSTALL } from '../../links'
+import { DS_VERSION } from '../../version'
 
 const FONTS =
   '<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700&family=Saira:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />'
@@ -31,7 +32,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
 
 const MCP_CONFIG = `{
   "mcpServers": {
-    "division-ds": { "command": "npx", "args": ["-y", "division-ds@0.10.0", "mcp"] }
+    "division-ds": { "command": "npx", "args": ["-y", "division-ds@${DS_VERSION}", "mcp"] }
   }
 }`
 
@@ -228,7 +229,7 @@ export function InstallGuideline() {
             </TabsList>
             <TabsContent value="claude" className="flex flex-col gap-4 pt-6">
               <p className={prose}>Run this once in a terminal. It is ready the next time you start Claude Code.</p>
-              <CodeBlock title="bash" className="max-w-3xl" label="the MCP add command" code="claude mcp add division-ds -- npx -y division-ds@0.10.0 mcp" />
+              <CodeBlock title="bash" className="max-w-3xl" label="the MCP add command" code={`claude mcp add division-ds -- npx -y division-ds@${DS_VERSION} mcp`} />
             </TabsContent>
             <TabsContent value="other" className="flex flex-col gap-4 pt-6">
               <p className={prose}>

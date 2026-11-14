@@ -25,6 +25,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `showValue` | `boolean` | `false` | Shows the percentage (or "In progress") as a readout. |
 | `tone` | `'signal' \| 'ok' \| 'warning' \| 'hostile'` | `'signal'` | The fill colour. signal paints accent.signal.indicator to match Slider. On the track in light theme that’s a 2.80:1 contrast ratio, below the 3:1 a bar needs when it’s the only sign of progress. So set showValue there. |
 | `allowOverMax` | `boolean` | `false` | Shows a value above max as it is instead of clamping it, for a budget at 112%. The track rescales to span the value, a marker shows where max sits, the part past it paints hostile, and the readout shows the real value (112%) in hostile. aria-valuenow is the real value, and aria-valuetext reads "112%, 12% over". |
+| `shape` | `'bar' \| 'ring'` | `'bar'` | ring draws a circular indicator with the readout in its centre and the label beneath, for a countdown or session timer. It takes the same value and max, It is not a live region, so a ticking timer stays quiet; announce milestones from your own status message. allowOverMax does not apply to it: the value is clamped. |
 | `className` | `string` |  | Merged with the outer wrapper’s classes. Later Tailwind utilities (Tailwind is the CSS framework the system is styled with) win. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the Radix Progress root, which is the bar itself. Radix is the library of accessible building blocks this component sits on. |
 | `...rest` | `Omit<HTMLAttributes<HTMLDivElement>, 'children'>` |  | Every native div prop except children, spread onto the outer wrapper, so a molecule can attach a data-testid there. children is typed away because this component draws its own label row and track, and a children prop would be thrown away without any warning. |
@@ -82,6 +83,15 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 <div className="flex flex-col gap-4 w-full max-w-sm">
   <Progress label="Groceries" value={64} tone="ok" allowOverMax showValue />
   <Progress label="Eating out" value={112} tone="ok" allowOverMax showValue />
+</div>
+```
+
+### Ring
+
+```tsx
+<div className="flex gap-6">
+  <Progress shape="ring" label="Focus session" value={18} max={25} showValue />
+  <Progress shape="ring" label="Break" value={2} max={5} tone="ok" showValue />
 </div>
 ```
 

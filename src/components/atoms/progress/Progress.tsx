@@ -19,6 +19,13 @@ import { cn } from '../../../lib/cn'
 // checked indicator (2026-09-23) took the same exception for the same reason — see Radio.tsx —
 // so `component.control.indicator.checked` is unread by any component now, same as this file
 // reads no `component.control.progress.fill.signal`.
+const TONE_STROKE = {
+  signal: 'stroke-[var(--color-accent-signal-indicator)]',
+  ok: 'stroke-[var(--component-control-progress-fill-ok)]',
+  warning: 'stroke-[var(--component-control-progress-fill-warning)]',
+  hostile: 'stroke-[var(--component-control-progress-fill-hostile)]',
+} as const
+
 const TONE_FILL = {
   signal: 'bg-[var(--color-accent-signal-indicator)]',
   ok: 'bg-[var(--component-control-progress-fill-ok)]',
@@ -50,6 +57,12 @@ export type ProgressProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
    *  to 100%. The track rescales to span the value, a marker sits where `max` falls, the part
    *  past the marker paints hostile, and the readout shows the real value in hostile; aria-valuetext also says how far over it is. */
   allowOverMax?: boolean
+  /** `ring` draws a circular indicator, the readout in its centre and the label beneath it, for a
+   *  countdown or session timer. Same value/max contract as the bar; `allowOverMax` does not
+   *  apply to it (the value is clamped). It is not a live region: a timer that
+   *  ticks every second would talk over the user. Announce milestones (like "Session done") from
+   *  your own status message. */
+  shape?: 'bar' | 'ring'
   className?: string
   ref?: Ref<HTMLDivElement>
   children?: never
@@ -62,6 +75,7 @@ export function Progress({
   showValue = false,
   tone = 'signal',
   allowOverMax = false,
+  shape = 'bar',
   className,
   ref,
   ...rest
@@ -96,6 +110,51 @@ export function Progress({
   const overBy = over && realPct !== null ? realPct - 100 : 0
   // Where max falls on the rescaled track, as a percentage of its width.
   const markerAt = over ? (safeMax / (value as number)) * 100 : 100
+
+  if (shape === 'ring') {
+    const ringPct = clampedValue === null ? null : Math.round((clampedValue / safeMax) * 100)
+    return (
+      <div className={cn('inline-flex flex-col items-center gap-2', className)} {...rest}>
+        <RadixProgress.Root
+          ref={ref}
+          value={clampedValue}
+          max={safeMax}
+          aria-label={label}
+          className="relative size-24"
+        >
+          <svg viewBox="0 0 100 100" aria-hidden="true" className="size-full -rotate-90">
+            <circle cx="50" cy="50" r="45" fill="none" strokeWidth="8" className="stroke-[var(--color-surface-sunken)]" />
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              strokeWidth="8"
+              pathLength={100}
+              strokeDasharray={`${ringPct ?? 100} 100`}
+              className={cn(
+                'transition-[stroke-dasharray] [transition-duration:var(--duration-slow)]',
+                '[transition-timing-function:var(--ease-snap)] motion-reduce:transition-none',
+                TONE_STROKE[tone],
+                value === null && 'animate-pulse motion-reduce:animate-none'
+              )}
+            />
+          </svg>
+          {showValue ? (
+            <span
+              data-part="ring-readout"
+              className="absolute inset-0 flex items-center justify-center font-display text-xl tabular-nums text-[var(--color-text-primary)]"
+            >
+              {ringPct === null ? <span className="text-sm">In progress</span> : `${ringPct}%`}
+            </span>
+          ) : null}
+        </RadixProgress.Root>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-secondary)]">
+          {label}
+        </span>
+      </div>
+    )
+  }
 
   return (
     <div className={cn('w-full', className)} {...rest}>
