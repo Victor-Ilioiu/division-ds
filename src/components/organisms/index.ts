@@ -1,5 +1,5 @@
 // Division DS — organisms barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Eighteen folders under
+// the component(s) and their exported types and helpers. Nineteen folders under
 // src/components/organisms/ — verify the folder count still matches before trusting either.
 // terminal/ is the one folder left out on purpose: exporting it here would put xterm in every
 // screen that imports this barrel. Import it from its own file.
@@ -78,6 +78,14 @@ export {
   type KanbanLayout,
   type KanbanTarget,
 } from './kanban-board/KanbanBoard'
+export {
+  KnowledgeGraph,
+  type GraphCategory,
+  type GraphGroup,
+  type GraphLink,
+  type GraphNode,
+  type KnowledgeGraphProps,
+} from './knowledge-graph/KnowledgeGraph'
 export { Navbar, type NavbarItem, type NavbarProps } from './navbar/Navbar'
 export { NewsletterForm, type NewsletterFormProps } from './newsletter-form/NewsletterForm'
 export {

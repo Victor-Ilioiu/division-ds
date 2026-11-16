@@ -17,6 +17,9 @@
   --font-display: "Oxanium", system-ui, sans-serif;
   --font-body: "Saira", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Data: numbers, values, counts, ids, meta and logs. The mono stack under its own name, so data
+     can move to another face without touching labels and code. Pair with the .font-data class. */
+  --font-data: "JetBrains Mono", ui-monospace, monospace;
 }
 
 /* The page gutter: the inset a page's chrome and content share, so a brand, a heading and a grid

@@ -42,6 +42,18 @@ export const meta: ComponentMeta = {
         'value comes already formatted (for example "12%"). direction picks the arrow. sentiment picks the colour, and it doesn\'t depend on direction: fewer failed syncs is down, and that\'s positive. period is what the number is compared with, for example "last week". It\'s both shown and spoken.',
     },
     {
+      name: 'variant',
+      type: "'default' | 'kpi'",
+      default: "'default'",
+      description: 'default is the display-size hero numeral. kpi is a compact tile: a small uppercase label over a 24px value in the data font, for a row of four to six figures.',
+    },
+    {
+      name: 'accent',
+      type: 'boolean',
+      default: 'false',
+      description: 'kpi only: a solid signal-fill tile with its text in accent.signal.ink, for the one figure to act on. At most one per row.',
+    },
+    {
       name: 'className',
       type: 'string',
       description: 'Merged with the root classes. If two Tailwind utilities clash, the later one wins.',

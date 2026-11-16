@@ -5,7 +5,8 @@
         "base": { "$type": "color", "$value": "{color.primitive.neutral.50}" },
         "sunken": { "$type": "color", "$value": "{color.primitive.neutral.50}", "$extensions": { "division-ds": { "mix": { "with": "{color.primitive.neutral.100}", "amount": 0.31 } } }, "$description": "neutral.50 mixed 31% of the way to neutral.100 in OKLab (#e3e8ef with the default preset), so the base-to-sunken step is OKLCH ΔL 0.038, the same step as the dark theme (#07080b to #0d1016, ΔL 0.038). neutral.100 alone sat ΔL 0.122 below base and made every field a heavy grey slab; the ramp has no stop in between. A mix of two ramp stops, not a literal, so a Theme Builder preset re-tints it." },
         "raised": { "$type": "color", "$value": "rgba(255, 255, 255, 0.6)" },
-        "scrim": { "$type": "color", "$value": "rgba(11, 14, 19, 0.48)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." }
+        "scrim": { "$type": "color", "$value": "rgba(11, 14, 19, 0.48)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." },
+        "overlay": { "$type": "color", "$value": "rgba(227, 232, 239, 0.85)", "$description": "A panel floating over a canvas (the KnowledgeGraph callout and cluster pills): surface.sunken at 85%. Text on it is gated composited over surface.sunken." }
       },
       "border": {
         "hairline": { "$type": "color", "$value": "rgba(11, 14, 19, 0.12)" },
@@ -18,7 +19,10 @@
         "secondary": { "$type": "color", "$value": "{color.primitive.neutral.700}" },
         "muted": { "$type": "color", "$value": "{color.primitive.neutral.500}" },
         "placeholder": { "$type": "color", "$value": "{color.primitive.neutral.500}", "$description": "10.23:1 on surface.sunken, the control fill it is painted on. Light theme needs no separate step from text.muted — unlike dark, where muted reaches only 4.37:1 there — but the name exists in both themes so the component layer has one alias to point at." },
-        "label": { "$type": "color", "$value": "{color.primitive.neutral.400}", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 6.58:1 on surface.base against text.secondary's 14.72:1. Exists because light text.muted (11.44:1) sits too close to text.secondary to separate a label from the links under it. Gated." }
+        "label": { "$type": "color", "$value": "{color.primitive.neutral.400}", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 6.58:1 on surface.base against text.secondary's 14.72:1. Exists because light text.muted (11.44:1) sits too close to text.secondary to separate a label from the links under it. Gated." },
+        "active": { "$type": "color", "$value": "{color.primitive.neutral.900}", "$description": "State ladder, top: the live row (MeterRow active, the newest LogFeed line). Holds text.primary's value." },
+        "rest": { "$type": "color", "$value": "{color.primitive.neutral.700}", "$description": "State ladder, middle: a row at rest. Holds text.secondary's value." },
+        "pending": { "$type": "color", "$value": "#4f5a69", "$description": "State ladder, bottom: queued or not started. Lighter than text.muted here, because light text.muted (11.44:1) sits too close to text.secondary to read as a step down. Gated at 4.5:1 on base, raised and sunken." }
       },
       "accent": {
         "signal": {

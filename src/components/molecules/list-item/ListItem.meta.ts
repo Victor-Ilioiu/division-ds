@@ -39,8 +39,9 @@ export const meta: ComponentMeta = {
     { name: 'title', type: 'ReactNode', description: 'Required. The main line, and the name screen readers give the row’s link or button.' },
     { name: 'description', type: 'ReactNode', description: 'A second line under the title, in secondary text.' },
     { name: 'media', type: 'ReactNode', description: 'Something at the start of the row: an Avatar, an icon (hidden from screen readers with aria-hidden), a thumbnail.' },
-    { name: 'meta', type: 'ReactNode', description: 'Right-aligned monospaced text: a time, a price, a count.' },
+    { name: 'meta', type: 'ReactNode', description: 'Right-aligned text in the data font (mono, tabular figures): a time, a price, a count.' },
     { name: 'actions', type: 'ReactNode', description: 'Controls at the end. Each one can still be focused and clicked on its own.' },
+    { name: 'bar', type: "{ value: number; max: number; color?: CategoryColor; scale?: 'linear' | 'log' }", description: 'A 2px bar along the bottom of the row (the MeterRow bar), for a value against a max. Decorative: say the value in meta too.' },
     { name: 'href', type: 'string', description: 'Makes the row one link to this address, named by the title.' },
     {
       name: 'renderLink',

@@ -201,6 +201,16 @@ export function pairsForTokens(t, control) {
     // measured 4.00:1 (a real, if narrow, failure), so `text.muted`'s dark value was raised
     // (see tokens/semantic/color.dark.json) rather than exempting the pair, which would have
     // left the exact hole this fix exists to close.
+    // The state ladder (text.active / rest / pending) and the floating surface.overlay.
+    // Pending is the quietest readable step, so it is gated on every surface a row can sit on.
+    { name: 'text.active on surface.base', fg: t['--color-text-active'], bg: page, minRatio: 4.5 },
+    { name: 'text.rest on surface.base', fg: t['--color-text-rest'], bg: page, minRatio: 4.5 },
+    { name: 'text.pending on surface.base', fg: t['--color-text-pending'], bg: page, minRatio: 4.5 },
+    { name: 'text.pending on surface.raised (over surface.base)', fg: t['--color-text-pending'], bg: t['--color-surface-raised'], backdrop: page, minRatio: 4.5 },
+    { name: 'text.pending on surface.sunken', fg: t['--color-text-pending'], bg: t['--color-surface-sunken'], minRatio: 4.5 },
+    { name: 'text.primary on surface.overlay (over surface.sunken)', fg: t['--color-text-primary'], bg: t['--color-surface-overlay'], backdrop: t['--color-surface-sunken'], minRatio: 4.5 },
+    { name: 'text.secondary on surface.overlay (over surface.sunken)', fg: t['--color-text-secondary'], bg: t['--color-surface-overlay'], backdrop: t['--color-surface-sunken'], minRatio: 4.5 },
+    { name: 'accent.signal.text on surface.overlay (over surface.sunken)', fg: t['--color-accent-signal-text'], bg: t['--color-surface-overlay'], backdrop: t['--color-surface-sunken'], minRatio: 4.5 },
     { name: 'text.muted on surface.raised (over surface.base)', fg: t['--color-text-muted'], bg: t['--color-surface-raised'], backdrop: page, minRatio: 4.5 },
     // Stat's leading-zero pad, on surface.raised -- the surface a Stat sits on
     // inside a Panel or a Card (Stat's own docs Examples render inside a Panel, which is how

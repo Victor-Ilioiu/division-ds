@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-chip",
+  "type": "registry:item",
+  "title": "Status chip",
+  "description": "Status chip. Best for: Tagging a row or a value with one short state word in a dense panel, such as NEW beside a list row.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/status-chip/StatusChip.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/status-chip/StatusChip.tsx",
+      "content": "import type { Ref } from 'react'\nimport { cn } from '../../../lib/cn'\nimport { Badge, type BadgeProps } from '../badge/Badge'\n\nexport type StatusChipProps = Omit<BadgeProps, 'size' | 'emphasis' | 'dot' | 'icon' | 'children' | 'color' | 'tone' | 'severity'> & {\n  /** Required. One short word: HOT, CAP, TREND. Uppercased by the Badge. */\n  label: string\n  /** A Badge status tone. Muted neutral by default; signal only for the one thing to act on.\n   *  @default 'neutral' */\n  tone?: 'neutral' | 'signal' | 'ok' | 'warning' | 'hostile' | 'info'\n  ref?: Ref<HTMLSpanElement>\n}\n\n/** A small filled tag in the data face (11px, uppercase) built on Badge's solid tones, so\n *  it adds no colour of its own: every fill/ink pair is the Badge's gated one. */\nexport function StatusChip({ label, tone = 'neutral', className, ref, ...rest }: StatusChipProps) {\n  return (\n    <Badge\n      ref={ref}\n      tone={tone}\n      emphasis=\"solid\"\n      size=\"sm\"\n      className={cn('h-[18px] px-1.5 font-data text-[11px] font-semibold uppercase', className)}\n      {...rest}\n    >\n      {label}\n    </Badge>\n  )\n}\n"
+    }
+  ]
+}

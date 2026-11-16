@@ -172,7 +172,7 @@ function Marker({ state, index }: { state: StepState; index: number }) {
     <span
       aria-hidden="true"
       className={cn(
-        'inline-flex items-center justify-center w-7 h-7 shrink-0 font-display font-bold text-sm tabular-nums',
+        'inline-flex items-center justify-center w-7 h-7 shrink-0 font-data font-bold text-sm',
         filled
           ? 'bg-[var(--color-accent-signal-indicator)] text-[var(--color-accent-signal-indicator-ink)]'
           : 'border border-[var(--color-border-selection)] text-[var(--color-text-secondary)]'

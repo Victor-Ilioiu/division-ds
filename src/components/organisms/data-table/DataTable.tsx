@@ -268,7 +268,7 @@ export function DataTable<Row>(props: DataTableProps<Row>) {
                       </td>
                     ) : null}
                     {columns.map(column => {
-                      const align = column.numeric ? 'text-right font-mono tabular-nums' : undefined
+                      const align = column.numeric ? 'text-right font-data' : undefined
                       return column.key === rowHeader ? (
                         <th key={column.key} scope="row" className={cn(CELL, 'font-semibold', align)}>
                           {column.cell(row)}

@@ -20,7 +20,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `label` | `string` |  | Required. The name screen readers give the navigation region. |
-| `groups` | `SidebarGroup[]` |  | Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded). |
+| `groups` | `SidebarGroup[]` |  | Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) footer (under the items, lined up with them, hidden while the group is folded), count (a short right-aligned readout in the data font, such as "2/2", read as part of the toggle’s name) onOpenChange (called with the new state when the reader folds or unfolds it) and open (controls the fold from outside, paired with onOpenChange, for a page that opens one group and folds the rest). Each item can carry count (a number in the data font) and bar (a 2px MeterBar under the item). Labels truncate in a narrow column instead of pushing the count out. |
 | `header` | `ReactNode` |  | Sits above the groups: a product name, a workspace switcher. |
 | `footer` | `ReactNode` |  | Pinned below the groups when the Sidebar has a height (h-full in a column layout): the signed-in account, a help link. |
 | `renderLink` | `(props: LinkRenderProps) => ReactNode` | `a plain anchor` | Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through. |
@@ -40,6 +40,8 @@ export type SidebarItem = {
   current?: boolean
   /** A number shown at the end of the item and read as part of its name ("Orders 12"). */
   count?: number
+  /** A 2px bar under the item (the MeterRow bar), inset to the item's padding. */
+  bar?: Omit<MeterBarProps, 'className'>
 }
 ```
 
@@ -61,6 +63,14 @@ export type SidebarGroup = {
   /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an
    *  "Add project" button. Hidden (and unreachable by Tab) while the group is folded. */
   footer?: ReactNode
+  /** Right-aligned data before the chevron ("2/2"). Read as part of the toggle's name. */
+  count?: string
+  /** Called when the reader folds or unfolds the group. */
+  onOpenChange?: (open: boolean) => void
+  /** Controls the fold from outside, for a page that opens one group and folds the rest (for
+   *  example to reveal an item picked elsewhere). Pair it with onOpenChange. Unset, the group keeps
+   *  its own state. */
+  open?: boolean
 }
 ```
 
@@ -138,6 +148,27 @@ const PROJECT_GROUPS: SidebarGroup[] = [
 
 <div className="max-w-64">
   <Sidebar label="Projects navigation" groups={PROJECT_GROUPS} />
+</div>
+```
+
+### Group counts, item bars and a narrow column: labels truncate, counts stay
+
+```tsx
+const METER_GROUPS: SidebarGroup[] = [
+  {
+    title: 'Warehouses',
+    icon: <Warehouse />,
+    count: '3/4',
+    items: [
+      { label: 'North depot and loading bay', href: '#north', icon: <Box />, count: 412, bar: { value: 412, max: 600, color: 'teal' } },
+      { label: 'Harbour store', href: '#harbour', icon: <Box />, count: 268, bar: { value: 268, max: 600, color: 'teal' } },
+      { label: 'East yard', href: '#east', icon: <Box />, count: 74, bar: { value: 74, max: 600, color: 'teal' } },
+    ],
+  },
+]
+
+<div className="max-w-48">
+  <Sidebar label="Warehouse navigation" groups={METER_GROUPS} />
 </div>
 ```
 

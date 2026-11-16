@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-meter",
+  "type": "registry:item",
+  "title": "Segmented meter",
+  "description": "Segmented meter. Best for: Showing a small count out of a small total, such as 3 of 5 checks passed, where each unit matters.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/atoms/segmented-meter/SegmentedMeter.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/atoms/segmented-meter/SegmentedMeter.tsx",
+      "content": "import type { HTMLAttributes, Ref } from 'react'\nimport { cn } from '../../../lib/cn'\n\nexport type SegmentedMeterTone =\n  | 'signal' | 'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'\n\nexport type SegmentedMeterProps = HTMLAttributes<HTMLDivElement> & {\n  /** How many segments are filled. */\n  value: number\n  /** Total number of segments. */\n  max: number\n  /** Segments, after the filled ones, that are struck through (not applicable). Default 0. */\n  none?: number\n  /** Fill colour. `signal` is the accent; the rest are the category fills. Default `signal`. */\n  tone?: SegmentedMeterTone\n  /** Accessible name, e.g. \"Tasks done\". Required: a meter without a name is just squares. */\n  label: string\n  /** Spoken value, e.g. \"3 of 5 done\". Defaults to \"{value} of {max}\". */\n  valueText?: string\n  ref?: Ref<HTMLDivElement>\n}\n\nconst fill = (tone: SegmentedMeterTone) =>\n  tone === 'signal' ? 'var(--color-accent-signal-fill)' : `var(--color-category-${tone}-fill)`\n\n/**\n * A row of small squares: filled, empty, or struck through. Squares are graphics, so empty ones\n * use a `text.muted` outline (gated above 3:1 on every surface); filled ones carry the tone.\n */\nexport function SegmentedMeter({\n  value, max, none = 0, tone = 'signal', label, valueText, className, style, ref, ...rest\n}: SegmentedMeterProps) {\n  const total = Math.max(0, Math.floor(max))\n  const filled = Math.min(total, Math.max(0, Math.floor(value)))\n  const struck = Math.min(total - filled, Math.max(0, Math.floor(none)))\n  return (\n    <div\n      ref={ref}\n      role=\"meter\"\n      aria-label={label}\n      aria-valuemin={0}\n      aria-valuemax={total}\n      aria-valuenow={filled}\n      aria-valuetext={valueText ?? `${filled} of ${total}`}\n      className={cn('inline-flex items-center gap-[3px]', className)}\n      style={{ ...style, ['--meter-fill' as string]: fill(tone) }}\n      {...rest}\n    >\n      {Array.from({ length: total }, (_, i) => {\n        const state = i < filled ? 'on' : i < filled + struck ? 'none' : 'off'\n        return (\n          <span\n            key={i}\n            aria-hidden=\"true\"\n            className={cn(\n              'relative size-2.5 shrink-0 border',\n              state === 'on'\n                ? 'border-[var(--meter-fill)] bg-[var(--meter-fill)]'\n                : 'border-[var(--color-text-muted)] bg-transparent',\n              state === 'none' &&\n                \"after:absolute after:inset-0 after:content-[''] after:bg-[linear-gradient(to_top_right,transparent_calc(50%-0.5px),var(--color-text-muted)_calc(50%-0.5px),var(--color-text-muted)_calc(50%+0.5px),transparent_calc(50%+0.5px))]\",\n            )}\n          />\n        )\n      })}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

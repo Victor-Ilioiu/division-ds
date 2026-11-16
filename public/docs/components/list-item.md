@@ -27,8 +27,9 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `title` | `ReactNode` |  | Required. The main line, and the name screen readers give the row’s link or button. |
 | `description` | `ReactNode` |  | A second line under the title, in secondary text. |
 | `media` | `ReactNode` |  | Something at the start of the row: an Avatar, an icon (hidden from screen readers with aria-hidden), a thumbnail. |
-| `meta` | `ReactNode` |  | Right-aligned monospaced text: a time, a price, a count. |
+| `meta` | `ReactNode` |  | Right-aligned text in the data font (mono, tabular figures): a time, a price, a count. |
 | `actions` | `ReactNode` |  | Controls at the end. Each one can still be focused and clicked on its own. |
+| `bar` | `{ value: number; max: number; color?: CategoryColor; scale?: 'linear' \| 'log' }` |  | A 2px bar along the bottom of the row (the MeterRow bar), for a value against a max. Decorative: say the value in meta too. |
 | `href` | `string` |  | Makes the row one link to this address, named by the title. |
 | `renderLink` | `(props: LinkRenderProps) => ReactNode` | `a plain <a>` | Draws the row link when href is set. Pass your router's link here. It has to pass className through. |
 | `onActivate` | `() => void` |  | Makes the row one button, named by the title. Ignored when href is set. |
@@ -170,6 +171,16 @@ function TeamExample() {
 }
 
 <TeamExample />
+```
+
+### Rows with a bar: storage used per warehouse
+
+```tsx
+<List className="w-full max-w-xl">
+  <ListItem title="North depot" meta="82%" bar={{ value: 82, max: 100, color: 'blue' }} />
+  <ListItem title="Harbour store" meta="47%" bar={{ value: 47, max: 100, color: 'blue' }} />
+  <ListItem title="East yard" meta="12%" bar={{ value: 12, max: 100, color: 'blue' }} />
+</List>
 ```
 
 ### A standalone row, outside a List

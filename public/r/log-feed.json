@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "log-feed",
+  "type": "registry:item",
+  "title": "Log feed",
+  "description": "Log feed. Best for: Showing the last few things that happened, such as recent sync events beside a dashboard panel.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/molecules/log-feed/LogFeed.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/molecules/log-feed/LogFeed.tsx",
+      "content": "import type { ReactNode, Ref } from 'react'\nimport { cn } from '../../../lib/cn'\n\nexport type LogFeedEntry = {\n  /** What happened: an agent, a tool, a note name. */\n  name: ReactNode\n  /** Shown after an arrow: \"→ wrote research/x.md\". */\n  detail?: ReactNode\n}\n\nexport type LogFeedProps = {\n  /** Required. Names the log region for assistive tech. */\n  label: string\n  /** Oldest first; the last entry is the newest and is drawn bright. */\n  entries: LogFeedEntry[]\n  /** A prompt line above the entries (\"search brain\"), followed by a block caret. */\n  prompt?: ReactNode\n  /** Numbers start here. @default 1 */\n  start?: number\n  className?: string\n  ref?: Ref<HTMLDivElement>\n}\n\n/**\n * A read-only activity feed in the data face: `NN name → detail`, the newest entry in\n * text.primary, the older ones at rest (text.secondary). Not the Terminal: that wraps xterm for a\n * live PTY; this is plain DOM text for a short list of events. `role=\"log\"` so additions are\n * announced politely. The caret blinks only without prefers-reduced-motion.\n */\nexport function LogFeed({ label, entries, prompt, start = 1, className, ref }: LogFeedProps) {\n  const width = String(start + Math.max(entries.length - 1, 0)).length\n  return (\n    <div ref={ref} role=\"log\" aria-label={label} className={cn('flex flex-col gap-1 font-data text-sm min-w-0', className)}>\n      {prompt !== undefined ? (\n        <p className=\"flex items-center gap-2 text-[var(--color-text-primary)] min-w-0\">\n          <span aria-hidden=\"true\" className=\"text-[var(--color-text-muted)]\">\n            &gt;\n          </span>\n          <span className=\"truncate\">{prompt}</span>\n          <span\n            aria-hidden=\"true\"\n            className=\"inline-block h-[1.1em] w-[0.6em] shrink-0 bg-[var(--color-text-primary)] motion-safe:animate-pulse\"\n          />\n        </p>\n      ) : null}\n      <ol className=\"flex flex-col gap-0.5 list-none p-0 m-0 min-w-0\">\n        {entries.map((entry, index) => {\n          const newest = index === entries.length - 1\n          return (\n            <li\n              key={index}\n              className={cn(\n                'flex gap-2 min-w-0',\n                newest ? 'text-[var(--color-text-active)]' : 'text-[var(--color-text-rest)]'\n              )}\n            >\n              <span className=\"shrink-0 text-[var(--color-text-muted)]\">{String(start + index).padStart(Math.max(width, 2), '0')}</span>\n              <span className=\"shrink-0\">{entry.name}</span>\n              {entry.detail !== undefined ? (\n                <span className=\"min-w-0 truncate\">\n                  <span aria-hidden=\"true\">→ </span>\n                  {entry.detail}\n                </span>\n              ) : null}\n            </li>\n          )\n        })}\n      </ol>\n    </div>\n  )\n}\n"
+    }
+  ]
+}

@@ -38,6 +38,20 @@ const GROUPS: SidebarGroup[] = [
   },
 ]
 
+// A group count in the title row, and a bar under each item showing its share of the stock.
+const METER_GROUPS: SidebarGroup[] = [
+  {
+    title: 'Warehouses',
+    icon: <Warehouse />,
+    count: '3/4',
+    items: [
+      { label: 'North depot and loading bay', href: '#north', icon: <Box />, count: 412, bar: { value: 412, max: 600, color: 'teal' } },
+      { label: 'Harbour store', href: '#harbour', icon: <Box />, count: 268, bar: { value: 268, max: 600, color: 'teal' } },
+      { label: 'East yard', href: '#east', icon: <Box />, count: 74, bar: { value: 74, max: 600, color: 'teal' } },
+    ],
+  },
+]
+
 // A group with an action in its title row and a footer under its items. The action is an
 // IconButton (the system's icon-only Button), ghost and sm; the footer a ghost sm Button.
 const PROJECT_GROUPS: SidebarGroup[] = [
@@ -93,6 +107,12 @@ export function SidebarDocs() {
       <Example caption="A Projects group with an action in its title row and a footer under its items" className="block">
         <div className="max-w-64">
           <Sidebar label="Projects navigation" groups={PROJECT_GROUPS} />
+        </div>
+      </Example>
+
+      <Example caption="Group counts, item bars and a narrow column: labels truncate, counts stay" className="block">
+        <div className="max-w-48">
+          <Sidebar label="Warehouse navigation" groups={METER_GROUPS} />
         </div>
       </Example>
 

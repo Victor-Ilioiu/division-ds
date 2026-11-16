@@ -30,7 +30,7 @@ describe('the generated agent docs', () => {
 
   it('give every component a page with an import line, props and at least one example', () => {
     const pages = Object.entries(files).filter(([path]) => path.startsWith('public/docs/components/'))
-    expect(pages).toHaveLength(75)
+    expect(pages).toHaveLength(81)
     for (const [path, text] of pages) {
       expect(text, path).toMatch(/## Import\n\n```tsx\nimport \{ \w/)
       expect(text, path).toContain('## Props')
@@ -83,14 +83,18 @@ describe('the generated agent docs', () => {
     // row each, with the shortest use line that still says "a label, not a status".
     // Moved to 29 kB with the 18 severity tokens (Badge `severity`, 2026-11-12): one row each,
     // the use line already cut to "Solid Badge severity=N: the fill."; the rows alone are ~1.4 kB.
-    expect(design.length).toBeLessThan(29_000)
+    // Moved to 30.5 kB with six components and four tokens (data font, state ladder, overlay,
+    // 2026-11-16): one linked line per component and one table row per token.
+    expect(design.length).toBeLessThan(30_500)
   })
 
   it('keep the index small enough to read whole', () => {
     // 20 kB held 58 components; the nine added on 2026-10-15 (monitoring and assistant) brought it
     // to about 22 kB after their index lines were trimmed, so the cap moved with the count.
     // 25.5 kB from 2026-10-30, when Panel and CodeBlock took it just over 24 kB.
-    expect(files['public/llms.txt'].length).toBeLessThan(25_500)
+    // 28.5 kB from 2026-11-16: six components (KnowledgeGraph, MeterRow, PanelHeader, LogFeed,
+    // SegmentedMeter, StatusChip) took it to about 27.4 kB, one line each.
+    expect(files['public/llms.txt'].length).toBeLessThan(28_500)
     // 8 kB until the Assistant copy rule (2026-10-26) took it just over, trimmed to three lines.
     expect(files['public/llms-guidelines.txt'].length).toBeLessThan(8_500)
   })

@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode, Ref } from 'react'
 import { cn } from '../../../lib/cn'
 import { renderAnchor, type LinkRenderProps } from '../../../lib/render-link'
+import { MeterBar, type MeterBarProps } from '../meter-row/MeterRow'
 
 export type ListProps = HTMLAttributes<HTMLUListElement> & {
   /**
@@ -44,6 +45,8 @@ export type ListItemProps = Omit<HTMLAttributes<HTMLElement>, 'title'> & {
   meta?: ReactNode
   /** Trailing controls: a Button, an IconButton, a DropdownMenu. Each stays its own tab stop. */
   actions?: ReactNode
+  /** A 2px bar along the bottom of the row (the MeterRow bar), for a value against a max. */
+  bar?: Omit<MeterBarProps, 'className'>
   /** Makes the whole row one link to this address. The title is the link; a click anywhere on the row follows it. */
   href?: string
   /** Renders the row link when `href` is set. Pass a router adapter; defaults to a plain `<a>`. */
@@ -91,6 +94,7 @@ export function ListItem({
   media,
   meta,
   actions,
+  bar,
   href,
   renderLink = renderAnchor,
   onActivate,
@@ -127,11 +131,12 @@ export function ListItem({
       {meta || actions ? (
         <div className="ml-auto flex shrink-0 items-center gap-3">
           {meta ? (
-            <span className="font-mono text-sm tabular-nums text-[var(--color-text-secondary)]">{meta}</span>
+            <span className="font-data text-sm text-[var(--color-text-secondary)]">{meta}</span>
           ) : null}
           {actions ? <div className="relative z-10 flex flex-wrap items-center gap-2">{actions}</div> : null}
         </div>
       ) : null}
+      {bar ? <MeterBar {...bar} className="basis-full" /> : null}
     </Tag>
   )
 }

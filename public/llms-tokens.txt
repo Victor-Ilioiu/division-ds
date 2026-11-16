@@ -14,6 +14,7 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | `--color-surface-sunken` | The opaque fill of a control you type or pick in (Input, Textarea, Select), and of small opaque surfaces: Kbd, Tag, Tooltip, menus, toasts. Not a card. | `dark #0d1016, light #e3e8ef` |
 | `--color-surface-raised` | The translucent fill of a Card or panel sitting on the page. Use the Card component; do not paint it by hand, and avoid nesting raised inside raised. | `dark rgba(40, 52, 69, 0.42), light rgba(255, 255, 255, 0.6)` |
 | `--color-surface-scrim` | The dimming layer behind a Dialog, Sheet or CommandPalette. Those components paint it; nothing else should. | `dark rgba(0, 0, 0, 0.6), light rgba(11, 14, 19, 0.48)` |
+| `--color-surface-overlay` | A translucent panel floating over a canvas, such as the KnowledgeGraph callout and cluster pills. Not for a page section or a dialog. | `dark rgba(13, 16, 22, 0.85), light rgba(227, 232, 239, 0.85)` |
 | `--color-border-hairline` | A quiet divider or panel edge that carries no information: row separators, card outlines. | `dark rgba(214, 226, 240, 0.16), light rgba(11, 14, 19, 0.12)` |
 | `--color-border-hairline-strong` | A stronger decorative rule: table header underlines, section rules. Still decorative, never the only sign of a control. | `dark rgba(214, 226, 240, 0.32), light rgba(11, 14, 19, 0.22)` |
 | `--color-border-control` | The boundary of an interactive control at rest (Input, Select, secondary Button). The one border that has to be seen to find the control. | `dark #646b72, light #616874` |
@@ -23,6 +24,9 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | `--color-text-muted` | The quietest readable text: captions, timestamps, disabled-looking labels. Not for anything the user must read to act. | `dark #7b8592, light #283445` |
 | `--color-text-placeholder` | Placeholder text inside a control, on surface.sunken. Only there. | `dark #747f8d, light #283445` |
 | `--color-text-label` | Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text. | `dark #6f7a88, light #445875` |
+| `--color-text-active` | The live item in a state ladder: the active MeterRow, the newest LogFeed line. Same value as text.primary; use it when the row can change state. | `dark #e9eef4, light #0b0e13` |
+| `--color-text-rest` | An item at rest in a state ladder (MeterRow rest, older LogFeed lines). Same value as text.secondary. | `dark #a3adba, light #19212c` |
+| `--color-text-pending` | An item that is queued or not started in a state ladder (MeterRow pending). Brightness changes, never size. | `dark #7b8592, light #4f5a69` |
 | `--color-accent-signal-fill` | A solid block in the brand colour, exactly as chosen: the primary Button, IconButton, a solid signal Badge. Put accent.signal.ink on it, never text.primary. Never use it as the only sign of a state; use accent.signal.indicator. | `#d93e00` |
 | `--color-accent-signal-text` | Orange text or icon on a surface: a current nav item, an emphasised figure, a link accent. | `dark #ff5512, light #b13200` |
 | `--color-accent-signal-ink` | Text and icons on accent.signal.fill. | `#ffffff` |

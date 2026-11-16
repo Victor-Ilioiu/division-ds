@@ -310,6 +310,26 @@ import { ScoreRing, scoreBand } from 'src/components/atoms/score-ring/ScoreRing'
 
 Page: /docs/components/score-ring.md
 
+### SegmentedMeter
+
+A row of small squares for a count out of a small total: filled, empty, or struck through for a step that does not apply. It reads at a glance where a bar would need a number beside it.
+
+```tsx
+import { SegmentedMeter } from 'src/components/atoms/segmented-meter/SegmentedMeter'
+```
+
+- `value: number` Required. How many squares are filled. Clamped to 0 to max.
+- `max: number` Required. How many squares there are. Keep it to about 12; past that, use Progress.
+- `none: number = 0` Squares after the filled ones that are struck through, for steps that do not apply.
+- `tone: 'signal' \| CategoryColor = 'signal'` The fill. signal is the accent; the rest are the category fills.
+- `label: string` Required. The accessible name, for example "Checks passed".
+- `valueText: string` What a screen reader says for the value. Defaults to "{value} of {max}".
+- `className: string` Merged with the component's classes.
+- `ref: Ref<HTMLDivElement>` Passed through to the meter div.
+- `...rest: HTMLAttributes<HTMLDivElement>` Every native attribute, passed onto the meter div.
+
+Page: /docs/components/segmented-meter.md
+
 ### Select
 
 A single choice from a list, shown in a portalled listbox (a pop-up list rendered at the top level of the page, so nothing around it can clip it). Options come in as an array instead of as children, because the trigger, the panel and the look of each row are decisions the system makes once, not per use.
@@ -425,6 +445,22 @@ import { Spinner, spinnerVariants } from 'src/components/atoms/spinner/Spinner'
 - `...rest: Omit<HTMLAttributes<HTMLSpanElement>, 'role'>` Every native span prop except role, spread onto the span. role is removed from the type instead of being quietly overridden at runtime. Here's why: label is the only source of role="status", and a role in rest would silence the live region a caller asked for when they passed label.
 
 Page: /docs/components/spinner.md
+
+### StatusChip
+
+A small filled tag with one short uppercase word in the data font, beside a row or a value: NEW, CAP, TREND. It is a solid Badge with a fixed size and type, so it adds no colour of its own.
+
+```tsx
+import { StatusChip } from 'src/components/atoms/status-chip/StatusChip'
+```
+
+- `label: string` Required. One short word.
+- `tone: 'neutral' \| 'signal' \| 'ok' \| 'warning' \| 'hostile' \| 'info' = 'neutral'` A Badge status tone. neutral by default; signal only for the one thing to act on.
+- `className: string` Merged with the component's classes.
+- `ref: Ref<HTMLSpanElement>` Passed through to the Badge.
+- `...rest: HTMLAttributes<HTMLSpanElement>` Every native attribute, except the Badge props it fixes (size, emphasis, dot, icon, color, severity).
+
+Page: /docs/components/status-chip.md
 
 ### Switch
 
@@ -879,8 +915,9 @@ Requires: A <List> around the rows (a ul with role="list"), or as="div" on a row
 - `title: ReactNode` Required. The main line, and the name screen readers give the row’s link or button.
 - `description: ReactNode` A second line under the title, in secondary text.
 - `media: ReactNode` Something at the start of the row: an Avatar, an icon (hidden from screen readers with aria-hidden), a thumbnail.
-- `meta: ReactNode` Right-aligned monospaced text: a time, a price, a count.
+- `meta: ReactNode` Right-aligned text in the data font (mono, tabular figures): a time, a price, a count.
 - `actions: ReactNode` Controls at the end. Each one can still be focused and clicked on its own.
+- `bar: { value: number; max: number; color?: CategoryColor; scale?: 'linear' \| 'log' }` A 2px bar along the bottom of the row (the MeterRow bar), for a value against a max. Decorative: say the value in meta too.
 - `href: string` Makes the row one link to this address, named by the title.
 - `renderLink: (props: LinkRenderProps) => ReactNode = a plain <a>` Draws the row link when href is set. Pass your router's link here. It has to pass className through.
 - `onActivate: () => void` Makes the row one button, named by the title. Ignored when href is set.
@@ -890,6 +927,47 @@ Requires: A <List> around the rows (a ul with role="list"), or as="div" on a row
 - `ref: Ref<HTMLElement>` Passed through to the ul (List) or the row element (ListItem).
 
 Page: /docs/components/list-item.md
+
+### LogFeed
+
+A short, read-only list of recent events in the data font: "01 name → detail", the newest line bright and the older ones at rest, with an optional prompt line on top.
+
+```tsx
+import { LogFeed } from 'src/components/molecules/log-feed/LogFeed'
+```
+
+- `label: string` Required. Names the log region.
+- `entries: { name: ReactNode; detail?: ReactNode }[]` Required. Oldest first; the last one is the newest.
+- `prompt: ReactNode` A line above the entries, followed by a caret.
+- `start: number = 1` The number of the first entry.
+- `className: string` Merged with the component's classes.
+- `ref: Ref<HTMLDivElement>` Passed through to the log div.
+
+Page: /docs/components/log-feed.md
+
+### MeterRow
+
+A ranked-list row: a label at the left, its value at the right in the data font, and a 2px bar under both showing the value against the list’s max. MeterBar is the bar on its own; MeterAxis puts tick labels under a list of rows.
+
+```tsx
+import { MeterAxis, MeterBar, MeterRow } from 'src/components/molecules/meter-row/MeterRow'
+```
+
+- `label: ReactNode` Required. The row’s name.
+- `value: number` Required. The raw value the bar is drawn from.
+- `max: number` Required. The value of a full bar: the largest in the list, or a fixed cap.
+- `display: ReactNode = String(value)` The value as shown: "12.4K", "€1,200".
+- `color: CategoryColor = 'gray'` The bar colour. Use about five categories at most in one view; never as an accent.
+- `scale: 'linear' \| 'log' = 'linear'` log for values that span orders of magnitude; pair it with a MeterAxis.
+- `state: 'active' \| 'rest' \| 'pending' = 'rest'` Text brightness: active for the live row, pending for one not started.
+- `href: string` Makes the row one link, named by the label.
+- `renderLink: (props: LinkRenderProps) => ReactNode` Renders the link, for a router. Defaults to a plain a element.
+- `onActivate: () => void` Makes the row one button, named by the label. Ignored when href is set.
+- `className: string` Merged with the component's classes (on MeterRow, MeterBar or MeterAxis).
+- `ref: Ref<HTMLDivElement>` Passed through to the row div.
+- `ticks (MeterAxis): number[] = powers of ten from 1K to max` The tick values under the rows.
+
+Page: /docs/components/meter-row.md
 
 ### MultiSelect
 
@@ -969,6 +1047,24 @@ import { Pagination, paginationRange } from 'src/components/molecules/pagination
 - `ref: Ref<HTMLElement>` Passed through to the nav DOM node (the element in the page).
 
 Page: /docs/components/pagination.md
+
+### PanelHeader
+
+The header bar of a dense panel: an optional numbered tag in the accent, a tracked uppercase title in the display font, and a quiet readout at the right in the data font.
+
+```tsx
+import { PanelHeader } from 'src/components/molecules/panel-header/PanelHeader'
+```
+
+- `title: ReactNode` Required. The panel’s title.
+- `index: number \| string` The panel number shown in the tag. A number is padded to two digits ("01").
+- `meta: ReactNode` The right-aligned readout: "42 notes", "12:04".
+- `level: 2 \| 3 \| 4 \| 5 \| 6 = 2` The heading level of the title. Pick it from the page outline, not from the size.
+- `className: string` Merged with the component's classes.
+- `ref: Ref<HTMLDivElement>` Passed through to the root div.
+- `...rest: Omit<HTMLAttributes<HTMLDivElement>, 'title'>` Every native div attribute except title.
+
+Page: /docs/components/panel-header.md
 
 ### PromptInput
 
@@ -1121,6 +1217,8 @@ import { Stat } from 'src/components/molecules/stat/Stat'
 - `unit: string` Shown beside the value, for example "kg".
 - `padTo: number` Pads a whole-number value to this many digits with dimmed zeros that screen readers skip (aria-hidden).
 - `delta: { value: string; direction: 'up' \| 'down'; sentiment: 'positive' \| 'negative' \| 'neutral'; period: string }` value comes already formatted (for example "12%"). direction picks the arrow. sentiment picks the colour, and it doesn't depend on direction: fewer failed syncs is down, and that's positive. period is what the number is compared with, for example "last week". It's both shown and spoken.
+- `variant: 'default' \| 'kpi' = 'default'` default is the display-size hero numeral. kpi is a compact tile: a small uppercase label over a 24px value in the data font, for a row of four to six figures.
+- `accent: boolean = false` kpi only: a solid signal-fill tile with its text in accent.signal.ink, for the one figure to act on. At most one per row.
 - `className: string` Merged with the root classes. If two Tailwind utilities clash, the later one wins.
 - `ref: Ref<HTMLDivElement>` Passed through to the root div.
 - `...rest: HTMLAttributes<HTMLDivElement>` Any standard div attribute, applied to the root div.
@@ -1567,6 +1665,33 @@ Requires: A parent that holds items in state and applies each onMove (applyKanba
 
 Page: /docs/components/kanban-board.md
 
+### KnowledgeGraph
+
+A 3D map of linked notes. Each note is a glowing point sized by its links and coloured by group, each link a hairline, with drifting dust behind them. Hover lights a note and its neighbours, a click makes it active in place, without moving the camera: the active note glows a little brighter and is held in a crosshair ring, with a callout tied to it by a leader line, a double click opens it. Reset view at the centre clears the pick and returns to the overview. three.js loads in its own chunk, only when a graph mounts.
+
+```tsx
+import { KnowledgeGraph } from 'src/components/organisms/knowledge-graph/KnowledgeGraph'
+```
+
+Requires: WebGL 2 for the map. Without it the component shows its note list as buttons instead, so every note stays reachable.
+
+- `label: string` Required. The graph’s accessible name, for example "Map of notes".
+- `title: string = 'Graph'` The title in the header bar over the map.
+- `nodes: { id: string; label: string; group: string }[]` Required. One entry per note.
+- `links: { source: string; target: string }[]` Required. Note ids, either direction.
+- `groups: { id: string; label: string; color: CategoryColor }[]` Required. One per group, in legend order. Keep it to about five; a note whose group is missing draws in the link grey.
+- `highlight: string[] \| null` Ids to light up, such as search matches. Everything else dims. null lights everything.
+- `hideOrphans: boolean = false` Leaves out notes with no links.
+- `focusId: string \| null` A note to bring the camera to and make active, for example one picked in a list beside the graph. A pick on the map itself does not move the camera.
+- `previewId: string \| null = null` A note to light as if hovered, without moving the camera: the list row under the pointer.
+- `aside: ReactNode` A panel inside the frame, left of the map from lg up and above it below lg.
+- `onSelect: (id: string \| null) => void` Required. A note was picked (its id), or the pick was cleared by clicking empty space or Reset view (null).
+- `onOpen: (id: string) => void` A note was opened: a double click on it, or Open in its callout. Without it the callout has no Open button.
+- `className: string` Merged with the root's classes.
+- `ref: Ref<HTMLDivElement>` Passed through to the root div.
+
+Page: /docs/components/knowledge-graph.md
+
 ### Navbar
 
 The top of a page: the brand, the main links and a few actions. When its container gets narrow, the links move into a menu sheet. Nothing gets cut off, and nothing is hidden for good.
@@ -1667,7 +1792,7 @@ import { Sidebar } from 'src/components/organisms/sidebar/Sidebar'
 ```
 
 - `label: string` Required. The name screen readers give the navigation region.
-- `groups: SidebarGroup[]` Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded).
+- `groups: SidebarGroup[]` Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) footer (under the items, lined up with them, hidden while the group is folded), count (a short right-aligned readout in the data font, such as "2/2", read as part of the toggle’s name) onOpenChange (called with the new state when the reader folds or unfolds it) and open (controls the fold from outside, paired with onOpenChange, for a page that opens one group and folds the rest). Each item can carry count (a number in the data font) and bar (a 2px MeterBar under the item). Labels truncate in a narrow column instead of pushing the count out.
 - `header: ReactNode` Sits above the groups: a product name, a workspace switcher.
 - `footer: ReactNode` Pinned below the groups when the Sidebar has a height (h-full in a column layout): the signed-in account, a help link.
 - `renderLink: (props: LinkRenderProps) => ReactNode = a plain anchor` Pass your router's link component here. Map href to its own prop, and pass className, aria-current and onClick through.

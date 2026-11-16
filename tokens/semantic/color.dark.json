@@ -5,7 +5,8 @@
         "base": { "$type": "color", "$value": "#07080b" },
         "sunken": { "$type": "color", "$value": "#0d1016" },
         "raised": { "$type": "color", "$value": "rgba(40, 52, 69, 0.42)" },
-        "scrim": { "$type": "color", "$value": "rgba(0, 0, 0, 0.6)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." }
+        "scrim": { "$type": "color", "$value": "rgba(0, 0, 0, 0.6)", "$description": "Dims the page behind a dialog, sheet or the command palette. The dimmed page is inert and hidden from assistive tech and carries no contrast obligation of its own. Toasts render inside the innermost open overlay's own outlet: one raised while it is open, and every one already showing when it opens, which moves in and is announced again. They stay inside the focus trap and visible to assistive tech; the next Escape closes the overlay unless focus is inside the toast." },
+        "overlay": { "$type": "color", "$value": "rgba(13, 16, 22, 0.85)", "$description": "A panel floating over a canvas (the KnowledgeGraph callout and cluster pills): surface.sunken at 85%. Text on it is gated composited over surface.sunken." }
       },
       "border": {
         "hairline": { "$type": "color", "$value": "rgba(214, 226, 240, 0.16)" },
@@ -18,7 +19,10 @@
         "secondary": { "$type": "color", "$value": "#a3adba" },
         "muted": { "$type": "color", "$value": "#7b8592", "$description": "Raised 2026-09-21 from #6f7a88 (4.59:1 on surface.base, but only 4.00:1 on surface.raised composited over surface.base — a real SC 1.4.11 failure once that pair was actually gated). Now 5.35:1 on surface.base and 4.66:1 on surface.raised." },
         "placeholder": { "$type": "color", "$value": "#747f8d", "$description": "4.68:1 on surface.sunken, which is the control fill placeholder text is actually painted on. text.muted is gated against surface.base and passes there at 4.59:1, but reaches only 4.37:1 on the sunken fill — so placeholder needs its own step." },
-        "label": { "$type": "color", "$value": "#6f7a88", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 4.59:1 on surface.base against text.secondary's 8.82:1 for the items beneath: the gap in luminance is the point. Sits just above the AA floor on purpose; gated." }
+        "label": { "$type": "color", "$value": "#6f7a88", "$description": "Group and section labels that must read as a heading over a list, not as another item in it (the sidebar's GUIDELINES / ATOMS). 4.59:1 on surface.base against text.secondary's 8.82:1 for the items beneath: the gap in luminance is the point. Sits just above the AA floor on purpose; gated." },
+        "active": { "$type": "color", "$value": "#e9eef4", "$description": "State ladder, top: the live row (MeterRow active, the newest LogFeed line). Holds text.primary's value." },
+        "rest": { "$type": "color", "$value": "#a3adba", "$description": "State ladder, middle: a row at rest. Holds text.secondary's value." },
+        "pending": { "$type": "color", "$value": "#7b8592", "$description": "State ladder, bottom: queued or not started. Same value as text.muted in this theme: 5.35:1 on surface.base, 4.66:1 on surface.raised; gated on base, raised and sunken." }
       },
       "accent": {
         "signal": {

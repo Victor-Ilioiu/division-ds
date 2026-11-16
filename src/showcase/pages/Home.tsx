@@ -27,11 +27,11 @@ import { Panel } from '../../components/atoms/panel/Panel'
 import { CabinetHero } from '../hero/CabinetHero'
 import { DS_VERSION } from '../../version'
 
-// Every figure here is read from the repository: 75 components in public/manifest/components.json;
+// Every figure here is read from the repository: 81 components in public/manifest/components.json;
 // the token layers from public/manifest/tokens.json (66 primitive colours plus 8 spacing and
 // 6 motion steps, 56 semantic, 26 component); 10 MCP tools listed in AGENTS.md.
 const FIGURES = [
-  { label: 'Components', value: 75 },
+  { label: 'Components', value: 81 },
   { label: 'Semantic tokens', value: 56 },
   { label: 'Component tokens', value: 26 },
   { label: 'MCP tools', value: 10 },
@@ -51,7 +51,7 @@ const FEATURES: Feature[] = [
   },
   {
     icon: <Blocks aria-hidden="true" />,
-    title: '75 components',
+    title: '81 components',
     body: 'From Button to DataTable, CheckoutForm and a chat thread with tool calls. React 19, Tailwind 4 and Radix underneath.',
     span: 'lg:col-span-2',
   },
@@ -193,7 +193,7 @@ export function Home() {
               The design system your coding agent can read, use and check.
             </h1>
             <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-[var(--color-text-secondary)]">
-              75 accessible components with docs, a skill and an MCP server, so AI builds screens that follow the rules.
+              81 accessible components with docs, a skill and an MCP server, so AI builds screens that follow the rules.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">

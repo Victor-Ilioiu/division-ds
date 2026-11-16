@@ -34,3 +34,10 @@
     transition-property: none;
   }
 }
+
+/* Data type: numbers, values, counts, ids, meta and logs. Mono with tabular figures so columns
+   of digits line up. Body copy and headings keep Saira/Oxanium; never apply this to prose. */
+.font-data {
+  font-family: var(--font-data, var(--font-mono));
+  font-variant-numeric: tabular-nums;
+}

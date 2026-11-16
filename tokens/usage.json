@@ -11,9 +11,13 @@
   "--color-border-control": "The boundary of an interactive control at rest (Input, Select, secondary Button). The one border that has to be seen to find the control.",
   "--color-border-selection": "The boundary of the small selection controls at rest: Checkbox, Radio, Switch track.",
 
+  "--color-surface-overlay": "A translucent panel floating over a canvas, such as the KnowledgeGraph callout and cluster pills. Not for a page section or a dialog.",
   "--color-text-primary": "Body text, headings, values. The default text colour.",
   "--color-text-secondary": "Supporting text beside primary text: descriptions, help text, metadata. Keep it at 14px or larger.",
   "--color-text-muted": "The quietest readable text: captions, timestamps, disabled-looking labels. Not for anything the user must read to act.",
+  "--color-text-active": "The live item in a state ladder: the active MeterRow, the newest LogFeed line. Same value as text.primary; use it when the row can change state.",
+  "--color-text-rest": "An item at rest in a state ladder (MeterRow rest, older LogFeed lines). Same value as text.secondary.",
+  "--color-text-pending": "An item that is queued or not started in a state ladder (MeterRow pending). Brightness changes, never size.",
   "--color-text-placeholder": "Placeholder text inside a control, on surface.sunken. Only there.",
   "--color-text-label": "Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text.",
 

@@ -137,6 +137,14 @@ export function ListItemDocs() {
         <TeamExample />
       </Example>
 
+      <Example caption="Rows with a bar: storage used per warehouse">
+        <List className="w-full max-w-xl">
+          <ListItem title="North depot" meta="82%" bar={{ value: 82, max: 100, color: 'blue' }} />
+          <ListItem title="Harbour store" meta="47%" bar={{ value: 47, max: 100, color: 'blue' }} />
+          <ListItem title="East yard" meta="12%" bar={{ value: 12, max: 100, color: 'blue' }} />
+        </List>
+      </Example>
+
       <Example caption="A standalone row, outside a List">
         <div className="w-full max-w-xl">
           <ListItem as="div" title="Spare magazine, 120 rounds" description="Mid-cap, steel" meta="€14.90" />

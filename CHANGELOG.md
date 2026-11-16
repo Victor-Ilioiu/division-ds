@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.12.0 — 2026-11-16
+
+Readability for dense, data-heavy screens, ported from Command Center's prototype: a data font, a brightness ladder for row state, six components and small additions to six more. Signal orange stays the only accent; the display and body faces do not change.
+
+### Added
+- **Tokens.** `--font-data` (the JetBrains Mono stack) and a `.font-data` class (mono with tabular figures) for numbers, values, counts, ids, meta and logs, never prose. `--color-text-active` / `--color-text-rest` / `--color-text-pending`, a state ladder that changes brightness, never size (pending is #7b8592 dark, #4f5a69 light; 4.66:1 or more on base, raised and sunken in both themes). `--color-surface-overlay`, surface.sunken at 85%, for a panel floating over a canvas.
+- **KnowledgeGraph** (organism): a 3D map of linked notes with glowing points, dust and folder pills. A click makes a note active in place: a glow flows out along its links at a steady speed, the note is held in a crosshair ring, and a callout sits on a leader line. A crosshair cursor, an AZ/EL readout, and Reset view (top right, and the centre dot) to clear the pick and fly back to the overview; `focusId` from outside the map flies the camera to the note, and any drag or zoom takes the camera back at once. `highlight`, `hideOrphans`, `focusId`, `previewId`, `aside`, `onSelect(id | null)`, `onOpen`. three.js loads in its own chunk; without WebGL 2 the note list is shown instead; nothing moves on its own.
+- **PanelHeader**: a numbered accent tag, a tracked display title and a data readout.
+- **MeterRow**, with **MeterBar** and **MeterAxis**: label, data value and a 2px category bar, linear or log.
+- **SegmentedMeter**: a count out of a small total as squares, filled, empty or struck.
+- **StatusChip**: one uppercase word on a solid Badge tone.
+- **LogFeed**: a short numbered event list in the data font, newest line bright.
+
+### Changed
+- **Stat** `variant="kpi"` (a compact tile) and `accent` (kpi only: one signal-fill tile).
+- **ListItem** `bar` (a MeterBar under the row); `meta` is in the data font.
+- **Sidebar** item `bar`, group `count`, `onOpenChange` and a controlled `open`; item counts in the data font; labels truncate in a narrow column instead of pushing the count out.
+- **DataTable** numeric cells, **Stepper** step numbers and the **StatusTracker** summary use the data font.
+
 ## 0.11.0 — 2026-11-14
 
 The first change written by the agent runner: Victor approved issue #6, the runner opened the pull request as division-ds-agent, Victor reviewed and merged it.

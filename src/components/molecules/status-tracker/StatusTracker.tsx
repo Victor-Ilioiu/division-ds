@@ -111,7 +111,7 @@ export function StatusTracker({ label, items, summary, statusLabels, className, 
           {label}
         </span>
         {summary === undefined ? null : (
-          <span className="font-mono text-xs tabular-nums text-[var(--color-text-primary)]">{summary}</span>
+          <span className="font-data text-xs text-[var(--color-text-primary)]">{summary}</span>
         )}
       </div>
       <ul role="list" aria-labelledby={labelId} className="flex gap-px h-8 list-none m-0 p-0">

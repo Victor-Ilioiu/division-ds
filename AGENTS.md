@@ -1,6 +1,6 @@
 # Division DS: instructions for coding agents
 
-A React 19 + Tailwind 4 + Radix design system: 75 components, tokens in three layers, light and
+A React 19 + Tailwind 4 + Radix design system: 81 components, tokens in three layers, light and
 dark themes, WCAG 2.2 AA. This file is the entry point. It is short on purpose; everything it
 points to is generated from the code, so it is current.
 
@@ -51,7 +51,7 @@ installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rul
 `.claude/skills/` (Claude Code).
 
 An agent that supports MCP can have the docs and the same checks as tools instead:
-`claude mcp add division-ds -- npx -y division-ds@0.11.0 mcp` (`list_components`, `get_component`,
+`claude mcp add division-ds -- npx -y division-ds@0.12.0 mcp` (`list_components`, `get_component`,
 `search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
 `get_review_checklist`, and two that report back: `request_change` and `report_drift`, which open
 an issue on the public repository instead of patching the installed copy).
@@ -121,8 +121,8 @@ behind it. In a project that uses the components, your own root does this
 
 **App navigation.** A few views: `Navbar` (`current: true` on the open one). Many: `Sidebar`.
 
-**Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the
-default, set by the shell), `font-mono` (labels, code, tabular numbers). A page title is
+**Type.** As utilities: `font-display` (headings, figures), `font-body` (the default),
+`font-mono` (labels, code), `font-data` (numbers, ids, logs). A page title is
 `<h1 className="font-display font-semibold text-2xl">`; body is `text-base` or `text-sm`; a label
 is `font-mono text-xs font-semibold uppercase tracking-[0.18em]`. Tailwind's own size, weight
 and spacing utilities are fine; only colour is restricted to tokens.

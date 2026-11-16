@@ -76,6 +76,21 @@
           "target": "src/division-ds/fx/core/gate.ts"
         },
         {
+          "path": "src/fx/core/webgl.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/webgl.ts"
+        },
+        {
+          "path": "src/fx/core/loop.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/loop.ts"
+        },
+        {
+          "path": "src/fx/core/quality.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/fx/core/quality.ts"
+        },
+        {
           "path": "src/styles/bevel.css",
           "type": "registry:file",
           "target": "src/division-ds/styles/bevel.css"
@@ -398,21 +413,6 @@
           "path": "src/components/atoms/loading-animation/variants.ts",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/loading-animation/variants.ts"
-        },
-        {
-          "path": "src/fx/core/webgl.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/fx/core/webgl.ts"
-        },
-        {
-          "path": "src/fx/core/loop.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/fx/core/loop.ts"
-        },
-        {
-          "path": "src/fx/core/quality.ts",
-          "type": "registry:file",
-          "target": "src/division-ds/fx/core/quality.ts"
         }
       ]
     },
@@ -504,6 +504,28 @@
           "path": "src/components/atoms/score-ring/ScoreRing.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/score-ring/ScoreRing.tsx"
+        }
+      ]
+    },
+    {
+      "name": "segmented-meter",
+      "type": "registry:item",
+      "title": "Segmented meter",
+      "description": "Segmented meter. Best for: Showing a small count out of a small total, such as 3 of 5 checks passed, where each unit matters.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/segmented-meter/SegmentedMeter.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/segmented-meter/SegmentedMeter.tsx"
         }
       ]
     },
@@ -619,6 +641,29 @@
           "path": "src/components/atoms/spinner/Spinner.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/atoms/spinner/Spinner.tsx"
+        }
+      ]
+    },
+    {
+      "name": "status-chip",
+      "type": "registry:item",
+      "title": "Status chip",
+      "description": "Status chip. Best for: Tagging a row or a value with one short state word in a dense panel, such as NEW beside a list row.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/atoms/status-chip/StatusChip.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/atoms/status-chip/StatusChip.tsx"
         }
       ]
     },
@@ -1123,13 +1168,59 @@
         "@types/react@^19.2.18"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/meter-row.json"
       ],
       "files": [
         {
           "path": "src/components/molecules/list-item/ListItem.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/list-item/ListItem.tsx"
+        }
+      ]
+    },
+    {
+      "name": "log-feed",
+      "type": "registry:item",
+      "title": "Log feed",
+      "description": "Log feed. Best for: Showing the last few things that happened, such as recent sync events beside a dashboard panel.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/log-feed/LogFeed.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/log-feed/LogFeed.tsx"
+        }
+      ]
+    },
+    {
+      "name": "meter-row",
+      "type": "registry:item",
+      "title": "Meter row",
+      "description": "Meter row. Best for: A ranked list of values against one max, such as the busiest warehouses or spend per project.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/meter-row/MeterRow.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/meter-row/MeterRow.tsx"
         }
       ]
     },
@@ -1206,6 +1297,28 @@
           "path": "src/components/molecules/pagination/Pagination.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/molecules/pagination/Pagination.tsx"
+        }
+      ]
+    },
+    {
+      "name": "panel-header",
+      "type": "registry:item",
+      "title": "Panel header",
+      "description": "Panel header. Best for: Heading a panel in a dense, data-heavy screen where several panels sit side by side and are referred to by number.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/panel-header/PanelHeader.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/panel-header/PanelHeader.tsx"
         }
       ]
     },
@@ -1867,6 +1980,38 @@
       ]
     },
     {
+      "name": "knowledge-graph",
+      "type": "registry:item",
+      "title": "Knowledge graph",
+      "description": "Knowledge graph. Best for: Showing how a few dozen to a few hundred linked notes cluster, so people can find one by its neighbours.",
+      "dependencies": [
+        "react@^19.2.8",
+        "three@^0.186.1"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18",
+        "@types/three@^0.186.0"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/panel-header.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/knowledge-graph/KnowledgeGraph.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/knowledge-graph/KnowledgeGraph.tsx"
+        },
+        {
+          "path": "src/components/organisms/knowledge-graph/scene.ts",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/knowledge-graph/scene.ts"
+        }
+      ]
+    },
+    {
       "name": "navbar",
       "type": "registry:item",
       "title": "Navbar",
@@ -1982,7 +2127,8 @@
         "@types/react@^19.2.18"
       ],
       "registryDependencies": [
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/meter-row.json"
       ],
       "files": [
         {
@@ -2043,11 +2189,13 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/progress.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/radio.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/score-ring.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/segmented-meter.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/select.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/skeleton.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/slider.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sparkline.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/status-chip.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/switch.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/tag.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/textarea.json",
@@ -2068,9 +2216,12 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/empty-state.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/list-item.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/log-feed.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/meter-row.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/multi-select.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/page-header.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/pagination.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/panel-header.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/prompt-input.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/quantity-stepper.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/rating.json",
@@ -2097,6 +2248,7 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/footer.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/kanban-board.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/knowledge-graph.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/navbar.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/newsletter-form.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/product-card.json",

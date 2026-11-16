@@ -2168,6 +2168,124 @@
       "closed": false
     },
     {
+      "name": "SegmentedMeter",
+      "title": "Segmented meter",
+      "tier": "atoms",
+      "slug": "segmented-meter",
+      "summary": "A row of small squares for a count out of a small total: filled, empty, or struck through for a step that does not apply. It reads at a glance where a bar would need a number beside it.",
+      "useWhen": "Showing a small count out of a small total, such as 3 of 5 checks passed, where each unit matters.",
+      "notFor": "A percentage or a large total: use Progress.",
+      "source": "src/components/atoms/segmented-meter/SegmentedMeter.tsx",
+      "docs": "/docs/components/segmented-meter.md",
+      "imports": [
+        {
+          "names": [
+            "SegmentedMeter"
+          ],
+          "from": "src/components/atoms/segmented-meter/SegmentedMeter"
+        }
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "description": "Required. How many squares are filled. Clamped to 0 to max."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "description": "Required. How many squares there are. Keep it to about 12; past that, use Progress."
+        },
+        {
+          "name": "none",
+          "type": "number",
+          "default": "0",
+          "description": "Squares after the filled ones that are struck through, for steps that do not apply."
+        },
+        {
+          "name": "tone",
+          "type": "'signal' | CategoryColor",
+          "default": "'signal'",
+          "description": "The fill. signal is the accent; the rest are the category fills."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. The accessible name, for example \"Checks passed\"."
+        },
+        {
+          "name": "valueText",
+          "type": "string",
+          "description": "What a screen reader says for the value. Defaults to \"{value} of {max}\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the meter div."
+        },
+        {
+          "name": "...rest",
+          "type": "HTMLAttributes<HTMLDivElement>",
+          "description": "Every native attribute, passed onto the meter div."
+        }
+      ],
+      "api": [
+        {
+          "name": "SegmentedMeterTone",
+          "kind": "type",
+          "code": "export type SegmentedMeterTone =\n  | 'signal' | 'gray' | 'brown' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'purple' | 'pink' | 'red'",
+          "from": "src/components/atoms/segmented-meter/SegmentedMeter"
+        }
+      ],
+      "keyboard": [],
+      "dos": [
+        "Put the number in words nearby, or in valueText, so the meter is never the only place the value lives.",
+        "Use signal for the one meter on a screen that asks for action; a category fill otherwise."
+      ],
+      "donts": [
+        "Don’t use more than about 12 squares: they stop being countable.",
+        "Don’t use struck squares for failed steps. They mean \"does not apply\"; a failure is a status with a word."
+      ],
+      "anatomy": [
+        {
+          "part": "Meter",
+          "description": "A div with role=\"meter\", named by label, with its value spoken as valueText."
+        },
+        {
+          "part": "Filled squares",
+          "description": "Painted in the tone: accent.signal.fill, or a category fill."
+        },
+        {
+          "part": "Empty squares",
+          "description": "A one-pixel text.muted outline, which passes the 3:1 graphic floor on every surface."
+        },
+        {
+          "part": "Struck squares",
+          "description": "An empty square with a diagonal line: a step that does not apply."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Checks passed, in the accent",
+          "source": "<SegmentedMeter label=\"Checks passed\" value={3} max={5} />\n<span className=\"font-data text-sm text-[var(--color-text-secondary)]\">3/5</span>"
+        },
+        {
+          "caption": "Struck squares: steps that do not apply",
+          "source": "<SegmentedMeter label=\"Release steps\" value={2} max={6} none={2} valueText=\"2 of 6 done, 2 not needed\" tone=\"teal\" />"
+        },
+        {
+          "caption": "Category tones",
+          "source": "<SegmentedMeter label=\"Blue\" value={4} max={8} tone=\"blue\" />\n<SegmentedMeter label=\"Green\" value={6} max={8} tone=\"green\" />\n<SegmentedMeter label=\"Purple\" value={2} max={8} tone=\"purple\" />"
+        }
+      ],
+      "closed": false
+    },
+    {
       "name": "Select",
       "title": "Select",
       "tier": "atoms",
@@ -3007,6 +3125,83 @@
         {
           "caption": "Decorative, inside a control",
           "source": "<span className=\"inline-flex items-center gap-2 border border-[var(--color-border-hairline-strong)] px-3 py-2\">\n  <Spinner aria-hidden=\"true\" />\n  <span className=\"text-sm\">Dispatching…</span>\n</span>"
+        }
+      ],
+      "closed": false
+    },
+    {
+      "name": "StatusChip",
+      "title": "Status chip",
+      "tier": "atoms",
+      "slug": "status-chip",
+      "summary": "A small filled tag with one short uppercase word in the data font, beside a row or a value: NEW, CAP, TREND. It is a solid Badge with a fixed size and type, so it adds no colour of its own.",
+      "useWhen": "Tagging a row or a value with one short state word in a dense panel, such as NEW beside a list row.",
+      "notFor": "A status that needs a sentence or an icon: use Badge.",
+      "source": "src/components/atoms/status-chip/StatusChip.tsx",
+      "docs": "/docs/components/status-chip.md",
+      "imports": [
+        {
+          "names": [
+            "StatusChip"
+          ],
+          "from": "src/components/atoms/status-chip/StatusChip"
+        }
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. One short word."
+        },
+        {
+          "name": "tone",
+          "type": "'neutral' | 'signal' | 'ok' | 'warning' | 'hostile' | 'info'",
+          "default": "'neutral'",
+          "description": "A Badge status tone. neutral by default; signal only for the one thing to act on."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "description": "Passed through to the Badge."
+        },
+        {
+          "name": "...rest",
+          "type": "HTMLAttributes<HTMLSpanElement>",
+          "description": "Every native attribute, except the Badge props it fixes (size, emphasis, dot, icon, color, severity)."
+        }
+      ],
+      "keyboard": [],
+      "dos": [
+        "Keep it to one word of up to about six letters.",
+        "Use the tone for meaning (ok, warning, hostile), not for decoration."
+      ],
+      "donts": [
+        "Don’t put more than one signal chip on a screen.",
+        "Don’t make it the only place a status lives in a column people sort or filter by."
+      ],
+      "anatomy": [
+        {
+          "part": "Badge",
+          "description": "A solid Badge at size sm, 18px tall. Every fill and ink pair is the Badge’s gated one."
+        },
+        {
+          "part": "Word",
+          "description": "JetBrains Mono, 11px, uppercase, semibold."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Tones",
+          "source": "<StatusChip label=\"Idle\" />\n<StatusChip tone=\"signal\" label=\"New\" />\n<StatusChip tone=\"ok\" label=\"Done\" />\n<StatusChip tone=\"warning\" label=\"Cap\" />\n<StatusChip tone=\"hostile\" label=\"Fail\" />\n<StatusChip tone=\"info\" label=\"Trend\" />"
+        },
+        {
+          "caption": "Beside a value",
+          "source": "<span className=\"font-data text-sm text-[var(--color-text-primary)]\">12.4K</span>\n<StatusChip tone=\"warning\" label=\"Cap\" />"
         }
       ],
       "closed": false
@@ -6186,12 +6381,17 @@
         {
           "name": "meta",
           "type": "ReactNode",
-          "description": "Right-aligned monospaced text: a time, a price, a count."
+          "description": "Right-aligned text in the data font (mono, tabular figures): a time, a price, a count."
         },
         {
           "name": "actions",
           "type": "ReactNode",
           "description": "Controls at the end. Each one can still be focused and clicked on its own."
+        },
+        {
+          "name": "bar",
+          "type": "{ value: number; max: number; color?: CategoryColor; scale?: 'linear' | 'log' }",
+          "description": "A 2px bar along the bottom of the row (the MeterRow bar), for a value against a max. Decorative: say the value in meta too."
         },
         {
           "name": "href",
@@ -6312,11 +6512,260 @@
           "source": "function TeamExample() {\n  const [chosen, setChosen] = useState<string | null>(null)\n  const team = [\n    { name: 'Ilse Varga', email: 'ilse@hexline.example', role: 'Captain' },\n    { name: 'Tomas Reyes', email: 'tomas@hexline.example', role: 'Medic' },\n    { name: 'Ana Popescu', email: 'ana@hexline.example', role: 'Scout' },\n  ]\n  return (\n    <div className=\"w-full max-w-xl\">\n      <List aria-label=\"Squad members\">\n        {team.map(member => (\n          <ListItem\n            key={member.email}\n            className=\"px-2\"\n            media={<Avatar name={member.name} />}\n            title={member.name}\n            description={member.email}\n            meta={member.role}\n            onActivate={() => setChosen(member.name)}\n          />\n        ))}\n      </List>\n      <p className=\"mt-3 text-sm text-[var(--color-text-secondary)]\" aria-live=\"polite\">\n        {chosen ? `Opened ${chosen}.` : 'Choose a member to open their profile.'}\n      </p>\n    </div>\n  )\n}\n\n<TeamExample />"
         },
         {
+          "caption": "Rows with a bar: storage used per warehouse",
+          "source": "<List className=\"w-full max-w-xl\">\n  <ListItem title=\"North depot\" meta=\"82%\" bar={{ value: 82, max: 100, color: 'blue' }} />\n  <ListItem title=\"Harbour store\" meta=\"47%\" bar={{ value: 47, max: 100, color: 'blue' }} />\n  <ListItem title=\"East yard\" meta=\"12%\" bar={{ value: 12, max: 100, color: 'blue' }} />\n</List>"
+        },
+        {
           "caption": "A standalone row, outside a List",
           "source": "<div className=\"w-full max-w-xl\">\n  <ListItem as=\"div\" title=\"Spare magazine, 120 rounds\" description=\"Mid-cap, steel\" meta=\"€14.90\" />\n</div>"
         }
       ],
       "closed": false
+    },
+    {
+      "name": "LogFeed",
+      "title": "Log feed",
+      "tier": "molecules",
+      "slug": "log-feed",
+      "summary": "A short, read-only list of recent events in the data font: \"01 name → detail\", the newest line bright and the older ones at rest, with an optional prompt line on top.",
+      "useWhen": "Showing the last few things that happened, such as recent sync events beside a dashboard panel.",
+      "notFor": "A live shell session: use Terminal. Notifications people act on: use a List of ListItems.",
+      "source": "src/components/molecules/log-feed/LogFeed.tsx",
+      "docs": "/docs/components/log-feed.md",
+      "imports": [
+        {
+          "names": [
+            "LogFeed"
+          ],
+          "from": "src/components/molecules/log-feed/LogFeed"
+        }
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. Names the log region."
+        },
+        {
+          "name": "entries",
+          "type": "{ name: ReactNode; detail?: ReactNode }[]",
+          "description": "Required. Oldest first; the last one is the newest."
+        },
+        {
+          "name": "prompt",
+          "type": "ReactNode",
+          "description": "A line above the entries, followed by a caret."
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "default": "1",
+          "description": "The number of the first entry."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the log div."
+        }
+      ],
+      "api": [
+        {
+          "name": "LogFeedEntry",
+          "kind": "type",
+          "code": "export type LogFeedEntry = {\n  /** What happened: an agent, a tool, a note name. */\n  name: ReactNode\n  /** Shown after an arrow: \"→ wrote research/x.md\". */\n  detail?: ReactNode\n}",
+          "from": "src/components/molecules/log-feed/LogFeed"
+        }
+      ],
+      "keyboard": [],
+      "dos": [
+        "Keep it to the last 5 to 10 entries.",
+        "Write the name as the thing that acted and the detail as what it did."
+      ],
+      "donts": [
+        "Don’t put actions in it: it is read-only.",
+        "Don’t use it for prose. Long text belongs in the body font."
+      ],
+      "anatomy": [
+        {
+          "part": "Log region",
+          "description": "A div with role=\"log\", named by label, so new lines are announced politely."
+        },
+        {
+          "part": "Prompt",
+          "description": "Optional. A \">\" then the prompt text and a block caret, which pulses only without reduced motion."
+        },
+        {
+          "part": "Entries",
+          "description": "A numbered ordered list. The newest line is text.active; older lines text.rest; numbers text.muted."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Recent events",
+          "source": "const EVENTS = [\n  { name: 'sync', detail: 'pulled 12 orders' },\n  { name: 'stock', detail: 'North depot below 40' },\n  { name: 'export', detail: 'wrote stock-2026-11.csv' },\n  { name: 'label', detail: 'printed 8 shipping labels' },\n]\n\n<div className=\"w-full max-w-md\">\n  <LogFeed label=\"Recent events\" entries={EVENTS} />\n</div>"
+        },
+        {
+          "caption": "With a prompt line, numbered from 41",
+          "source": "const EVENTS = [\n  { name: 'sync', detail: 'pulled 12 orders' },\n  { name: 'stock', detail: 'North depot below 40' },\n  { name: 'export', detail: 'wrote stock-2026-11.csv' },\n  { name: 'label', detail: 'printed 8 shipping labels' },\n]\n\n<div className=\"w-full max-w-md\">\n  <LogFeed label=\"Order watch\" prompt=\"watch orders --site north\" entries={EVENTS.slice(0, 2)} start={41} />\n</div>"
+        }
+      ],
+      "closed": true
+    },
+    {
+      "name": "MeterRow",
+      "title": "Meter row",
+      "tier": "molecules",
+      "slug": "meter-row",
+      "summary": "A ranked-list row: a label at the left, its value at the right in the data font, and a 2px bar under both showing the value against the list’s max. MeterBar is the bar on its own; MeterAxis puts tick labels under a list of rows.",
+      "useWhen": "A ranked list of values against one max, such as the busiest warehouses or spend per project.",
+      "notFor": "A trend over time: use ChartPanel or Sparkline. Progress toward a goal: use Progress.",
+      "source": "src/components/molecules/meter-row/MeterRow.tsx",
+      "docs": "/docs/components/meter-row.md",
+      "imports": [
+        {
+          "names": [
+            "MeterAxis",
+            "MeterBar",
+            "MeterRow"
+          ],
+          "from": "src/components/molecules/meter-row/MeterRow"
+        }
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "description": "Required. The row’s name."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "description": "Required. The raw value the bar is drawn from."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "description": "Required. The value of a full bar: the largest in the list, or a fixed cap."
+        },
+        {
+          "name": "display",
+          "type": "ReactNode",
+          "default": "String(value)",
+          "description": "The value as shown: \"12.4K\", \"€1,200\"."
+        },
+        {
+          "name": "color",
+          "type": "CategoryColor",
+          "default": "'gray'",
+          "description": "The bar colour. Use about five categories at most in one view; never as an accent."
+        },
+        {
+          "name": "scale",
+          "type": "'linear' | 'log'",
+          "default": "'linear'",
+          "description": "log for values that span orders of magnitude; pair it with a MeterAxis."
+        },
+        {
+          "name": "state",
+          "type": "'active' | 'rest' | 'pending'",
+          "default": "'rest'",
+          "description": "Text brightness: active for the live row, pending for one not started."
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "description": "Makes the row one link, named by the label."
+        },
+        {
+          "name": "renderLink",
+          "type": "(props: LinkRenderProps) => ReactNode",
+          "description": "Renders the link, for a router. Defaults to a plain a element."
+        },
+        {
+          "name": "onActivate",
+          "type": "() => void",
+          "description": "Makes the row one button, named by the label. Ignored when href is set."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes (on MeterRow, MeterBar or MeterAxis)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the row div."
+        },
+        {
+          "name": "ticks (MeterAxis)",
+          "type": "number[]",
+          "default": "powers of ten from 1K to max",
+          "description": "The tick values under the rows."
+        }
+      ],
+      "api": [
+        {
+          "name": "MeterScale",
+          "kind": "type",
+          "code": "export type MeterScale = 'linear' | 'log'",
+          "from": "src/components/molecules/meter-row/MeterRow"
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Enter"
+          ],
+          "does": "Follows the link or presses the button when the row has href or onActivate."
+        }
+      ],
+      "dos": [
+        "Sort the rows by value.",
+        "Use one colour for one list unless the colours mean groups.",
+        "Use the log scale with a MeterAxis when the top value dwarfs the rest."
+      ],
+      "donts": [
+        "Don’t use signal orange for the bars: categories say \"same group\", the accent says \"act here\".",
+        "Don’t change the row size to show state; change its brightness."
+      ],
+      "anatomy": [
+        {
+          "part": "Label",
+          "description": "Saira, 14px. Becomes a link or a button stretched over the row with href or onActivate."
+        },
+        {
+          "part": "Value",
+          "description": "The formatted value in the data font (mono, tabular figures)."
+        },
+        {
+          "part": "Bar",
+          "description": "A 2px bar on the border.hairline track, in a category text colour (every one passes 3:1 in both themes). Hidden from screen readers: the value says it."
+        },
+        {
+          "part": "State",
+          "description": "Brightness, never size: text.active, text.rest or text.pending."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Parcels per site, linear",
+          "source": "const ROWS = [\n  { label: 'North depot', value: 1240, display: '1,240' },\n  { label: 'Harbour store', value: 860, display: '860' },\n  { label: 'East yard', value: 410, display: '410' },\n  { label: 'Hill annex', value: 95, display: '95' },\n]\n\n<div className=\"w-full max-w-sm\">\n  {ROWS.map((row, index) => (\n    <MeterRow key={row.label} {...row} max={1240} color=\"blue\" state={index === 0 ? 'active' : 'rest'} />\n  ))}\n</div>"
+        },
+        {
+          "caption": "Spend per project, log scale with an axis",
+          "source": "const SPEND = [\n  { label: 'Spring restock', value: 182000, display: '182K' },\n  { label: 'Warehouse move', value: 24500, display: '24.5K' },\n  { label: 'Label printer', value: 3100, display: '3.1K' },\n]\n\n<div className=\"w-full max-w-sm\">\n  {SPEND.map(row => (\n    <MeterRow key={row.label} {...row} max={200000} scale=\"log\" color=\"teal\" href={`#${row.label}`} />\n  ))}\n  <MeterAxis max={200000} className=\"mt-1\" />\n</div>"
+        },
+        {
+          "caption": "States: active, rest, pending",
+          "source": "<div className=\"w-full max-w-sm\">\n  <MeterRow label=\"Packing\" value={8} max={10} state=\"active\" />\n  <MeterRow label=\"Picking\" value={5} max={10} />\n  <MeterRow label=\"Loading\" value={0} max={10} state=\"pending\" />\n</div>"
+        }
+      ],
+      "closed": true
     },
     {
       "name": "MultiSelect",
@@ -6920,6 +7369,97 @@
         }
       ],
       "closed": true
+    },
+    {
+      "name": "PanelHeader",
+      "title": "Panel header",
+      "tier": "molecules",
+      "slug": "panel-header",
+      "summary": "The header bar of a dense panel: an optional numbered tag in the accent, a tracked uppercase title in the display font, and a quiet readout at the right in the data font.",
+      "useWhen": "Heading a panel in a dense, data-heavy screen where several panels sit side by side and are referred to by number.",
+      "notFor": "A page title: use PageHeader. A card’s own title: use CardHeader.",
+      "source": "src/components/molecules/panel-header/PanelHeader.tsx",
+      "docs": "/docs/components/panel-header.md",
+      "imports": [
+        {
+          "names": [
+            "PanelHeader"
+          ],
+          "from": "src/components/molecules/panel-header/PanelHeader"
+        }
+      ],
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "description": "Required. The panel’s title."
+        },
+        {
+          "name": "index",
+          "type": "number | string",
+          "description": "The panel number shown in the tag. A number is padded to two digits (\"01\")."
+        },
+        {
+          "name": "meta",
+          "type": "ReactNode",
+          "description": "The right-aligned readout: \"42 notes\", \"12:04\"."
+        },
+        {
+          "name": "level",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "default": "2",
+          "description": "The heading level of the title. Pick it from the page outline, not from the size."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the component's classes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the root div."
+        },
+        {
+          "name": "...rest",
+          "type": "Omit<HTMLAttributes<HTMLDivElement>, 'title'>",
+          "description": "Every native div attribute except title."
+        }
+      ],
+      "keyboard": [],
+      "dos": [
+        "Number panels only when the numbers are stable and people refer to them.",
+        "Keep the readout to one short value."
+      ],
+      "donts": [
+        "Don’t use the index tag as a status: it is always the accent, and it is the panel’s name.",
+        "Don’t skip heading levels to get a smaller title."
+      ],
+      "anatomy": [
+        {
+          "part": "Index tag",
+          "description": "Optional. The panel number on accent.signal.fill in accent.signal.ink (the primary Button’s gated pair). A number is padded to two digits."
+        },
+        {
+          "part": "Title",
+          "description": "A real heading (h2 by default): Oxanium, 14px, uppercase, tracked. It truncates before it pushes the readout out."
+        },
+        {
+          "part": "Readout",
+          "description": "Optional. Counts, a time or an id in the data font, text.secondary."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Numbered, with a readout",
+          "source": "<div className=\"flex w-full max-w-md flex-col gap-4\">\n  <PanelHeader index={1} title=\"Open orders\" meta=\"42 open\" />\n  <PanelHeader index={2} title=\"Shipments\" meta=\"updated 12:04\" />\n</div>"
+        },
+        {
+          "caption": "Title only, at level 3",
+          "source": "<div className=\"w-full max-w-md\">\n  <PanelHeader title=\"Warehouse stock\" level={3} />\n</div>"
+        }
+      ],
+      "closed": false
     },
     {
       "name": "PromptInput",
@@ -7911,6 +8451,18 @@
           "description": "value comes already formatted (for example \"12%\"). direction picks the arrow. sentiment picks the colour, and it doesn't depend on direction: fewer failed syncs is down, and that's positive. period is what the number is compared with, for example \"last week\". It's both shown and spoken."
         },
         {
+          "name": "variant",
+          "type": "'default' | 'kpi'",
+          "default": "'default'",
+          "description": "default is the display-size hero numeral. kpi is a compact tile: a small uppercase label over a 24px value in the data font, for a row of four to six figures."
+        },
+        {
+          "name": "accent",
+          "type": "boolean",
+          "default": "false",
+          "description": "kpi only: a solid signal-fill tile with its text in accent.signal.ink, for the one figure to act on. At most one per row."
+        },
+        {
           "name": "className",
           "type": "string",
           "description": "Merged with the root classes. If two Tailwind utilities clash, the later one wins."
@@ -7976,6 +8528,10 @@
         {
           "caption": "Without a delta",
           "source": "<div className=\"max-w-[10rem] w-full\">\n  <Stat label=\"Kits dispatched\" value={18} padTo={3} />\n</div>"
+        },
+        {
+          "caption": "KPI tiles: compact, with one accent tile for the figure to act on",
+          "source": "<div className=\"grid grid-cols-2 sm:grid-cols-4 gap-3 w-full\">\n  <Stat variant=\"kpi\" accent label=\"Open orders\" value={42} />\n  <Stat variant=\"kpi\" label=\"Shipped today\" value={128} />\n  <Stat variant=\"kpi\" label=\"Returns\" value={3} />\n  <Stat variant=\"kpi\" label=\"Stock value\" value=\"€18.4k\" />\n</div>"
         }
       ],
       "closed": false
@@ -11412,6 +11968,201 @@
       "closed": true
     },
     {
+      "name": "KnowledgeGraph",
+      "title": "Knowledge graph",
+      "tier": "organisms",
+      "slug": "knowledge-graph",
+      "summary": "A 3D map of linked notes. Each note is a glowing point sized by its links and coloured by group, each link a hairline, with drifting dust behind them. Hover lights a note and its neighbours, a click makes it active in place, without moving the camera: the active note glows a little brighter and is held in a crosshair ring, with a callout tied to it by a leader line, a double click opens it. Reset view at the centre clears the pick and returns to the overview. three.js loads in its own chunk, only when a graph mounts.",
+      "useWhen": "Showing how a few dozen to a few hundred linked notes cluster, so people can find one by its neighbours.",
+      "notFor": "Data with a value per item or a trend: use ChartPanel. A hierarchy: use a Sidebar or a nested List.",
+      "source": "src/components/organisms/knowledge-graph/KnowledgeGraph.tsx",
+      "docs": "/docs/components/knowledge-graph.md",
+      "imports": [
+        {
+          "names": [
+            "KnowledgeGraph"
+          ],
+          "from": "src/components/organisms/knowledge-graph/KnowledgeGraph"
+        }
+      ],
+      "requires": [
+        "WebGL 2 for the map. Without it the component shows its note list as buttons instead, so every note stays reachable."
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. The graph’s accessible name, for example \"Map of notes\"."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "default": "'Graph'",
+          "description": "The title in the header bar over the map."
+        },
+        {
+          "name": "nodes",
+          "type": "{ id: string; label: string; group: string }[]",
+          "description": "Required. One entry per note."
+        },
+        {
+          "name": "links",
+          "type": "{ source: string; target: string }[]",
+          "description": "Required. Note ids, either direction."
+        },
+        {
+          "name": "groups",
+          "type": "{ id: string; label: string; color: CategoryColor }[]",
+          "description": "Required. One per group, in legend order. Keep it to about five; a note whose group is missing draws in the link grey."
+        },
+        {
+          "name": "highlight",
+          "type": "string[] | null",
+          "description": "Ids to light up, such as search matches. Everything else dims. null lights everything."
+        },
+        {
+          "name": "hideOrphans",
+          "type": "boolean",
+          "default": "false",
+          "description": "Leaves out notes with no links."
+        },
+        {
+          "name": "focusId",
+          "type": "string | null",
+          "description": "A note to bring the camera to and make active, for example one picked in a list beside the graph. A pick on the map itself does not move the camera."
+        },
+        {
+          "name": "previewId",
+          "type": "string | null",
+          "default": "null",
+          "description": "A note to light as if hovered, without moving the camera: the list row under the pointer."
+        },
+        {
+          "name": "aside",
+          "type": "ReactNode",
+          "description": "A panel inside the frame, left of the map from lg up and above it below lg."
+        },
+        {
+          "name": "onSelect",
+          "type": "(id: string | null) => void",
+          "description": "Required. A note was picked (its id), or the pick was cleared by clicking empty space or Reset view (null)."
+        },
+        {
+          "name": "onOpen",
+          "type": "(id: string) => void",
+          "description": "A note was opened: a double click on it, or Open in its callout. Without it the callout has no Open button."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the root's classes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "Passed through to the root div."
+        }
+      ],
+      "api": [
+        {
+          "name": "GraphCategory",
+          "kind": "type",
+          "code": "export type GraphCategory = 'blue' | 'brown' | 'gray' | 'green' | 'orange' | 'pink' | 'purple' | 'red' | 'teal' | 'yellow'",
+          "from": "src/components/organisms/knowledge-graph/KnowledgeGraph"
+        },
+        {
+          "name": "GraphNode",
+          "kind": "type",
+          "code": "export type GraphNode = { id: string; label: string; group: string }",
+          "from": "src/components/organisms/knowledge-graph/KnowledgeGraph"
+        },
+        {
+          "name": "GraphLink",
+          "kind": "type",
+          "code": "export type GraphLink = { source: string; target: string }",
+          "from": "src/components/organisms/knowledge-graph/KnowledgeGraph"
+        },
+        {
+          "name": "GraphGroup",
+          "kind": "type",
+          "code": "export type GraphGroup = { id: string; label: string; color: GraphCategory }",
+          "from": "src/components/organisms/knowledge-graph/KnowledgeGraph"
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "Moves through the note list, which is visually hidden while the map is shown."
+        },
+        {
+          "keys": [
+            "Enter"
+          ],
+          "does": "Selects the focused note, the same as a click on the map."
+        }
+      ],
+      "dos": [
+        "Load the screen that holds it lazily, like a chart: three.js is a few hundred kB.",
+        "Pair it with a searchable list in aside, and pass the row under the pointer as previewId.",
+        "Use one category colour per group, about five at most."
+      ],
+      "donts": [
+        "Don’t animate it on its own: it moves when people drag or a note is focused, and under reduced motion it settles before the first frame.",
+        "Don’t make the map the only way to a note. The note list is the route for keyboards and screen readers."
+      ],
+      "anatomy": [
+        {
+          "part": "Frame",
+          "description": "A bordered surface.sunken box, up to 640px tall, with an optional aside panel on the left (a note list) at the map’s height."
+        },
+        {
+          "part": "Map",
+          "description": "role=\"img\", named by label with the note and link counts. Points in the category fills, links in border.control, the hub and active note in the accent."
+        },
+        {
+          "part": "Header and readout",
+          "description": "A PanelHeader with the counts at top left; the camera’s azimuth and elevation (AZ/EL) at top right, in 11px uppercase mono."
+        },
+        {
+          "part": "Callout",
+          "description": "A surface.overlay box beside the hovered or active note: its label, a \"/ ACTIVE\" or \"/ NOTE\" tag, its group and link count, and Open on the active note."
+        },
+        {
+          "part": "Active marker",
+          "description": "The active note glows a little brighter and is held in a crosshair ring in the accent, sized to the note."
+        },
+        {
+          "part": "Cursor",
+          "description": "A thin crosshair ring that follows the pointer and closes round a note in the accent."
+        },
+        {
+          "part": "Cluster pills",
+          "description": "A pill over each group’s centre, decorative."
+        },
+        {
+          "part": "Reset view",
+          "description": "A secondary Button at top right, beside the readout, that clears the active note and flies the camera back to the starting overview. The ringed dot at the map’s centre does the same on click and names itself on hover; it is skipped by Tab, since the Button is always in reach."
+        },
+        {
+          "part": "Legend and note list",
+          "description": "Groups with counts under the map, and every note as a button: visually hidden with WebGL, shown without it. This is the keyboard and screen-reader route."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Forty notes in four groups",
+          "source": "const GROUPS: GraphGroup[] = [\n  { id: 'ops', label: 'Operations', color: 'blue' },\n  { id: 'stock', label: 'Stock', color: 'teal' },\n  { id: 'people', label: 'People', color: 'purple' },\n  { id: 'notes', label: 'Notes', color: 'gray' },\n]\n\nconst TOPICS: Record<string, string[]> = {\n  ops: ['Packing guide', 'Carrier rates', 'Returns flow', 'Label printer setup', 'Pick list rules', 'Late parcel steps', 'Weekend cover', 'Courier contacts', 'Damaged goods', 'Daily close'],\n  stock: ['Reorder points', 'North depot count', 'Harbour store count', 'Supplier list', 'Seasonal forecast', 'Spare parts', 'Stock audit', 'Bin layout', 'Slow movers', 'Price review'],\n  people: ['Rota template', 'New starter checklist', 'Training plan', 'Holiday calendar', 'Team contacts', 'Safety briefing', 'Shift handover', 'Review notes', 'Hiring plan', 'Desk map'],\n  notes: ['Meeting notes', 'Ideas list', 'Open questions', 'Reading list', 'Glossary', 'Decision log', 'Weekly summary', 'Retro notes', 'Parking lot', 'Inbox'],\n}\n\nfunction sampleGraph(): { nodes: GraphNode[]; links: GraphLink[] } {\n  const nodes: GraphNode[] = Object.entries(TOPICS).flatMap(([group, labels]) =>\n    labels.map((label, index) => ({ id: `${group}-${index}`, label, group })),\n  )\n  const links: GraphLink[] = []\n  for (const group of Object.keys(TOPICS)) {\n    for (let index = 1; index < 10; index++) {\n      if (index === 9 && group === 'notes') continue // one orphan, for hideOrphans\n      links.push({ source: `${group}-0`, target: `${group}-${index}` })\n      if (index % 3 === 0) links.push({ source: `${group}-${index}`, target: `${group}-${index - 1}` })\n    }\n  }\n  links.push(\n    { source: 'ops-0', target: 'stock-0' },\n    { source: 'stock-3', target: 'ops-1' },\n    { source: 'people-0', target: 'ops-6' },\n    { source: 'notes-5', target: 'stock-9' },\n    { source: 'notes-0', target: 'people-7' },\n  )\n  return { nodes, links }\n}\n\nfunction GraphExample({ withAside }: { withAside?: boolean }) {\n  const { nodes, links } = useMemo(sampleGraph, [])\n  const [selected, setSelected] = useState<string | null>(null)\n  const [preview, setPreview] = useState<string | null>(null)\n  const aside = withAside ? (\n    <ul className=\"flex flex-col p-1\">\n      {nodes.slice(0, 20).map(node => (\n        <li key={node.id}>\n          <button\n            type=\"button\"\n            className=\"w-full px-2 py-1 text-left text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]\"\n            onPointerEnter={() => setPreview(node.id)}\n            onPointerLeave={() => setPreview(null)}\n            onClick={() => setSelected(node.id)}\n          >\n            {node.label}\n          </button>\n        </li>\n      ))}\n    </ul>\n  ) : undefined\n  return (\n    <div className=\"w-full\">\n      <KnowledgeGraph\n        label=\"Map of notes\"\n        nodes={nodes}\n        links={links}\n        groups={GROUPS}\n        focusId={selected}\n        previewId={preview}\n        aside={aside}\n        onSelect={setSelected}\n        onOpen={setSelected}\n      />\n      <p className=\"mt-2 font-data text-sm text-[var(--color-text-secondary)]\" aria-live=\"polite\">\n        {selected ? `Active: ${selected}` : 'No note active'}\n      </p>\n    </div>\n  )\n}\n\n<GraphExample />"
+        },
+        {
+          "caption": "With a note list beside the map: hovering a row lights its note, clicking it brings the camera there",
+          "source": "const GROUPS: GraphGroup[] = [\n  { id: 'ops', label: 'Operations', color: 'blue' },\n  { id: 'stock', label: 'Stock', color: 'teal' },\n  { id: 'people', label: 'People', color: 'purple' },\n  { id: 'notes', label: 'Notes', color: 'gray' },\n]\n\nconst TOPICS: Record<string, string[]> = {\n  ops: ['Packing guide', 'Carrier rates', 'Returns flow', 'Label printer setup', 'Pick list rules', 'Late parcel steps', 'Weekend cover', 'Courier contacts', 'Damaged goods', 'Daily close'],\n  stock: ['Reorder points', 'North depot count', 'Harbour store count', 'Supplier list', 'Seasonal forecast', 'Spare parts', 'Stock audit', 'Bin layout', 'Slow movers', 'Price review'],\n  people: ['Rota template', 'New starter checklist', 'Training plan', 'Holiday calendar', 'Team contacts', 'Safety briefing', 'Shift handover', 'Review notes', 'Hiring plan', 'Desk map'],\n  notes: ['Meeting notes', 'Ideas list', 'Open questions', 'Reading list', 'Glossary', 'Decision log', 'Weekly summary', 'Retro notes', 'Parking lot', 'Inbox'],\n}\n\nfunction sampleGraph(): { nodes: GraphNode[]; links: GraphLink[] } {\n  const nodes: GraphNode[] = Object.entries(TOPICS).flatMap(([group, labels]) =>\n    labels.map((label, index) => ({ id: `${group}-${index}`, label, group })),\n  )\n  const links: GraphLink[] = []\n  for (const group of Object.keys(TOPICS)) {\n    for (let index = 1; index < 10; index++) {\n      if (index === 9 && group === 'notes') continue // one orphan, for hideOrphans\n      links.push({ source: `${group}-0`, target: `${group}-${index}` })\n      if (index % 3 === 0) links.push({ source: `${group}-${index}`, target: `${group}-${index - 1}` })\n    }\n  }\n  links.push(\n    { source: 'ops-0', target: 'stock-0' },\n    { source: 'stock-3', target: 'ops-1' },\n    { source: 'people-0', target: 'ops-6' },\n    { source: 'notes-5', target: 'stock-9' },\n    { source: 'notes-0', target: 'people-7' },\n  )\n  return { nodes, links }\n}\n\nfunction GraphExample({ withAside }: { withAside?: boolean }) {\n  const { nodes, links } = useMemo(sampleGraph, [])\n  const [selected, setSelected] = useState<string | null>(null)\n  const [preview, setPreview] = useState<string | null>(null)\n  const aside = withAside ? (\n    <ul className=\"flex flex-col p-1\">\n      {nodes.slice(0, 20).map(node => (\n        <li key={node.id}>\n          <button\n            type=\"button\"\n            className=\"w-full px-2 py-1 text-left text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]\"\n            onPointerEnter={() => setPreview(node.id)}\n            onPointerLeave={() => setPreview(null)}\n            onClick={() => setSelected(node.id)}\n          >\n            {node.label}\n          </button>\n        </li>\n      ))}\n    </ul>\n  ) : undefined\n  return (\n    <div className=\"w-full\">\n      <KnowledgeGraph\n        label=\"Map of notes\"\n        nodes={nodes}\n        links={links}\n        groups={GROUPS}\n        focusId={selected}\n        previewId={preview}\n        aside={aside}\n        onSelect={setSelected}\n        onOpen={setSelected}\n      />\n      <p className=\"mt-2 font-data text-sm text-[var(--color-text-secondary)]\" aria-live=\"polite\">\n        {selected ? `Active: ${selected}` : 'No note active'}\n      </p>\n    </div>\n  )\n}\n\n<GraphExample withAside />"
+        }
+      ],
+      "closed": true
+    },
+    {
       "name": "Navbar",
       "title": "Navbar",
       "tier": "organisms",
@@ -12071,7 +12822,7 @@
         {
           "name": "groups",
           "type": "SidebarGroup[]",
-          "description": "Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded)."
+          "description": "Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) footer (under the items, lined up with them, hidden while the group is folded), count (a short right-aligned readout in the data font, such as \"2/2\", read as part of the toggle’s name) onOpenChange (called with the new state when the reader folds or unfolds it) and open (controls the fold from outside, paired with onOpenChange, for a page that opens one group and folds the rest). Each item can carry count (a number in the data font) and bar (a 2px MeterBar under the item). Labels truncate in a narrow column instead of pushing the count out."
         },
         {
           "name": "header",
@@ -12104,13 +12855,13 @@
         {
           "name": "SidebarItem",
           "kind": "type",
-          "code": "export type SidebarItem = {\n  label: string\n  href: string\n  /** An icon, drawn aria-hidden; the label carries the meaning. */\n  icon?: ReactNode\n  current?: boolean\n  /** A number shown at the end of the item and read as part of its name (\"Orders 12\"). */\n  count?: number\n}",
+          "code": "export type SidebarItem = {\r\n  label: string\r\n  href: string\r\n  /** An icon, drawn aria-hidden; the label carries the meaning. */\r\n  icon?: ReactNode\r\n  current?: boolean\r\n  /** A number shown at the end of the item and read as part of its name (\"Orders 12\"). */\r\n  count?: number\r\n  /** A 2px bar under the item (the MeterRow bar), inset to the item's padding. */\r\n  bar?: Omit<MeterBarProps, 'className'>\r\n}",
           "from": "src/components/organisms/sidebar/Sidebar"
         },
         {
           "name": "SidebarGroup",
           "kind": "type",
-          "code": "export type SidebarGroup = {\n  /** Also the React key for this group; unique within a Sidebar. */\n  title: string\n  /** Drawn before the title, aria-hidden; the title alone names the group. */\n  icon?: ReactNode\n  items: SidebarItem[]\n  /** @default true */\n  collapsible?: boolean\n  /** Ignored when the group holds the current item, which always starts open. @default true */\n  defaultOpen?: boolean\n  /** Drawn at the far right of the title row: a small icon button, e.g. a ghost size=\"sm\" Button\n   *  with a Plus icon and aria-label=\"New project\". It sits beside the fold toggle, never inside it,\n   *  so pressing it does not open or close the group. The title truncates before it is pushed out. */\n  action?: ReactNode\n  /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an\n   *  \"Add project\" button. Hidden (and unreachable by Tab) while the group is folded. */\n  footer?: ReactNode\n}",
+          "code": "export type SidebarGroup = {\r\n  /** Also the React key for this group; unique within a Sidebar. */\r\n  title: string\r\n  /** Drawn before the title, aria-hidden; the title alone names the group. */\r\n  icon?: ReactNode\r\n  items: SidebarItem[]\r\n  /** @default true */\r\n  collapsible?: boolean\r\n  /** Ignored when the group holds the current item, which always starts open. @default true */\r\n  defaultOpen?: boolean\r\n  /** Drawn at the far right of the title row: a small icon button, e.g. a ghost size=\"sm\" Button\r\n   *  with a Plus icon and aria-label=\"New project\". It sits beside the fold toggle, never inside it,\r\n   *  so pressing it does not open or close the group. The title truncates before it is pushed out. */\r\n  action?: ReactNode\r\n  /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an\r\n   *  \"Add project\" button. Hidden (and unreachable by Tab) while the group is folded. */\r\n  footer?: ReactNode\r\n  /** Right-aligned data before the chevron (\"2/2\"). Read as part of the toggle's name. */\r\n  count?: string\r\n  /** Called when the reader folds or unfolds the group. */\r\n  onOpenChange?: (open: boolean) => void\r\n  /** Controls the fold from outside, for a page that opens one group and folds the rest (for\r\n   *  example to reveal an item picked elsewhere). Pair it with onOpenChange. Unset, the group keeps\r\n   *  its own state. */\r\n  open?: boolean\r\n}",
           "from": "src/components/organisms/sidebar/Sidebar"
         }
       ],
@@ -12182,6 +12933,10 @@
         {
           "caption": "A Projects group with an action in its title row and a footer under its items",
           "source": "const PROJECT_GROUPS: SidebarGroup[] = [\n  {\n    title: 'Projects',\n    icon: <FolderKanban />,\n    action: (\n      <IconButton label=\"New project\" variant=\"ghost\" size=\"sm\">\n        <Plus aria-hidden=\"true\" />\n      </IconButton>\n    ),\n    items: [\n      { label: 'Spring restock', href: '#spring-restock', icon: <Folder /> },\n      { label: 'Warehouse move', href: '#warehouse-move', icon: <Folder /> },\n    ],\n    footer: (\n      <Button variant=\"ghost\" size=\"sm\">\n        <Plus aria-hidden=\"true\" />\n        New project\n      </Button>\n    ),\n  },\n]\n\n<div className=\"max-w-64\">\n  <Sidebar label=\"Projects navigation\" groups={PROJECT_GROUPS} />\n</div>"
+        },
+        {
+          "caption": "Group counts, item bars and a narrow column: labels truncate, counts stay",
+          "source": "const METER_GROUPS: SidebarGroup[] = [\n  {\n    title: 'Warehouses',\n    icon: <Warehouse />,\n    count: '3/4',\n    items: [\n      { label: 'North depot and loading bay', href: '#north', icon: <Box />, count: 412, bar: { value: 412, max: 600, color: 'teal' } },\n      { label: 'Harbour store', href: '#harbour', icon: <Box />, count: 268, bar: { value: 268, max: 600, color: 'teal' } },\n      { label: 'East yard', href: '#east', icon: <Box />, count: 74, bar: { value: 74, max: 600, color: 'teal' } },\n    ],\n  },\n]\n\n<div className=\"max-w-48\">\n  <Sidebar label=\"Warehouse navigation\" groups={METER_GROUPS} />\n</div>"
         },
         {
           "caption": "In a sheet on a narrow screen: picking a link closes the sheet, through renderLink",

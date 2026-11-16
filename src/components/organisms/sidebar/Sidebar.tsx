@@ -2,6 +2,7 @@ import { useEffect, useId, useState, type ReactNode, type Ref } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '../../../lib/cn'
 import { renderAnchor, type LinkRenderProps } from '../../../lib/render-link'
+import { MeterBar, type MeterBarProps } from '../../molecules/meter-row/MeterRow'
 
 export type SidebarItem = {
   label: string
@@ -11,6 +12,8 @@ export type SidebarItem = {
   current?: boolean
   /** A number shown at the end of the item and read as part of its name ("Orders 12"). */
   count?: number
+  /** A 2px bar under the item (the MeterRow bar), inset to the item's padding. */
+  bar?: Omit<MeterBarProps, 'className'>
 }
 
 export type SidebarGroup = {
@@ -30,6 +33,14 @@ export type SidebarGroup = {
   /** Drawn under the items, inside the group, lined up with the items' left edge and padding: an
    *  "Add project" button. Hidden (and unreachable by Tab) while the group is folded. */
   footer?: ReactNode
+  /** Right-aligned data before the chevron ("2/2"). Read as part of the toggle's name. */
+  count?: string
+  /** Called when the reader folds or unfolds the group. */
+  onOpenChange?: (open: boolean) => void
+  /** Controls the fold from outside, for a page that opens one group and folds the rest (for
+   *  example to reveal an item picked elsewhere). Pair it with onOpenChange. Unset, the group keeps
+   *  its own state. */
+  open?: boolean
 }
 
 export type SidebarProps = {
@@ -80,7 +91,8 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
   const listId = `${id}-list`
   const collapsible = group.collapsible ?? true
   const holdsCurrent = group.items.some(item => item.current)
-  const [open, setOpen] = useState(holdsCurrent || (group.defaultOpen ?? true))
+  const [ownOpen, setOpen] = useState(holdsCurrent || (group.defaultOpen ?? true))
+  const open = group.open ?? ownOpen
   // Re-opens the group the moment holdsCurrent turns true (e.g. a router navigation moves the
   // current page into a group that was collapsed), without forcing it open on every render — a
   // reader who deliberately collapses a group that already holds the current page keeps it
@@ -108,7 +120,11 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
           id={titleId}
           aria-expanded={open}
           aria-controls={listId}
-          onClick={() => setOpen(value => !value)}
+          onClick={() => {
+            const next = !open
+            setOpen(next)
+            group.onOpenChange?.(next)
+          }}
           className={cn(
             TITLE,
             'flex w-full items-center justify-between min-h-6 px-3 cursor-pointer hover:text-[var(--color-text-primary)]',
@@ -119,19 +135,25 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
           )}
         >
           {heading}
+          {group.count !== undefined ? (
+            <span className="ml-auto mr-2 shrink-0 font-data normal-case tracking-normal">{group.count}</span>
+          ) : null}
           <ChevronDown
             aria-hidden="true"
             className={cn('w-3.5 h-3.5 shrink-0 transition-transform motion-reduce:transition-none', !open && '-rotate-90')}
           />
         </button>
       ) : (
-        <p id={titleId} className={cn(TITLE, 'px-3', group.action ? 'flex-1 min-w-0' : undefined)}>
+        <p id={titleId} className={cn(TITLE, 'px-3', group.count !== undefined && 'flex items-center', group.action ? 'flex-1 min-w-0' : undefined)}>
           {heading}
+          {group.count !== undefined ? (
+            <span className="ml-auto shrink-0 font-data normal-case tracking-normal">{group.count}</span>
+          ) : null}
         </p>
       )
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 min-w-0">
       {group.action ? (
         // The toggle and the action are siblings in one row: no interactive element nests inside
         // another, and a click on the action never reaches the toggle's onClick.
@@ -176,18 +198,19 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
       <div
         inert={!expanded}
         className={cn(
-          'grid transition-[grid-template-rows]',
+          'grid min-w-0 grid-cols-[minmax(0,1fr)] transition-[grid-template-rows]',
           expanded ? '[transition-duration:var(--duration-base)]' : '[transition-duration:var(--duration-fast)]',
           '[transition-timing-function:var(--ease-snap)] motion-reduce:transition-none',
           expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
         )}
       >
-        <div className="overflow-clip min-h-0">
-          <ul id={listId} role="list" aria-labelledby={titleId} className="flex flex-col gap-1 list-none p-1">
+        <div className="overflow-clip min-h-0 min-w-0">
+          <ul id={listId} role="list" aria-labelledby={titleId} className="flex flex-col gap-1 list-none p-1 min-w-0">
             {group.items.map((item, index) => (
               <li
                 key={index}
                 className={cn(
+                  'min-w-0',
                   // `translate`, not `transform`: Tailwind's translate-y-* utilities set the CSS
                   // `translate` property (a separate property from `transform` since CSS
                   // Transforms Level 2), so transitioning `transform` here animated nothing --
@@ -218,16 +241,17 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
                           {item.icon}
                         </span>
                       ) : null}
-                      <span className="truncate">{item.label}</span>
+                      <span className="min-w-0 truncate">{item.label}</span>
                       {item.count !== undefined ? (
                         <>
                           {/* A real space, so the name reads "Orders 12", not "Orders12". */}{' '}
-                          <span className="ml-auto font-mono text-xs tabular-nums">{item.count}</span>
+                          <span className="ml-auto shrink-0 font-data text-xs">{item.count}</span>
                         </>
                       ) : null}
                     </>
                   ),
                 })}
+                {item.bar ? <MeterBar {...item.bar} className="mx-3 w-auto" /> : null}
               </li>
             ))}
           </ul>
@@ -241,7 +265,7 @@ function Section({ group, renderLink }: { group: SidebarGroup; renderLink: (prop
 
 export function Sidebar({ label, groups, header, footer, renderLink = renderAnchor, className, ref }: SidebarProps) {
   return (
-    <nav ref={ref} aria-label={label} className={cn('flex flex-col gap-6 w-full', className)}>
+    <nav ref={ref} aria-label={label} className={cn('flex flex-col gap-6 w-full min-w-0', className)}>
       {header}
       {groups.map(group => (
         <Section key={group.title} group={group} renderLink={renderLink} />

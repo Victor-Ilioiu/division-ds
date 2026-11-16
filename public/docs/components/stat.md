@@ -24,6 +24,8 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `unit` | `string` |  | Shown beside the value, for example "kg". |
 | `padTo` | `number` |  | Pads a whole-number value to this many digits with dimmed zeros that screen readers skip (aria-hidden). |
 | `delta` | `{ value: string; direction: 'up' \| 'down'; sentiment: 'positive' \| 'negative' \| 'neutral'; period: string }` |  | value comes already formatted (for example "12%"). direction picks the arrow. sentiment picks the colour, and it doesn't depend on direction: fewer failed syncs is down, and that's positive. period is what the number is compared with, for example "last week". It's both shown and spoken. |
+| `variant` | `'default' \| 'kpi'` | `'default'` | default is the display-size hero numeral. kpi is a compact tile: a small uppercase label over a 24px value in the data font, for a row of four to six figures. |
+| `accent` | `boolean` | `false` | kpi only: a solid signal-fill tile with its text in accent.signal.ink, for the one figure to act on. At most one per row. |
 | `className` | `string` |  | Merged with the root classes. If two Tailwind utilities clash, the later one wins. |
 | `ref` | `Ref<HTMLDivElement>` |  | Passed through to the root div. |
 | `...rest` | `HTMLAttributes<HTMLDivElement>` |  | Any standard div attribute, applied to the root div. |
@@ -77,6 +79,17 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 ```tsx
 <div className="max-w-[10rem] w-full">
   <Stat label="Kits dispatched" value={18} padTo={3} />
+</div>
+```
+
+### KPI tiles: compact, with one accent tile for the figure to act on
+
+```tsx
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+  <Stat variant="kpi" accent label="Open orders" value={42} />
+  <Stat variant="kpi" label="Shipped today" value={128} />
+  <Stat variant="kpi" label="Returns" value={3} />
+  <Stat variant="kpi" label="Stock value" value="€18.4k" />
 </div>
 ```
 

@@ -33,6 +33,15 @@ export function StatDocs() {
           <Stat label="Kits dispatched" value={18} padTo={3} />
         </div>
       </Example>
+
+      <Example caption="KPI tiles: compact, with one accent tile for the figure to act on">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+          <Stat variant="kpi" accent label="Open orders" value={42} />
+          <Stat variant="kpi" label="Shipped today" value={128} />
+          <Stat variant="kpi" label="Returns" value={3} />
+          <Stat variant="kpi" label="Stock value" value="€18.4k" />
+        </div>
+      </Example>
     </ComponentDocs>
   )
 }

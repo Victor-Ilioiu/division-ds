@@ -1,5 +1,5 @@
 import { createRef } from 'react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axeClean } from '../../../test/axe'
@@ -249,5 +249,19 @@ describe('Sidebar', () => {
     expect(openWrapper!.className).not.toContain('[transition-duration:var(--duration-fast)]')
     expect(closedWrapper!.className).toContain('[transition-duration:var(--duration-fast)]')
     expect(closedWrapper!.className).not.toContain('[transition-duration:var(--duration-base)]')
+  })
+
+  it('follows a controlled open, and reports a toggle through onOpenChange', async () => {
+    const onOpenChange = vi.fn()
+    const group = (open: boolean): SidebarGroup => ({ title: 'Notes', open, onOpenChange, items: [{ label: 'One', href: '#one' }] })
+    const { rerender } = render(<Sidebar label="Sections" groups={[group(false)]} />)
+    const toggle = screen.getByRole('button', { name: /notes/i })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    rerender(<Sidebar label="Sections" groups={[group(true)]} />)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.click(toggle)
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+    // Controlled: the fold holds until the owner passes the new value.
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
   })
 })

@@ -1,5 +1,5 @@
 // Division DS — molecules barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Thirty-three folders under
+// the component(s) and their exported types and helpers. Thirty-six folders under
 // src/components/molecules/ — verify the folder count still matches before trusting either.
 
 export {
@@ -46,8 +46,11 @@ export { EmptyState, type EmptyStateProps } from './empty-state/EmptyState'
 export { FormField, type FieldControlProps, type FormFieldProps } from './form-field/FormField'
 export { ErrorSummary, type ErrorSummaryProps, type FormError } from './form-field/ErrorSummary'
 export { List, ListItem, type ListItemProps, type ListProps } from './list-item/ListItem'
+export { LogFeed, type LogFeedEntry, type LogFeedProps } from './log-feed/LogFeed'
+export { MeterAxis, MeterBar, MeterRow, type MeterAxisProps, type MeterBarProps, type MeterRowProps, type MeterScale } from './meter-row/MeterRow'
 export { MultiSelect, type MultiSelectProps } from './multi-select/MultiSelect'
 export { PageHeader, type PageHeaderProps } from './page-header/PageHeader'
+export { PanelHeader, type PanelHeaderProps } from './panel-header/PanelHeader'
 export { Pagination, paginationRange, type PaginationProps } from './pagination/Pagination'
 export { PromptInput, type PromptInputProps } from './prompt-input/PromptInput'
 export {

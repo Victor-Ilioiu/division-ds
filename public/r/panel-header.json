@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "panel-header",
+  "type": "registry:item",
+  "title": "Panel header",
+  "description": "Panel header. Best for: Heading a panel in a dense, data-heavy screen where several panels sit side by side and are referred to by number.",
+  "dependencies": [
+    "react@^19.2.8"
+  ],
+  "devDependencies": [
+    "@types/react@^19.2.18"
+  ],
+  "registryDependencies": [
+    "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/molecules/panel-header/PanelHeader.tsx",
+      "type": "registry:file",
+      "target": "src/division-ds/components/molecules/panel-header/PanelHeader.tsx",
+      "content": "import type { HTMLAttributes, ReactNode, Ref } from 'react'\nimport { cn } from '../../../lib/cn'\n\nexport type PanelHeaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'title'> & {\n  /** Panel number shown in a filled signal tag. A number is padded to two digits (\"01\"). */\n  index?: number | string\n  /** The panel's title. Shown uppercase and tracked in the display font. */\n  title: ReactNode\n  /** Right-aligned quiet readout (counts, timestamps, ids). Set in the data font. */\n  meta?: ReactNode\n  /** Heading level of the title. Default 2. */\n  level?: 2 | 3 | 4 | 5 | 6\n  ref?: Ref<HTMLDivElement>\n}\n\n/**\n * A panel's header bar: a numbered signal tag, a tracked display title and a muted meta\n * slot. The tag's digits are `accent.signal.ink` on `accent.signal.fill` (the primary button's\n * gated pair); the meta reads `text.secondary`, gated on every surface.\n */\nexport function PanelHeader({ index, title, meta, level = 2, className, ref, ...rest }: PanelHeaderProps) {\n  const Heading = `h${level}` as const\n  const tag = typeof index === 'number' ? String(index).padStart(2, '0') : index\n  return (\n    <div ref={ref} className={cn('flex items-center gap-2 min-w-0', className)} {...rest}>\n      {tag !== undefined ? (\n        <span className=\"font-data shrink-0 px-1.5 py-0.5 text-[11px] font-semibold leading-none bg-[var(--color-accent-signal-fill)] text-[var(--color-accent-signal-ink)]\">\n          {tag}\n        </span>\n      ) : null}\n      <Heading className=\"min-w-0 truncate font-display text-sm font-semibold uppercase tracking-[0.14em] text-[var(--color-text-primary)]\">\n        {title}\n      </Heading>\n      {meta !== undefined ? (\n        <span className=\"font-data ml-auto shrink-0 text-xs text-[var(--color-text-secondary)]\">{meta}</span>\n      ) : null}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

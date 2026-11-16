@@ -12,8 +12,8 @@ behind it. In a project that uses the components, your own root does this
 
 **App navigation.** A few views: `Navbar` (`current: true` on the open one). Many: `Sidebar`.
 
-**Type.** Three families, as utilities: `font-display` (headings, figures), `font-body` (the
-default, set by the shell), `font-mono` (labels, code, tabular numbers). A page title is
+**Type.** As utilities: `font-display` (headings, figures), `font-body` (the default),
+`font-mono` (labels, code), `font-data` (numbers, ids, logs). A page title is
 `<h1 className="font-display font-semibold text-2xl">`; body is `text-base` or `text-sm`; a label
 is `font-mono text-xs font-semibold uppercase tracking-[0.18em]`. Tailwind's own size, weight
 and spacing utilities are fine; only colour is restricted to tokens.

@@ -20,6 +20,10 @@ export type StatProps = HTMLAttributes<HTMLDivElement> & {
   /** Pad an integer value to this many digits with dimmed, aria-hidden zeros. */
   padTo?: number
   delta?: StatDelta
+  /** `default` is the display-size hero numeral; `kpi` is a compact tile: tiny label over a large data-font value. */
+  variant?: 'default' | 'kpi'
+  /** `kpi` only: a solid signal-fill tile with text in `accent.signal.ink`. Use once per row at most. */
+  accent?: boolean
   ref?: Ref<HTMLDivElement>
 }
 
@@ -75,7 +79,7 @@ const GROUPED = new Intl.NumberFormat('en-US', { maximumFractionDigits: 20 })
  * legitimately be placed. Stat's own docs Examples happen to render inside a Panel, which is
  * how this surfaced.
  */
-export function Stat({ label, value, unit, padTo, delta, className, ref, ...rest }: StatProps) {
+export function Stat({ label, value, unit, padTo, delta, variant = 'default', accent = false, className, ref, ...rest }: StatProps) {
   // A number is grouped ("1,276"); a padded field keeps its raw digits, since the pad counts them.
   const digits = typeof value === 'number' && !padTo ? GROUPED.format(value) : String(value)
   const pad =
@@ -83,30 +87,52 @@ export function Stat({ label, value, unit, padTo, delta, className, ref, ...rest
       ? '0'.repeat(Math.max(0, padTo - digits.length))
       : ''
   const Arrow = delta?.direction === 'down' ? ArrowDownRight : ArrowUpRight
+  const kpi = variant === 'kpi'
+  const lit = kpi && accent
+  const quiet = lit ? 'text-[var(--color-accent-signal-ink)]' : 'text-[var(--color-text-secondary)]'
 
   return (
-    <div ref={ref} className={cn('flex flex-col gap-2', className)} {...rest}>
+    <div
+      ref={ref}
+      className={cn(
+        'flex flex-col gap-2',
+        kpi && 'px-3 py-2 gap-1',
+        lit && 'bg-[var(--color-accent-signal-fill)]',
+        className,
+      )} {...rest}>
       <dl className="flex flex-col gap-1">
-        <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-text-secondary)]">
+        <dt
+          className={cn(
+            'font-mono font-semibold uppercase',
+            kpi ? 'text-[11px] tracking-[0.2em]' : 'text-[11px] tracking-[0.18em]',
+            quiet,
+          )}
+        >
           {label}
         </dt>
-        <dd className="font-display font-bold text-[2.25rem] leading-none tabular-nums text-[var(--color-text-primary)]">
+        <dd
+          className={cn(
+            'leading-none',
+            kpi ? 'font-data font-semibold text-2xl' : 'font-display font-bold text-[2.25rem] tabular-nums',
+            lit ? 'text-[var(--color-accent-signal-ink)]' : 'text-[var(--color-text-primary)]',
+          )}
+        >
           {pad ? (
-            <span aria-hidden="true" className="text-[var(--color-numeral-pad)]">
+            <span aria-hidden="true" className={lit ? 'opacity-60' : 'text-[var(--color-numeral-pad)]'}>
               {pad}
             </span>
           ) : null}
           {digits}
           {unit ? (
-            <span className="ml-1 font-mono text-sm font-normal text-[var(--color-text-secondary)]">
+            <span className={cn('ml-1 font-mono text-sm font-normal', quiet)}>
               {unit}
             </span>
           ) : null}
         </dd>
       </dl>
       {delta ? (
-        <p className="flex items-center gap-1 font-mono text-xs text-[var(--color-text-secondary)]">
-          <Arrow aria-hidden="true" className={cn('w-3.5 h-3.5 shrink-0', SENTIMENT[delta.sentiment].className)} />
+        <p className={cn('flex items-center gap-1 font-data text-xs', quiet)}>
+          <Arrow aria-hidden="true" className={cn('w-3.5 h-3.5 shrink-0', lit ? quiet : SENTIMENT[delta.sentiment].className)} />
           <span aria-hidden="true">
             {delta.value} vs {delta.period}
           </span>

@@ -44,7 +44,7 @@ export const meta: ComponentMeta = {
       name: 'groups',
       type: 'SidebarGroup[]',
       description:
-        'Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) and footer (under the items, lined up with them, hidden while the group is folded).',
+        'Required. Each group has title, icon, items, collapsible and defaultOpen, and optionally action (a small icon button at the right end of the title row, beside the fold toggle, never inside it) footer (under the items, lined up with them, hidden while the group is folded), count (a short right-aligned readout in the data font, such as "2/2", read as part of the toggle’s name) onOpenChange (called with the new state when the reader folds or unfolds it) and open (controls the fold from outside, paired with onOpenChange, for a page that opens one group and folds the rest). Each item can carry count (a number in the data font) and bar (a 2px MeterBar under the item). Labels truncate in a narrow column instead of pushing the count out.',
     },
     { name: 'header', type: 'ReactNode', description: 'Sits above the groups: a product name, a workspace switcher.' },
     {
