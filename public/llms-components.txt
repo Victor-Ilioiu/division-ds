@@ -1627,6 +1627,8 @@ import { Footer } from 'src/components/organisms/footer/Footer'
 - `columns: FooterColumn[]` Required. Each has a title, links and an optional defaultOpen. A link can be external. The grid is laid out for up to six groups; more wrap onto extra rows.
 - `aside: { title: string; content: ReactNode }` The second section, such as a sign-up form, an address or opening hours. The footer draws the title as a heading at headingLevel, with the slash.
 - `wordmark: string` The name, drawn across the whole width at the bottom edge. It's a string, not a node, because the footer sizes the line from its letters and uses it to name the image.
+- `wordmarkFit: 'bleed' \| 'contained' = 'bleed'` How the wordmark sits. bleed runs it edge to edge with its foot cut off by the bottom edge. contained keeps it inside the page gutter, with whole letters and the gutter's space under them.
+- `wordmarkCaption: string` A short line under the wordmark, in small lowercase mono letters aligned right. Shown only when wordmarkFit is contained, because a bled wordmark leaves no room under it.
 - `backdrop: ReactNode` Decoration behind the wordmark. Position it with absolute inset-0. It's hidden from assistive technology (screen readers and similar tools) and takes no pointer input, so it mustn't hold content or anything focusable.
 - `brand: ReactNode` A small brand mark above the groups, for a footer with no wordmark.
 - `tagline: string` A line under the brand, or on its own above the groups.

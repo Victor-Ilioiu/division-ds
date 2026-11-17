@@ -7,9 +7,44 @@ import { Footer, type FooterColumn } from '../components/organisms/footer/Footer
 import { SiteHeader } from '../components/shell/SiteHeader'
 import { routerLink } from '../demo/routerLink'
 import { CartProvider } from '../demo/store/cart'
+import { FooterBackdrop } from './hero/FooterBackdrop'
 import { COMPONENTS_HOME, SHOWCASE_APP, SHOWCASE_HOME, SHOWCASE_PAGES, SHOWCASE_STORE } from './routes'
 
+// The most-used components, one column per tier (as on the components index), then the site's own links.
 const FOOTER_COLUMNS: FooterColumn[] = [
+  {
+    title: 'Atoms',
+    links: [
+      { label: 'Button', href: `${COMPONENTS_HOME}/button` },
+      { label: 'Input', href: `${COMPONENTS_HOME}/input` },
+      { label: 'Select', href: `${COMPONENTS_HOME}/select` },
+      { label: 'Checkbox', href: `${COMPONENTS_HOME}/checkbox` },
+      { label: 'Switch', href: `${COMPONENTS_HOME}/switch` },
+      { label: 'Badge', href: `${COMPONENTS_HOME}/badge` },
+    ],
+  },
+  {
+    title: 'Molecules',
+    links: [
+      { label: 'Form field', href: `${COMPONENTS_HOME}/form-field` },
+      { label: 'Tabs', href: `${COMPONENTS_HOME}/tabs` },
+      { label: 'Accordion', href: `${COMPONENTS_HOME}/accordion` },
+      { label: 'Chat message', href: `${COMPONENTS_HOME}/chat-message` },
+      { label: 'Tool call', href: `${COMPONENTS_HOME}/tool-call` },
+      { label: 'Code block', href: `${COMPONENTS_HOME}/code-block` },
+    ],
+  },
+  {
+    title: 'Organisms',
+    links: [
+      { label: 'Data table', href: `${COMPONENTS_HOME}/data-table` },
+      { label: 'Dialog', href: `${COMPONENTS_HOME}/dialog` },
+      { label: 'Command palette', href: `${COMPONENTS_HOME}/command-palette` },
+      { label: 'Chat thread', href: `${COMPONENTS_HOME}/chat-thread` },
+      { label: 'Checkout form', href: `${COMPONENTS_HOME}/checkout-form` },
+      { label: 'Kanban board', href: `${COMPONENTS_HOME}/kanban-board` },
+    ],
+  },
   {
     title: 'Showcase',
     links: [
@@ -83,6 +118,9 @@ export function ShowcaseLayout() {
               tagline="Every screen on this site is built from Division DS components and tokens. All company names, people, orders and figures in the examples are made up."
               legal="Division DS is open source. Hexline, Corvane and Halden Console are fictional."
               wordmark="Division"
+              wordmarkFit="contained"
+              wordmarkCaption="Agentic Design System"
+              backdrop={<FooterBackdrop className="absolute inset-0 size-full" />}
               renderLink={routerLink}
             />
           </div>

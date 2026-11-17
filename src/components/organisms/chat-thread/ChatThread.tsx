@@ -140,7 +140,9 @@ export function ChatThread({
           tabIndex={0}
           onScroll={onScroll}
           className={cn(
-            'flex-1 min-h-0 overflow-y-auto overscroll-contain',
+            // No overscroll-contain: at either end the wheel hands off to the page, so a thread
+            // embedded in a long page never traps the reader inside it.
+            'flex-1 min-h-0 overflow-y-auto',
             'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]'
           )}
         >

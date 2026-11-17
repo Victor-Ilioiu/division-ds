@@ -39,6 +39,15 @@ export type FooterProps = {
    */
   wordmark?: string
   /**
+   * How the wordmark sits. `bleed`: edge to edge, its foot cut off by the footer's bottom edge.
+   * `contained`: inside the page gutter, whole letters, with the gutter's space under them.
+   * @default 'bleed'
+   */
+  wordmarkFit?: 'bleed' | 'contained'
+  /** A short line under the wordmark ("Agentic Design System"). Drawn only when `wordmarkFit` is
+   *  `contained`: a bled wordmark's foot is the footer's edge, with no room under it. */
+  wordmarkCaption?: string
+  /**
    * Decoration behind the wordmark: a layer the full width of the footer, from under the small
    * print to the bottom edge. Position what you pass with `absolute inset-0`. The layer is
    * `aria-hidden` and takes no pointer input, so it must hold nothing a reader needs and nothing
@@ -224,11 +233,11 @@ const UNIT = 100
  * Contrast: "text.primary on surface.base" (and on surface.raised, in the docs). A logotype is
  * exempt from 1.4.3; it is drawn in a text token anyway.
  */
-function Wordmark({ text }: { text: string }) {
+function Wordmark({ text, contained = false }: { text: string; contained?: boolean }) {
   const capitals = text.toUpperCase()
   const width = (Array.from(capitals).reduce((sum, letter) => sum + (ADVANCE[letter] ?? OTHER), 0) / 1000) * UNIT
   const left = BEARING.left * UNIT
-  const height = (CAP_HEIGHT - CROP) * UNIT
+  const height = (contained ? CAP_HEIGHT : CAP_HEIGHT - CROP) * UNIT
   return (
     <svg
       role="img"
@@ -270,6 +279,8 @@ export function Footer({
   aside,
   legal,
   wordmark,
+  wordmarkFit = 'bleed',
+  wordmarkCaption,
   backdrop,
   headingLevel = 2,
   renderLink = renderAnchor,
@@ -346,7 +357,20 @@ export function Footer({
           ) : null}
           {/* Headroom over the wordmark, for the backdrop to be seen in. */}
           {backdrop ? <div aria-hidden="true" className="h-[max(6rem,12cqw)]" /> : null}
-          {wordmark ? <Wordmark text={wordmark} /> : backdrop ? <div aria-hidden="true" className="h-[max(4.5rem,13cqw)]" /> : null}
+          {wordmark ? (
+            wordmarkFit === 'contained' ? (
+              <div className={cn(GUTTER, 'pb-[var(--page-gutter,1rem)]')}>
+                <Wordmark text={wordmark} contained />
+                {wordmarkCaption ? (
+                  <p className="mt-[max(1rem,2.2cqw)] text-right font-mono text-[max(0.75rem,1.3cqw)] font-semibold lowercase leading-none tracking-[0.6em] text-[var(--color-text-secondary)]">
+                    {wordmarkCaption}
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <Wordmark text={wordmark} />
+            )
+          ) : backdrop ? <div aria-hidden="true" className="h-[max(4.5rem,13cqw)]" /> : null}
         </div>
       ) : null}
     </footer>

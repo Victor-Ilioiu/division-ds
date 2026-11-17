@@ -26,6 +26,7 @@ import { CodeBlock } from '../../components/molecules/code-block/CodeBlock'
 import { Panel } from '../../components/atoms/panel/Panel'
 import { CabinetHero } from '../hero/CabinetHero'
 import { DS_VERSION } from '../../version'
+import { publicPath } from '../../base-path'
 
 // Every figure here is read from the repository: 81 components in public/manifest/components.json;
 // the token layers from public/manifest/tokens.json (66 primitive colours plus 8 spacing and
@@ -137,18 +138,24 @@ const EXAMPLES = [
     title: 'Corvane CRM',
     body: 'A sales pipeline with deals, contacts, an activity timeline, sheets and dialogs.',
     to: '/crm',
+    image: 'showcase/crm.jpg',
+    alt: 'The Corvane pipeline board: four stage columns of deal cards under the quarter’s figures.',
     cta: 'Open the CRM',
   },
   {
     title: 'Hexline store',
     body: 'An airsoft replica shop with a three.js scene: press Assemble on its home page and a rifle replica fits together from its parts, and each product page has a 3D model you can turn and zoom. Also a catalogue, a cart and a checkout that never takes payment.',
     to: '/store',
+    image: 'showcase/store.jpg',
+    alt: 'The Hexline home page: the Kestrel carbine replica and its kit parts in a lit three.js scene.',
     cta: 'Open the store',
   },
   {
     title: 'Halden Console',
     body: 'Live sensor monitoring: a simulated feed you can pause, alerts you acknowledge in bulk, sites charted over time and an assistant that waits for approval.',
     to: '/console',
+    image: 'showcase/console.jpg',
+    alt: 'The Halden overview: eight sites with sensor status, open alerts by severity and the worst reading charted.',
     cta: 'Open the console',
   },
 ]
@@ -224,7 +231,7 @@ export function Home() {
       <div className="px-gutter">
         {/* Features: a bento */}
         <section aria-labelledby="features" className="mx-auto max-w-6xl pt-20 pb-12">
-          <SectionHeading id="features" level={2} title="What is in it" description="Everything below ships in the repository today." />
+          <SectionHeading id="features" level={2} className="border-t-0 pt-0" title="What is in it" description="Everything below ships in the repository today." />
           <ul role="list" className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
             {FEATURES.map(f => (
               <li key={f.title} className={cn('flex', f.span)}>
@@ -267,6 +274,7 @@ export function Home() {
         <section aria-labelledby="agent" className="mx-auto max-w-6xl py-16">
           <SectionHeading
             id="agent"
+            className="border-t-0 pt-0"
             level={2}
             title="What a session with an agent looks like"
             description="An example written for this page. The tool names are the ones the MCP server exposes; the prompt and the replies are illustrative."
@@ -337,8 +345,22 @@ export function Home() {
           <h2 id="examples" className="font-display text-3xl font-semibold tracking-tight">Built with it</h2>
           <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
             {EXAMPLES.map(ex => (
-              <Panel key={ex.to} interactive cut padding="lg" asChild>
-                <RouterLink to={ex.to} className="group flex min-h-56 flex-col justify-between">
+              <Panel key={ex.to} interactive cut padding="none" asChild>
+                <RouterLink to={ex.to} className="group flex flex-col overflow-hidden">
+                  {/* A real capture of the demo (1440 x 900), cropped to its top-left where the
+                      brand and the main surface sit; it drifts a little on hover. */}
+                  <div className="aspect-[16/10] overflow-hidden border-b border-[var(--color-border-hairline)] bg-[var(--color-surface-sunken)]">
+                    <img
+                      src={publicPath(ex.image)}
+                      alt={ex.alt}
+                      width={1440}
+                      height={900}
+                      loading="lazy"
+                      decoding="async"
+                      className="size-full object-cover object-left-top transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between p-6">
                   <div>
                     <h3 className="font-display text-2xl font-semibold">{ex.title}</h3>
                     <p className="mt-3 max-w-md text-base text-[var(--color-text-secondary)]">{ex.body}</p>
@@ -347,6 +369,7 @@ export function Home() {
                     {ex.cta}
                     <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" />
                   </span>
+                  </div>
                 </RouterLink>
               </Panel>
             ))}
@@ -355,7 +378,7 @@ export function Home() {
 
         {/* FAQ */}
         <section aria-labelledby="faq" className="mx-auto max-w-3xl py-16">
-          <SectionHeading id="faq" level={2} title="Questions" />
+          <SectionHeading id="faq" level={2} className="border-t-0 pt-0" title="Questions" />
           <Accordion type="single" collapsible className="mt-6">
             {FAQ.map(item => (
               <AccordionItem key={item.q} value={item.q}>

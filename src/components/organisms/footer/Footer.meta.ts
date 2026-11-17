@@ -90,6 +90,19 @@ export const meta: ComponentMeta = {
         "The name, drawn across the whole width at the bottom edge. It's a string, not a node, because the footer sizes the line from its letters and uses it to name the image.",
     },
     {
+      name: 'wordmarkFit',
+      type: "'bleed' | 'contained'",
+      default: "'bleed'",
+      description:
+        "How the wordmark sits. bleed runs it edge to edge with its foot cut off by the bottom edge. contained keeps it inside the page gutter, with whole letters and the gutter's space under them.",
+    },
+    {
+      name: 'wordmarkCaption',
+      type: 'string',
+      description:
+        'A short line under the wordmark, in small lowercase mono letters aligned right. Shown only when wordmarkFit is contained, because a bled wordmark leaves no room under it.',
+    },
+    {
       name: 'backdrop',
       type: 'ReactNode',
       description:
