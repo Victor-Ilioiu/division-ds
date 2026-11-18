@@ -175,6 +175,45 @@ describe('Tabs', () => {
     expect(await axeClean(container)).toHaveNoViolations()
   })
 
+  it('wraps a horizontal list in a scroller with two scroll buttons kept out of focus and the accessibility tree', () => {
+    render(<Kit />)
+    const list = screen.getByRole('tablist')
+    expect(list.className).toContain('tabs-scroll')
+    const scroller = list.parentElement!
+    expect(scroller).toHaveAttribute('data-tabs-scroller')
+    const buttons = scroller.querySelectorAll('[data-tabs-scroll]')
+    expect(buttons).toHaveLength(2)
+    buttons.forEach((b) => {
+      expect(b).toHaveAttribute('tabindex', '-1')
+      expect(b).toHaveAttribute('aria-hidden', 'true')
+      // jsdom has no layout, so nothing overflows and both start hidden.
+      expect(b).toHaveAttribute('data-state', 'off')
+    })
+    expect(screen.queryAllByRole('button')).toHaveLength(0)
+  })
+
+  it('keeps a spent scroll button in place while the pointer is on it, then lets it go', async () => {
+    render(<Kit />)
+    const next = screen.getByRole('tablist').parentElement!.querySelector('[data-tabs-scroll="next"]')!
+    await userEvent.hover(next)
+    expect(next).toHaveAttribute('data-state', 'spent')
+    expect(next).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.unhover(next)
+    expect(next).toHaveAttribute('data-state', 'off')
+  })
+
+  it('gives a vertical list no scroller or scroll buttons', () => {
+    render(
+      <Tabs defaultValue="a" orientation="vertical">
+        <TabsList aria-label="Settings">
+          <TabsTrigger value="a">A</TabsTrigger>
+        </TabsList>
+      </Tabs>
+    )
+    expect(document.querySelector('[data-tabs-scroller]')).toBeNull()
+    expect(document.querySelector('[data-tabs-scroll]')).toBeNull()
+  })
+
   it('drops the hover wash from an inactive tab while it holds keyboard focus', () => {
     render(
       <Tabs defaultValue="open" activationMode="manual">

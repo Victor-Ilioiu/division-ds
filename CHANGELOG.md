@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0 — 2026-11-18
+
+### Changed
+- **Tabs: overflow without a scrollbar.** A horizontal row that does not fit hides its scrollbar and fades the edge that still hides tabs (a CSS mask with animated widths). On touch, a swipe glides and snaps the leftmost tab to the start. With a mouse, a chevron button sits over each fade, fades in and out instead of mounting, and scrolls about one width. At the end of the row a button the pointer is still on stays put, dimmed and disabled, until the pointer leaves, so a repeat click doesn't land on whatever is underneath. Keyboard focus is kept clear of both through `scroll-padding`. The chevrons are out of the tab order and hidden from screen readers. The hairline moved from the list to a new wrapper (`data-tabs-scroller`) so the mask doesn't fade it. Vertical tabs are unchanged.
+
 ## 0.12.0 — 2026-11-16
 
 Readability for dense, data-heavy screens, ported from Command Center's prototype: a data font, a brightness ladder for row state, six components and small additions to six more. Signal orange stays the only accent; the display and body faces do not change.

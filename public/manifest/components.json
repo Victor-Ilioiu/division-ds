@@ -8958,7 +8958,7 @@
         },
         {
           "part": "TabsList",
-          "description": "The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). On a narrow screen it scrolls sideways inside itself."
+          "description": "The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). When the tabs don't fit, it scrolls sideways inside itself with no scrollbar: the edge that still hides tabs fades out, a swipe snaps the leftmost tab into place on touch, and with a mouse a chevron button sits over each fade."
         },
         {
           "part": "TabsTrigger",
@@ -8981,6 +8981,10 @@
         {
           "caption": "Default",
           "source": "<div className=\"max-w-sm w-full\">\n  <Tabs defaultValue=\"replica\">\n    <TabsList aria-label=\"Kit sections\">\n      <TabsTrigger value=\"replica\">Replica</TabsTrigger>\n      <TabsTrigger value=\"optics\">Optics</TabsTrigger>\n      <TabsTrigger value=\"parts\">Parts</TabsTrigger>\n    </TabsList>\n    <TabsContent value=\"replica\">Electric carbine replica.</TabsContent>\n    <TabsContent value=\"optics\">Tube sight and holo sight.</TabsContent>\n    <TabsContent value=\"parts\">Magazines, a battery and a charger.</TabsContent>\n  </Tabs>\n</div>"
+        },
+        {
+          "caption": "More tabs than fit: swipe on touch, chevrons with a mouse, arrow keys always",
+          "source": "<div className=\"max-w-sm w-full\">\n  <Tabs defaultValue=\"overview\">\n    <TabsList aria-label=\"Project sections\">\n      {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (\n        <TabsTrigger key={t} value={t.toLowerCase()}>\n          {t}\n        </TabsTrigger>\n      ))}\n    </TabsList>\n    {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (\n      <TabsContent key={t} value={t.toLowerCase()}>\n        {t} for the field day project.\n      </TabsContent>\n    ))}\n  </Tabs>\n</div>"
         },
         {
           "caption": "With a disabled tab",

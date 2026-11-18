@@ -53,6 +53,27 @@ Each is compiled and rendered on the docs page. Imports are omitted; see above.
 </div>
 ```
 
+### More tabs than fit: swipe on touch, chevrons with a mouse, arrow keys always
+
+```tsx
+<div className="max-w-sm w-full">
+  <Tabs defaultValue="overview">
+    <TabsList aria-label="Project sections">
+      {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (
+        <TabsTrigger key={t} value={t.toLowerCase()}>
+          {t}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+    {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (
+      <TabsContent key={t} value={t.toLowerCase()}>
+        {t} for the field day project.
+      </TabsContent>
+    ))}
+  </Tabs>
+</div>
+```
+
 ### With a disabled tab
 
 ```tsx
@@ -173,7 +194,7 @@ function ControlledExample() {
 ## Anatomy
 
 - **Tabs**: The root. Holds which tab is active, whether the page controls that or the component does.
-- **TabsList**: The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). On a narrow screen it scrolls sideways inside itself.
+- **TabsList**: The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). When the tabs don't fit, it scrolls sideways inside itself with no scrollbar: the edge that still hides tabs fades out, a swipe snaps the leftmost tab into place on touch, and with a mouse a chevron button sits over each fade.
 - **TabsTrigger**: A single tab. Fill variant: the active tab is the signal fill with ink-coloured text, and hovering adds a 12% signal tint. Line variant: the active tab is primary text over a 2px (pixel) signal bar, which moves to the inline end (the side text runs towards) when the tabs are vertical.
 - **Icon**: Optional, before the label. aria-hidden, so screen readers skip it.
 - **Count**: Optional, after the label. You see it as a number, and screen readers read it as part of the name: Open (12).

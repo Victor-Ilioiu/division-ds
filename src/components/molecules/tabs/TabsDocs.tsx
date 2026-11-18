@@ -51,6 +51,25 @@ export function TabsDocs() {
         </div>
       </Example>
 
+      <Example caption="More tabs than fit: swipe on touch, chevrons with a mouse, arrow keys always">
+        <div className="max-w-sm w-full">
+          <Tabs defaultValue="overview">
+            <TabsList aria-label="Project sections">
+              {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (
+                <TabsTrigger key={t} value={t.toLowerCase()}>
+                  {t}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {['Overview', 'Activity', 'Members', 'Files', 'Reports', 'Settings', 'Billing', 'Integrations'].map((t) => (
+              <TabsContent key={t} value={t.toLowerCase()}>
+                {t} for the field day project.
+              </TabsContent>
+            ))}
+          </Tabs>
+        </div>
+      </Example>
+
       <Example caption="With a disabled tab">
         <div className="max-w-sm w-full">
           <Tabs defaultValue="replica">

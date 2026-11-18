@@ -12,7 +12,7 @@ export const meta: ComponentMeta = {
     {
       part: 'TabsList',
       description:
-        'The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). On a narrow screen it scrolls sideways inside itself.',
+        'The tablist, the row of tabs. It needs an aria-label (a name read out by screen readers). When the tabs don\'t fit, it scrolls sideways inside itself with no scrollbar: the edge that still hides tabs fades out, a swipe snaps the leftmost tab into place on touch, and with a mouse a chevron button sits over each fade.',
     },
     {
       part: 'TabsTrigger',

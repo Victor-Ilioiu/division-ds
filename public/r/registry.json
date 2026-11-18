@@ -1542,6 +1542,7 @@
       "title": "Tabs",
       "description": "Tabs. Best for: Switching between equally important sections of one view.",
       "dependencies": [
+        "lucide-react@^1.47.0",
         "radix-ui@^1.6.7",
         "react@^19.2.8"
       ],

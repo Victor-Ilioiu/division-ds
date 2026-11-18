@@ -133,7 +133,7 @@
 }
 .spinner-conveyor-track {
   /* token-discipline: allow, a mask reads alpha only, so its black is never painted */
-  mask-image: linear-gradient(to right, #000 13.1ch, transparent 13.1ch, transparent 15ch, #000 15ch);
+  mask-image: linear-gradient(to right, var(--color-text-primary) 13.1ch, transparent 13.1ch, transparent 15ch, var(--color-text-primary) 15ch);
   mask-size: 30ch 100%;
   mask-repeat: no-repeat;
   animation: spinner-conveyor-window 1.8s linear infinite;
@@ -348,6 +348,68 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .tabs-indicator[data-ready] { transition: none; }
+}
+
+/* ---- Tabs overflow (added 2026-11-18) ----
+   A horizontal tab row that does not fit scrolls inside itself with no scrollbar. What says
+   "there is more" instead:
+   - Touch: the edge that hides tabs fades out (a mask, so it works on any surface colour), and a
+     swipe glides and snaps the leftmost visible tab to the start.
+   - Mouse: the same fades, plus a chevron button over each one. A button fades in and out rather
+     than mounting, so nothing in the row moves. At the end of the row a button the pointer is
+     still on stays put, dim and disabled (Tabs.tsx: data-state="spent"), so a repeat click lands
+     on nothing; it fades out once the pointer leaves.
+   - Keyboard: scroll-padding equal to the fade (and the button) keeps a focused tab and its ring
+     clear of both when the browser scrolls it into view. The buttons are out of the tab order.
+   The fade widths are registered lengths so they animate instead of switching. A mask reads
+   only alpha: the opaque stops use a token (any opaque one would do) to keep the colour gate clean. */
+@property --tabs-fade-start { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --tabs-fade-end { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+.tabs-scroll {
+  --tabs-fade: 32px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: var(--tabs-fade);
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--color-text-primary) var(--tabs-fade-start), var(--color-text-primary) calc(100% - var(--tabs-fade-end)), transparent);
+  mask-image: linear-gradient(to right, transparent, var(--color-text-primary) var(--tabs-fade-start), var(--color-text-primary) calc(100% - var(--tabs-fade-end)), transparent);
+  transition: --tabs-fade-start var(--duration-base) var(--ease-snap), --tabs-fade-end var(--duration-base) var(--ease-snap);
+}
+.tabs-scroll::-webkit-scrollbar { display: none; }
+.tabs-scroll[data-overflow-start] { --tabs-fade-start: var(--tabs-fade); }
+.tabs-scroll[data-overflow-end] { --tabs-fade-end: var(--tabs-fade); }
+.tabs-scroll:dir(rtl) {
+  -webkit-mask-image: linear-gradient(to left, transparent, var(--color-text-primary) var(--tabs-fade-start), var(--color-text-primary) calc(100% - var(--tabs-fade-end)), transparent);
+  mask-image: linear-gradient(to left, transparent, var(--color-text-primary) var(--tabs-fade-start), var(--color-text-primary) calc(100% - var(--tabs-fade-end)), transparent);
+}
+
+@media (pointer: coarse) {
+  .tabs-scroll { scroll-snap-type: x mandatory; }
+  .tabs-scroll > [role='tab'] { scroll-snap-align: start; }
+}
+
+.tabs-scroll-btn { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  /* Wide enough to clear the 32px button and still fade the tab beside it. */
+  .tabs-scroll { --tabs-fade: 64px; }
+  .tabs-scroll-btn {
+    display: inline-flex;
+    transition:
+      opacity var(--duration-base) var(--ease-snap),
+      color var(--duration-fast) linear,
+      visibility 0s;
+  }
+  .tabs-scroll-btn[data-state='off'] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    /* Hold visibility until the fade has finished, so it fades rather than blinks. */
+    transition: opacity var(--duration-base) var(--ease-snap), visibility 0s var(--duration-base);
+  }
+  .tabs-scroll-btn[data-state='spent'] { opacity: 0.35; cursor: not-allowed; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabs-scroll, .tabs-scroll-btn, .tabs-scroll-btn[data-state='off'] { transition: none; }
 }
 
 /* ---- Tooltip entry (added 2026-10-14) ----
