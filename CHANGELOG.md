@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.14.0 — 2026-11-21
 
 ### Changed
 - **Dialog: responsive sizes, after Carbon's modal scale.** `size` is now `'xs' | 'sm' | 'md' | 'lg'` and defaults to `'sm'`. Wide screen: xs 20rem, sm 32rem (the old default width, so a dialog with no `size` looks the same), md 42rem, lg 90% of the window. Below 640px, xs and sm stay floating cards, md fills the width inside a 16px margin and lg goes full screen. Header and body padding is 20px on phones. **Migration:** `size="md"` used to mean 32rem; pass `sm` to keep it. `size="sm"` used to be 24rem and is now 32rem; pass `xs` for a compact confirm.
