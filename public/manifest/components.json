@@ -11378,9 +11378,9 @@
         },
         {
           "name": "size (Content)",
-          "type": "'sm' | 'md' | 'lg'",
-          "default": "'md'",
-          "description": "Maximum width: 24rem, 32rem or 42rem (rem is a unit based on the root text size, usually 16 pixels)."
+          "type": "'xs' | 'sm' | 'md' | 'lg'",
+          "default": "'sm'",
+          "description": "Responsive. On a wide screen: xs is 20rem, sm 32rem, md 42rem (rem is a unit based on the root text size, usually 16 pixels), and lg takes 90% of the window width. On a phone (below 640 pixels), xs and sm stay floating cards, md fills the width inside a 16-pixel margin, and lg fills the whole screen. Pick xs for a one-line confirm, sm for a short form or decision, md for a longer form, lg for wide content such as a table."
         },
         {
           "name": "closeLabel (Content)",
@@ -11487,6 +11487,10 @@
         {
           "caption": "Confirm a destructive action, opened without a trigger",
           "source": "function ArchiveExample() {\n  const [open, setOpen] = useState(false)\n  const [status, setStatus] = useState('')\n\n  return (\n    <div className=\"flex flex-col items-start gap-3\">\n      <Button\n        variant=\"danger\"\n        onClick={() => {\n          setStatus('')\n          setOpen(true)\n        }}\n      >\n        Archive manifest\n      </Button>\n      <Dialog open={open} onOpenChange={setOpen}>\n        <DialogContent title=\"Archive manifest?\" size=\"sm\">\n          {/* token-discipline: allow, a manifest number in copy, not a colour */}\n          <p>Manifest #482 moves to the archive. It stays recoverable there for 30 days.</p>\n          <DialogFooter>\n            <DialogClose asChild>\n              <Button variant=\"secondary\">Keep it</Button>\n            </DialogClose>\n            <Button\n              variant=\"danger\"\n              onClick={() => {\n                setStatus('Manifest archived.')\n                setOpen(false)\n              }}\n            >\n              Archive\n            </Button>\n          </DialogFooter>\n        </DialogContent>\n      </Dialog>\n      <p role=\"status\" className={docsProse}>\n        {status}\n      </p>\n    </div>\n  )\n}\n\n<ArchiveExample />"
+        },
+        {
+          "caption": "Sizes: xs, sm, md and lg, each responsive",
+          "source": "const SIZE_DEMOS = [\n  { size: 'xs', label: 'Extra small', use: 'A one-line confirm.' },\n  { size: 'sm', label: 'Small', use: 'A short decision with a sentence of context.' },\n  { size: 'md', label: 'Medium', use: 'A form. Fills the width on a phone.' },\n  { size: 'lg', label: 'Large', use: 'Wide content. Goes full screen on a phone.' },\n] as const\n\nfunction SizesExample() {\n  return (\n    <div className=\"flex flex-wrap gap-3\">\n      {SIZE_DEMOS.map(demo => (\n        <Dialog key={demo.size}>\n          <DialogTrigger asChild>\n            <Button variant=\"secondary\">{demo.label}</Button>\n          </DialogTrigger>\n          <DialogContent title={`${demo.label} dialog`} description={demo.use} size={demo.size}>\n            <p>Resize the window to see how this size behaves at each width.</p>\n            <DialogFooter>\n              <DialogClose asChild>\n                <Button>Done</Button>\n              </DialogClose>\n            </DialogFooter>\n          </DialogContent>\n        </Dialog>\n      ))}\n    </div>\n  )\n}\n\n<SizesExample />"
         },
         {
           "caption": "Long content",

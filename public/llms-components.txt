@@ -1605,7 +1605,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from 
 - `asChild (Trigger): boolean` Uses its single child as the trigger instead of adding its own button. Pass a Button.
 - `title (Content): string` Required. The visible heading, and the name screen readers say.
 - `description (Content): string` Shown under the title. Screen readers read it as the accessible description.
-- `size (Content): 'sm' \| 'md' \| 'lg' = 'md'` Maximum width: 24rem, 32rem or 42rem (rem is a unit based on the root text size, usually 16 pixels).
+- `size (Content): 'xs' \| 'sm' \| 'md' \| 'lg' = 'sm'` Responsive. On a wide screen: xs is 20rem, sm 32rem, md 42rem (rem is a unit based on the root text size, usually 16 pixels), and lg takes 90% of the window width. On a phone (below 640 pixels), xs and sm stay floating cards, md fills the width inside a 16-pixel margin, and lg fills the whole screen. Pick xs for a one-line confirm, sm for a short form or decision, md for a longer form, lg for wide content such as a table.
 - `closeLabel (Content): string = 'Close'` What screen readers call the close button.
 - `className (Content): string` Added to the root classes. Where two Tailwind utility classes clash, the later one wins.
 - `ref (Content): Ref<HTMLDivElement>` The element with the role dialog.

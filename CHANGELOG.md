@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- **Dialog: responsive sizes, after Carbon's modal scale.** `size` is now `'xs' | 'sm' | 'md' | 'lg'` and defaults to `'sm'`. Wide screen: xs 20rem, sm 32rem (the old default width, so a dialog with no `size` looks the same), md 42rem, lg 90% of the window. Below 640px, xs and sm stay floating cards, md fills the width inside a 16px margin and lg goes full screen. Header and body padding is 20px on phones. **Migration:** `size="md"` used to mean 32rem; pass `sm` to keep it. `size="sm"` used to be 24rem and is now 32rem; pass `xs` for a compact confirm.
+
+### Docs site
+- **Readable by crawlers and AI assistants.** `npm run prerender` (after the build) writes every route as its own HTML file: its own title, description, canonical, JSON-LD (SoftwareSourceCode, TechArticle, breadcrumbs) and the page as it renders. Before, crawlers that don't run JavaScript got about six words and one shared title on every route. Demo screens like cart and checkout are `noindex`, and a `sitemap.xml` lists the 101 indexable routes. React takes over the snapshot without a flash. The prerender code runs only on the docs site; nothing new ships in the package or the registry.
+- **Link previews:** Open Graph tags and a 1200x630 card, so a shared link shows a preview on LinkedIn, Slack and X.
+
 ## 0.13.0 — 2026-11-18
 
 ### Changed

@@ -119,6 +119,36 @@ function LongContentExample() {
   )
 }
 
+const SIZE_DEMOS = [
+  { size: 'xs', label: 'Extra small', use: 'A one-line confirm.' },
+  { size: 'sm', label: 'Small', use: 'A short decision with a sentence of context.' },
+  { size: 'md', label: 'Medium', use: 'A form. Fills the width on a phone.' },
+  { size: 'lg', label: 'Large', use: 'Wide content. Goes full screen on a phone.' },
+] as const
+
+/** One trigger per size, so the responsive scale can be tried at any window width. */
+function SizesExample() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      {SIZE_DEMOS.map(demo => (
+        <Dialog key={demo.size}>
+          <DialogTrigger asChild>
+            <Button variant="secondary">{demo.label}</Button>
+          </DialogTrigger>
+          <DialogContent title={`${demo.label} dialog`} description={demo.use} size={demo.size}>
+            <p>Resize the window to see how this size behaves at each width.</p>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button>Done</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ))}
+    </div>
+  )
+}
+
 export function DialogDocs() {
   return (
     <ComponentDocs meta={meta}>
@@ -128,6 +158,10 @@ export function DialogDocs() {
 
       <Example caption="Confirm a destructive action, opened without a trigger">
         <ArchiveExample />
+      </Example>
+
+      <Example caption="Sizes: xs, sm, md and lg, each responsive">
+        <SizesExample />
       </Example>
 
       <Example caption="Long content" className="block">

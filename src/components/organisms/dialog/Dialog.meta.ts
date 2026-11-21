@@ -61,9 +61,10 @@ export const meta: ComponentMeta = {
     },
     {
       name: 'size (Content)',
-      type: "'sm' | 'md' | 'lg'",
-      default: "'md'",
-      description: 'Maximum width: 24rem, 32rem or 42rem (rem is a unit based on the root text size, usually 16 pixels).',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      default: "'sm'",
+      description:
+        "Responsive. On a wide screen: xs is 20rem, sm 32rem, md 42rem (rem is a unit based on the root text size, usually 16 pixels), and lg takes 90% of the window width. On a phone (below 640 pixels), xs and sm stay floating cards, md fills the width inside a 16-pixel margin, and lg fills the whole screen. Pick xs for a one-line confirm, sm for a short form or decision, md for a longer form, lg for wide content such as a table.",
     },
     {
       name: 'closeLabel (Content)',

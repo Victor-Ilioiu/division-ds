@@ -127,7 +127,7 @@ export const DialogClose = RadixDialog.Close
 /** The visible title (the dialog's accessible name) and optional description. */
 export function DialogHeading({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="flex flex-col gap-1.5 p-6 pr-16">
+    <div className="flex flex-col gap-1.5 p-5 pr-14 sm:p-6 sm:pr-16">
       <RadixDialog.Title className="font-display font-semibold text-xl leading-snug text-[var(--color-text-primary)]">
         {title}
       </RadixDialog.Title>
@@ -140,7 +140,27 @@ export function DialogHeading({ title, description }: { title: string; descripti
   )
 }
 
-const SIZES = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' } as const
+/**
+ * Responsive sizes, after Carbon's modal scale (xs / sm / md / lg), with two changes:
+ *
+ * - xs, sm and md have a hard rem cap. Carbon sizes by percentage of the viewport alone, so its
+ *   medium modal keeps widening on a large screen; a form reads best at a fixed width.
+ * - On a phone (below 640 pixels) the scale collapses by intent, not by shrinking. xs and sm stay
+ *   centred cards inside a 16-pixel gutter; md fills the width inside that gutter; lg goes full
+ *   screen, edge to edge and full height.
+ *
+ * Steps: xs 20rem, sm 32rem (the old default width), md 42rem (about 30% wider than sm), lg 90% of
+ * the viewport width, for tables and wide content.
+ */
+const SIZES = {
+  xs: { surface: 'max-w-xs', overlay: 'p-4' },
+  sm: { surface: 'max-w-lg', overlay: 'p-4' },
+  md: { surface: 'max-w-[42rem]', overlay: 'p-4' },
+  lg: {
+    surface: 'min-h-full border-0 sm:min-h-0 sm:border sm:w-[90%] max-w-none',
+    overlay: 'p-0 sm:p-4',
+  },
+} as const
 
 export type DialogContentProps = Omit<
   ComponentPropsWithoutRef<typeof RadixDialog.Content>,
@@ -150,7 +170,7 @@ export type DialogContentProps = Omit<
   title: string
   /** Shown under the title and wired as the accessible description. */
   description?: string
-  /** @default 'md' */
+  /** @default 'sm' */
   size?: keyof typeof SIZES
   /** @default 'Close' */
   closeLabel?: string
@@ -166,7 +186,7 @@ export type DialogContentProps = Omit<
 export function DialogContent({
   title,
   description,
-  size = 'md',
+  size = 'sm',
   closeLabel = 'Close',
   className,
   children,
@@ -179,12 +199,12 @@ export function DialogContent({
       closeLabel={closeLabel}
       // The scrim layer is the scroll container and the surface centres with m-auto, so a dialog
       // taller than the viewport starts at its top instead of overflowing upward out of reach.
-      overlayClassName="overflow-y-auto p-4"
-      className={cn('crosshair m-auto w-full flex flex-col border', SIZES[size], className)}
+      overlayClassName={cn('overflow-y-auto', SIZES[size].overlay)}
+      className={cn('crosshair m-auto w-full flex flex-col border', SIZES[size].surface, className)}
       {...rest}
     >
       <DialogHeading title={title} description={description} />
-      <div className="px-6 pb-6 font-body text-sm text-[var(--color-text-primary)]">{children}</div>
+      <div className="px-5 pb-5 sm:px-6 sm:pb-6 font-body text-sm text-[var(--color-text-primary)]">{children}</div>
     </OverlayFrame>
   )
 }

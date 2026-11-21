@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client'
 import './styles/tailwind.css'
 import App from './App.tsx'
 import { onCaughtError } from './onCaughtError'
+import { prepareRoot } from './prerenderHandoff'
 
-createRoot(document.getElementById('root')!, { onCaughtError }).render(
+createRoot(prepareRoot(), { onCaughtError }).render(
   <StrictMode>
     <App />
   </StrictMode>,

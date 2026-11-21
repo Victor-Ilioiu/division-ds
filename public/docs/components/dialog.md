@@ -25,7 +25,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `asChild (Trigger)` | `boolean` |  | Uses its single child as the trigger instead of adding its own button. Pass a Button. |
 | `title (Content)` | `string` |  | Required. The visible heading, and the name screen readers say. |
 | `description (Content)` | `string` |  | Shown under the title. Screen readers read it as the accessible description. |
-| `size (Content)` | `'sm' \| 'md' \| 'lg'` | `'md'` | Maximum width: 24rem, 32rem or 42rem (rem is a unit based on the root text size, usually 16 pixels). |
+| `size (Content)` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'sm'` | Responsive. On a wide screen: xs is 20rem, sm 32rem, md 42rem (rem is a unit based on the root text size, usually 16 pixels), and lg takes 90% of the window width. On a phone (below 640 pixels), xs and sm stay floating cards, md fills the width inside a 16-pixel margin, and lg fills the whole screen. Pick xs for a one-line confirm, sm for a short form or decision, md for a longer form, lg for wide content such as a table. |
 | `closeLabel (Content)` | `string` | `'Close'` | What screen readers call the close button. |
 | `className (Content)` | `string` |  | Added to the root classes. Where two Tailwind utility classes clash, the later one wins. |
 | `ref (Content)` | `Ref<HTMLDivElement>` |  | The element with the role dialog. |
@@ -117,6 +117,41 @@ function ArchiveExample() {
 }
 
 <ArchiveExample />
+```
+
+### Sizes: xs, sm, md and lg, each responsive
+
+```tsx
+const SIZE_DEMOS = [
+  { size: 'xs', label: 'Extra small', use: 'A one-line confirm.' },
+  { size: 'sm', label: 'Small', use: 'A short decision with a sentence of context.' },
+  { size: 'md', label: 'Medium', use: 'A form. Fills the width on a phone.' },
+  { size: 'lg', label: 'Large', use: 'Wide content. Goes full screen on a phone.' },
+] as const
+
+function SizesExample() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      {SIZE_DEMOS.map(demo => (
+        <Dialog key={demo.size}>
+          <DialogTrigger asChild>
+            <Button variant="secondary">{demo.label}</Button>
+          </DialogTrigger>
+          <DialogContent title={`${demo.label} dialog`} description={demo.use} size={demo.size}>
+            <p>Resize the window to see how this size behaves at each width.</p>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button>Done</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ))}
+    </div>
+  )
+}
+
+<SizesExample />
 ```
 
 ### Long content

@@ -121,7 +121,7 @@ export function NewDealDialog({ onCreated }: { onCreated?: (id: string) => void 
       <DialogTrigger asChild>
         <Button iconStart={<Plus />}>New deal</Button>
       </DialogTrigger>
-      <DialogContent title="New deal" description="It starts in Qualified. Everything else can change later." size="md">
+      <DialogContent title="New deal" description="It starts in Qualified. Everything else can change later." size="sm">
         <form id="new-deal-form" noValidate onSubmit={submit} className="flex flex-col gap-4 bg-[var(--color-surface-base)]">
           {listed.length > 0 ? <ErrorSummary ref={summary} headingLevel={3} errors={listed} /> : null}
           <FormField label="Deal name" required error={errors.name}>

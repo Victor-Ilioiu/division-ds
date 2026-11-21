@@ -11,6 +11,7 @@
     "prepare": "npm run -s tokens:build",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "tokens:ramps": "node scripts/generate-ramps.mjs",
