@@ -1642,16 +1642,18 @@ Page: /docs/components/footer.md
 
 ### KanbanBoard
 
-Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. It's controlled, meaning the board reports a move and the parent updates its items.
+Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. Columns can carry a colour and a card limit and, when you turn it on, people add, edit, delete and reorder them, and switch to a table of the same cards. It's controlled, meaning the board reports each change and the parent updates its columns and items.
 
 ```tsx
-import { KanbanBoard, applyKanbanMove, groupKanbanItems, kanbanDragOver, kanbanDrop, kanbanMessages, kanbanPosition } from 'src/components/organisms/kanban-board/KanbanBoard'
+import { KANBAN_TINT, KanbanBoard, applyKanbanColumnAdd, applyKanbanColumnDelete, applyKanbanColumnMove, applyKanbanMove, groupKanbanItems, kanbanDragOver, kanbanDrop, kanbanMessages, kanbanPosition } from 'src/components/organisms/kanban-board/KanbanBoard'
 ```
 
 Requires: A parent that holds items in state and applies each onMove (applyKanbanMove does the update).
 
+Requires: For column changes, a parent that holds columns in state too and saves each change (applyKanbanColumnMove, applyKanbanColumnAdd and applyKanbanColumnDelete do the updates).
+
 - `label: string` Required. Names the board's region.
-- `columns: readonly KanbanColumn[]` Required. { id, title, meta? }, in display order.
+- `columns: readonly KanbanColumn[]` Required. { id, title, meta?, color?, limit? }, in display order. color is a category colour (the same names as Badge color). limit is the most cards the column should hold.
 - `items: readonly T[]` Required. Every card. A column shows its items in this array's order.
 - `getItemId: (item: T) => string` Required.
 - `getColumnId: (item: T) => string` Required. The id of the item's column.
@@ -1660,10 +1662,25 @@ Requires: A parent that holds items in state and applies each onMove (applyKanba
 - `renderCardCorner: (item: T) => ReactNode` A small mark in the card's bottom-right corner, under the Move control, about 2rem square, such as the owner's avatar. Wrap it in aria-hidden (so screen readers skip it) when the card already prints the same name.
 - `renderCardMenu: (item: T, moveTo: (columnId: string) => void, columnId: string) => ReactNode` Replaces the Move menu's default items (the card's name and a Move to item for each other column) with your own DropdownMenu parts, such as View, Edit or Delete. They go inside the board's menu. Call moveTo(columnId) to move the card the way the default menu does: to the end of that column, with onMove, the announcement and focus back on the Move control. columnId is the card's current column.
 - `onMove: (itemId: string, toColumnId: string, toIndex: number) => void` Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last.
-- `emptyColumnMessage: string = 'Nothing here'` Shown in a column with no cards.
+- `onColumnMove: (columnId: string, toIndex: number) => void` Turns on moving columns: a drag on the column's header, and Move left / Move right in its menu. toIndex is the column's place after the move.
+- `onColumnAdd: (afterColumnId: string \| null, draft: KanbanColumnDraft) => void` Turns on the Add column button in each header, which asks for a name, a colour and a card limit. Make the id yourself and insert the column after afterColumnId. It is null on a board with no columns, which shows one Add column button instead.
+- `onColumnEdit: (columnId: string, draft: KanbanColumnDraft) => void` Turns on Edit in each column's menu: the same dialog, filled in. draft is { title, color?, limit? }.
+- `onColumnDelete: (columnId: string, moveCardsTo: string \| null) => void` Turns on Delete in each column's menu. An AlertDialog asks first, and for a column with cards, where they go: moveCardsTo is that column's id, or null when they go with it.
+- `onAddCard: (columnId: string) => void` Turns on an Add card button at the foot of each column. Make the card in that column, or open your own form for it.
+- `addCardLabel: string = 'Add card'` The Add card button's words. The column's title is added for screen readers.
+- `tableColumns: readonly DataTableColumn<T>[]` Turns on the table view and its Board / Table switch. The same column shape as DataTable's: { key, header, cell, sortValue?, numeric? }.
+- `tableRowHeader: string = the first table column` The key of the table column that heads each row.
+- `statusLabel: string = 'Status'` The header of the table's own column, which holds each card's column.
+- `view: 'board' \| 'table'` The view, when your code controls it. Pass it with onViewChange.
+- `defaultView: 'board' \| 'table' = 'board'` The view it starts in, when the board keeps track of it itself.
+- `onViewChange: (view: 'board' \| 'table') => void` Called when someone switches the view.
+- `emptyColumnMessage: string = 'Nothing here'` Shown in a column with no cards, and in an empty table.
 - `columnHeadingLevel: 2 \| 3 \| 4 = 3` The heading level of the column titles. Pick one that sits under the page's own heading outline.
 - `className: string` Goes on the region.
 - `applyKanbanMove(): (items, itemId, toColumnId, toIndex, { getItemId, getColumnId, setColumnId }) => T[]` The parent's half of onMove. It returns a new items array with the card in its new column and place.
+- `applyKanbanColumnMove(): (columns, columnId, toIndex) => columns` The parent's half of onColumnMove: the columns with that one at toIndex.
+- `applyKanbanColumnAdd(): (columns, afterColumnId, column) => columns` The parent's half of onColumnAdd: the columns with the new one after afterColumnId, or first when that's null.
+- `applyKanbanColumnDelete(): (items, columnId, moveCardsTo, { getColumnId, setColumnId }) => T[]` The items half of onColumnDelete: the column's cards moved to the end of moveCardsTo, or removed when it's null. Remove the column from columns yourself.
 
 Page: /docs/components/kanban-board.md
 

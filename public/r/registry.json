@@ -1969,14 +1969,33 @@
       ],
       "registryDependencies": [
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/alert-dialog.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/badge.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/data-table.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dropdown-menu.json",
-        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/input.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/segmented-control.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/select.json"
       ],
       "files": [
         {
           "path": "src/components/organisms/kanban-board/KanbanBoard.tsx",
           "type": "registry:file",
           "target": "src/division-ds/components/organisms/kanban-board/KanbanBoard.tsx"
+        },
+        {
+          "path": "src/components/organisms/kanban-board/KanbanColumnDialogs.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/kanban-board/KanbanColumnDialogs.tsx"
+        },
+        {
+          "path": "src/components/organisms/kanban-board/KanbanTable.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/kanban-board/KanbanTable.tsx"
         }
       ]
     },

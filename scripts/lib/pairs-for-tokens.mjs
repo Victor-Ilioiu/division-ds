@@ -1,6 +1,11 @@
 import { resolveComponentTokens } from './resolve-component-tokens.mjs'
 import { composite, contrastRatio } from './contrast.mjs'
 
+/** KanbanBoard's column tints, as the opacity of the category fill: on the column, and added on a
+ *  card in it. The component's own `KANBAN_TINT` must equal this (KanbanBoard.test.tsx holds them
+ *  together), because these are the numbers the gate measures. */
+export const KANBAN_TINT = { column: 0.08, card: 0.04 }
+
 /** Every gated colour pair, per theme, from tokens already resolved: no file access, so the
  *  browser can run the same gate. `contrast-pairs.mjs` is the Node wrapper that reads the token
  *  files; the configurator page (src/pages/Themes.tsx) calls this one with a
@@ -568,6 +573,45 @@ export function pairsForTokens(t, control) {
     })),
     { name: 'terminal selection (terminal.selection) against surface.base', fg: composite(t['--color-terminal-selection'], page), bg: page, minRatio: 3 },
     { name: 'terminal text (text.primary) on terminal.selection over surface.base', fg: t['--color-text-primary'], bg: composite(t['--color-terminal-selection'], page), minRatio: 4.5 },
+
+    // KanbanBoard column colours. A coloured column lays its category fill over surface.base at
+    // KANBAN_TINT.column; a card in it is surface.raised over that, with the fill again at
+    // KANBAN_TINT.card on top (the raised surface is translucent in dark theme, so the column's tint
+    // shows through it too). Everything a header carries is measured on the column, and every text
+    // token a card body may use on the card, including every category text (a card can hold a
+    // Badge of any colour). text.muted is left out on purpose: in dark theme it drops under 4.5:1
+    // on the brighter tints, so a card on a coloured column does not use it.
+    ...(() => {
+      const categories = Object.keys(t)
+        .map(key => key.match(/^--color-category-([a-z]+)-fill$/)?.[1])
+        .filter(Boolean)
+      const tint = (hex, opacity) => {
+        const [r, g, b] = [1, 3, 5].map(at => Number.parseInt(hex.slice(at, at + 2), 16))
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`
+      }
+      return categories.flatMap(c => {
+        const fill = composite(t[`--color-category-${c}-fill`])
+        const column = composite(tint(fill, KANBAN_TINT.column), page)
+        const card = composite(tint(fill, KANBAN_TINT.card), composite(t['--color-surface-raised'], column))
+        const onColumn = (role, fg, minRatio) => ({ name: `kanban ${role} on a ${c} column`, fg, bg: column, minRatio })
+        const onCard = (role, fg, minRatio) => ({ name: `kanban ${role} on a ${c} card`, fg, bg: card, minRatio })
+        return [
+          onColumn(`title (category.${c}.text)`, t[`--color-category-${c}-text`], 4.5),
+          onColumn('text.secondary', t['--color-text-secondary'], 4.5),
+          onColumn('accent.warning.text', t['--color-accent-warning-text'], 4.5),
+          onColumn('accent.signal.indicator', t['--color-accent-signal-indicator'], 3),
+          onColumn('border.selection', t['--color-border-selection'], 3),
+          onColumn('focus.ring', t['--color-focus-ring'], 3),
+          onCard('text.primary', t['--color-text-primary'], 4.5),
+          onCard('text.secondary', t['--color-text-secondary'], 4.5),
+          ...['signal', 'hostile', 'ok', 'info', 'warning'].map(state =>
+            onCard(`accent.${state}.text`, t[`--color-accent-${state}-text`], 4.5)
+          ),
+          ...categories.map(d => onCard(`category.${d}.text`, t[`--color-category-${d}-text`], 4.5)),
+          onCard('focus.ring', t['--color-focus-ring'], 3),
+        ]
+      })
+    })(),
 
     // AI presence. AiLabel's mark and explanation sit on any surface; a field an AI filled paints
     // ai.wash over its own control fill, so the field's pixel is that composite, and its text, its

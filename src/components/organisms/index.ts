@@ -66,7 +66,11 @@ export {
 } from './dialog/Dialog'
 export { Footer, type FooterColumn, type FooterLink, type FooterProps } from './footer/Footer'
 export {
+  KANBAN_TINT,
   KanbanBoard,
+  applyKanbanColumnAdd,
+  applyKanbanColumnDelete,
+  applyKanbanColumnMove,
   applyKanbanMove,
   groupKanbanItems,
   kanbanDragOver,
@@ -75,8 +79,10 @@ export {
   kanbanPosition,
   type KanbanBoardProps,
   type KanbanColumn,
+  type KanbanColumnDraft,
   type KanbanLayout,
   type KanbanTarget,
+  type KanbanView,
 } from './kanban-board/KanbanBoard'
 export {
   KnowledgeGraph,

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.15.0 — 2026-11-24
+
+### Added
+- **KanbanBoard: columns people manage.** Every part is turned on by its own callback, so a board that passes none looks and behaves exactly as before.
+  - **Column colour.** `KanbanColumn` takes `color`, a category colour (Badge's names). The title takes `category.<c>.text`, and the fill is laid over the column at 8% and over each card in it at 4% more (`KANBAN_TINT`). These are layers rather than mixed colours, so every value is still a token. The contrast gate measures 240 new pairs per theme: the header, the empty-column drop outline and the focus ring on every column colour, and every text token a card may use (text.primary, text.secondary, the five accent texts, all ten category texts) on every card colour. All are AA in both themes. The lowest is accent.hostile.text on a yellow card in dark theme, at 4.56:1. text.muted is not gated there, so a card on a coloured column does not use it.
+  - **Card limit.** `KanbanColumn` takes `limit`, a work-in-progress limit. The header shows "Limit 2/3", read out as a sentence, and "Over limit" in the warning tone past it. A move is never blocked.
+  - **Move columns.** With `onColumnMove`, a press on a column header lifts the whole column, cards and all, with the card's lift and settle motion. Move left and Move right in the column's menu are the way to do it without dragging (SC 2.5.7), so columns need no keyboard drag. Focus stays on the moved column's More button.
+  - **Add, edit, delete.** `onColumnAdd` puts an Add column button in each header, and the new column goes after that one; a board with no columns shows one Add column button. `onColumnEdit` and `onColumnDelete` add Edit and Delete to a More menu, named "<title> column options". Add and Edit share one dialog (Name, Colour with swatches, Card limit) with the system's form errors. Delete confirms in an AlertDialog that, for a column with cards, asks where they go (the next column by default, or deleted with it), so a delete never takes work by surprise. Dialogs open once the menu has handed focus back to the More button, and focus returns there afterwards. After a delete, focus moves to the next column.
+  - **Add card.** `onAddCard(columnId)` puts a ghost Add card button at the foot of each column (`addCardLabel`).
+  - **Table view.** `tableColumns` (DataTable's column shape) turns on a Board / Table switch. The table lists the same cards with a Status column (`statusLabel`) holding each card's column as a Select. Rows keep their place when that changes, as in Notion. The view can be controlled with `view` / `defaultView` / `onViewChange`.
+  - Helpers: `applyKanbanColumnMove`, `applyKanbanColumnAdd`, `applyKanbanColumnDelete`. Types: `KanbanColumnDraft`, `KanbanView`.
+
 ## 0.14.0 — 2026-11-21
 
 ### Changed

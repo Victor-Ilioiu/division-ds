@@ -13,7 +13,14 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '../../molecules/dropdown-menu/DropdownMenu'
-import { KanbanBoard, applyKanbanMove, type KanbanColumn } from './KanbanBoard'
+import {
+  KanbanBoard,
+  applyKanbanColumnAdd,
+  applyKanbanColumnDelete,
+  applyKanbanColumnMove,
+  applyKanbanMove,
+  type KanbanColumn,
+} from './KanbanBoard'
 
 type Stage = 'applied' | 'screen' | 'interview' | 'offer'
 /** `recruiter`: who owns the candidate, the card's corner avatar. */
@@ -210,9 +217,90 @@ function WorkOrdersWithMenu() {
   )
 }
 
+type Task = { id: string; title: string; owner: string; column: string; points: number }
+
+const SPRINT_COLUMNS: KanbanColumn[] = [
+  { id: 'todo', title: 'To do', color: 'gray' },
+  { id: 'doing', title: 'In progress', color: 'blue', limit: 2 },
+  { id: 'review', title: 'Review', color: 'purple', limit: 2 },
+  { id: 'done', title: 'Done', color: 'green' },
+]
+
+const TASKS: Task[] = [
+  { id: 't1', title: 'Restock bay 4 labels', owner: 'Dana Holm', column: 'todo', points: 2 },
+  { id: 't2', title: 'Count returns crate', owner: 'Radu Mares', column: 'todo', points: 1 },
+  { id: 't3', title: 'Fix scanner sync', owner: 'Ana Petrescu', column: 'doing', points: 5 },
+  { id: 't4', title: 'Driver rota for May', owner: 'Dana Holm', column: 'doing', points: 3 },
+  { id: 't5', title: 'Dock door checklist', owner: 'Jon Arvid', column: 'doing', points: 2 },
+  { id: 't6', title: 'Pallet audit, Cluj', owner: 'Radu Mares', column: 'review', points: 3 },
+  { id: 't7', title: 'Forklift service log', owner: 'Ana Petrescu', column: 'done', points: 1 },
+]
+
+const taskAccessors = {
+  getItemId: (task: Task) => task.id,
+  getColumnId: (task: Task) => task.column,
+  setColumnId: (task: Task, column: string) => ({ ...task, column }),
+}
+
+/** Everything a board can let people change: column colours, limits, order, new and deleted
+ *  columns, Add card, and the table view. Each change lands in this page's state at once, which
+ *  is where an app would save it. In progress starts over its limit, so the warning shows. */
+function SprintBoard() {
+  const [columns, setColumns] = useState(SPRINT_COLUMNS)
+  const [tasks, setTasks] = useState(TASKS)
+  const [added, setAdded] = useState(0)
+  return (
+    <div className="w-full min-w-0">
+      <KanbanBoard
+        label="Sprint board"
+        columns={columns.map(column => ({
+          ...column,
+          meta: `${tasks.filter(task => task.column === column.id).reduce((sum, task) => sum + task.points, 0)} pts`,
+        }))}
+        items={tasks}
+        getItemId={taskAccessors.getItemId}
+        getColumnId={taskAccessors.getColumnId}
+        getItemLabel={task => task.title}
+        renderCard={task => (
+          <div className="flex flex-col gap-1">
+            <p className="font-semibold">{task.title}</p>
+            <p className="text-[var(--color-text-secondary)]">{task.points === 1 ? '1 point' : `${task.points} points`}</p>
+          </div>
+        )}
+        renderCardCorner={task => <Avatar name={task.owner} size="sm" />}
+        onMove={(id, column, index) => setTasks(current => applyKanbanMove(current, id, column, index, taskAccessors))}
+        onColumnMove={(id, index) => setColumns(current => applyKanbanColumnMove(current, id, index))}
+        onColumnAdd={(after, draft) =>
+          setColumns(current => applyKanbanColumnAdd(current, after, { id: `column-${Date.now()}`, ...draft }))
+        }
+        onColumnEdit={(id, draft) => setColumns(current => current.map(column => (column.id === id ? { ...column, ...draft } : column)))}
+        onColumnDelete={(id, moveTo) => {
+          setColumns(current => current.filter(column => column.id !== id))
+          setTasks(current => applyKanbanColumnDelete(current, id, moveTo, taskAccessors))
+        }}
+        onAddCard={column => {
+          const n = added + 1
+          setAdded(n)
+          setTasks(current => [...current, { id: `new-${n}`, title: `New task ${n}`, owner: 'Dana Holm', column, points: 1 }])
+        }}
+        tableColumns={[
+          { key: 'title', header: 'Task', cell: task => task.title, sortValue: task => task.title },
+          { key: 'owner', header: 'Owner', cell: task => task.owner, sortValue: task => task.owner },
+          { key: 'points', header: 'Points', cell: task => task.points, sortValue: task => task.points, numeric: true },
+        ]}
+        columnHeadingLevel={4}
+      />
+    </div>
+  )
+}
+
 export function KanbanBoardDocs() {
   return (
     <ComponentDocs meta={meta}>
+      <Example caption="Columns people manage: colour, card limit, order, add and delete, and a table view">
+        <SprintBoard />
+      </Example>
+
       <Example caption="Hiring board">
         <HiringBoard />
       </Example>

@@ -11730,7 +11730,7 @@
       "title": "Kanban board",
       "tier": "organisms",
       "slug": "kanban-board",
-      "summary": "Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. It's controlled, meaning the board reports a move and the parent updates its items.",
+      "summary": "Cards in columns that people move between stages: by dragging with a pointer, by dragging with the keyboard, or from each card's Move menu. Columns can carry a colour and a card limit and, when you turn it on, people add, edit, delete and reorder them, and switch to a table of the same cards. It's controlled, meaning the board reports each change and the parent updates its columns and items.",
       "useWhen": "Work items that move through a few named stages, where the point is seeing every stage at once.",
       "notFor": "Records compared across many fields: use DataTable. A single ordered sequence: use Stepper.",
       "source": "src/components/organisms/kanban-board/KanbanBoard.tsx",
@@ -11738,7 +11738,11 @@
       "imports": [
         {
           "names": [
+            "KANBAN_TINT",
             "KanbanBoard",
+            "applyKanbanColumnAdd",
+            "applyKanbanColumnDelete",
+            "applyKanbanColumnMove",
             "applyKanbanMove",
             "groupKanbanItems",
             "kanbanDragOver",
@@ -11750,7 +11754,8 @@
         }
       ],
       "requires": [
-        "A parent that holds items in state and applies each onMove (applyKanbanMove does the update)."
+        "A parent that holds items in state and applies each onMove (applyKanbanMove does the update).",
+        "For column changes, a parent that holds columns in state too and saves each change (applyKanbanColumnMove, applyKanbanColumnAdd and applyKanbanColumnDelete do the updates)."
       ],
       "props": [
         {
@@ -11761,7 +11766,7 @@
         {
           "name": "columns",
           "type": "readonly KanbanColumn[]",
-          "description": "Required. { id, title, meta? }, in display order."
+          "description": "Required. { id, title, meta?, color?, limit? }, in display order. color is a category colour (the same names as Badge color). limit is the most cards the column should hold."
         },
         {
           "name": "items",
@@ -11804,10 +11809,74 @@
           "description": "Required. Called once per move. toIndex is the card's position in the destination column after the move. A move from the menu puts it last."
         },
         {
+          "name": "onColumnMove",
+          "type": "(columnId: string, toIndex: number) => void",
+          "description": "Turns on moving columns: a drag on the column's header, and Move left / Move right in its menu. toIndex is the column's place after the move."
+        },
+        {
+          "name": "onColumnAdd",
+          "type": "(afterColumnId: string | null, draft: KanbanColumnDraft) => void",
+          "description": "Turns on the Add column button in each header, which asks for a name, a colour and a card limit. Make the id yourself and insert the column after afterColumnId. It is null on a board with no columns, which shows one Add column button instead."
+        },
+        {
+          "name": "onColumnEdit",
+          "type": "(columnId: string, draft: KanbanColumnDraft) => void",
+          "description": "Turns on Edit in each column's menu: the same dialog, filled in. draft is { title, color?, limit? }."
+        },
+        {
+          "name": "onColumnDelete",
+          "type": "(columnId: string, moveCardsTo: string | null) => void",
+          "description": "Turns on Delete in each column's menu. An AlertDialog asks first, and for a column with cards, where they go: moveCardsTo is that column's id, or null when they go with it."
+        },
+        {
+          "name": "onAddCard",
+          "type": "(columnId: string) => void",
+          "description": "Turns on an Add card button at the foot of each column. Make the card in that column, or open your own form for it."
+        },
+        {
+          "name": "addCardLabel",
+          "type": "string",
+          "default": "'Add card'",
+          "description": "The Add card button's words. The column's title is added for screen readers."
+        },
+        {
+          "name": "tableColumns",
+          "type": "readonly DataTableColumn<T>[]",
+          "description": "Turns on the table view and its Board / Table switch. The same column shape as DataTable's: { key, header, cell, sortValue?, numeric? }."
+        },
+        {
+          "name": "tableRowHeader",
+          "type": "string",
+          "default": "the first table column",
+          "description": "The key of the table column that heads each row."
+        },
+        {
+          "name": "statusLabel",
+          "type": "string",
+          "default": "'Status'",
+          "description": "The header of the table's own column, which holds each card's column."
+        },
+        {
+          "name": "view",
+          "type": "'board' | 'table'",
+          "description": "The view, when your code controls it. Pass it with onViewChange."
+        },
+        {
+          "name": "defaultView",
+          "type": "'board' | 'table'",
+          "default": "'board'",
+          "description": "The view it starts in, when the board keeps track of it itself."
+        },
+        {
+          "name": "onViewChange",
+          "type": "(view: 'board' | 'table') => void",
+          "description": "Called when someone switches the view."
+        },
+        {
           "name": "emptyColumnMessage",
           "type": "string",
           "default": "'Nothing here'",
-          "description": "Shown in a column with no cards."
+          "description": "Shown in a column with no cards, and in an empty table."
         },
         {
           "name": "columnHeadingLevel",
@@ -11824,13 +11893,34 @@
           "name": "applyKanbanMove()",
           "type": "(items, itemId, toColumnId, toIndex, { getItemId, getColumnId, setColumnId }) => T[]",
           "description": "The parent's half of onMove. It returns a new items array with the card in its new column and place."
+        },
+        {
+          "name": "applyKanbanColumnMove()",
+          "type": "(columns, columnId, toIndex) => columns",
+          "description": "The parent's half of onColumnMove: the columns with that one at toIndex."
+        },
+        {
+          "name": "applyKanbanColumnAdd()",
+          "type": "(columns, afterColumnId, column) => columns",
+          "description": "The parent's half of onColumnAdd: the columns with the new one after afterColumnId, or first when that's null."
+        },
+        {
+          "name": "applyKanbanColumnDelete()",
+          "type": "(items, columnId, moveCardsTo, { getColumnId, setColumnId }) => T[]",
+          "description": "The items half of onColumnDelete: the column's cards moved to the end of moveCardsTo, or removed when it's null. Remove the column from columns yourself."
         }
       ],
       "api": [
         {
           "name": "KanbanColumn",
           "kind": "type",
-          "code": "export type KanbanColumn = {\n  id: string\n  title: string\n  /** Beside the title, in mono: a count, a total. */\n  meta?: ReactNode\n}",
+          "code": "export type KanbanColumn = {\n  id: string\n  title: string\n  /** Beside the title, in mono: a count, a total. */\n  meta?: ReactNode\n  /** A category colour (Badge's `color`). The title takes its text colour, the column a faint tint\n   *  of its fill and each card in it a little more. A colour means \"this stage\", never good or bad. */\n  color?: CategoryColor\n  /** A work-in-progress limit: the most cards the column should hold. The header shows the count\n   *  against it, and says \"Over limit\" in the warning tone past it. Moves are never blocked. */\n  limit?: number\n}",
+          "from": "src/components/organisms/kanban-board/KanbanBoard"
+        },
+        {
+          "name": "KanbanView",
+          "kind": "type",
+          "code": "export type KanbanView = 'board' | 'table'",
           "from": "src/components/organisms/kanban-board/KanbanBoard"
         },
         {
@@ -11843,6 +11933,12 @@
           "name": "KanbanTarget",
           "kind": "type",
           "code": "/** Where a card is being dropped: on another card (it takes that card's place), or on a column\n *  with no `itemId` (the end of it; only an empty column is a drop target of its own). */\nexport type KanbanTarget = { columnId: string; itemId?: string }",
+          "from": "src/components/organisms/kanban-board/KanbanBoard"
+        },
+        {
+          "name": "KANBAN_TINT",
+          "kind": "const",
+          "code": "/** How strongly a column colour tints, as the opacity of its category fill: the column at 8%, a\n *  card on it 4% more. Chosen so every text token a card carries keeps AA in both themes; the\n *  contrast gate measures these exact numbers (`KANBAN_TINT` in scripts/lib/pairs-for-tokens.mjs,\n *  and a test holds the two equal). */\nexport const KANBAN_TINT = { column: 0.08, card: 0.04 } as const",
           "from": "src/components/organisms/kanban-board/KanbanBoard"
         },
         {
@@ -11873,6 +11969,24 @@
           "name": "applyKanbanMove",
           "kind": "function",
           "code": "/** The parent's half of `onMove`: a new `items` array with the card in its new column, placed\n *  before the card that held `toIndex` there (or after the column's last card). Other cards keep\n *  their order. `setColumnId` returns the item with its column changed, a copy. */\nexport function applyKanbanMove<T>(\n  items: readonly T[],\n  itemId: string,\n  toColumnId: string,\n  toIndex: number,\n  {\n    getItemId,\n    getColumnId,\n    setColumnId,\n  }: { getItemId: (item: T) => string; getColumnId: (item: T) => string; setColumnId: (item: T, columnId: string) => T }\n): T[]",
+          "from": "src/components/organisms/kanban-board/KanbanBoard"
+        },
+        {
+          "name": "applyKanbanColumnMove",
+          "kind": "function",
+          "code": "/** The parent's half of `onColumnMove`: the columns with that one at `toIndex`. */\nexport function applyKanbanColumnMove<C extends { id: string }>(columns: readonly C[], columnId: string, toIndex: number): C[]",
+          "from": "src/components/organisms/kanban-board/KanbanBoard"
+        },
+        {
+          "name": "applyKanbanColumnAdd",
+          "kind": "function",
+          "code": "/** The parent's half of `onColumnAdd`: the columns with `column` after `afterColumnId` (first\n *  when that is null or not found). */\nexport function applyKanbanColumnAdd<C extends { id: string }>(columns: readonly C[], afterColumnId: string | null, column: C): C[]",
+          "from": "src/components/organisms/kanban-board/KanbanBoard"
+        },
+        {
+          "name": "applyKanbanColumnDelete",
+          "kind": "function",
+          "code": "/** The items half of `onColumnDelete`: the column's cards moved to the end of `moveCardsTo` in\n *  their order, or removed when it is null. Remove the column from `columns` yourself. */\nexport function applyKanbanColumnDelete<T>(\n  items: readonly T[],\n  columnId: string,\n  moveCardsTo: string | null,\n  { getColumnId, setColumnId }: { getColumnId: (item: T) => string; setColumnId: (item: T, columnId: string) => T }\n): T[]",
           "from": "src/components/organisms/kanban-board/KanbanBoard"
         },
         {
@@ -11915,18 +12029,29 @@
             "Escape"
           ],
           "does": "While a card is lifted, puts it back where it was (Tab does the same). In the menu, closes it."
+        },
+        {
+          "keys": [
+            "Enter",
+            "Space"
+          ],
+          "does": "On a column's More button, opens its menu: Edit, Move left, Move right and Delete. Columns move from this menu, so they need no keyboard drag, and focus stays on the moved column's More button."
         }
       ],
       "dos": [
         "Name each card with getItemLabel in words a screen reader listener can tell apart: the candidate, not \"Card 3\".",
         "Put a count or a total in each column's meta, so people can see a column's size without counting.",
         "Keep it to the stages of one process, three to six columns.",
-        "Apply onMove with applyKanbanMove, or with anything that leaves the card at toIndex in its new column."
+        "Apply onMove with applyKanbanMove, or with anything that leaves the card at toIndex in its new column.",
+        "Save every column change as it happens (order, name, colour, limit). The board has no Save button of its own.",
+        "Set a card limit on the columns where work piles up, such as In progress or Review."
       ],
       "donts": [
         "Don't make the card body a link from edge to edge. Put one link on the card's name.",
         "Don't write instructions that only mention dragging. The Move menu is the way to move a card without dragging.",
-        "Don't reorder items inside renderCard or around the board. The order in items is the order shown."
+        "Don't reorder items inside renderCard or around the board. The order in items is the order shown.",
+        "Don't use text.muted on a card in a coloured column. In dark theme it drops under 4.5:1 there, so use text.secondary.",
+        "Don't let a column colour carry the meaning. It groups, the way a category colour does, and the title still has to say what the stage is."
       ],
       "pitfalls": [
         {
@@ -11938,6 +12063,11 @@
           "wrong": "renderCard={job => <a href={job.url} className=\"block p-3\">...</a>}",
           "right": "renderCard={job => <><a href={job.url}>{job.title}</a><p>{job.team}</p></>}",
           "why": "The board draws the frame and the Move control. A link wrapped around the whole body would swallow the drag and put controls inside each other."
+        },
+        {
+          "wrong": "onColumnDelete={id => setColumns(cs => cs.filter(c => c.id !== id))}",
+          "right": "onColumnDelete={(id, moveTo) => { setColumns(cs => cs.filter(c => c.id !== id)); setItems(items => applyKanbanColumnDelete(items, id, moveTo, accessors)) }}",
+          "why": "The confirm asks where the column's cards go. If the parent drops only the column, its cards are left pointing at a column that no longer exists, and they vanish from the board."
         }
       ],
       "anatomy": [
@@ -11951,7 +12081,31 @@
         },
         {
           "part": "Column",
-          "description": "A crosshair frame: the title as a monospaced heading with its meta on the right, then the cards as a list named by the title."
+          "description": "A crosshair frame: the title as a monospaced heading with its meta on the right, then the cards as a list named by the title. With header buttons, the meta and the card limit move to a second line in every column, so the cards still start at the same height."
+        },
+        {
+          "part": "Column colour",
+          "description": "A category colour. The title takes its text token, and the colour's fill is laid over the column at 8% and over each card in it at 4% more (KANBAN_TINT). Every text token a card uses keeps AA contrast on it in both themes, except text.muted, which a card on a coloured column does not use."
+        },
+        {
+          "part": "Header buttons",
+          "description": "Add a column after this one (with onColumnAdd), and the More button, named \"<title> column options\". Its menu holds Edit, Move left, Move right and Delete, each only when its callback is passed."
+        },
+        {
+          "part": "Card limit",
+          "description": "With limit set, \"Limit 2/3\" under the title, read out as a sentence. Past the limit it says \"Over limit\" in the warning tone, with an icon. A move past the limit is never blocked."
+        },
+        {
+          "part": "Column dialog",
+          "description": "A Dialog with Name, Colour and Card limit, for a new column and for Edit. Delete is an AlertDialog that, for a column with cards, asks which column they move to, or whether they go with it."
+        },
+        {
+          "part": "Add card",
+          "description": "With onAddCard, a ghost button at the foot of each column, named \"Add card to <title>\"."
+        },
+        {
+          "part": "View switch",
+          "description": "With tableColumns, a SegmentedControl named View above the board: Board or Table. The table is a DataTable of the same cards, plus a Status column of the board's own that holds each card's column as a Select."
         },
         {
           "part": "Card",
@@ -11968,9 +12122,17 @@
         {
           "part": "Lifted card",
           "description": "The copy being dragged, with a 2px (pixel) signal border, over a dashed outline showing where the card will land."
+        },
+        {
+          "part": "Lifted column",
+          "description": "With onColumnMove, a press on a column header lifts the whole column, cards and all, with the same signal border and dashed outline. The other columns make room as it passes."
         }
       ],
       "examples": [
+        {
+          "caption": "Columns people manage: colour, card limit, order, add and delete, and a table view",
+          "source": "type Task = { id: string; title: string; owner: string; column: string; points: number }\n\nconst SPRINT_COLUMNS: KanbanColumn[] = [\n  { id: 'todo', title: 'To do', color: 'gray' },\n  { id: 'doing', title: 'In progress', color: 'blue', limit: 2 },\n  { id: 'review', title: 'Review', color: 'purple', limit: 2 },\n  { id: 'done', title: 'Done', color: 'green' },\n]\n\nconst TASKS: Task[] = [\n  { id: 't1', title: 'Restock bay 4 labels', owner: 'Dana Holm', column: 'todo', points: 2 },\n  { id: 't2', title: 'Count returns crate', owner: 'Radu Mares', column: 'todo', points: 1 },\n  { id: 't3', title: 'Fix scanner sync', owner: 'Ana Petrescu', column: 'doing', points: 5 },\n  { id: 't4', title: 'Driver rota for May', owner: 'Dana Holm', column: 'doing', points: 3 },\n  { id: 't5', title: 'Dock door checklist', owner: 'Jon Arvid', column: 'doing', points: 2 },\n  { id: 't6', title: 'Pallet audit, Cluj', owner: 'Radu Mares', column: 'review', points: 3 },\n  { id: 't7', title: 'Forklift service log', owner: 'Ana Petrescu', column: 'done', points: 1 },\n]\n\nconst taskAccessors = {\n  getItemId: (task: Task) => task.id,\n  getColumnId: (task: Task) => task.column,\n  setColumnId: (task: Task, column: string) => ({ ...task, column }),\n}\n\nfunction SprintBoard() {\n  const [columns, setColumns] = useState(SPRINT_COLUMNS)\n  const [tasks, setTasks] = useState(TASKS)\n  const [added, setAdded] = useState(0)\n  return (\n    <div className=\"w-full min-w-0\">\n      <KanbanBoard\n        label=\"Sprint board\"\n        columns={columns.map(column => ({\n          ...column,\n          meta: `${tasks.filter(task => task.column === column.id).reduce((sum, task) => sum + task.points, 0)} pts`,\n        }))}\n        items={tasks}\n        getItemId={taskAccessors.getItemId}\n        getColumnId={taskAccessors.getColumnId}\n        getItemLabel={task => task.title}\n        renderCard={task => (\n          <div className=\"flex flex-col gap-1\">\n            <p className=\"font-semibold\">{task.title}</p>\n            <p className=\"text-[var(--color-text-secondary)]\">{task.points === 1 ? '1 point' : `${task.points} points`}</p>\n          </div>\n        )}\n        renderCardCorner={task => <Avatar name={task.owner} size=\"sm\" />}\n        onMove={(id, column, index) => setTasks(current => applyKanbanMove(current, id, column, index, taskAccessors))}\n        onColumnMove={(id, index) => setColumns(current => applyKanbanColumnMove(current, id, index))}\n        onColumnAdd={(after, draft) =>\n          setColumns(current => applyKanbanColumnAdd(current, after, { id: `column-${Date.now()}`, ...draft }))\n        }\n        onColumnEdit={(id, draft) => setColumns(current => current.map(column => (column.id === id ? { ...column, ...draft } : column)))}\n        onColumnDelete={(id, moveTo) => {\n          setColumns(current => current.filter(column => column.id !== id))\n          setTasks(current => applyKanbanColumnDelete(current, id, moveTo, taskAccessors))\n        }}\n        onAddCard={column => {\n          const n = added + 1\n          setAdded(n)\n          setTasks(current => [...current, { id: `new-${n}`, title: `New task ${n}`, owner: 'Dana Holm', column, points: 1 }])\n        }}\n        tableColumns={[\n          { key: 'title', header: 'Task', cell: task => task.title, sortValue: task => task.title },\n          { key: 'owner', header: 'Owner', cell: task => task.owner, sortValue: task => task.owner },\n          { key: 'points', header: 'Points', cell: task => task.points, sortValue: task => task.points, numeric: true },\n        ]}\n        columnHeadingLevel={4}\n      />\n    </div>\n  )\n}\n\n<SprintBoard />"
+        },
         {
           "caption": "Hiring board",
           "source": "type Stage = 'applied' | 'screen' | 'interview' | 'offer'\n\ntype Candidate = { id: string; name: string; role: string; stage: Stage; recruiter: string; referral?: boolean }\n\nconst STAGES: { id: Stage; title: string }[] = [\n  { id: 'applied', title: 'Applied' },\n  { id: 'screen', title: 'Screening' },\n  { id: 'interview', title: 'Interview' },\n  { id: 'offer', title: 'Offer' },\n]\n\nconst CANDIDATES: Candidate[] = [\n  { id: 'c1', name: 'Ilse Varga', role: 'Depot lead, Cluj', stage: 'applied', recruiter: 'Dana Holm', referral: true },\n  { id: 'c2', name: 'Tomas Reyes', role: 'Forklift driver, Arad', stage: 'applied', recruiter: 'Radu Mares' },\n  { id: 'c3', name: 'Mara Lind', role: 'Stock planner, Sibiu', stage: 'applied', recruiter: 'Dana Holm' },\n  { id: 'c4', name: 'Oskar Behn', role: 'Depot lead, Cluj', stage: 'screen', recruiter: 'Radu Mares' },\n  { id: 'c5', name: 'Ana Petrescu', role: 'Dispatcher, Brasov', stage: 'interview', recruiter: 'Dana Holm', referral: true },\n  { id: 'c6', name: 'Jon Arvid', role: 'Stock planner, Sibiu', stage: 'interview', recruiter: 'Radu Mares' },\n]\n\nconst accessors = {\n  getItemId: (candidate: Candidate) => candidate.id,\n  getColumnId: (candidate: Candidate) => candidate.stage,\n  setColumnId: (candidate: Candidate, stage: string) => ({ ...candidate, stage: stage as Stage }),\n}\n\nfunction CandidateCard({ candidate }: { candidate: Candidate }) {\n  return (\n    <div className=\"flex flex-col gap-1\">\n      <p className=\"font-semibold\">{candidate.name}</p>\n      <p className=\"text-[var(--color-text-secondary)]\">{candidate.role}</p>\n      {candidate.referral ? (\n        <Badge tone=\"signal\" emphasis=\"solid\" className=\"self-start mt-1\">\n          Referral\n        </Badge>\n      ) : null}\n    </div>\n  )\n}\n\nfunction HiringBoard() {\n  const [candidates, setCandidates] = useState(CANDIDATES)\n  const columns: KanbanColumn[] = STAGES.map(stage => ({\n    ...stage,\n    meta: candidates.filter(candidate => candidate.stage === stage.id).length,\n  }))\n  return (\n    <div className=\"w-full min-w-0\">\n      <KanbanBoard\n        label=\"Hiring board\"\n        columns={columns}\n        items={candidates}\n        getItemId={accessors.getItemId}\n        getColumnId={accessors.getColumnId}\n        getItemLabel={candidate => candidate.name}\n        renderCard={candidate => <CandidateCard candidate={candidate} />}\n        renderCardCorner={candidate => <Avatar name={candidate.recruiter} size=\"sm\" />}\n        onMove={(id, stage, index) => setCandidates(current => applyKanbanMove(current, id, stage, index, accessors))}\n        columnHeadingLevel={4}\n      />\n    </div>\n  )\n}\n\n<HiringBoard />"
