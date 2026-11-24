@@ -3,4 +3,4 @@
  *
  *  Bump it in the same PR as the CHANGELOG heading for a release, before running the release
  *  workflow. `version.test.ts` fails if it does not match the newest `## x.y.z` in CHANGELOG.md. */
-export const DS_VERSION = '0.15.0'
+export const DS_VERSION = '0.15.1'

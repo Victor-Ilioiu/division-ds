@@ -164,7 +164,7 @@ export function llmsIndex(entries, { rules }) {
     '## Start here',
     '',
     '- [Rules](llms-guidelines.txt): imports, colour, providers, forms. Short. Read it first.',
-    '- [DESIGN.md](DESIGN.md): the system in one file (colour, type, spacing, motion, every component in a line, the rules), for a tool that takes a single design file.',
+    '- [DESIGN.md](DESIGN.md): the system in one file, in the DESIGN.md format (the tokens as YAML front matter; colour, type, layout, elevation, shapes, motion, voice, every component in a line, the rules), for a tool that takes a single design file.',
     '- [Tokens](llms-tokens.txt): every semantic and component token with when to use it.',
     '- [Helpers](docs/helpers.md): the shared functions and types under src/lib (form errors, money, links, theme, streamed text).',
     '- [All components, compact](llms-components.txt): every prop signature in one file.',
@@ -244,54 +244,289 @@ export function tokensBundle(manifest) {
   ].join('\n')
 }
 
-/** DESIGN.md: the whole system in one short file, for a tool that takes a single design file.
- *  It carries the choosing layer only (semantic colour, spacing, motion, type, one line per
- *  component, the rule headlines) and links the full pages rather than inlining them. `fonts` is
+/** The DESIGN.md format DESIGN.md follows: Google Labs' open spec (github.com/google-labs-code/
+ *  design.md), version `alpha`, as the published linter `@google/design.md` reads it. The
+ *  repository runs that linter on every test run (agent-docs.test.ts) and fails on any error or
+ *  warning, so the file stays in the format rather than near it. */
+export const DESIGN_MD_SPEC = 'alpha'
+
+/** The two themes, in the order DESIGN.md lists them. Dark is the default. */
+const THEMES = ['dark', 'light']
+
+/** The semantic colours left out of DESIGN.md's front matter: the 17 ANSI colours only Terminal
+ *  applies. They would add 34 lines of colour and 34 of pairs for one component; the Colors
+ *  section says where they are. */
+const DESIGN_YAML_SKIP = /^terminal-/
+
+/** The type roles DESIGN.md states as typography tokens. The system has no type-scale tokens (the
+ *  components set sizes with Tailwind's scale), so each role is read off the component that
+ *  defines it, and `evidence` holds the class string that sets it: agent-docs.test.ts fails if
+ *  that string leaves the file, so a changed component cannot leave a stale role here. `font` is
+ *  a `--font-*` name from src/styles/tailwind.css. Sizes are px at the 16px root the system never
+ *  overrides; line heights are Tailwind's (`leading-tight` 1.25, `leading-relaxed` 1.625, and the
+ *  `text-sm` / `text-xs` defaults of 20/14 and 16/12). */
+export const TYPE_ROLES = [
+  {
+    name: 'headline-lg', font: 'display', size: '30px', weight: 600, lineHeight: 1.25,
+    use: 'A screen title (PageHeader). 24px in a narrow container.',
+    evidence: { file: 'src/components/molecules/page-header/PageHeader.tsx', classes: 'font-display text-2xl font-semibold leading-tight' },
+  },
+  {
+    name: 'headline-md', font: 'display', size: '24px', weight: 600, lineHeight: 1.25, letterSpacing: '0.02em',
+    use: 'A section title, uppercase (SectionHeading). 20px in a narrow container.',
+    evidence: { file: 'src/components/molecules/section-heading/SectionHeading.tsx', classes: 'font-display text-xl font-semibold uppercase leading-tight tracking-[0.02em]' },
+  },
+  {
+    name: 'body-md', font: 'body', size: '16px', weight: 400, lineHeight: 1.625,
+    use: 'Reading text: a description under a title, a paragraph.',
+    evidence: { file: 'src/components/molecules/page-header/PageHeader.tsx', classes: 'font-body text-base leading-relaxed' },
+  },
+  {
+    name: 'body-sm', font: 'body', size: '14px', weight: 400, lineHeight: 1.43,
+    use: 'Supporting and help text. The smallest size for text.secondary.',
+    evidence: { file: 'src/components/molecules/section-heading/SectionHeading.tsx', classes: 'font-body text-sm' },
+  },
+  {
+    name: 'label-md', font: 'mono', size: '12px', weight: 600, lineHeight: 1.33, letterSpacing: '0.18em',
+    use: 'An eyebrow over a title, uppercase (PageHeader).',
+    evidence: { file: 'src/components/molecules/page-header/PageHeader.tsx', classes: 'font-mono text-xs font-semibold uppercase tracking-[0.18em]' },
+  },
+  {
+    name: 'button-md', font: 'display', size: '14px', weight: 600, lineHeight: 1.43, letterSpacing: '0.025em',
+    use: 'A Button label, uppercase. 12px at sizes xs and sm, 16px at lg.',
+    evidence: { file: 'src/components/atoms/button/Button.tsx', classes: 'font-display font-semibold uppercase tracking-wide' },
+  },
+  {
+    name: 'data-md', font: 'data', size: '14px', weight: 400, lineHeight: 1.43, fontFeature: '"tnum"',
+    use: 'Numbers, ids, timestamps and logs, with tabular figures (LogFeed, ListItem meta).',
+    evidence: { file: 'src/components/molecules/log-feed/LogFeed.tsx', classes: 'font-data text-sm' },
+  },
+]
+
+/** A YAML key or scalar. Strings are written JSON-quoted, which YAML reads as a double-quoted
+ *  scalar, so a value with a `#`, a `{` or a comma needs no further escaping. */
+const yamlKey = key => (/^[a-z][a-z0-9-]*$/.test(key) ? key : JSON.stringify(key))
+const yamlValue = value => (typeof value === 'number' ? String(value) : JSON.stringify(value))
+const yamlFlow = props => `{${Object.entries(props).map(([key, value]) => `${key}: ${yamlValue(value)}`).join(', ')}}`
+
+/** The first family in a font stack: `"Oxanium", system-ui, sans-serif` is `Oxanium`. */
+const firstFamily = stack => stack.split(',')[0].trim().replace(/^["']|["']$/g, '')
+
+/** DESIGN.md's tokens, as `{ colors, typography, rounded, spacing, components }` of plain values.
+ *
+ *  Colours: the ones that are the same in both themes sit at the top level, and the rest under
+ *  `dark` and `light`, as the spec lays out themes. Each key is the CSS variable without
+ *  `--color-`, so `colors.dark.text-primary` is `var(--color-text-primary)` in the dark theme.
+ *  `primary` is `accent-signal-fill` under the name the spec requires.
+ *
+ *  Components: the colour pairs the system paints, one entry per pair per theme (`-dark`,
+ *  `-light`; one entry with no suffix when both colours are theme-independent). Every colour
+ *  must be in one, or the linter calls it orphaned, so a semantic colour this function has no
+ *  rule for throws here instead of slipping through. Text sits on `surface-base`, which is the
+ *  pair the contrast gate holds every text colour to. Lines and outlines (borders, the focus
+ *  ring, chart series) are a `backgroundColor` with a width: the spec has no border property. A
+ *  translucent layer is a `backgroundColor` alone, because the linter cannot composite it over
+ *  the surface below; scripts/check-contrast.mjs does. */
+export function designTokens(manifest, { fonts }) {
+  const key = token => token.name.replace(/^--color-/, '')
+  const colours = manifest.tokens.filter(token => token.layer === 'semantic' && !DESIGN_YAML_SKIP.test(key(token)))
+  const shared = new Set(colours.filter(token => typeof token.value === 'string').map(key))
+  const known = new Set(colours.map(key))
+  const ref = (name, theme) => {
+    if (!known.has(name)) throw new Error(`DESIGN.md: no semantic colour --color-${name}`)
+    return shared.has(name) ? `{colors.${name}}` : `{colors.${theme}.${name}}`
+  }
+
+  const signal = colours.find(token => key(token) === 'accent-signal-fill')
+  if (typeof signal?.value !== 'string') throw new Error('DESIGN.md: --color-accent-signal-fill must be one value in both themes; it is `primary`.')
+  const colors = { primary: signal.value }
+  for (const token of colours) if (shared.has(key(token))) colors[key(token)] = token.value
+  for (const theme of THEMES) {
+    colors[theme] = Object.fromEntries(colours.filter(token => !shared.has(key(token))).map(token => [key(token), token.value[theme]]))
+  }
+
+  const fontStack = Object.fromEntries(fonts.map(font => [font.name, font.stack]))
+  const typography = Object.fromEntries(
+    TYPE_ROLES.map(role => {
+      if (!fontStack[role.font]) throw new Error(`DESIGN.md: type role ${role.name} names --font-${role.font}, which src/styles/tailwind.css does not define.`)
+      return [role.name, {
+        fontFamily: firstFamily(fontStack[role.font]),
+        fontSize: role.size,
+        fontWeight: role.weight,
+        lineHeight: role.lineHeight,
+        ...(role.letterSpacing ? { letterSpacing: role.letterSpacing } : {}),
+        ...(role.fontFeature ? { fontFeature: role.fontFeature } : {}),
+      }]
+    })
+  )
+
+  const spacing = Object.fromEntries(
+    manifest.tokens.filter(token => token.layer === 'spacing').map(token => [token.name.replace(/^--spacing-/, ''), token.value])
+  )
+
+  const components = {}
+  const covered = new Set()
+  const pair = (name, roles, extra = {}) => {
+    const themed = Object.values(roles).some(colour => !shared.has(colour))
+    for (const theme of themed ? THEMES : [null]) {
+      const props = Object.fromEntries(Object.entries(roles).map(([prop, colour]) => [prop, ref(colour, theme)]))
+      components[theme ? `${name}-${theme}` : name] = { ...props, ...extra }
+    }
+    for (const colour of Object.values(roles)) covered.add(colour)
+  }
+  // The named recipes first: their colours are then covered and the loop below skips them.
+  const control = { height: manifest.tokens.find(token => token.name === '--component-control-height-md')?.value ?? '40px' }
+  pair('page', { backgroundColor: 'surface-base', textColor: 'text-primary' }, { typography: '{typography.body-md}' })
+  pair('input', { backgroundColor: 'surface-sunken', textColor: 'text-primary' }, { typography: '{typography.body-md}', ...control })
+  pair('input-placeholder', { backgroundColor: 'surface-sunken', textColor: 'text-placeholder' })
+  pair('card', { backgroundColor: 'surface-raised' }, { padding: '{spacing.6}' })
+  const button = { typography: '{typography.button-md}', rounded: '{rounded.none}', ...control, padding: '20px' }
+  pair('button-primary', { backgroundColor: 'accent-signal-fill', textColor: 'accent-signal-ink' }, button)
+  pair('button-danger', { backgroundColor: 'accent-hostile-fill', textColor: 'accent-hostile-ink' }, button)
+  for (const token of colours) {
+    const name = key(token)
+    if (covered.has(name)) continue
+    const fill = name.match(/^(.+)-fill$/)?.[1]
+    if (fill && known.has(`${fill}-ink`)) pair(`${fill}-solid`, { backgroundColor: name, textColor: `${fill}-ink` })
+    else if (known.has(`${name}-ink`)) pair(`${name}-solid`, { backgroundColor: name, textColor: `${name}-ink` })
+    else if (/-ink$/.test(name)) continue // covered with its fill, or reported below
+    else if (/^border-|^ai-border$/.test(name)) pair(name, { backgroundColor: name }, { width: '1px' })
+    else if (/^focus-ring$|^chart-series-\d$/.test(name)) pair(name, { backgroundColor: name }, { width: '2px' })
+    else if (/^surface-|-wash$|-glow$/.test(name)) pair(name, { backgroundColor: name })
+    // Decorative, and banded below text contrast on purpose: no background to be checked against.
+    else if (name === 'numeral-pad') pair(name, { textColor: name })
+    else pair(name, { backgroundColor: 'surface-base', textColor: name })
+  }
+  const missing = [...known].filter(name => !covered.has(name))
+  if (missing.length) throw new Error(`DESIGN.md: no component pair for ${missing.map(name => `--color-${name}`).join(', ')}. Add a rule in designTokens().`)
+
+  return { colors, typography, rounded: { none: '0px' }, spacing, components }
+}
+
+/** The front matter block, `---` to `---`. Groups are block maps; a typography role or a
+ *  component is one flow map per line, so the block stays short enough to read. */
+function designFrontMatter(tokens, { name, description }) {
+  const lines = ['---', `version: ${DESIGN_MD_SPEC}`, `name: ${yamlValue(name)}`, `description: ${yamlValue(description)}`]
+  const block = (map, indent) => {
+    for (const [key, value] of Object.entries(map)) {
+      if (value && typeof value === 'object' && THEMES.includes(key)) {
+        lines.push(`${indent}${yamlKey(key)}:`)
+        block(value, `${indent}  `)
+      } else lines.push(`${indent}${yamlKey(key)}: ${typeof value === 'object' ? yamlFlow(value) : yamlValue(value)}`)
+    }
+  }
+  for (const group of ['colors', 'typography', 'rounded', 'spacing', 'components']) {
+    lines.push(`${group}:`)
+    block(tokens[group], '  ')
+  }
+  lines.push('---')
+  return lines
+}
+
+/** A rule paragraph from AGENTS.md whole, by its bold title (`Assistant copy`), on one line. */
+function ruleParagraph(rules, title) {
+  const block = rules.split(/\n\s*\n/).find(text => text.startsWith(`**${title}.**`))
+  if (!block) throw new Error(`DESIGN.md: AGENTS.md has no rule titled "${title}".`)
+  return block.replace(/\s*\n\s*/g, ' ').trim()
+}
+
+/** DESIGN.md: the whole system in one file, in the DESIGN.md format (see DESIGN_MD_SPEC). The
+ *  YAML front matter holds the tokens; the body is the spec's sections in the spec's order, then
+ *  one line per component, linking its page rather than inlining it. `fonts` is
  *  `[{ name, stack }]` from the `--font-*` theme variables in src/styles/tailwind.css. */
 export function designFile(entries, manifest, { fonts, rules }) {
-  const value = token => (typeof token.value === 'string' ? token.value : `dark ${token.value.dark}, light ${token.value.light}`)
-  const table = layer => [
+  const tokens = designTokens(manifest, { fonts })
+  const uses = layer => manifest.tokens.filter(token => token.layer === layer)
+  const useTable = list => ['| Token | Use |', '|---|---|', ...list.map(token => `| ${code(token.name)} | ${cell(token.use)} |`), '']
+  const valueTable = list => [
     '| Token | Use | Value |',
     '|---|---|---|',
-    ...manifest.tokens
-      .filter(token => token.layer === layer)
-      .map(token => `| ${code(token.name)} | ${cell(token.use)} | ${code(value(token))} |`),
+    ...list.map(token => `| ${code(token.name)} | ${cell(token.use)} | ${code(token.value)} |`),
     '',
   ]
+  const skipped = uses('semantic').filter(token => DESIGN_YAML_SKIP.test(token.name.replace(/^--color-/, '')))
+  const heights = ['sm', 'md', 'lg'].map(size => manifest.tokens.find(token => token.name === `--component-control-height-${size}`)?.value)
   const out = [
-    '# Division DS: design',
+    ...designFrontMatter(tokens, {
+      name: 'Division DS',
+      description: `A two-theme React 19, Tailwind 4 and Radix design system: ${entries.length} components, tokens in three layers, WCAG 2.2 AA, dark by default.`,
+    }),
     '',
-    `> A React 19, Tailwind 4 and Radix design system: ${entries.length} components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page; each component links its full page with props and examples.`,
+    '# Division DS',
     '',
-    'Links are relative to this file. Generated by `npm run agent-docs`.',
+    `> A React 19, Tailwind 4 and Radix design system: ${entries.length} components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page, in the DESIGN.md format (spec version ${DESIGN_MD_SPEC}); each component links its full page with props and examples.`,
     '',
-    '## Colour',
+    'Links are relative to this file. Generated by `npm run agent-docs` from the token files and the component metadata: never edit it by hand.',
+    '',
+    '## Overview',
+    '',
+    'A precise, dark-first interface language built as an accessible product system: one signal orange on smoked dark greys, hairline panels with crosshair marks at the corners, cut corners, and numerals as heroes. There are two themes, set by `data-theme="dark"` or `"light"` on `<html>`; dark is the default. In the repository, build gates check that every colour comes from a token and that every pair the components paint meets WCAG 2.2 AA in both themes.',
+    '',
+    'The front matter holds the tokens. In code, write a token as its CSS variable inside a Tailwind arbitrary value, never as its value: `colors.dark.text-primary` and `colors.light.text-primary` are both `var(--color-text-primary)`, which switches with the theme. Colours at the top of `colors` are the same in both themes. `primary` is `--color-accent-signal-fill`.',
+    '',
+    '## Colors',
     '',
     manifest.rule,
     '',
-    'Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the names below. Component tokens and the full list: [llms-tokens.txt](llms-tokens.txt).',
+    'Write a colour as `bg-[var(--color-surface-base)]` or `text-[var(--color-text-primary)]`. Use only the names below.',
     '',
-    ...table('semantic'),
-    '## Type',
+    ...useTable(uses('semantic').filter(token => !skipped.includes(token))),
+    `The ${skipped.length} \`--color-terminal-*\` tokens are the ANSI colours inside the Terminal component, which applies them itself; they are not in the front matter. They and the component tokens are listed with their values in [llms-tokens.txt](llms-tokens.txt).`,
+    '',
+    '## Typography',
+    '',
+    'Three typefaces, all under the SIL Open Font License: Oxanium for display (headings, figures, button labels), Saira for body text, JetBrains Mono for labels, code and data.',
     '',
     ...fonts.map(font => `- ${code(`font-${font.name}`)}: ${code(font.stack)}`),
     '',
-    '## Spacing',
+    'The roles in the front matter, as the components set them:',
     '',
-    ...table('spacing'),
+    '| Role | Face | Size | Use |',
+    '|---|---|---|---|',
+    ...TYPE_ROLES.map(role => `| ${code(role.name)} | ${code(`font-${role.font}`)} ${role.weight} | ${role.size} | ${cell(role.use)} |`),
+    '',
+    'The format has no text case: `headline-md`, `label-md` and `button-md` are set in uppercase. Secondary text is 14px or larger; 11 to 12px is for uppercase mono labels only.',
+    '',
+    '## Layout',
+    '',
+    'A 4px grid. Tailwind\'s own spacing utilities sit on the same grid (`gap-3` is 12px, `p-4` is 16px) and are fine to use.',
+    '',
+    ...useTable(uses('spacing')),
+    `A page shell sets \`--page-gutter\` once (16px, and 64px from the large breakpoint), and everything inside reads it through \`px-gutter\` or \`mx-gutter\`, so a brand, a heading and a grid start on one edge. Controls come in three heights: ${heights.join(', ')} (\`--component-control-height-sm\`, \`-md\`, \`-lg\`); the middle one is the default.`,
+    '',
+    '## Elevation & Depth',
+    '',
+    'Depth comes from tone and line, not from shadow. The page is `surface.base`. A control you type or pick in is the darker, opaque `surface.sunken`. A Card or Panel is the translucent `surface.raised` behind a hairline border; a Panel adds a 6px backdrop blur. The surfaces that frame other content (Panel, Card, Dialog, DropdownMenu, CommandPalette and Select\'s listbox) carry crosshair marks at their corners. A Dialog, Sheet or CommandPalette dims the page behind it with `surface.scrim`. An interactive Card answers hover and keyboard focus with a signal border and a 4px lift, and no shadow. The one cast shadow is the static tilted glass of a hero section.',
+    '',
+    '## Shapes',
+    '',
+    'Corners are square (`rounded.none`). The cut corner is the shape of a single object: Button, IconButton, Avatar (md and lg), the Tooltip panel and Tag have their bottom-right corner cut off, at 5, 8, 14 or 22px (`.bevel-xs` to `.bevel-lg`). The crosshair is the frame around several objects. A form control gets neither, because `clip-path` would clip the focus ring it draws. Spinner is the one round shape. A theme can set `--shape-bevel` (0 removes every cut) and `--shape-radius` (surfaces stop at 24px).',
+    '',
     '## Motion',
     '',
-    ...table('motion'),
+    'The components animate themselves; these tokens are for anything you animate yourself. Anything you animate stops under `prefers-reduced-motion`, and nothing moves on its own. The tokens are listed here and not in the front matter because the published DESIGN.md linter (`@google/design.md` 0.4.0) does not read a motion group yet.',
+    '',
+    ...valueTable(uses('motion')),
+    '## Voice & Content Strategy',
+    '',
+    `- ${ruleParagraph(rules, 'Assistant copy')}`,
+    `- ${ruleParagraph(rules, 'Status tones')}`,
+    `- ${ruleParagraph(rules, 'Feedback')}`,
+    '',
+    '## Components',
+    '',
+    'The front matter\'s `components` are the colour pairs the system paints, one per pair and theme (`-dark`, `-light`; no suffix when the pair is the same in both themes). Text sits on `surface-base` and every text pair passes WCAG AA, which the DESIGN.md linter checks. An entry with a `backgroundColor` and a width is a line or an outline (a border, the focus ring, a chart series), because the format has no border property. An entry with a `backgroundColor` alone is a translucent layer; the repository\'s own contrast gate measures it over the surface below. `numeral-pad` is decorative and kept dim on purpose. Build screens from the components below, not from the pairs.',
+    '',
   ]
   for (const [tier, group] of byTier(entries)) {
-    out.push(`## ${tier[0].toUpperCase()}${tier.slice(1)}`, '')
+    out.push(`### ${tier[0].toUpperCase()}${tier.slice(1)}`, '')
     for (const entry of group) {
       const also = alsoExports(entry)
       out.push(`- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)}${also.length ? ` Also: ${also.join(', ')}.` : ''}`)
     }
     out.push('')
   }
-  out.push('## Rules', '', 'In full: [llms-guidelines.txt](llms-guidelines.txt).', '', ...ruleHeadlines(rules).map(line => `- ${line}`), '')
+  out.push("## Do's and Don'ts", '', 'In full: [llms-guidelines.txt](llms-guidelines.txt).', '', ...ruleHeadlines(rules).map(line => `- ${line}`), '')
   return out.join('\n')
 }
 

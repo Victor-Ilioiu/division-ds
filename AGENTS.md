@@ -11,7 +11,7 @@ points to is generated from the code, so it is current.
 | The list of components, one line each | `public/llms.txt` |
 | One component: props, examples as code, keyboard, do and don't | `public/docs/components/<slug>.md` |
 | Every component's props in one compact file | `public/llms-components.txt` |
-| The whole system in one short file (for a tool that takes one design file) | `public/DESIGN.md` |
+| The whole system in one file, in the DESIGN.md format (tokens as YAML front matter), for a tool that takes one design file | `public/DESIGN.md` |
 | Which token to use for what | `public/llms-tokens.txt` |
 | Shared helpers: form errors, money, links, theme, streamed text | `public/docs/helpers.md` |
 | The same as data | `public/manifest/components.json`, `public/manifest/tokens.json` |
@@ -51,7 +51,7 @@ installs these rules into that project's `AGENTS.md`, `GEMINI.md` and Cursor rul
 `.claude/skills/` (Claude Code).
 
 An agent that supports MCP can have the docs and the same checks as tools instead:
-`claude mcp add division-ds -- npx -y division-ds@0.15.0 mcp` (`list_components`, `get_component`,
+`claude mcp add division-ds -- npx -y division-ds@0.15.1 mcp` (`list_components`, `get_component`,
 `search`, `get_tokens`, `validate_code`, `check_contrast`, `get_add_command`,
 `get_review_checklist`, and two that report back: `request_change` and `report_drift`, which open
 an issue on the public repository instead of patching the installed copy).

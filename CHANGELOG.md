@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.15.1 — 2026-11-24
+
+### Fixed
+- **The package's own `AGENTS.md` pinned `division-ds@0.14.0`** in its MCP install line. 0.15.0 was published before its version bump was merged, so the published copy kept the old pin. No code changed; this release only corrects the pins.
+
+### Changed
+- **The release workflow refuses an unbumped main.** Before it builds, `scripts/check-release-version.mjs` checks that `DS_VERSION`, the newest CHANGELOG heading and every `division-ds@` pin in `AGENTS.md` and `public/install.md` already say the version being published, and stops with what is wrong if they do not.
+- **CI hardening** (a GitHub Actions security review). The release now runs as two jobs: the one that installs dependencies has no publish permission, and the one that publishes installs nothing and runs no repository code, so a compromised dependency can't publish `division-ds`. The typed version reaches the shell only as an environment variable. Every action in every workflow is pinned to a commit SHA, Dependabot keeps those pins current once a month, and the agent-policy job no longer leaves its write token on disk.
+
+### Docs
+- **`DESIGN.md` now follows the DESIGN.md format** (Google Labs' open spec, version `alpha`), and the official linter passes it with no errors or warnings. The tokens moved into YAML front matter: colours that are the same in both themes at the top level, the rest under `dark` and `light`, plus the seven type roles, spacing, rounding and 112 colour pairs. The body uses the spec's sections in the spec's order (Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Motion, Voice & Content Strategy, Components, Do's and Don'ts). Each key is the CSS variable without `--color-`, so `colors.dark.text-primary` is `var(--color-text-primary)`. The 17 Terminal ANSI colours stay out of the front matter (only Terminal applies them), and motion stays in a table until the published linter reads a motion group.
+- The linter (`@google/design.md` 0.4.0, a dev dependency) runs in `agent-docs.test.ts`, so `npm run verify` fails on any warning: a colour no pair uses, a text pair below AA, or a section out of order. The test also checks that every colour matches the theme files and that each type role is still what its component sets. `npm run check:design-md` runs the linter alone.
+
 ## 0.15.0 — 2026-11-24
 
 ### Added

@@ -8,7 +8,7 @@ Read a component page before using the component: it has the props, working exam
 ## Start here
 
 - [Rules](llms-guidelines.txt): imports, colour, providers, forms. Short. Read it first.
-- [DESIGN.md](DESIGN.md): the system in one file (colour, type, spacing, motion, every component in a line, the rules), for a tool that takes a single design file.
+- [DESIGN.md](DESIGN.md): the system in one file, in the DESIGN.md format (the tokens as YAML front matter; colour, type, layout, elevation, shapes, motion, voice, every component in a line, the rules), for a tool that takes a single design file.
 - [Tokens](llms-tokens.txt): every semantic and component token with when to use it.
 - [Helpers](docs/helpers.md): the shared functions and types under src/lib (form errors, money, links, theme, streamed text).
 - [All components, compact](llms-components.txt): every prop signature in one file.

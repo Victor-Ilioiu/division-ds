@@ -1,147 +1,446 @@
-# Division DS: design
+---
+version: alpha
+name: "Division DS"
+description: "A two-theme React 19, Tailwind 4 and Radix design system: 81 components, tokens in three layers, WCAG 2.2 AA, dark by default."
+colors:
+  primary: "#d93e00"
+  accent-signal-fill: "#d93e00"
+  accent-signal-ink: "#ffffff"
+  accent-signal-indicator: "#d93e00"
+  accent-signal-indicator-ink: "#ffffff"
+  accent-signal-wash: "rgba(217, 62, 0, 0.12)"
+  accent-hostile-fill: "#f33636"
+  accent-hostile-ink: "#0a0602"
+  accent-ok-fill: "#2fb577"
+  accent-ok-ink: "#0a0602"
+  accent-info-fill: "#5aa7ff"
+  accent-info-ink: "#0a0602"
+  accent-warning-fill: "#ffac2a"
+  accent-warning-ink: "#0a0602"
+  category-gray-fill: "#9aa1ab"
+  category-gray-ink: "#0a0602"
+  category-brown-fill: "#b98a64"
+  category-brown-ink: "#0a0602"
+  category-orange-fill: "#f0913a"
+  category-orange-ink: "#0a0602"
+  category-yellow-fill: "#e8c341"
+  category-yellow-ink: "#0a0602"
+  category-green-fill: "#4fbf7a"
+  category-green-ink: "#0a0602"
+  category-teal-fill: "#3fbfb2"
+  category-teal-ink: "#0a0602"
+  category-blue-fill: "#6fa3f5"
+  category-blue-ink: "#0a0602"
+  category-purple-fill: "#a88af0"
+  category-purple-ink: "#0a0602"
+  category-pink-fill: "#ec84bb"
+  category-pink-ink: "#0a0602"
+  category-red-fill: "#f07a7a"
+  category-red-ink: "#0a0602"
+  severity-1-fill: "#2fb577"
+  severity-1-ink: "#0a0602"
+  severity-2-fill: "#ffbb52"
+  severity-2-ink: "#0a0602"
+  severity-3-fill: "#f19300"
+  severity-3-ink: "#0a0602"
+  severity-4-fill: "#f33636"
+  severity-4-ink: "#0a0602"
+  severity-5-fill: "#ae0a0a"
+  severity-5-ink: "#ffffff"
+  severity-6-fill: "#440404"
+  severity-6-ink: "#ffffff"
+  chart-series-1: "#d93e00"
+  dark:
+    surface-base: "#07080b"
+    surface-sunken: "#0d1016"
+    surface-raised: "rgba(40, 52, 69, 0.42)"
+    surface-scrim: "rgba(0, 0, 0, 0.6)"
+    surface-overlay: "rgba(13, 16, 22, 0.85)"
+    border-hairline: "rgba(214, 226, 240, 0.16)"
+    border-hairline-strong: "rgba(214, 226, 240, 0.32)"
+    border-control: "#646b72"
+    border-selection: "#8a939e"
+    text-primary: "#e9eef4"
+    text-secondary: "#a3adba"
+    text-muted: "#7b8592"
+    text-placeholder: "#747f8d"
+    text-label: "#6f7a88"
+    text-active: "#e9eef4"
+    text-rest: "#a3adba"
+    text-pending: "#7b8592"
+    accent-signal-text: "#ff5512"
+    accent-signal-glow: "rgba(217, 62, 0, 0.38)"
+    accent-hostile-text: "#f55b5b"
+    accent-ok-text: "#2fb577"
+    accent-info-text: "#5aa7ff"
+    accent-warning-text: "#ffac2a"
+    category-gray-text: "#a3a9b3"
+    category-brown-text: "#c9a383"
+    category-orange-text: "#f0a060"
+    category-yellow-text: "#e6c65a"
+    category-green-text: "#6fcf8f"
+    category-teal-text: "#5ccfc4"
+    category-blue-text: "#7fb2ff"
+    category-purple-text: "#b59cf5"
+    category-pink-text: "#f08fc4"
+    category-red-text: "#f58a8a"
+    severity-1-text: "#49d092"
+    severity-2-text: "#ffcb79"
+    severity-3-text: "#f19300"
+    severity-4-text: "#ff5512"
+    severity-5-text: "#f55b5b"
+    severity-6-text: "#f78181"
+    numeral-pad: "#7b8592"
+    ai-text: "#78b7ff"
+    ai-border: "#78b7ff"
+    ai-wash: "rgba(90, 167, 255, 0.1)"
+    focus-ring: "#ff5512"
+    chart-series-2: "#1884ff"
+  light:
+    surface-base: "#f2f4f8"
+    surface-sunken: "#e3e8ef"
+    surface-raised: "rgba(255, 255, 255, 0.6)"
+    surface-scrim: "rgba(11, 14, 19, 0.48)"
+    surface-overlay: "rgba(227, 232, 239, 0.85)"
+    border-hairline: "rgba(11, 14, 19, 0.12)"
+    border-hairline-strong: "rgba(11, 14, 19, 0.22)"
+    border-control: "#616874"
+    border-selection: "#616874"
+    text-primary: "#0b0e13"
+    text-secondary: "#19212c"
+    text-muted: "#283445"
+    text-placeholder: "#283445"
+    text-label: "#445875"
+    text-active: "#0b0e13"
+    text-rest: "#19212c"
+    text-pending: "#4f5a69"
+    accent-signal-text: "#b13200"
+    accent-signal-glow: "rgba(217, 62, 0, 0.3)"
+    accent-hostile-text: "#ae0a0a"
+    accent-ok-text: "#1d714b"
+    accent-info-text: "#0063d5"
+    accent-warning-text: "#804e00"
+    category-gray-text: "#5c636e"
+    category-brown-text: "#7a5232"
+    category-orange-text: "#a34a00"
+    category-yellow-text: "#7a5c00"
+    category-green-text: "#1e6b3a"
+    category-teal-text: "#0d6662"
+    category-blue-text: "#1f5fbf"
+    category-purple-text: "#6a3fbf"
+    category-pink-text: "#a3306f"
+    category-red-text: "#b42828"
+    severity-1-text: "#1d714b"
+    severity-2-text: "#804e00"
+    severity-3-text: "#b13200"
+    severity-4-text: "#ae0a0a"
+    severity-5-text: "#790707"
+    severity-6-text: "#440404"
+    numeral-pad: "#627da4"
+    ai-text: "#004593"
+    ai-border: "#004593"
+    ai-wash: "rgba(0, 99, 213, 0.08)"
+    focus-ring: "#d93e00"
+    chart-series-2: "#0063d5"
+typography:
+  headline-lg: {fontFamily: "Oxanium", fontSize: "30px", fontWeight: 600, lineHeight: 1.25}
+  headline-md: {fontFamily: "Oxanium", fontSize: "24px", fontWeight: 600, lineHeight: 1.25, letterSpacing: "0.02em"}
+  body-md: {fontFamily: "Saira", fontSize: "16px", fontWeight: 400, lineHeight: 1.625}
+  body-sm: {fontFamily: "Saira", fontSize: "14px", fontWeight: 400, lineHeight: 1.43}
+  label-md: {fontFamily: "JetBrains Mono", fontSize: "12px", fontWeight: 600, lineHeight: 1.33, letterSpacing: "0.18em"}
+  button-md: {fontFamily: "Oxanium", fontSize: "14px", fontWeight: 600, lineHeight: 1.43, letterSpacing: "0.025em"}
+  data-md: {fontFamily: "JetBrains Mono", fontSize: "14px", fontWeight: 400, lineHeight: 1.43, fontFeature: "\"tnum\""}
+rounded:
+  none: "0px"
+spacing:
+  "1": "4px"
+  "2": "8px"
+  "3": "12px"
+  "4": "16px"
+  "6": "24px"
+  "8": "32px"
+  "12": "48px"
+  "16": "64px"
+components:
+  page-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-primary}", typography: "{typography.body-md}"}
+  page-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-primary}", typography: "{typography.body-md}"}
+  input-dark: {backgroundColor: "{colors.dark.surface-sunken}", textColor: "{colors.dark.text-primary}", typography: "{typography.body-md}", height: "40px"}
+  input-light: {backgroundColor: "{colors.light.surface-sunken}", textColor: "{colors.light.text-primary}", typography: "{typography.body-md}", height: "40px"}
+  input-placeholder-dark: {backgroundColor: "{colors.dark.surface-sunken}", textColor: "{colors.dark.text-placeholder}"}
+  input-placeholder-light: {backgroundColor: "{colors.light.surface-sunken}", textColor: "{colors.light.text-placeholder}"}
+  card-dark: {backgroundColor: "{colors.dark.surface-raised}", padding: "{spacing.6}"}
+  card-light: {backgroundColor: "{colors.light.surface-raised}", padding: "{spacing.6}"}
+  button-primary: {backgroundColor: "{colors.accent-signal-fill}", textColor: "{colors.accent-signal-ink}", typography: "{typography.button-md}", rounded: "{rounded.none}", height: "40px", padding: "20px"}
+  button-danger: {backgroundColor: "{colors.accent-hostile-fill}", textColor: "{colors.accent-hostile-ink}", typography: "{typography.button-md}", rounded: "{rounded.none}", height: "40px", padding: "20px"}
+  surface-scrim-dark: {backgroundColor: "{colors.dark.surface-scrim}"}
+  surface-scrim-light: {backgroundColor: "{colors.light.surface-scrim}"}
+  surface-overlay-dark: {backgroundColor: "{colors.dark.surface-overlay}"}
+  surface-overlay-light: {backgroundColor: "{colors.light.surface-overlay}"}
+  border-hairline-dark: {backgroundColor: "{colors.dark.border-hairline}", width: "1px"}
+  border-hairline-light: {backgroundColor: "{colors.light.border-hairline}", width: "1px"}
+  border-hairline-strong-dark: {backgroundColor: "{colors.dark.border-hairline-strong}", width: "1px"}
+  border-hairline-strong-light: {backgroundColor: "{colors.light.border-hairline-strong}", width: "1px"}
+  border-control-dark: {backgroundColor: "{colors.dark.border-control}", width: "1px"}
+  border-control-light: {backgroundColor: "{colors.light.border-control}", width: "1px"}
+  border-selection-dark: {backgroundColor: "{colors.dark.border-selection}", width: "1px"}
+  border-selection-light: {backgroundColor: "{colors.light.border-selection}", width: "1px"}
+  text-secondary-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-secondary}"}
+  text-secondary-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-secondary}"}
+  text-muted-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-muted}"}
+  text-muted-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-muted}"}
+  text-label-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-label}"}
+  text-label-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-label}"}
+  text-active-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-active}"}
+  text-active-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-active}"}
+  text-rest-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-rest}"}
+  text-rest-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-rest}"}
+  text-pending-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.text-pending}"}
+  text-pending-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.text-pending}"}
+  accent-signal-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.accent-signal-text}"}
+  accent-signal-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.accent-signal-text}"}
+  accent-signal-indicator-solid: {backgroundColor: "{colors.accent-signal-indicator}", textColor: "{colors.accent-signal-indicator-ink}"}
+  accent-signal-wash: {backgroundColor: "{colors.accent-signal-wash}"}
+  accent-signal-glow-dark: {backgroundColor: "{colors.dark.accent-signal-glow}"}
+  accent-signal-glow-light: {backgroundColor: "{colors.light.accent-signal-glow}"}
+  accent-hostile-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.accent-hostile-text}"}
+  accent-hostile-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.accent-hostile-text}"}
+  accent-ok-solid: {backgroundColor: "{colors.accent-ok-fill}", textColor: "{colors.accent-ok-ink}"}
+  accent-ok-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.accent-ok-text}"}
+  accent-ok-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.accent-ok-text}"}
+  accent-info-solid: {backgroundColor: "{colors.accent-info-fill}", textColor: "{colors.accent-info-ink}"}
+  accent-info-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.accent-info-text}"}
+  accent-info-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.accent-info-text}"}
+  accent-warning-solid: {backgroundColor: "{colors.accent-warning-fill}", textColor: "{colors.accent-warning-ink}"}
+  accent-warning-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.accent-warning-text}"}
+  accent-warning-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.accent-warning-text}"}
+  category-gray-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-gray-text}"}
+  category-gray-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-gray-text}"}
+  category-gray-solid: {backgroundColor: "{colors.category-gray-fill}", textColor: "{colors.category-gray-ink}"}
+  category-brown-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-brown-text}"}
+  category-brown-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-brown-text}"}
+  category-brown-solid: {backgroundColor: "{colors.category-brown-fill}", textColor: "{colors.category-brown-ink}"}
+  category-orange-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-orange-text}"}
+  category-orange-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-orange-text}"}
+  category-orange-solid: {backgroundColor: "{colors.category-orange-fill}", textColor: "{colors.category-orange-ink}"}
+  category-yellow-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-yellow-text}"}
+  category-yellow-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-yellow-text}"}
+  category-yellow-solid: {backgroundColor: "{colors.category-yellow-fill}", textColor: "{colors.category-yellow-ink}"}
+  category-green-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-green-text}"}
+  category-green-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-green-text}"}
+  category-green-solid: {backgroundColor: "{colors.category-green-fill}", textColor: "{colors.category-green-ink}"}
+  category-teal-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-teal-text}"}
+  category-teal-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-teal-text}"}
+  category-teal-solid: {backgroundColor: "{colors.category-teal-fill}", textColor: "{colors.category-teal-ink}"}
+  category-blue-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-blue-text}"}
+  category-blue-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-blue-text}"}
+  category-blue-solid: {backgroundColor: "{colors.category-blue-fill}", textColor: "{colors.category-blue-ink}"}
+  category-purple-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-purple-text}"}
+  category-purple-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-purple-text}"}
+  category-purple-solid: {backgroundColor: "{colors.category-purple-fill}", textColor: "{colors.category-purple-ink}"}
+  category-pink-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-pink-text}"}
+  category-pink-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-pink-text}"}
+  category-pink-solid: {backgroundColor: "{colors.category-pink-fill}", textColor: "{colors.category-pink-ink}"}
+  category-red-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.category-red-text}"}
+  category-red-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.category-red-text}"}
+  category-red-solid: {backgroundColor: "{colors.category-red-fill}", textColor: "{colors.category-red-ink}"}
+  severity-1-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-1-text}"}
+  severity-1-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-1-text}"}
+  severity-1-solid: {backgroundColor: "{colors.severity-1-fill}", textColor: "{colors.severity-1-ink}"}
+  severity-2-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-2-text}"}
+  severity-2-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-2-text}"}
+  severity-2-solid: {backgroundColor: "{colors.severity-2-fill}", textColor: "{colors.severity-2-ink}"}
+  severity-3-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-3-text}"}
+  severity-3-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-3-text}"}
+  severity-3-solid: {backgroundColor: "{colors.severity-3-fill}", textColor: "{colors.severity-3-ink}"}
+  severity-4-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-4-text}"}
+  severity-4-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-4-text}"}
+  severity-4-solid: {backgroundColor: "{colors.severity-4-fill}", textColor: "{colors.severity-4-ink}"}
+  severity-5-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-5-text}"}
+  severity-5-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-5-text}"}
+  severity-5-solid: {backgroundColor: "{colors.severity-5-fill}", textColor: "{colors.severity-5-ink}"}
+  severity-6-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.severity-6-text}"}
+  severity-6-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.severity-6-text}"}
+  severity-6-solid: {backgroundColor: "{colors.severity-6-fill}", textColor: "{colors.severity-6-ink}"}
+  numeral-pad-dark: {textColor: "{colors.dark.numeral-pad}"}
+  numeral-pad-light: {textColor: "{colors.light.numeral-pad}"}
+  ai-text-dark: {backgroundColor: "{colors.dark.surface-base}", textColor: "{colors.dark.ai-text}"}
+  ai-text-light: {backgroundColor: "{colors.light.surface-base}", textColor: "{colors.light.ai-text}"}
+  ai-border-dark: {backgroundColor: "{colors.dark.ai-border}", width: "1px"}
+  ai-border-light: {backgroundColor: "{colors.light.ai-border}", width: "1px"}
+  ai-wash-dark: {backgroundColor: "{colors.dark.ai-wash}"}
+  ai-wash-light: {backgroundColor: "{colors.light.ai-wash}"}
+  focus-ring-dark: {backgroundColor: "{colors.dark.focus-ring}", width: "2px"}
+  focus-ring-light: {backgroundColor: "{colors.light.focus-ring}", width: "2px"}
+  chart-series-1: {backgroundColor: "{colors.chart-series-1}", width: "2px"}
+  chart-series-2-dark: {backgroundColor: "{colors.dark.chart-series-2}", width: "2px"}
+  chart-series-2-light: {backgroundColor: "{colors.light.chart-series-2}", width: "2px"}
+---
 
-> A React 19, Tailwind 4 and Radix design system: 81 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page; each component links its full page with props and examples.
+# Division DS
 
-Links are relative to this file. Generated by `npm run agent-docs`.
+> A React 19, Tailwind 4 and Radix design system: 81 components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page, in the DESIGN.md format (spec version alpha); each component links its full page with props and examples.
 
-## Colour
+Links are relative to this file. Generated by `npm run agent-docs` from the token files and the component metadata: never edit it by hand.
+
+## Overview
+
+A precise, dark-first interface language built as an accessible product system: one signal orange on smoked dark greys, hairline panels with crosshair marks at the corners, cut corners, and numerals as heroes. There are two themes, set by `data-theme="dark"` or `"light"` on `<html>`; dark is the default. In the repository, build gates check that every colour comes from a token and that every pair the components paint meets WCAG 2.2 AA in both themes.
+
+The front matter holds the tokens. In code, write a token as its CSS variable inside a Tailwind arbitrary value, never as its value: `colors.dark.text-primary` and `colors.light.text-primary` are both `var(--color-text-primary)`, which switches with the theme. Colours at the top of `colors` are the same in both themes. `primary` is `--color-accent-signal-fill`.
+
+## Colors
 
 Components and screens use semantic and component tokens only, as var(--name). Primitive colour ramps (--color-<ramp>-<stop>) are the raw material the semantic layer is built from, not a palette to pick from.
 
-Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the names below. Component tokens and the full list: [llms-tokens.txt](llms-tokens.txt).
+Write a colour as `bg-[var(--color-surface-base)]` or `text-[var(--color-text-primary)]`. Use only the names below.
 
-| Token | Use | Value |
-|---|---|---|
-| `--color-surface-base` | The page background, and the opaque fill of every form and overlay. Start here: text and control colours are measured against it. | `dark #07080b, light #f2f4f8` |
-| `--color-surface-sunken` | The opaque fill of a control you type or pick in (Input, Textarea, Select), and of small opaque surfaces: Kbd, Tag, Tooltip, menus, toasts. Not a card. | `dark #0d1016, light #e3e8ef` |
-| `--color-surface-raised` | The translucent fill of a Card or panel sitting on the page. Use the Card component; do not paint it by hand, and avoid nesting raised inside raised. | `dark rgba(40, 52, 69, 0.42), light rgba(255, 255, 255, 0.6)` |
-| `--color-surface-scrim` | The dimming layer behind a Dialog, Sheet or CommandPalette. Those components paint it; nothing else should. | `dark rgba(0, 0, 0, 0.6), light rgba(11, 14, 19, 0.48)` |
-| `--color-surface-overlay` | A translucent panel floating over a canvas, such as the KnowledgeGraph callout and cluster pills. Not for a page section or a dialog. | `dark rgba(13, 16, 22, 0.85), light rgba(227, 232, 239, 0.85)` |
-| `--color-border-hairline` | A quiet divider or panel edge that carries no information: row separators, card outlines. | `dark rgba(214, 226, 240, 0.16), light rgba(11, 14, 19, 0.12)` |
-| `--color-border-hairline-strong` | A stronger decorative rule: table header underlines, section rules. Still decorative, never the only sign of a control. | `dark rgba(214, 226, 240, 0.32), light rgba(11, 14, 19, 0.22)` |
-| `--color-border-control` | The boundary of an interactive control at rest (Input, Select, secondary Button). The one border that has to be seen to find the control. | `dark #646b72, light #616874` |
-| `--color-border-selection` | The boundary of the small selection controls at rest: Checkbox, Radio, Switch track. | `dark #8a939e, light #616874` |
-| `--color-text-primary` | Body text, headings, values. The default text colour. | `dark #e9eef4, light #0b0e13` |
-| `--color-text-secondary` | Supporting text beside primary text: descriptions, help text, metadata. Keep it at 14px or larger. | `dark #a3adba, light #19212c` |
-| `--color-text-muted` | The quietest readable text: captions, timestamps, disabled-looking labels. Not for anything the user must read to act. | `dark #7b8592, light #283445` |
-| `--color-text-placeholder` | Placeholder text inside a control, on surface.sunken. Only there. | `dark #747f8d, light #283445` |
-| `--color-text-label` | Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text. | `dark #6f7a88, light #445875` |
-| `--color-text-active` | The live item in a state ladder: the active MeterRow, the newest LogFeed line. Same value as text.primary; use it when the row can change state. | `dark #e9eef4, light #0b0e13` |
-| `--color-text-rest` | An item at rest in a state ladder (MeterRow rest, older LogFeed lines). Same value as text.secondary. | `dark #a3adba, light #19212c` |
-| `--color-text-pending` | An item that is queued or not started in a state ladder (MeterRow pending). Brightness changes, never size. | `dark #7b8592, light #4f5a69` |
-| `--color-accent-signal-fill` | A solid block in the brand colour, exactly as chosen: the primary Button, IconButton, a solid signal Badge. Put accent.signal.ink on it, never text.primary. Never use it as the only sign of a state; use accent.signal.indicator. | `#d93e00` |
-| `--color-accent-signal-text` | Orange text or icon on a surface: a current nav item, an emphasised figure, a link accent. | `dark #ff5512, light #b13200` |
-| `--color-accent-signal-ink` | Text and icons on accent.signal.fill. | `#ffffff` |
-| `--color-accent-signal-indicator` | The accent where colour alone shows a state or value: a checked control, Switch on, Progress, Slider, Rating stars, the current item in Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows. Put accent.signal.indicator-ink on it. | `#d93e00` |
-| `--color-accent-signal-indicator-ink` | Text and icons on accent.signal.indicator. | `#ffffff` |
-| `--color-accent-signal-wash` | The faint orange hover wash under a nav item or an inactive tab. | `rgba(217, 62, 0, 0.12)` |
-| `--color-accent-signal-glow` | The faint shadow of an interactive Card on hover and focus. Used by the Card component only. | `dark rgba(217, 62, 0, 0.38), light rgba(217, 62, 0, 0.3)` |
-| `--color-accent-hostile-fill` | A solid block for danger or failure: the danger Button, a solid hostile Badge. Put accent.hostile.ink on it. | `#f33636` |
-| `--color-accent-hostile-text` | Error and destructive text or icon on a surface: field errors, an invalid border, a failed status. | `dark #f55b5b, light #ae0a0a` |
-| `--color-accent-hostile-ink` | Text and icons on accent.hostile.fill. | `#0a0602` |
-| `--color-accent-ok-fill` | A solid block for success or a healthy state. Put accent.ok.ink on it. | `#2fb577` |
-| `--color-accent-ok-text` | Success text or icon on a surface: a positive delta, an in-stock status. | `dark #2fb577, light #1d714b` |
-| `--color-accent-ok-ink` | Text and icons on accent.ok.fill. | `#0a0602` |
-| `--color-accent-info-fill` | A solid block for neutral information. Put accent.info.ink on it. | `#5aa7ff` |
-| `--color-accent-info-text` | Informational text or icon on a surface: an in-progress status, a note. | `dark #5aa7ff, light #0063d5` |
-| `--color-accent-info-ink` | Text and icons on accent.info.fill. | `#0a0602` |
-| `--color-accent-warning-fill` | A solid block for a warning or a degraded state. Put accent.warning.ink on it. | `#ffac2a` |
-| `--color-accent-warning-text` | Warning text or icon on a surface: a pending or degraded status. | `dark #ffac2a, light #804e00` |
-| `--color-accent-warning-ink` | Text and icons on accent.warning.fill. | `#0a0602` |
-| `--color-category-gray-text` | Subtle Badge color="gray": text and border. A label, not a status. | `dark #a3a9b3, light #5c636e` |
-| `--color-category-gray-fill` | Solid Badge color="gray": the fill. | `#9aa1ab` |
-| `--color-category-gray-ink` | Text on category.gray.fill. | `#0a0602` |
-| `--color-category-brown-text` | Subtle Badge color="brown": text and border. A label, not a status. | `dark #c9a383, light #7a5232` |
-| `--color-category-brown-fill` | Solid Badge color="brown": the fill. | `#b98a64` |
-| `--color-category-brown-ink` | Text on category.brown.fill. | `#0a0602` |
-| `--color-category-orange-text` | Subtle Badge color="orange": text and border. A label, not a status. | `dark #f0a060, light #a34a00` |
-| `--color-category-orange-fill` | Solid Badge color="orange": the fill. | `#f0913a` |
-| `--color-category-orange-ink` | Text on category.orange.fill. | `#0a0602` |
-| `--color-category-yellow-text` | Subtle Badge color="yellow": text and border. A label, not a status. | `dark #e6c65a, light #7a5c00` |
-| `--color-category-yellow-fill` | Solid Badge color="yellow": the fill. | `#e8c341` |
-| `--color-category-yellow-ink` | Text on category.yellow.fill. | `#0a0602` |
-| `--color-category-green-text` | Subtle Badge color="green": text and border. A label, not a status. | `dark #6fcf8f, light #1e6b3a` |
-| `--color-category-green-fill` | Solid Badge color="green": the fill. | `#4fbf7a` |
-| `--color-category-green-ink` | Text on category.green.fill. | `#0a0602` |
-| `--color-category-teal-text` | Subtle Badge color="teal": text and border. A label, not a status. | `dark #5ccfc4, light #0d6662` |
-| `--color-category-teal-fill` | Solid Badge color="teal": the fill. | `#3fbfb2` |
-| `--color-category-teal-ink` | Text on category.teal.fill. | `#0a0602` |
-| `--color-category-blue-text` | Subtle Badge color="blue": text and border. A label, not a status. | `dark #7fb2ff, light #1f5fbf` |
-| `--color-category-blue-fill` | Solid Badge color="blue": the fill. | `#6fa3f5` |
-| `--color-category-blue-ink` | Text on category.blue.fill. | `#0a0602` |
-| `--color-category-purple-text` | Subtle Badge color="purple": text and border. A label, not a status. | `dark #b59cf5, light #6a3fbf` |
-| `--color-category-purple-fill` | Solid Badge color="purple": the fill. | `#a88af0` |
-| `--color-category-purple-ink` | Text on category.purple.fill. | `#0a0602` |
-| `--color-category-pink-text` | Subtle Badge color="pink": text and border. A label, not a status. | `dark #f08fc4, light #a3306f` |
-| `--color-category-pink-fill` | Solid Badge color="pink": the fill. | `#ec84bb` |
-| `--color-category-pink-ink` | Text on category.pink.fill. | `#0a0602` |
-| `--color-category-red-text` | Subtle Badge color="red": text and border. A label, not a status. | `dark #f58a8a, light #b42828` |
-| `--color-category-red-fill` | Solid Badge color="red": the fill. | `#f07a7a` |
-| `--color-category-red-ink` | Text on category.red.fill. | `#0a0602` |
-| `--color-severity-1-text` | Subtle Badge severity=1: text and border. A step, with its word. | `dark #49d092, light #1d714b` |
-| `--color-severity-1-fill` | Solid Badge severity=1: the fill. | `#2fb577` |
-| `--color-severity-1-ink` | Text on severity.1.fill. | `#0a0602` |
-| `--color-severity-2-text` | Subtle Badge severity=2: text and border. A step, with its word. | `dark #ffcb79, light #804e00` |
-| `--color-severity-2-fill` | Solid Badge severity=2: the fill. | `#ffbb52` |
-| `--color-severity-2-ink` | Text on severity.2.fill. | `#0a0602` |
-| `--color-severity-3-text` | Subtle Badge severity=3: text and border. A step, with its word. | `dark #f19300, light #b13200` |
-| `--color-severity-3-fill` | Solid Badge severity=3: the fill. | `#f19300` |
-| `--color-severity-3-ink` | Text on severity.3.fill. | `#0a0602` |
-| `--color-severity-4-text` | Subtle Badge severity=4: text and border. A step, with its word. | `dark #ff5512, light #ae0a0a` |
-| `--color-severity-4-fill` | Solid Badge severity=4: the fill. | `#f33636` |
-| `--color-severity-4-ink` | Text on severity.4.fill. | `#0a0602` |
-| `--color-severity-5-text` | Subtle Badge severity=5: text and border. A step, with its word. | `dark #f55b5b, light #790707` |
-| `--color-severity-5-fill` | Solid Badge severity=5: the fill. | `#ae0a0a` |
-| `--color-severity-5-ink` | Text on severity.5.fill. | `#ffffff` |
-| `--color-severity-6-text` | Subtle Badge severity=6: text and border. A step, with its word. | `dark #f78181, light #440404` |
-| `--color-severity-6-fill` | Solid Badge severity=6: the fill. | `#440404` |
-| `--color-severity-6-ink` | Text on severity.6.fill. | `#ffffff` |
-| `--color-numeral-pad` | The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read. | `dark #7b8592, light #627da4` |
-| `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. | `dark #78b7ff, light #004593` |
-| `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. | `dark #78b7ff, light #004593` |
-| `--color-ai-wash` | The faint tint inside a field an AI filled, laid over the control fill. Input and Textarea paint it; nothing else should. | `dark rgba(90, 167, 255, 0.1), light rgba(0, 99, 213, 0.08)` |
-| `--color-focus-ring` | The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset. | `dark #ff5512, light #d93e00` |
-| `--color-chart-series-1` | The first data series in a chart. A graphic colour, never text. ChartPanel applies it. | `#d93e00` |
-| `--color-chart-series-2` | The second data series in a chart. A graphic colour, never text. There is no third: split the chart. | `dark #1884ff, light #0063d5` |
-| `--color-terminal-black` | ANSI black in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #7b8592, light #3a4049` |
-| `--color-terminal-red` | ANSI red in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #ff6b5e, light #b3261e` |
-| `--color-terminal-green` | ANSI green in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #3ddc84, light #14713d` |
-| `--color-terminal-yellow` | ANSI yellow in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #e8b931, light #7a5a00` |
-| `--color-terminal-blue` | ANSI blue in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #5aa7ff, light #0057c2` |
-| `--color-terminal-magenta` | ANSI magenta in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #d98cf0, light #8a2bb0` |
-| `--color-terminal-cyan` | ANSI cyan in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #3fd0d8, light #00696f` |
-| `--color-terminal-white` | ANSI white in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #c4ccd6, light #5c636d` |
-| `--color-terminal-bright-black` | ANSI bright black in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #98a2af, light #646b75` |
-| `--color-terminal-bright-red` | ANSI bright red in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #ff9288, light #8f1c16` |
-| `--color-terminal-bright-green` | ANSI bright green in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #7debaa, light #0e5a30` |
-| `--color-terminal-bright-yellow` | ANSI bright yellow in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #f5d36a, light #5f4600` |
-| `--color-terminal-bright-blue` | ANSI bright blue in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #8cc2ff, light #00459c` |
-| `--color-terminal-bright-magenta` | ANSI bright magenta in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #e8b3f7, light #6e1f8e` |
-| `--color-terminal-bright-cyan` | ANSI bright cyan in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #7fe4ea, light #005257` |
-| `--color-terminal-bright-white` | ANSI bright white in the Terminal component's output. Terminal applies it; never use it outside a terminal. | `dark #f4f7fa, light #16191e` |
-| `--color-terminal-selection` | The selected text wash in the Terminal component. Terminal applies it. | `dark rgba(90, 167, 255, 0.58), light rgba(0, 99, 213, 0.72)` |
+| Token | Use |
+|---|---|
+| `--color-surface-base` | The page background, and the opaque fill of every form and overlay. Start here: text and control colours are measured against it. |
+| `--color-surface-sunken` | The opaque fill of a control you type or pick in (Input, Textarea, Select), and of small opaque surfaces: Kbd, Tag, Tooltip, menus, toasts. Not a card. |
+| `--color-surface-raised` | The translucent fill of a Card or panel sitting on the page. Use the Card component; do not paint it by hand, and avoid nesting raised inside raised. |
+| `--color-surface-scrim` | The dimming layer behind a Dialog, Sheet or CommandPalette. Those components paint it; nothing else should. |
+| `--color-surface-overlay` | A translucent panel floating over a canvas, such as the KnowledgeGraph callout and cluster pills. Not for a page section or a dialog. |
+| `--color-border-hairline` | A quiet divider or panel edge that carries no information: row separators, card outlines. |
+| `--color-border-hairline-strong` | A stronger decorative rule: table header underlines, section rules. Still decorative, never the only sign of a control. |
+| `--color-border-control` | The boundary of an interactive control at rest (Input, Select, secondary Button). The one border that has to be seen to find the control. |
+| `--color-border-selection` | The boundary of the small selection controls at rest: Checkbox, Radio, Switch track. |
+| `--color-text-primary` | Body text, headings, values. The default text colour. |
+| `--color-text-secondary` | Supporting text beside primary text: descriptions, help text, metadata. Keep it at 14px or larger. |
+| `--color-text-muted` | The quietest readable text: captions, timestamps, disabled-looking labels. Not for anything the user must read to act. |
+| `--color-text-placeholder` | Placeholder text inside a control, on surface.sunken. Only there. |
+| `--color-text-label` | Group labels that head a list of items (the command palette's group titles). Uppercase mono, never body text. |
+| `--color-text-active` | The live item in a state ladder: the active MeterRow, the newest LogFeed line. Same value as text.primary; use it when the row can change state. |
+| `--color-text-rest` | An item at rest in a state ladder (MeterRow rest, older LogFeed lines). Same value as text.secondary. |
+| `--color-text-pending` | An item that is queued or not started in a state ladder (MeterRow pending). Brightness changes, never size. |
+| `--color-accent-signal-fill` | A solid block in the brand colour, exactly as chosen: the primary Button, IconButton, a solid signal Badge. Put accent.signal.ink on it, never text.primary. Never use it as the only sign of a state; use accent.signal.indicator. |
+| `--color-accent-signal-text` | Orange text or icon on a surface: a current nav item, an emphasised figure, a link accent. |
+| `--color-accent-signal-ink` | Text and icons on accent.signal.fill. |
+| `--color-accent-signal-indicator` | The accent where colour alone shows a state or value: a checked control, Switch on, Progress, Slider, Rating stars, the current item in Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows. Put accent.signal.indicator-ink on it. |
+| `--color-accent-signal-indicator-ink` | Text and icons on accent.signal.indicator. |
+| `--color-accent-signal-wash` | The faint orange hover wash under a nav item or an inactive tab. |
+| `--color-accent-signal-glow` | The faint shadow of an interactive Card on hover and focus. Used by the Card component only. |
+| `--color-accent-hostile-fill` | A solid block for danger or failure: the danger Button, a solid hostile Badge. Put accent.hostile.ink on it. |
+| `--color-accent-hostile-text` | Error and destructive text or icon on a surface: field errors, an invalid border, a failed status. |
+| `--color-accent-hostile-ink` | Text and icons on accent.hostile.fill. |
+| `--color-accent-ok-fill` | A solid block for success or a healthy state. Put accent.ok.ink on it. |
+| `--color-accent-ok-text` | Success text or icon on a surface: a positive delta, an in-stock status. |
+| `--color-accent-ok-ink` | Text and icons on accent.ok.fill. |
+| `--color-accent-info-fill` | A solid block for neutral information. Put accent.info.ink on it. |
+| `--color-accent-info-text` | Informational text or icon on a surface: an in-progress status, a note. |
+| `--color-accent-info-ink` | Text and icons on accent.info.fill. |
+| `--color-accent-warning-fill` | A solid block for a warning or a degraded state. Put accent.warning.ink on it. |
+| `--color-accent-warning-text` | Warning text or icon on a surface: a pending or degraded status. |
+| `--color-accent-warning-ink` | Text and icons on accent.warning.fill. |
+| `--color-category-gray-text` | Subtle Badge color="gray": text and border. A label, not a status. |
+| `--color-category-gray-fill` | Solid Badge color="gray": the fill. |
+| `--color-category-gray-ink` | Text on category.gray.fill. |
+| `--color-category-brown-text` | Subtle Badge color="brown": text and border. A label, not a status. |
+| `--color-category-brown-fill` | Solid Badge color="brown": the fill. |
+| `--color-category-brown-ink` | Text on category.brown.fill. |
+| `--color-category-orange-text` | Subtle Badge color="orange": text and border. A label, not a status. |
+| `--color-category-orange-fill` | Solid Badge color="orange": the fill. |
+| `--color-category-orange-ink` | Text on category.orange.fill. |
+| `--color-category-yellow-text` | Subtle Badge color="yellow": text and border. A label, not a status. |
+| `--color-category-yellow-fill` | Solid Badge color="yellow": the fill. |
+| `--color-category-yellow-ink` | Text on category.yellow.fill. |
+| `--color-category-green-text` | Subtle Badge color="green": text and border. A label, not a status. |
+| `--color-category-green-fill` | Solid Badge color="green": the fill. |
+| `--color-category-green-ink` | Text on category.green.fill. |
+| `--color-category-teal-text` | Subtle Badge color="teal": text and border. A label, not a status. |
+| `--color-category-teal-fill` | Solid Badge color="teal": the fill. |
+| `--color-category-teal-ink` | Text on category.teal.fill. |
+| `--color-category-blue-text` | Subtle Badge color="blue": text and border. A label, not a status. |
+| `--color-category-blue-fill` | Solid Badge color="blue": the fill. |
+| `--color-category-blue-ink` | Text on category.blue.fill. |
+| `--color-category-purple-text` | Subtle Badge color="purple": text and border. A label, not a status. |
+| `--color-category-purple-fill` | Solid Badge color="purple": the fill. |
+| `--color-category-purple-ink` | Text on category.purple.fill. |
+| `--color-category-pink-text` | Subtle Badge color="pink": text and border. A label, not a status. |
+| `--color-category-pink-fill` | Solid Badge color="pink": the fill. |
+| `--color-category-pink-ink` | Text on category.pink.fill. |
+| `--color-category-red-text` | Subtle Badge color="red": text and border. A label, not a status. |
+| `--color-category-red-fill` | Solid Badge color="red": the fill. |
+| `--color-category-red-ink` | Text on category.red.fill. |
+| `--color-severity-1-text` | Subtle Badge severity=1: text and border. A step, with its word. |
+| `--color-severity-1-fill` | Solid Badge severity=1: the fill. |
+| `--color-severity-1-ink` | Text on severity.1.fill. |
+| `--color-severity-2-text` | Subtle Badge severity=2: text and border. A step, with its word. |
+| `--color-severity-2-fill` | Solid Badge severity=2: the fill. |
+| `--color-severity-2-ink` | Text on severity.2.fill. |
+| `--color-severity-3-text` | Subtle Badge severity=3: text and border. A step, with its word. |
+| `--color-severity-3-fill` | Solid Badge severity=3: the fill. |
+| `--color-severity-3-ink` | Text on severity.3.fill. |
+| `--color-severity-4-text` | Subtle Badge severity=4: text and border. A step, with its word. |
+| `--color-severity-4-fill` | Solid Badge severity=4: the fill. |
+| `--color-severity-4-ink` | Text on severity.4.fill. |
+| `--color-severity-5-text` | Subtle Badge severity=5: text and border. A step, with its word. |
+| `--color-severity-5-fill` | Solid Badge severity=5: the fill. |
+| `--color-severity-5-ink` | Text on severity.5.fill. |
+| `--color-severity-6-text` | Subtle Badge severity=6: text and border. A step, with its word. |
+| `--color-severity-6-fill` | Solid Badge severity=6: the fill. |
+| `--color-severity-6-ink` | Text on severity.6.fill. |
+| `--color-numeral-pad` | The dimmed leading zeros of a hero numeral. Decorative; never text that has to be read. |
+| `--color-ai-text` | Text or an icon that marks something as made by AI: the AiLabel mark, the AI glyph in a field an AI filled. Always beside a word, never colour alone. |
+| `--color-ai-border` | The boundary of a form field whose value an AI filled and the person has not changed. Input and Textarea paint it from aiValue; do not paint it by hand. |
+| `--color-ai-wash` | The faint tint inside a field an AI filled, laid over the control fill. Input and Textarea paint it; nothing else should. |
+| `--color-focus-ring` | The keyboard focus outline. Use it only in focus-visible:outline-[var(--color-focus-ring)], with a 2px outline and a 2px offset. |
+| `--color-chart-series-1` | The first data series in a chart. A graphic colour, never text. ChartPanel applies it. |
+| `--color-chart-series-2` | The second data series in a chart. A graphic colour, never text. There is no third: split the chart. |
 
-## Type
+The 17 `--color-terminal-*` tokens are the ANSI colours inside the Terminal component, which applies them itself; they are not in the front matter. They and the component tokens are listed with their values in [llms-tokens.txt](llms-tokens.txt).
+
+## Typography
+
+Three typefaces, all under the SIL Open Font License: Oxanium for display (headings, figures, button labels), Saira for body text, JetBrains Mono for labels, code and data.
 
 - `font-display`: `"Oxanium", system-ui, sans-serif`
 - `font-body`: `"Saira", system-ui, sans-serif`
 - `font-mono`: `"JetBrains Mono", ui-monospace, monospace`
 - `font-data`: `"JetBrains Mono", ui-monospace, monospace`
 
-## Spacing
+The roles in the front matter, as the components set them:
 
-| Token | Use | Value |
-|---|---|---|
-| `--spacing-1` | 4px. The gap between an icon and its label, or two tightly bound marks. | `4px` |
-| `--spacing-2` | 8px. The gap between related items in a row: chips, a label and its value. | `8px` |
-| `--spacing-3` | 12px. The gap between sibling controls, such as two buttons. | `12px` |
-| `--spacing-4` | 16px. Default padding inside a control or a compact panel; the gap between fields. | `16px` |
-| `--spacing-6` | 24px. Padding inside a Card; the gap between groups in a form. | `24px` |
-| `--spacing-8` | 32px. The gap between blocks within a section. | `32px` |
-| `--spacing-12` | 48px. The gap between sections of a page. | `48px` |
-| `--spacing-16` | 64px. The page gutter from the large breakpoint, and the gap around a hero block. | `64px` |
+| Role | Face | Size | Use |
+|---|---|---|---|
+| `headline-lg` | `font-display` 600 | 30px | A screen title (PageHeader). 24px in a narrow container. |
+| `headline-md` | `font-display` 600 | 24px | A section title, uppercase (SectionHeading). 20px in a narrow container. |
+| `body-md` | `font-body` 400 | 16px | Reading text: a description under a title, a paragraph. |
+| `body-sm` | `font-body` 400 | 14px | Supporting and help text. The smallest size for text.secondary. |
+| `label-md` | `font-mono` 600 | 12px | An eyebrow over a title, uppercase (PageHeader). |
+| `button-md` | `font-display` 600 | 14px | A Button label, uppercase. 12px at sizes xs and sm, 16px at lg. |
+| `data-md` | `font-data` 400 | 14px | Numbers, ids, timestamps and logs, with tabular figures (LogFeed, ListItem meta). |
+
+The format has no text case: `headline-md`, `label-md` and `button-md` are set in uppercase. Secondary text is 14px or larger; 11 to 12px is for uppercase mono labels only.
+
+## Layout
+
+A 4px grid. Tailwind's own spacing utilities sit on the same grid (`gap-3` is 12px, `p-4` is 16px) and are fine to use.
+
+| Token | Use |
+|---|---|
+| `--spacing-1` | 4px. The gap between an icon and its label, or two tightly bound marks. |
+| `--spacing-2` | 8px. The gap between related items in a row: chips, a label and its value. |
+| `--spacing-3` | 12px. The gap between sibling controls, such as two buttons. |
+| `--spacing-4` | 16px. Default padding inside a control or a compact panel; the gap between fields. |
+| `--spacing-6` | 24px. Padding inside a Card; the gap between groups in a form. |
+| `--spacing-8` | 32px. The gap between blocks within a section. |
+| `--spacing-12` | 48px. The gap between sections of a page. |
+| `--spacing-16` | 64px. The page gutter from the large breakpoint, and the gap around a hero block. |
+
+A page shell sets `--page-gutter` once (16px, and 64px from the large breakpoint), and everything inside reads it through `px-gutter` or `mx-gutter`, so a brand, a heading and a grid start on one edge. Controls come in three heights: 32px, 40px, 48px (`--component-control-height-sm`, `-md`, `-lg`); the middle one is the default.
+
+## Elevation & Depth
+
+Depth comes from tone and line, not from shadow. The page is `surface.base`. A control you type or pick in is the darker, opaque `surface.sunken`. A Card or Panel is the translucent `surface.raised` behind a hairline border; a Panel adds a 6px backdrop blur. The surfaces that frame other content (Panel, Card, Dialog, DropdownMenu, CommandPalette and Select's listbox) carry crosshair marks at their corners. A Dialog, Sheet or CommandPalette dims the page behind it with `surface.scrim`. An interactive Card answers hover and keyboard focus with a signal border and a 4px lift, and no shadow. The one cast shadow is the static tilted glass of a hero section.
+
+## Shapes
+
+Corners are square (`rounded.none`). The cut corner is the shape of a single object: Button, IconButton, Avatar (md and lg), the Tooltip panel and Tag have their bottom-right corner cut off, at 5, 8, 14 or 22px (`.bevel-xs` to `.bevel-lg`). The crosshair is the frame around several objects. A form control gets neither, because `clip-path` would clip the focus ring it draws. Spinner is the one round shape. A theme can set `--shape-bevel` (0 removes every cut) and `--shape-radius` (surfaces stop at 24px).
 
 ## Motion
+
+The components animate themselves; these tokens are for anything you animate yourself. Anything you animate stops under `prefers-reduced-motion`, and nothing moves on its own. The tokens are listed here and not in the front matter because the published DESIGN.md linter (`@google/design.md` 0.4.0) does not read a motion group yet.
 
 | Token | Use | Value |
 |---|---|---|
@@ -152,7 +451,17 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 | `--ease-snap` | The default easing curve: quick out, soft landing. Use it for every transition that is not a physical object changing shape. | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `--ease-accelerate` | Starts slow, gathers speed and stops at the end. For a small object that travels into a boundary and gives slightly against it (the Switch thumb). Not for anything that should land softly: that is --ease-snap. | `cubic-bezier(0.4, 0, 1, 1)` |
 
-## Atoms
+## Voice & Content Strategy
+
+- **Assistant copy.** A button names the action ("Summarize"), never "AI". Say "response", not "answer". No "please" or "!" in assistant labels. The interface says "Assistant"; only its own messages say "I". Response feedback: `ResponseFeedback` in `actions`. A value the assistant filled is `aiValue` on that `Input` or `Textarea` only; leaving it accepts it.
+- **Status tones.** `ok` done or healthy; `warning` degraded or needs attention; `hostile` failed or destructive; `info` in progress or neutral news; `signal` brand emphasis (a sale, the selected thing); `neutral` inactive. Always with a word: colour alone is not a status.
+- **Feedback.** A `Toast` confirms something the person just did and then leaves, so it never holds the only copy of anything; a message that must stay is an `Alert` in the page. A failed load is an `Alert` in the `hostile` tone with a retry, not an `EmptyState`. Measurable work is `Progress`; a short wait inside a control or a line of text is `Spinner`; a busy `Button` takes `loading`.
+
+## Components
+
+The front matter's `components` are the colour pairs the system paints, one per pair and theme (`-dark`, `-light`; no suffix when the pair is the same in both themes). Text sits on `surface-base` and every text pair passes WCAG AA, which the DESIGN.md linter checks. An entry with a `backgroundColor` and a width is a line or an outline (a border, the focus ring, a chart series), because the format has no border property. An entry with a `backgroundColor` alone is a translucent layer; the repository's own contrast gate measures it over the surface below. `numeral-pad` is decorative and kept dim on purpose. Build screens from the components below, not from the pairs.
+
+### Atoms
 
 - [AiLabel](docs/components/ai-label.md): Marks content as made by AI, and on request says why.
 - [Avatar](docs/components/avatar.md): A small square that shows who someone is.
@@ -181,7 +490,7 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 - [Textarea](docs/components/textarea.md): A text box for several lines.
 - [Tooltip](docs/components/tooltip.md): Extra text that shows on hover or focus.
 
-## Molecules
+### Molecules
 
 - [Accordion](docs/components/accordion.md): Sections that open and close in place, each under its own heading.
 - [Alert](docs/components/alert.md): A message that sits in the page.
@@ -220,7 +529,7 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 - [Toast](docs/components/toast.md): A short message that pops up, stays a few seconds and goes away.
 - [ToolCall](docs/components/tool-call.md): A tool the assistant ran, shown right where it ran.
 
-## Organisms
+### Organisms
 
 - [AlertDialog](docs/components/alert-dialog.md): Asks for confirmation before something with real consequences.
 - [AuthForm](docs/components/auth-form.md): One form with four modes: sign in, create an account, reset a password, or enter a two-step code.
@@ -242,7 +551,7 @@ Write a token as a CSS variable: `bg-[var(--color-surface-base)]`. Use only the 
 - [Sidebar](docs/components/sidebar.md): The navigation down the side of an app.
 - [Terminal](docs/components/terminal.md): A live terminal session in the page, built on xterm.js.
 
-## Rules
+## Do's and Don'ts
 
 In full: [llms-guidelines.txt](llms-guidelines.txt).
 

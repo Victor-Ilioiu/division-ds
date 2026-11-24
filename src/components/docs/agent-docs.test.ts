@@ -1,5 +1,8 @@
 import { beforeAll, describe, expect, it } from 'vitest'
+import { lint } from '@google/design.md/linter'
 import { buildAgentDocs, staleFiles } from '../../../scripts/build-agent-docs.mjs'
+import { TYPE_ROLES } from '../../../scripts/lib/agent-docs.mjs'
+import { sourceFiles } from '../../../scripts/lib/read-source-files.mjs'
 
 /**
  * The files an agent reads (`public/llms*.txt`, `public/docs/components/*.md`, the manifests, the
@@ -85,7 +88,68 @@ describe('the generated agent docs', () => {
     // the use line already cut to "Solid Badge severity=N: the fill."; the rows alone are ~1.4 kB.
     // Moved to 30.5 kB with six components and four tokens (data font, state ladder, overlay,
     // 2026-11-16): one linked line per component and one table row per token.
-    expect(design.length).toBeLessThan(30_500)
+    // Moved to 50 kB with the DESIGN.md format (2026-11-24): the tokens moved into YAML front
+    // matter (about 8 kB of colour, both themes) with the pairs the linter checks (about 13 kB),
+    // and the Value column left the body tables, which now carry the use only.
+    expect(design.length).toBeLessThan(50_000)
+  })
+
+  // DESIGN.md follows Google Labs' DESIGN.md format, and this runs the published linter on it, the
+  // same one `npx -p @google/design.md designmd lint public/DESIGN.md` runs. Warnings fail too:
+  // each one is a token a tool would drop, a pair below AA, or a section out of the spec's order.
+  it('write DESIGN.md that the official DESIGN.md linter passes with no error or warning', () => {
+    const report = lint(files['public/DESIGN.md'])
+    const problems = report.findings.filter(finding => finding.severity !== 'info')
+    expect(problems).toEqual([])
+    // The spec's sections in the spec's order; Motion and Voice & Content Strategy sit where the
+    // spec's current draft puts them, between Shapes and Components.
+    expect(report.sections).toEqual([
+      'Overview',
+      'Colors',
+      'Typography',
+      'Layout',
+      'Elevation & Depth',
+      'Shapes',
+      'Motion',
+      'Voice & Content Strategy',
+      'Components',
+      "Do's and Don'ts",
+    ])
+    // Not vacuous: the linter resolved the pairs and measured them.
+    expect(report.designSystem.components.size).toBeGreaterThan(100)
+  })
+
+  it('give DESIGN.md every semantic colour at the value the theme files resolve to', () => {
+    const { colors } = lint(files['public/DESIGN.md']).designSystem
+    const rgba = (value: string) => {
+      const hex = value.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i)
+      if (hex) return { r: parseInt(hex[1], 16), g: parseInt(hex[2], 16), b: parseInt(hex[3], 16), a: 1 }
+      const fn = value.match(/^rgba\((\d+), (\d+), (\d+), ([\d.]+)\)$/)
+      if (!fn) throw new Error(`Unexpected colour value ${value}`)
+      return { r: Number(fn[1]), g: Number(fn[2]), b: Number(fn[3]), a: Number(fn[4]) }
+    }
+    const resolved = (path: string) => {
+      const colour = colors.get(path)
+      return colour && { r: colour.r, g: colour.g, b: colour.b, a: colour.a ?? 1 }
+    }
+    const manifest = JSON.parse(sourceFiles(['public/manifest'], /^tokens\.json$/)[0].text)
+    const semantic = manifest.tokens.filter(
+      (token: { layer: string; name: string }) => token.layer === 'semantic' && !token.name.startsWith('--color-terminal-'),
+    )
+    expect(semantic.length).toBeGreaterThan(80)
+    for (const token of semantic as { name: string; value: string | { dark: string; light: string } }[]) {
+      const key = token.name.replace(/^--color-/, '')
+      if (typeof token.value === 'string') expect(resolved(key), token.name).toEqual(rgba(token.value))
+      else for (const theme of ['dark', 'light'] as const) expect(resolved(`${theme}.${key}`), `${token.name} ${theme}`).toEqual(rgba(token.value[theme]))
+    }
+    expect(resolved('primary')).toEqual(resolved('accent-signal-fill'))
+  })
+
+  it('read every DESIGN.md type role off a component that still sets it', () => {
+    const sources = new Map(sourceFiles(['src/components'], /\.tsx$/).map(file => [file.path, file.text]))
+    for (const role of TYPE_ROLES) {
+      expect(sources.get(role.evidence.file), `${role.name}: ${role.evidence.file}`).toContain(role.evidence.classes)
+    }
   })
 
   it('keep the index small enough to read whole', () => {
