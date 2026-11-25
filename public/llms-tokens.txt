@@ -33,7 +33,7 @@ Choose by what the colour is doing, not by how it looks. Values differ by theme 
 | `--color-accent-signal-indicator` | The accent where colour alone shows a state or value: a checked control, Switch on, Progress, Slider, Rating stars, the current item in Sidebar, Navbar, Tabs, SegmentedControl, Stepper and highlighted menu rows. Put accent.signal.indicator-ink on it. | `#d93e00` |
 | `--color-accent-signal-indicator-ink` | Text and icons on accent.signal.indicator. | `#ffffff` |
 | `--color-accent-signal-wash` | The faint orange hover wash under a nav item or an inactive tab. | `rgba(217, 62, 0, 0.12)` |
-| `--color-accent-signal-glow` | The faint shadow of an interactive Card on hover and focus. Used by the Card component only. | `dark rgba(217, 62, 0, 0.38), light rgba(217, 62, 0, 0.3)` |
+| `--color-accent-signal-glow` | Reserved. The faint glow an interactive Card once had on hover and focus; nothing paints it now (src/styles/elevation.css says how to bring it back). | `dark rgba(217, 62, 0, 0.38), light rgba(217, 62, 0, 0.3)` |
 | `--color-accent-hostile-fill` | A solid block for danger or failure: the danger Button, a solid hostile Badge. Put accent.hostile.ink on it. | `#f33636` |
 | `--color-accent-hostile-text` | Error and destructive text or icon on a surface: field errors, an invalid border, a failed status. | `dark #f55b5b, light #ae0a0a` |
 | `--color-accent-hostile-ink` | Text and icons on accent.hostile.fill. | `#0a0602` |
@@ -162,7 +162,7 @@ Tailwind's own spacing utilities sit on the same 4px grid (`gap-3` is 12px, `p-4
 | `--spacing-2` | 8px. The gap between related items in a row: chips, a label and its value. | `8px` |
 | `--spacing-3` | 12px. The gap between sibling controls, such as two buttons. | `12px` |
 | `--spacing-4` | 16px. Default padding inside a control or a compact panel; the gap between fields. | `16px` |
-| `--spacing-6` | 24px. Padding inside a Card; the gap between groups in a form. | `24px` |
+| `--spacing-6` | 24px. Padding inside a Dialog (from the small breakpoint), an EmptyState and the checkout order summary; the gap between groups in a form. A Card pads at 20px. | `24px` |
 | `--spacing-8` | 32px. The gap between blocks within a section. | `32px` |
 | `--spacing-12` | 48px. The gap between sections of a page. | `48px` |
 | `--spacing-16` | 64px. The page gutter from the large breakpoint, and the gap around a hero block. | `64px` |

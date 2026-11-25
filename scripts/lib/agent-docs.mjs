@@ -267,6 +267,11 @@ const DESIGN_YAML_SKIP = /^terminal-/
  *  `text-sm` / `text-xs` defaults of 20/14 and 16/12). */
 export const TYPE_ROLES = [
   {
+    name: 'display-lg', font: 'display', size: '36px', weight: 700, lineHeight: 1, fontFeature: '"tnum"',
+    use: 'A hero numeral: the value of a Stat, with tabular figures.',
+    evidence: { file: 'src/components/molecules/stat/Stat.tsx', classes: 'font-display font-bold text-[2.25rem] tabular-nums' },
+  },
+  {
     name: 'headline-lg', font: 'display', size: '30px', weight: 600, lineHeight: 1.25,
     use: 'A screen title (PageHeader). 24px in a narrow container.',
     evidence: { file: 'src/components/molecules/page-header/PageHeader.tsx', classes: 'font-display text-2xl font-semibold leading-tight' },
@@ -275,6 +280,11 @@ export const TYPE_ROLES = [
     name: 'headline-md', font: 'display', size: '24px', weight: 600, lineHeight: 1.25, letterSpacing: '0.02em',
     use: 'A section title, uppercase (SectionHeading). 20px in a narrow container.',
     evidence: { file: 'src/components/molecules/section-heading/SectionHeading.tsx', classes: 'font-display text-xl font-semibold uppercase leading-tight tracking-[0.02em]' },
+  },
+  {
+    name: 'headline-sm', font: 'display', size: '20px', weight: 600, lineHeight: 1.375,
+    use: 'The title of a Dialog or Sheet.',
+    evidence: { file: 'src/components/organisms/dialog/Dialog.tsx', classes: 'font-display font-semibold text-xl leading-snug' },
   },
   {
     name: 'body-md', font: 'body', size: '16px', weight: 400, lineHeight: 1.625,
@@ -292,6 +302,16 @@ export const TYPE_ROLES = [
     evidence: { file: 'src/components/molecules/page-header/PageHeader.tsx', classes: 'font-mono text-xs font-semibold uppercase tracking-[0.18em]' },
   },
   {
+    name: 'label-sm', font: 'mono', size: '12px', weight: 400, lineHeight: 1.33, letterSpacing: '0.12em',
+    use: 'A tab label, uppercase (Tabs).',
+    evidence: { file: 'src/components/molecules/tabs/Tabs.tsx', classes: 'font-mono text-xs uppercase tracking-[0.12em]' },
+  },
+  {
+    name: 'label-xs', font: 'data', size: '11px', weight: 600,
+    use: 'The one word of a StatusChip, uppercase, on an 18px chip. The smallest text in the system.',
+    evidence: { file: 'src/components/atoms/status-chip/StatusChip.tsx', classes: 'h-[18px] px-1.5 font-data text-[11px] font-semibold uppercase' },
+  },
+  {
     name: 'button-md', font: 'display', size: '14px', weight: 600, lineHeight: 1.43, letterSpacing: '0.025em',
     use: 'A Button label, uppercase. 12px at sizes xs and sm, 16px at lg.',
     evidence: { file: 'src/components/atoms/button/Button.tsx', classes: 'font-display font-semibold uppercase tracking-wide' },
@@ -302,6 +322,205 @@ export const TYPE_ROLES = [
     evidence: { file: 'src/components/molecules/log-feed/LogFeed.tsx', classes: 'font-data text-sm' },
   },
 ]
+
+/** The motion DESIGN.md states as `motion` tokens, named for what moves (the spec's convention:
+ *  `state-change`, `surface-enter`, `surface-exit`), not for speed. `duration` and `timing` are a
+ *  `--duration-*` / `--ease-*` token, resolved to its value, or a literal where the stylesheet
+ *  writes one. `evidence` is the declaration that sets it, which agent-docs.test.ts finds in the
+ *  file, as it does for TYPE_ROLES. */
+export const MOTION_ROLES = [
+  {
+    name: 'state-change', duration: '--duration-fast', timing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    use: 'A field or control changing colour, fill or border under the pointer (.transition-control).',
+    evidence: { file: 'src/styles/control.css', classes: ['transition-duration: var(--duration-fast);', 'transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);'] },
+  },
+  {
+    name: 'press', duration: '0ms', timing: 'linear',
+    use: 'A Button press: it lands in the frame it happens, with no transition.',
+    evidence: { file: 'src/styles/motion.css', classes: ['transition-duration: 0s;'] },
+  },
+  {
+    name: 'button-arrival', duration: '--duration-stepped', timing: 'steps(3, jump-start)',
+    use: 'A Button\'s hover state, arriving in three discrete steps rather than a slide (.transition-stepped).',
+    evidence: { file: 'src/styles/motion.css', classes: ['--steps-arrival: 3;', 'transition-timing-function: steps(var(--steps-arrival), jump-start);'] },
+  },
+  {
+    name: 'surface-enter', duration: '--duration-base', timing: '--ease-snap',
+    use: 'A menu, listbox, dialog or scrim arriving, and an accordion opening: it decelerates in.',
+    evidence: { file: 'src/styles/motion.css', classes: ['.anim-popover { animation: popover-down-in var(--duration-base) var(--ease-snap); }'] },
+  },
+  {
+    name: 'surface-exit', duration: '--duration-fast', timing: '--ease-accelerate',
+    use: 'A menu or dialog leaving: quicker than it arrived, accelerating away.',
+    evidence: { file: 'src/styles/motion.css', classes: ['animation: popover-up-out var(--duration-fast) var(--ease-accelerate) forwards;'] },
+  },
+  {
+    name: 'sheet-exit', duration: '--duration-base', timing: '--ease-accelerate',
+    use: 'A Sheet sliding out, and the scrim behind an overlay fading.',
+    evidence: { file: 'src/styles/motion.css', classes: ['animation: sheet-out-right var(--duration-base) var(--ease-accelerate) forwards;'] },
+  },
+  {
+    name: 'tooltip-enter', duration: '--duration-fast', timing: '--ease-snap',
+    use: 'A Tooltip appearing.',
+    evidence: { file: 'src/styles/motion.css', classes: ['.anim-tooltip { animation: tooltip-in var(--duration-fast) var(--ease-snap); }'] },
+  },
+  {
+    name: 'route-enter', duration: '--duration-slow', timing: '--ease-snap',
+    use: 'A new route\'s view rising into place, and a hairline drawing on (.anim-draw-on).',
+    evidence: { file: 'src/styles/motion.css', classes: ['animation: route-in var(--duration-slow) var(--ease-snap) both;'] },
+  },
+]
+
+/** The component recipes DESIGN.md states before the colour pairs: real components and their
+ *  states, read off the source. `colours` name a semantic colour (`surface-base`) or a component
+ *  token (`component-button-ghost-text`), which is resolved to the semantic colour it aliases.
+ *  A transparent control (secondary, ghost, tab) is stated on `surface-base`, where it sits.
+ *  `evidence` holds class strings agent-docs.test.ts finds in `file`. `doc` is the component the
+ *  recipe belongs to, so its line under Components lists it. */
+const BUTTON = 'src/components/atoms/button/Button.tsx'
+export const COMPONENT_RECIPES = [
+  {
+    name: 'button-primary', doc: 'Button',
+    colours: { backgroundColor: 'component-button-primary-fill', textColor: 'component-button-primary-text' },
+    props: { typography: 'button-md', rounded: 'none', height: 'md', padding: '0px 20px' },
+    evidence: { file: BUTTON, classes: ['bg-[var(--component-button-primary-fill)]', "md: 'h-[var(--component-control-height-md)] px-5 text-sm"] },
+  },
+  {
+    name: 'button-secondary', doc: 'Button',
+    colours: { backgroundColor: 'surface-base', textColor: 'component-button-secondary-text' },
+    props: { typography: 'button-md', rounded: 'none', height: 'md', padding: '0px 20px' },
+    evidence: { file: BUTTON, classes: ['bg-transparent text-[var(--component-button-secondary-text)]', 'border border-[var(--component-button-secondary-border)]'] },
+  },
+  {
+    name: 'button-secondary-hover', doc: 'Button',
+    colours: { backgroundColor: 'surface-raised', textColor: 'component-button-secondary-text' },
+    evidence: { file: BUTTON, classes: ["'hover:bg-[var(--color-surface-raised)]'"] },
+  },
+  {
+    name: 'button-ghost', doc: 'Button',
+    colours: { backgroundColor: 'surface-base', textColor: 'component-button-ghost-text' },
+    props: { typography: 'button-md', rounded: 'none', height: 'md', padding: '0px 20px' },
+    evidence: { file: BUTTON, classes: ['bg-transparent text-[var(--component-button-ghost-text)]'] },
+  },
+  {
+    name: 'button-ghost-hover', doc: 'Button',
+    colours: { backgroundColor: 'surface-raised', textColor: 'component-button-ghost-text-hover' },
+    evidence: { file: BUTTON, classes: ['hover:text-[var(--component-button-ghost-text-hover)] hover:bg-[var(--color-surface-raised)]'] },
+  },
+  {
+    name: 'button-danger', doc: 'Button',
+    colours: { backgroundColor: 'component-button-danger-fill', textColor: 'component-button-danger-text' },
+    props: { typography: 'button-md', rounded: 'none', height: 'md', padding: '0px 20px' },
+    evidence: { file: BUTTON, classes: ['bg-[var(--component-button-danger-fill)]'] },
+  },
+  {
+    name: 'button-sm', doc: 'Button', props: { height: 'sm', padding: '0px 12px' },
+    evidence: { file: BUTTON, classes: ["sm: 'h-[var(--component-control-height-sm)] px-3 text-xs"] },
+  },
+  {
+    name: 'button-lg', doc: 'Button', props: { height: 'lg', padding: '0px 28px' },
+    evidence: { file: BUTTON, classes: ["lg: 'h-[var(--component-control-height-lg)] px-7 text-base"] },
+  },
+  {
+    name: 'input', doc: 'Input',
+    colours: { backgroundColor: 'component-control-fill-rest', textColor: 'component-control-text-rest' },
+    props: { typography: 'body-sm', rounded: 'none', height: 'md', padding: '0px 12px' },
+    evidence: { file: 'src/components/atoms/input/Input.tsx', classes: ['bg-[var(--component-control-fill-rest)] text-[var(--component-control-text-rest)]', "md: 'h-[var(--component-control-height-md)] px-3 text-sm'"] },
+  },
+  {
+    name: 'input-placeholder', doc: 'Input',
+    colours: { backgroundColor: 'component-control-fill-rest', textColor: 'component-control-text-placeholder' },
+    evidence: { file: 'src/components/atoms/input/Input.tsx', classes: ['placeholder:text-[var(--component-control-text-placeholder)]'] },
+  },
+  {
+    name: 'input-disabled', doc: 'Input',
+    // The fill only: disabled text carries no contrast obligation (SC 1.4.3), and the linter would
+    // hold text.muted on this translucent fill to 4.5:1. The text is stated in the Components prose.
+    colours: { backgroundColor: 'component-control-fill-disabled' },
+    evidence: { file: 'src/components/atoms/input/Input.tsx', classes: ['disabled:bg-[var(--component-control-fill-disabled)]'] },
+  },
+  {
+    name: 'checkbox-checked', doc: 'Checkbox',
+    colours: { backgroundColor: 'accent-signal-indicator', textColor: 'accent-signal-indicator-ink' },
+    evidence: { file: 'src/components/atoms/checkbox/Checkbox.tsx', classes: ['data-[state=checked]:bg-[var(--color-accent-signal-indicator)]', 'text-[var(--color-accent-signal-indicator-ink)]'] },
+  },
+  {
+    name: 'tab', doc: 'Tabs',
+    colours: { backgroundColor: 'surface-base', textColor: 'text-secondary' },
+    props: { typography: 'label-sm', height: 'md', padding: '0px 16px' },
+    evidence: { file: 'src/components/molecules/tabs/Tabs.tsx', classes: ['shrink-0 min-h-[40px] px-4 font-mono text-xs uppercase tracking-[0.12em]'] },
+  },
+  {
+    name: 'tab-active', doc: 'Tabs',
+    colours: { backgroundColor: 'surface-base', textColor: 'text-primary' },
+    evidence: { file: 'src/components/molecules/tabs/Tabs.tsx', classes: ['data-[state=active]:text-[var(--color-text-primary)]'] },
+  },
+  {
+    name: 'card', doc: 'Card',
+    colours: { backgroundColor: 'surface-raised', textColor: 'text-primary' },
+    props: { typography: 'body-sm', rounded: 'none', padding: '20px' },
+    evidence: { file: 'src/components/molecules/card/Card.tsx', classes: ["'p-5 font-body text-sm text-[var(--color-text-primary)] grow'"] },
+  },
+  {
+    name: 'alert', doc: 'Alert',
+    colours: { backgroundColor: 'surface-raised', textColor: 'text-primary' },
+    props: { padding: '16px 8px' },
+    evidence: { file: 'src/components/molecules/alert/Alert.tsx', classes: ['flex items-start gap-3 px-2 py-4 border bg-[var(--color-surface-raised)]'] },
+  },
+  {
+    name: 'toast', doc: 'Toast',
+    colours: { backgroundColor: 'surface-sunken', textColor: 'text-primary' },
+    props: { padding: '16px' },
+    evidence: { file: 'src/components/molecules/toast/Toast.tsx', classes: ['flex items-start gap-3 p-4 border bg-[var(--color-surface-sunken)]'] },
+  },
+  {
+    name: 'tooltip', doc: 'Tooltip',
+    colours: { backgroundColor: 'surface-sunken', textColor: 'text-primary' },
+    props: { padding: '8px 10px' },
+    evidence: { file: 'src/components/atoms/tooltip/Tooltip.tsx', classes: ['bg-[var(--color-surface-sunken)]', 'px-2.5', 'py-2'] },
+  },
+  {
+    name: 'tag', doc: 'Tag',
+    colours: { backgroundColor: 'surface-sunken', textColor: 'text-secondary' },
+    evidence: { file: 'src/components/atoms/tag/Tag.tsx', classes: ['bg-[var(--color-surface-sunken)]', 'text-[var(--color-text-secondary)]'] },
+  },
+  {
+    name: 'stat-value', doc: 'Stat',
+    colours: { backgroundColor: 'surface-base', textColor: 'text-primary' },
+    props: { typography: 'display-lg' },
+    evidence: { file: 'src/components/molecules/stat/Stat.tsx', classes: ["'font-display font-bold text-[2.25rem] tabular-nums'"] },
+  },
+]
+
+/** DESIGN.md's Do's and Don'ts: the AGENTS.md rules as instructions, each naming the rule it
+ *  restates (`rule`, the bold title). agent-docs.test.ts checks every title is still a rule, so
+ *  a renamed or dropped rule fails the build rather than leaving a line here that no rule backs. */
+export const DESIGN_RULES = {
+  do: [
+    ['Colour', 'Write every colour as a semantic token inside a Tailwind arbitrary value: `text-[var(--color-text-primary)]`, `bg-[var(--color-surface-base)]`.'],
+    ['Fill, text, ink', 'Put `accent.<state>.ink` on `accent.<state>.fill`, and `accent.<state>.text` on a normal surface.'],
+    ['Status tones', 'Pick the tone by meaning (`ok`, `warning`, `hostile`, `info`, `signal`, `neutral`) and always pair it with a word.'],
+    ['Focus', 'Give anything focusable you style yourself `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]`.'],
+    ['Page title, empty, loading', 'Plan the page title (`PageHeader`), the empty state (`EmptyState`) and the loading state (`Skeleton`) before writing a screen.'],
+    ['Forms', 'Put `Input`, `Textarea`, `Select`, `MultiSelect` and `QuantityStepper` inside a `FormField`, and render `ErrorSummary` on a failed submit.'],
+    ['Buttons', 'Give two or more buttons side by side a parent with a gap (`flex flex-wrap gap-3`). Use `loading` on a busy button; say why near a disabled one.'],
+    ['Icon-only buttons', 'Use `IconButton` with its required `label` for a button that is only an icon.'],
+    ['Charts and bundle size', 'Load a screen with `ChartPanel` or `Sparkline` through `React.lazy`, so the chart library stays in its own chunk.'],
+    ['Motion', 'Animate with the classes in `src/styles/motion.css` and the motion tokens, and stop what you animate under `prefers-reduced-motion`.'],
+  ],
+  dont: [
+    ['Colour', 'Don\'t write a hex, `rgb()`, a Tailwind palette class (`bg-red-500`, `text-white`) or a token name that is not in `llms-tokens.txt`.'],
+    ['Fill, text, ink', 'Don\'t put `text.primary` on a fill.'],
+    ['Status tones', 'Don\'t let colour alone carry a status.'],
+    ['Text size', 'Don\'t set secondary text below 14px. 11 to 12px is for uppercase mono labels only.'],
+    ['Providers', 'Don\'t mount a second `Toaster` or `TooltipProvider`: one of each sits at the root.'],
+    ['What the system does not have', 'Don\'t build a Popover or a Combobox. A single value is `Select`; several are `MultiSelect`.'],
+    ['Overlays', 'Don\'t confirm a destructive action in a `Dialog` (that is `AlertDialog`), and don\'t open a dialog from a dialog, a sheet from a sheet, or either from a `DropdownMenu` item.'],
+    ['Feedback', 'Don\'t put the only copy of anything in a `Toast`, and don\'t show a failed load as an `EmptyState`.'],
+    ['Motion', 'Don\'t add keyframes of your own, and don\'t make anything move on its own.'],
+    ['Assistant copy', 'Don\'t label an assistant action "AI", and don\'t write "please" or "!" in an assistant label.'],
+  ],
+}
 
 /** A YAML key or scalar. Strings are written JSON-quoted, which YAML reads as a double-quoted
  *  scalar, so a value with a `#`, a `{` or a comma needs no further escaping. */
@@ -353,7 +572,7 @@ export function designTokens(manifest, { fonts }) {
         fontFamily: firstFamily(fontStack[role.font]),
         fontSize: role.size,
         fontWeight: role.weight,
-        lineHeight: role.lineHeight,
+        ...(role.lineHeight ? { lineHeight: role.lineHeight } : {}),
         ...(role.letterSpacing ? { letterSpacing: role.letterSpacing } : {}),
         ...(role.fontFeature ? { fontFeature: role.fontFeature } : {}),
       }]
@@ -374,15 +593,32 @@ export function designTokens(manifest, { fonts }) {
     }
     for (const colour of Object.values(roles)) covered.add(colour)
   }
-  // The named recipes first: their colours are then covered and the loop below skips them.
-  const control = { height: manifest.tokens.find(token => token.name === '--component-control-height-md')?.value ?? '40px' }
+  // The component recipes first, as their components paint them; their colours are then
+  // covered and the loop below states only the pairs no recipe has.
+  const tokenValue = name => manifest.tokens.find(token => token.name === name)?.value
+  const semantic = name => {
+    if (!name.startsWith('component-')) return name
+    const alias = /^var\(--color-([a-z0-9-]+)\)$/.exec(tokenValue(`--${name}`) ?? '')?.[1]
+    if (!alias) throw new Error(`DESIGN.md: --${name} is not an alias of a semantic colour.`)
+    return alias
+  }
+  const heights = { sm: '--component-control-height-sm', md: '--component-control-height-md', lg: '--component-control-height-lg' }
+  for (const recipe of COMPONENT_RECIPES) {
+    const extra = {}
+    for (const [prop, value] of Object.entries(recipe.props ?? {})) {
+      if (prop === 'typography') {
+        if (!TYPE_ROLES.some(role => role.name === value)) throw new Error(`DESIGN.md: recipe ${recipe.name} names type role ${value}, which TYPE_ROLES does not define.`)
+        extra.typography = `{typography.${value}}`
+      } else if (prop === 'rounded') extra.rounded = `{rounded.${value}}`
+      else if (prop === 'height') {
+        extra.height = tokenValue(heights[value])
+        if (!extra.height) throw new Error(`DESIGN.md: recipe ${recipe.name} names control height ${value}, which has no token.`)
+      } else extra[prop] = value
+    }
+    if (recipe.colours) pair(recipe.name, Object.fromEntries(Object.entries(recipe.colours).map(([prop, colour]) => [prop, semantic(colour)])), extra)
+    else components[recipe.name] = extra
+  }
   pair('page', { backgroundColor: 'surface-base', textColor: 'text-primary' }, { typography: '{typography.body-md}' })
-  pair('input', { backgroundColor: 'surface-sunken', textColor: 'text-primary' }, { typography: '{typography.body-md}', ...control })
-  pair('input-placeholder', { backgroundColor: 'surface-sunken', textColor: 'text-placeholder' })
-  pair('card', { backgroundColor: 'surface-raised' }, { padding: '{spacing.6}' })
-  const button = { typography: '{typography.button-md}', rounded: '{rounded.none}', ...control, padding: '20px' }
-  pair('button-primary', { backgroundColor: 'accent-signal-fill', textColor: 'accent-signal-ink' }, button)
-  pair('button-danger', { backgroundColor: 'accent-hostile-fill', textColor: 'accent-hostile-ink' }, button)
   for (const token of colours) {
     const name = key(token)
     if (covered.has(name)) continue
@@ -400,7 +636,22 @@ export function designTokens(manifest, { fonts }) {
   const missing = [...known].filter(name => !covered.has(name))
   if (missing.length) throw new Error(`DESIGN.md: no component pair for ${missing.map(name => `--color-${name}`).join(', ')}. Add a rule in designTokens().`)
 
-  return { colors, typography, rounded: { none: '0px' }, spacing, components }
+  // The page gutter by breakpoint, as the spec groups responsive spacing (`sm` mobile, `lg`
+  // laptop): 1rem, and 4rem from Tailwind's lg (1024px). Set by the page shells.
+  spacing.sm = { gutter: '16px' }
+  spacing.lg = { gutter: '64px' }
+
+  const motionValue = value => {
+    if (!value.startsWith('--')) return value
+    const resolved = tokenValue(value)
+    if (typeof resolved !== 'string') throw new Error(`DESIGN.md: motion names ${value}, which is not a token.`)
+    return resolved
+  }
+  const motion = Object.fromEntries(
+    MOTION_ROLES.map(role => [role.name, { duration: motionValue(role.duration), delay: '0ms', timingFunction: motionValue(role.timing) }])
+  )
+
+  return { colors, typography, rounded: { none: '0px' }, spacing, motion, components }
 }
 
 /** The front matter block, `---` to `---`. Groups are block maps; a typography role or a
@@ -415,7 +666,7 @@ function designFrontMatter(tokens, { name, description }) {
       } else lines.push(`${indent}${yamlKey(key)}: ${typeof value === 'object' ? yamlFlow(value) : yamlValue(value)}`)
     }
   }
-  for (const group of ['colors', 'typography', 'rounded', 'spacing', 'components']) {
+  for (const group of ['colors', 'typography', 'rounded', 'spacing', 'motion', 'components']) {
     lines.push(`${group}:`)
     block(tokens[group], '  ')
   }
@@ -425,15 +676,18 @@ function designFrontMatter(tokens, { name, description }) {
 
 /** A rule paragraph from AGENTS.md whole, by its bold title (`Assistant copy`), on one line. */
 function ruleParagraph(rules, title) {
-  const block = rules.split(/\n\s*\n/).find(text => text.startsWith(`**${title}.**`))
+  // `**Forms.** In a form...`, or a title that runs into its sentence: `**Icon-only buttons** are...`.
+  const block = rules.split(/\n\s*\n/).find(text => text.startsWith(`**${title}.**`) || text.startsWith(`**${title}**`))
   if (!block) throw new Error(`DESIGN.md: AGENTS.md has no rule titled "${title}".`)
   return block.replace(/\s*\n\s*/g, ' ').trim()
 }
 
 /** DESIGN.md: the whole system in one file, in the DESIGN.md format (see DESIGN_MD_SPEC). The
  *  YAML front matter holds the tokens; the body is the spec's sections in the spec's order, then
- *  one line per component, linking its page rather than inlining it. `fonts` is
- *  `[{ name, stack }]` from the `--font-*` theme variables in src/styles/tailwind.css. */
+ *  two sections the spec leaves to the author (Responsive Behavior, Known Gaps). Each component is
+ *  one line with an external reference (`@docs/components/<slug>.md`, the spec's form for a file
+ *  an agent reads on demand) rather than its page inlined. `fonts` is `[{ name, stack }]` from
+ *  the `--font-*` theme variables in src/styles/tailwind.css. */
 export function designFile(entries, manifest, { fonts, rules }) {
   const tokens = designTokens(manifest, { fonts })
   const uses = layer => manifest.tokens.filter(token => token.layer === layer)
@@ -446,6 +700,16 @@ export function designFile(entries, manifest, { fonts, rules }) {
   ]
   const skipped = uses('semantic').filter(token => DESIGN_YAML_SKIP.test(token.name.replace(/^--color-/, '')))
   const heights = ['sm', 'md', 'lg'].map(size => manifest.tokens.find(token => token.name === `--component-control-height-${size}`)?.value)
+  const ref = entry => code(`@${entry.docs.replace(/^\//, '')}`)
+  const recipesOf = name => COMPONENT_RECIPES.filter(recipe => recipe.doc === name).map(recipe => recipe.name)
+  const emptyState = entries.find(entry => entry.name === 'EmptyState')
+  // `What a list ... shows when it has nothing in it: an icon, a title ...` -> the part after the colon.
+  const emptyParts = firstSentence(emptyState?.summary ?? '').split(': ').slice(1).join(': ').replace(/\.$/, '')
+  if (!emptyParts) throw new Error('DESIGN.md: the Voice section quotes the parts of an EmptyState from its summary, which no longer lists them after a colon.')
+  const ruleList = list => list.map(([rule, text]) => {
+    ruleParagraph(rules, rule) // throws when AGENTS.md no longer has the rule this line restates
+    return `- ${text}`
+  })
   const out = [
     ...designFrontMatter(tokens, {
       name: 'Division DS',
@@ -454,13 +718,21 @@ export function designFile(entries, manifest, { fonts, rules }) {
     '',
     '# Division DS',
     '',
-    `> A React 19, Tailwind 4 and Radix design system: ${entries.length} components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page, in the DESIGN.md format (spec version ${DESIGN_MD_SPEC}); each component links its full page with props and examples.`,
+    `> A React 19, Tailwind 4 and Radix design system: ${entries.length} components, design tokens in three layers, light and dark themes, WCAG 2.2 AA. This file is the system in one page, in the DESIGN.md format (spec version ${DESIGN_MD_SPEC}); each component points to its full page with props and examples.`,
     '',
-    'Links are relative to this file. Generated by `npm run agent-docs` from the token files and the component metadata: never edit it by hand.',
+    'File references (`@docs/...`) and links resolve from the folder this file is in. Generated by `npm run agent-docs` from the token files, the component source and AGENTS.md: never edit it by hand.',
     '',
     '## Overview',
     '',
     'A precise, dark-first interface language built as an accessible product system: one signal orange on smoked dark greys, hairline panels with crosshair marks at the corners, cut corners, and numerals as heroes. There are two themes, set by `data-theme="dark"` or `"light"` on `<html>`; dark is the default. In the repository, build gates check that every colour comes from a token and that every pair the components paint meets WCAG 2.2 AA in both themes.',
+    '',
+    '**Key characteristics:**',
+    '',
+    '- **One accent, spent rarely.** Signal orange (`primary`, `--color-accent-signal-fill`) fills the main action and marks the selected thing, and the focus ring is a signal orange too (a brighter one in the dark theme). It carries meaning because it is rare; status and category colours always come with a word.',
+    '- **Depth from tone and line, not shadow.** Three surfaces (`surface-base`, the darker `surface-sunken` for fields, the translucent `surface-raised` for cards) and hairline borders.',
+    '- **Square, with a cut.** Corners are square; a single object has its bottom-right corner cut off, and a group of objects is framed by crosshair marks.',
+    '- **Three typefaces.** Oxanium for display and button labels, Saira for reading, JetBrains Mono for labels, code and data, with tabular figures.',
+    '- **Quick, sparse motion.** Feedback lands in 120ms, surfaces enter in 180ms, and nothing moves on its own.',
     '',
     'The front matter holds the tokens. In code, write a token as its CSS variable inside a Tailwind arbitrary value, never as its value: `colors.dark.text-primary` and `colors.light.text-primary` are both `var(--color-text-primary)`, which switches with the theme. Colours at the top of `colors` are the same in both themes. `primary` is `--color-accent-signal-fill`.',
     '',
@@ -471,7 +743,7 @@ export function designFile(entries, manifest, { fonts, rules }) {
     'Write a colour as `bg-[var(--color-surface-base)]` or `text-[var(--color-text-primary)]`. Use only the names below.',
     '',
     ...useTable(uses('semantic').filter(token => !skipped.includes(token))),
-    `The ${skipped.length} \`--color-terminal-*\` tokens are the ANSI colours inside the Terminal component, which applies them itself; they are not in the front matter. They and the component tokens are listed with their values in [llms-tokens.txt](llms-tokens.txt).`,
+    `The ${skipped.length} \`--color-terminal-*\` tokens are the ANSI colours inside the Terminal component, which applies them itself; they are not in the front matter. They and the component tokens are listed with their values in \`@llms-tokens.txt\` ([llms-tokens.txt](llms-tokens.txt)).`,
     '',
     '## Typography',
     '',
@@ -479,20 +751,20 @@ export function designFile(entries, manifest, { fonts, rules }) {
     '',
     ...fonts.map(font => `- ${code(`font-${font.name}`)}: ${code(font.stack)}`),
     '',
-    'The roles in the front matter, as the components set them:',
+    `The ${TYPE_ROLES.length} roles in the front matter, as the components set them:`,
     '',
     '| Role | Face | Size | Use |',
     '|---|---|---|---|',
     ...TYPE_ROLES.map(role => `| ${code(role.name)} | ${code(`font-${role.font}`)} ${role.weight} | ${role.size} | ${cell(role.use)} |`),
     '',
-    'The format has no text case: `headline-md`, `label-md` and `button-md` are set in uppercase. Secondary text is 14px or larger; 11 to 12px is for uppercase mono labels only.',
+    `The format has no text case: ${TYPE_ROLES.filter(role => /uppercase/.test(role.use)).map(role => code(role.name)).join(', ')} are set in uppercase. Secondary text is 14px or larger; 11 to 12px is for uppercase mono labels only.`,
     '',
     '## Layout',
     '',
     'A 4px grid. Tailwind\'s own spacing utilities sit on the same grid (`gap-3` is 12px, `p-4` is 16px) and are fine to use.',
     '',
     ...useTable(uses('spacing')),
-    `A page shell sets \`--page-gutter\` once (16px, and 64px from the large breakpoint), and everything inside reads it through \`px-gutter\` or \`mx-gutter\`, so a brand, a heading and a grid start on one edge. Controls come in three heights: ${heights.join(', ')} (\`--component-control-height-sm\`, \`-md\`, \`-lg\`); the middle one is the default.`,
+    `A page shell sets \`--page-gutter\` once (16px, and 64px from the large breakpoint: \`spacing.sm.gutter\` and \`spacing.lg.gutter\`), and everything inside reads it through \`px-gutter\` or \`mx-gutter\`, so a brand, a heading and a grid start on one edge. Controls come in three heights: ${heights.join(', ')} (\`--component-control-height-sm\`, \`-md\`, \`-lg\`); the middle one is the default.`,
     '',
     '## Elevation & Depth',
     '',
@@ -502,31 +774,85 @@ export function designFile(entries, manifest, { fonts, rules }) {
     '',
     'Corners are square (`rounded.none`). The cut corner is the shape of a single object: Button, IconButton, Avatar (md and lg), the Tooltip panel and Tag have their bottom-right corner cut off, at 5, 8, 14 or 22px (`.bevel-xs` to `.bevel-lg`). The crosshair is the frame around several objects. A form control gets neither, because `clip-path` would clip the focus ring it draws. Spinner is the one round shape. A theme can set `--shape-bevel` (0 removes every cut) and `--shape-radius` (surfaces stop at 24px).',
     '',
-    '## Motion',
+    '## Motion & Micro-interaction',
     '',
-    'The components animate themselves; these tokens are for anything you animate yourself. Anything you animate stops under `prefers-reduced-motion`, and nothing moves on its own. The tokens are listed here and not in the front matter because the published DESIGN.md linter (`@google/design.md` 0.4.0) does not read a motion group yet.',
+    'Motion is quick and sparse. A control answers the pointer in 120ms, and a press lands in the frame it happens. A Button\'s hover arrives in three steps, like a switch closing, rather than sliding in. A surface that enters decelerates into place (`--ease-snap`) and leaves faster than it came, accelerating away (`--ease-accelerate`). Surfaces enter and leave with `transform` and `opacity`. Everything collapses under `prefers-reduced-motion`, and nothing moves on its own: no autoplay, no loops for decoration.',
+    '',
+    'The components animate themselves. The front matter\'s `motion` names each movement by what moves:',
+    '',
+    '| Motion | Duration | Easing | Use |',
+    '|---|---|---|---|',
+    ...MOTION_ROLES.map(role => `| ${code(role.name)} | ${tokens.motion[role.name].duration} | ${code(role.timing)} | ${cell(role.use)} |`),
+    '',
+    'For anything you animate yourself, use the classes in `src/styles/motion.css` (`anim-snap-in` for an element arriving, `anim-draw-on` for a hairline) and these tokens:',
     '',
     ...valueTable(uses('motion')),
+    '@google/design.md 0.4.0, the published linter, came out before the spec added `motion` tokens, so it reports the group as `token-like-ignored`. That one warning is expected; the spec\'s current text defines the group.',
+    '',
     '## Voice & Content Strategy',
     '',
+    '- **Tone of voice.** Precise and restrained. Short declaratives that say what happened and what to do next, with no enthusiasm and no adjectives doing the work of evidence.',
+    '- **Capitalization.** Copy is written in sentence case ("Reset filters", "Last 7 days"). Button labels, section titles, eyebrows, tab labels and status chips are uppercase through CSS, so the words themselves stay in sentence case.',
+    '- **Button and action labels.** A button names its action with a verb ("Reset filters", "Summarize"). A `disabled` button has the reason in text nearby.',
     `- ${ruleParagraph(rules, 'Assistant copy')}`,
     `- ${ruleParagraph(rules, 'Status tones')}`,
+    `- **Empty and loading states.** An empty list or result is an \`EmptyState\`: ${emptyParts}. A loading region is \`Skeleton\` shapes in a \`SkeletonGroup\`.`,
     `- ${ruleParagraph(rules, 'Feedback')}`,
+    '- **Numbers, dates and units.** Numbers, ids, timestamps and logs are set in `font-data` with tabular figures. A number that matters is a `Stat`, whose leading zeros dim to `numeral-pad`. A date value is `YYYY-MM-DD` (`DatePicker`). Money is formatted by `formatMoney` from `src/lib/money`; `formatMoneyCompact` abbreviates it for a tight space such as a chart axis, never for a total someone reads exactly.',
     '',
     '## Components',
     '',
-    'The front matter\'s `components` are the colour pairs the system paints, one per pair and theme (`-dark`, `-light`; no suffix when the pair is the same in both themes). Text sits on `surface-base` and every text pair passes WCAG AA, which the DESIGN.md linter checks. An entry with a `backgroundColor` and a width is a line or an outline (a border, the focus ring, a chart series), because the format has no border property. An entry with a `backgroundColor` alone is a translucent layer; the repository\'s own contrast gate measures it over the surface below. `numeral-pad` is decorative and kept dim on purpose. Build screens from the components below, not from the pairs.',
+    'The front matter\'s `components` come in two kinds. The **recipes** are components and their states, read off the source: `button-primary`, `button-ghost-hover`, `input-disabled`, `tab-active` and the rest, listed under each component below. The **pairs** after them cover every other colour the system paints, so the linter can check each one: text on `surface-base`, a fill with its ink (`-solid`), and lines (a border, the focus ring, a chart series) stated as a `backgroundColor` with a width, because the format has no border property. A themed entry has a `-dark` and a `-light` version; an entry the same in both themes has no suffix. An entry with a `backgroundColor` alone is a translucent layer or a disabled fill. The linter reads a translucent colour as if it were opaque, so it cannot judge a pair on one; the repository\'s own contrast gate composites it over the surface below. `numeral-pad` is decorative and kept dim on purpose.',
+    '',
+    'What the format cannot hold, stated here instead:',
+    '',
+    '- **Borders.** A field has a 1px `component-control-border-rest` border (`border-control`), `text-muted` under the pointer and `accent-hostile-text` when its field has an error. The secondary Button has a 1px `border-control` border; Tooltip, Tag and the Tabs rule use `border-hairline-strong`.',
+    '- **Hover on a fill.** The primary and danger Button brighten by 10% under the pointer and dim by 5% on press: a filter, not a colour token.',
+    '- **Disabled.** A control whose point is a shape (Button, Checkbox, Radio, Switch, Slider) dims to 50% opacity. A control whose point is its text (a field, an option, a tab) keeps its surface and turns its text to `component-control-text-disabled`. Neither carries a contrast obligation.',
+    '- **Focus.** Every focusable element draws a 2px `focus-ring` outline 2px outside itself on keyboard focus; a cut-corner control draws it on an unclipped wrapper.',
+    '',
+    'Build screens from the components below, not from the pairs. Each line points to the component\'s page, with props, examples, keyboard behaviour and its own do\'s and don\'ts.',
     '',
   ]
   for (const [tier, group] of byTier(entries)) {
     out.push(`### ${tier[0].toUpperCase()}${tier.slice(1)}`, '')
     for (const entry of group) {
       const also = alsoExports(entry)
-      out.push(`- [${entry.name}](${entry.docs.replace(/^\//, '')}): ${firstSentence(entry.summary)}${also.length ? ` Also: ${also.join(', ')}.` : ''}`)
+      const recipes = recipesOf(entry.name)
+      out.push(`- **${entry.name}** → ${ref(entry)}: ${firstSentence(entry.summary)}${also.length ? ` Also: ${also.join(', ')}.` : ''}${recipes.length ? ` Tokens: ${recipes.map(code).join(', ')}.` : ''}`)
     }
     out.push('')
   }
-  out.push("## Do's and Don'ts", '', 'In full: [llms-guidelines.txt](llms-guidelines.txt).', '', ...ruleHeadlines(rules).map(line => `- ${line}`), '')
+  out.push(
+    "## Do's and Don'ts",
+    '',
+    'The rules in full, with the reasons: `@llms-guidelines.txt` ([llms-guidelines.txt](llms-guidelines.txt)).',
+    '',
+    '### Do',
+    '',
+    ...ruleList(DESIGN_RULES.do),
+    '',
+    "### Don't",
+    '',
+    ...ruleList(DESIGN_RULES.dont),
+    '',
+    '## Responsive Behavior',
+    '',
+    '- **Breakpoints.** Tailwind\'s defaults: `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px. The page gutter is 16px, and 64px from `lg`.',
+    '- **Container first.** Layout components respond to the width of their own container through container queries, so they work in a side column as well as across a page: a Navbar folds its links into a menu sheet below 42rem of its own width (56rem with `collapseBelow="4xl"`), and the PageHeader and SectionHeading titles step down a size in a narrow container. Overlays are the exception: they follow the window.',
+    '- **On a phone.** Below 640px a Dialog of size `md` fills the width inside a 16px margin and size `lg` fills the screen; `xs` and `sm` stay floating cards. Navigation and filters on a narrow screen go in a `Sheet`.',
+    '- **Wide content.** A KanbanBoard scrolls its columns sideways, each at least 18rem wide; the page itself never scrolls sideways, down to 320px, which end-to-end tests check.',
+    `- **Touch targets.** Nothing interactive is smaller than 24 by 24px (WCAG 2.5.8). Controls are ${heights.join(', ')} tall; a page\'s main action or a touch-first form uses the 48px size.`,
+    '',
+    '## Known Gaps',
+    '',
+    '- **No Popover and no Combobox.** A single value is `Select`; several are `MultiSelect`.',
+    '- **Hover and press on a filled Button** are a brightness filter, so the front matter states the rest colours only (see Components).',
+    '- **Borders, text case and cut corners** have no property in the format; they are stated in prose.',
+    `- **The ${skipped.length} Terminal colours** are not in the front matter; the Terminal component applies them.`,
+    '- **`motion` and the published linter.** @google/design.md 0.4.0 warns on the `motion` group (see Motion & Micro-interaction). Its Tailwind CSS export (`--format css-tailwind`) also rejects grouped names such as `colors.dark.surface-base`; the DTCG and Tailwind JSON exports work.',
+    '',
+  )
   return out.join('\n')
 }
 

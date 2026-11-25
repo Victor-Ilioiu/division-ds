@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { lint } from '@google/design.md/linter'
 import { buildAgentDocs, staleFiles } from '../../../scripts/build-agent-docs.mjs'
-import { TYPE_ROLES } from '../../../scripts/lib/agent-docs.mjs'
+import { COMPONENT_RECIPES, DESIGN_RULES, MOTION_ROLES, TYPE_ROLES } from '../../../scripts/lib/agent-docs.mjs'
 import { sourceFiles } from '../../../scripts/lib/read-source-files.mjs'
 
 /**
@@ -70,11 +70,15 @@ describe('the generated agent docs', () => {
     for (const line of lines) expect(line).toMatch(/ Best for: .+ Not for: .+\.$/)
   })
 
-  it('write DESIGN.md as one short file that links every component page and nothing missing', () => {
+  it('write DESIGN.md as one short file that refers to every component page and nothing missing', () => {
     const design = files['public/DESIGN.md']
     const links = [...design.matchAll(/\]\(([^)]+)\)/g)].map(match => `public/${match[1]}`)
     expect(links.filter(link => !(link in files))).toEqual([])
-    expect(links.filter(link => link.startsWith('public/docs/components/'))).toHaveLength(
+    // The spec's external references: an inline code span that is all `@<path>`, resolved from the
+    // folder DESIGN.md is in. tokens.json is written by `npm run tokens`, not by this generator.
+    const refs = [...design.matchAll(/`@([^`\s#]+\.[a-z]+)(?:#[^`\s]+)?`/g)].map(match => `public/${match[1]}`)
+    expect(refs.filter(ref => !(ref in files))).toEqual([])
+    expect(refs.filter(ref => ref.startsWith('public/docs/components/'))).toHaveLength(
       Object.keys(files).filter(path => path.startsWith('public/docs/components/')).length,
     )
     expect(design).toMatch(/`font-display`: `"Oxanium"/)
@@ -91,18 +95,26 @@ describe('the generated agent docs', () => {
     // Moved to 50 kB with the DESIGN.md format (2026-11-24): the tokens moved into YAML front
     // matter (about 8 kB of colour, both themes) with the pairs the linter checks (about 13 kB),
     // and the Value column left the body tables, which now carry the use only.
-    expect(design.length).toBeLessThan(50_000)
+    // Moved to 63 kB with the spec's November additions (2026-11-25): 20 component recipes with
+    // their states (about 6 kB of YAML), motion tokens, four more type roles, Voice & Content's six
+    // topics, explicit Do and Don't lists, Responsive Behavior and Known Gaps.
+    expect(design.length).toBeLessThan(63_000)
   })
 
   // DESIGN.md follows Google Labs' DESIGN.md format, and this runs the published linter on it, the
   // same one `npx -p @google/design.md designmd lint public/DESIGN.md` runs. Warnings fail too:
   // each one is a token a tool would drop, a pair below AA, or a section out of the spec's order.
-  it('write DESIGN.md that the official DESIGN.md linter passes with no error or warning', () => {
+  // One is expected: 0.4.0 predates the spec's `motion` group (added 2026-11-17, google-labs-code/
+  // design.md#182) and calls it `token-like-ignored`. The allowance is that exact finding, and
+  // the second expect fails once a linter that reads `motion` is installed, so it gets removed.
+  it('write DESIGN.md that the official DESIGN.md linter passes with no error or warning but the motion one', () => {
     const report = lint(files['public/DESIGN.md'])
     const problems = report.findings.filter(finding => finding.severity !== 'info')
-    expect(problems).toEqual([])
-    // The spec's sections in the spec's order; Motion and Voice & Content Strategy sit where the
-    // spec's current draft puts them, between Shapes and Components.
+    const motion = (finding: (typeof problems)[number]) => finding.severity === 'warning' && /^"motion" looks like a design-token map/.test(finding.message)
+    expect(problems.filter(finding => !motion(finding))).toEqual([])
+    expect(problems.filter(motion), 'the installed linter reads `motion` now: drop this allowance').toHaveLength(1)
+    // The spec's sections in the spec's order, then the two the spec leaves to the author, which
+    // its order check skips.
     expect(report.sections).toEqual([
       'Overview',
       'Colors',
@@ -110,10 +122,12 @@ describe('the generated agent docs', () => {
       'Layout',
       'Elevation & Depth',
       'Shapes',
-      'Motion',
+      'Motion & Micro-interaction',
       'Voice & Content Strategy',
       'Components',
       "Do's and Don'ts",
+      'Responsive Behavior',
+      'Known Gaps',
     ])
     // Not vacuous: the linter resolved the pairs and measured them.
     expect(report.designSystem.components.size).toBeGreaterThan(100)
@@ -145,10 +159,28 @@ describe('the generated agent docs', () => {
     expect(resolved('primary')).toEqual(resolved('accent-signal-fill'))
   })
 
-  it('read every DESIGN.md type role off a component that still sets it', () => {
-    const sources = new Map(sourceFiles(['src/components'], /\.tsx$/).map(file => [file.path, file.text]))
+  it('read every DESIGN.md type role, motion and recipe off source that still sets it', () => {
+    const sources = new Map(sourceFiles(['src/components', 'src/styles'], /\.(tsx|css)$/).map(file => [file.path, file.text]))
     for (const role of TYPE_ROLES) {
       expect(sources.get(role.evidence.file), `${role.name}: ${role.evidence.file}`).toContain(role.evidence.classes)
+    }
+    for (const item of [...MOTION_ROLES, ...COMPONENT_RECIPES]) {
+      for (const classes of item.evidence.classes) expect(sources.get(item.evidence.file), `${item.name}: ${item.evidence.file}`).toContain(classes)
+    }
+    // The spec recommends 9 to 15 type levels.
+    expect(TYPE_ROLES.length).toBeGreaterThanOrEqual(9)
+    // Each recipe is in the front matter under its name, or a -dark/-light pair of it.
+    const { components } = lint(files['public/DESIGN.md']).designSystem
+    for (const recipe of COMPONENT_RECIPES) {
+      expect(components.has(recipe.name) || (components.has(`${recipe.name}-dark`) && components.has(`${recipe.name}-light`)), recipe.name).toBe(true)
+    }
+  })
+
+  it("restate in DESIGN.md's Do's and Don'ts only rules AGENTS.md still has", () => {
+    const titles = new Set([...files['public/llms-guidelines.txt'].matchAll(/^\*\*([^*]+?)\.?\*\*/gm)].map(match => match[1]))
+    for (const [rule, text] of [...DESIGN_RULES.do, ...DESIGN_RULES.dont]) {
+      expect(titles.has(rule), `${rule}: ${text}`).toBe(true)
+      expect(files['public/DESIGN.md']).toContain(`- ${text}`)
     }
   })
 

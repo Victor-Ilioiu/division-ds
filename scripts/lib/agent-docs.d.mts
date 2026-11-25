@@ -6,9 +6,30 @@ export const TYPE_ROLES: readonly {
   font: string
   size: string
   weight: number
-  lineHeight: number
+  lineHeight?: number
   letterSpacing?: string
   fontFeature?: string
   use: string
   evidence: { file: string; classes: string }
 }[]
+
+export const MOTION_ROLES: readonly {
+  name: string
+  duration: string
+  timing: string
+  use: string
+  evidence: { file: string; classes: readonly string[] }
+}[]
+
+export const COMPONENT_RECIPES: readonly {
+  name: string
+  doc: string
+  colours?: Record<string, string>
+  props?: Record<string, string>
+  evidence: { file: string; classes: readonly string[] }
+}[]
+
+export const DESIGN_RULES: {
+  do: readonly (readonly [rule: string, text: string])[]
+  dont: readonly (readonly [rule: string, text: string])[]
+}

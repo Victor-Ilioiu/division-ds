@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.15.2 — 2026-11-25
+
+### Docs
+- **`public/DESIGN.md` takes up the DESIGN.md spec's November additions** (google-labs-code/design.md #178 to #183, not yet in a linter release):
+  - 20 component recipes with their states, read off the source: Button primary, secondary, ghost and danger with their hover states and sizes, Input with its placeholder and disabled fill, Checkbox checked, Tabs, Card, Alert, Toast, Tooltip, Tag and Stat.
+  - `motion` tokens named by what moves (`state-change`, `surface-enter`, `surface-exit`, `button-arrival`, and others), under a Motion & Micro-interaction section.
+  - Four more type roles (`display-lg`, `headline-sm`, `label-sm`, `label-xs`), 11 in all.
+  - The page gutter as breakpoint-grouped spacing.
+  - Voice & Content Strategy covering the spec's six topics.
+  - `@docs/components/<slug>.md` references, the spec's form for a file an agent reads on demand.
+  - Explicit Do and Don't lists.
+  - Responsive Behavior and Known Gaps sections.
+- **Every recipe, motion role and type role names the source line it came from.** `agent-docs.test.ts` checks that each line is still there, that each Do and Don't restates an `AGENTS.md` rule, and that every `@` reference resolves.
+- **The published linter (@google/design.md 0.4.0) gives one expected warning,** on the `motion` group, which it predates. The test allows exactly that warning, and it fails once an installed linter reads `motion`, so the allowance is removed then.
+
+### Fixed
+- **DESIGN.md's Input recipe said 16px body text;** Input's default size is 14px (`text-sm`).
+- **DESIGN.md's Card recipe and the `--spacing-6` description said a Card pads at 24px;** Card pads at 20px (`p-5`). `--spacing-6` now names what does use 24px.
+- **`--color-accent-signal-glow` said the Card uses it.** Nothing has painted it since the glow was removed; it now says it is reserved.
+
 ## 0.15.1 — 2026-11-24
 
 ### Fixed
