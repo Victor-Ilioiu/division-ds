@@ -25,9 +25,9 @@ export const OVERVIEW_COUNTS = {
   /** Folders under src/components/atoms, each with a component, a test file and a docs page. */
   atoms: 26,
   /** Folders under src/components/molecules, each with a component, a test file and a docs page. */
-  molecules: 36,
+  molecules: 37,
   /** Folders under src/components/organisms, each with a component, a test file and a docs page. */
-  organisms: 19,
+  organisms: 21,
   /** tokens/semantic/color.{dark,light}.json. */
   themes: 2,
 } as const

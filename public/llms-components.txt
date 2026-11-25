@@ -608,6 +608,31 @@ Requires: A parent that holds the state and sets it to approved or rejected in o
 
 Page: /docs/components/approval-request.md
 
+### Attachments
+
+The files attached to one item: a grid of tiles, each with a preview for an image, the name as a link, the size and a Remove button, and a drop zone with a Choose files button. An image pasted while focus is in the component is added too. It never uploads anything itself: it hands you the files, and you pass back what is attached.
+
+```tsx
+import { acceptsFile, Attachments, formatBytes } from 'src/components/molecules/attachments/Attachments'
+```
+
+- `label: string` Required. Names the list and the drop zone: "Attachments".
+- `files: readonly Attachment[]` Required. { id, name, size, type?, href?, previewSrc?, status?, error? }. size is in bytes; status is 'uploading' or 'error'. An image type previews from previewSrc, or from href.
+- `onAdd: (files: File[]) => void` Turns on the drop zone, Choose files and paste. Gets only the files that passed accept and maxSize. Upload them, and add them to files.
+- `onRemove: (id: string) => void` Turns on a Remove button on each file.
+- `accept: string` The file types it takes, as the accept attribute: "image/*,.pdf". Also checked on dropped and pasted files.
+- `maxSize: number` The largest file it takes, in bytes. A larger one is refused with a message.
+- `dropLabel: string = 'Drop files here, paste an image, or'` The words in the drop zone, before the button.
+- `browseLabel: string = 'Choose files'` The button's words.
+- `emptyMessage: string = 'No attachments'` Shown when nothing is attached and nothing can be added (no onAdd).
+- `renderLink: (props: { href, className, children }) => ReactNode = an anchor that opens a new tab` How a file's name links to it.
+- `className: string` Merged with the root classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` The root div.
+- `formatBytes(): (bytes: number) => string` 1536 becomes "1.5 KB". Binary units, one decimal under 10.
+- `acceptsFile(): (file: { name, type }, accept?: string) => boolean` Whether a file matches an accept string: extensions, exact types and type/* wildcards.
+
+Page: /docs/components/attachments.md
+
 ### AvatarGroup
 
 Overlapping avatars (small profile pictures) with a “+N” for the rest. It’s a list named by its count, so a screen reader hears “6 members” and then each person. The people behind the “+N” are named in words, never only counted.
@@ -1563,6 +1588,32 @@ import { CommandPalette, filterCommands, groupCommands } from 'src/components/or
 
 Page: /docs/components/command-palette.md
 
+### CommentThread
+
+The comments on one item, as in an issue tracker: each with an avatar, the author, a time, the text and its actions (Reply, Edit, Delete), replies one level deep under the comment they answer, and a box to add a comment at the end. An assistant's comments carry an AiLabel, so a thread shared by people and an agent always says who wrote what.
+
+```tsx
+import { CommentThread } from 'src/components/organisms/comment-thread/CommentThread'
+```
+
+Requires: A Toaster at the root, as every overlay needs: Delete asks in an AlertDialog.
+
+- `label: string` Required. Names the list: "Comments on #12".
+- `comments: readonly ThreadComment[]` Required. { id, author, body, time, timeLabel, edited?, canEdit?, canDelete?, replies? }, oldest first. author is { name, avatarSrc?, assistant? }.
+- `onAdd: (body: string, parentId: string \| null) => void \| Promise<unknown>` Turns on the comment box and Reply. parentId is null for a new comment, or the top-level comment a reply belongs to. Return a promise to keep the button busy until it settles; when it rejects, the text stays in the box.
+- `onEdit: (id: string, body: string) => void \| Promise<unknown>` Turns on Edit for comments with canEdit.
+- `onDelete: (id: string) => void \| Promise<unknown>` Turns on Delete for comments with canDelete. An AlertDialog asks first.
+- `renderBody: (comment: ThreadComment) => ReactNode = the text, line breaks kept` How the text is drawn, for links or Markdown.
+- `composerLabel: string = 'Add a comment'` The comment box's label.
+- `composerHelp: string` Help under the label: who reads the comments, what happens next.
+- `submitLabel: string = 'Comment'` The comment box's button.
+- `emptyTitle: string = 'No comments yet'` The empty state title.
+- `emptyLevel: 2 \| 3 \| 4 = 3` The empty state's heading level.
+- `className: string` Merged with the root classes. When Tailwind utility classes clash, the later one wins.
+- `ref: Ref<HTMLDivElement>` The root div.
+
+Page: /docs/components/comment-thread.md
+
 ### DataTable
 
 Rows of records that people read, compare and sort. It's a real HTML table with a caption, column and row headers, and sortable columns. When there's a job to do, each row gets a checkbox.
@@ -1676,6 +1727,7 @@ Requires: For column changes, a parent that holds columns in state too and saves
 - `onViewChange: (view: 'board' \| 'table') => void` Called when someone switches the view.
 - `emptyColumnMessage: string = 'Nothing here'` Shown in a column with no cards, and in an empty table.
 - `columnHeadingLevel: 2 \| 3 \| 4 = 3` The heading level of the column titles. Pick one that sits under the page's own heading outline.
+- `selectedItemId: string \| null` The card whose details are open beside the board, in a SidePanel. It gets a 2px accent.signal.fill border and aria-current, so the board shows which card the panel is about.
 - `className: string` Goes on the region.
 - `applyKanbanMove(): (items, itemId, toColumnId, toIndex, { getItemId, getColumnId, setColumnId }) => T[]` The parent's half of onMove. It returns a new items array with the card in its new column and place.
 - `applyKanbanColumnMove(): (columns, columnId, toIndex) => columns` The parent's half of onColumnMove: the columns with that one at toIndex.
@@ -1801,6 +1853,41 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from 'src/components/or
 - `asChild (Close): boolean` Uses its single child as a control that closes the sheet.
 
 Page: /docs/components/sheet.md
+
+### SidePanel
+
+A wide panel docked beside the page's content, for reading or editing one item while the list or board it came from stays in view. It is not modal: there is no scrim (the dimmed layer a Sheet puts over the page), the page keeps working, and opening another item swaps what the panel shows. Its leading edge can be dragged, or moved with the arrow keys, to make it wider or narrower.
+
+```tsx
+import { SIDE_PANEL_WIDTH, SidePanel } from 'src/components/organisms/side-panel/SidePanel'
+```
+
+Requires: A flex row: put the page content (with min-w-0 flex-1) and the panel side by side, so the panel pushes the content aside instead of covering it.
+
+Requires: A height when the page scrolls inside a container: it is sticky at the top and h-dvh by default. In a padded scroll area, pass className="md:h-[calc(100dvh-4rem)]" or whatever fits.
+
+- `open: boolean` Required. Whether the panel is shown. Closed, it renders nothing.
+- `onOpenChange: (open: boolean) => void` Required. Called with false by the close button and by Escape inside the panel.
+- `title: string` Required. The visible heading and the panel's accessible name.
+- `eyebrow: ReactNode` A short line above the title: the item's key, its type, its column.
+- `description: string` Shown under the title. Screen readers read it as the accessible description.
+- `actions: ReactNode` Controls in the header, before the close button, such as Run or a DropdownMenu. Keep it to two or three.
+- `footer: ReactNode` Pinned under the body, outside the scroll: a form's Cancel and Save. Laid out as a right-aligned row with a gap.
+- `width: number` The width in pixels, when your code controls it. Pass it together with onWidthChange.
+- `defaultWidth: number = 560` The width it opens at, when it keeps track of the width itself. SIDE_PANEL_WIDTH, exported beside the component, holds the three defaults and the 32px keyboard step.
+- `minWidth: number = 360` The narrowest the handle can make it.
+- `maxWidth: number = 960` The widest the handle can make it.
+- `onWidthChange: (width: number) => void` Called as the width changes, from a drag or a key. Store the value (in localStorage, say) to open at the same width next time.
+- `resizeLabel: string = 'Resize panel'` The resize handle's accessible name.
+- `closeLabel: string = 'Close'` The close button's accessible name.
+- `closeOnEscape: boolean = true` Whether Escape inside the panel closes it. An Escape that closes a menu or a listbox opened from the panel never does.
+- `headingLevel: 2 \| 3 = 2` The title's heading level, so it carries on the page's outline.
+- `className: string` Merged with the panel classes. When Tailwind utility classes clash, the later one wins: this is where a height goes.
+- `ref: Ref<HTMLElement>` The aside element.
+- `aria-labelledby / aria-describedby: —` Left out on purpose. The title and description are the only source of the name and description.
+- `...rest: Omit<HTMLAttributes<HTMLElement>, 'title'>` Every other native attribute, onto the aside.
+
+Page: /docs/components/side-panel.md
 
 ### Sidebar
 

@@ -48,6 +48,7 @@ Paths are from the Division DS repository root. Installed with shadcn they start
 | `onViewChange` | `(view: 'board' \| 'table') => void` |  | Called when someone switches the view. |
 | `emptyColumnMessage` | `string` | `'Nothing here'` | Shown in a column with no cards, and in an empty table. |
 | `columnHeadingLevel` | `2 \| 3 \| 4` | `3` | The heading level of the column titles. Pick one that sits under the page's own heading outline. |
+| `selectedItemId` | `string \| null` |  | The card whose details are open beside the board, in a SidePanel. It gets a 2px accent.signal.fill border and aria-current, so the board shows which card the panel is about. |
 | `className` | `string` |  | Goes on the region. |
 | `applyKanbanMove()` | `(items, itemId, toColumnId, toIndex, { getItemId, getColumnId, setColumnId }) => T[]` |  | The parent's half of onMove. It returns a new items array with the card in its new column and place. |
 | `applyKanbanColumnMove()` | `(columns, columnId, toIndex) => columns` |  | The parent's half of onColumnMove: the columns with that one at toIndex. |

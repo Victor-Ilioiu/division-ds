@@ -54,6 +54,7 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/accordion', Component: lazy(() => import('./components/molecules/accordion/AccordionDocs').then(module => ({ default: module.AccordionDocs }))) },
   { path: '/components/alert', Component: lazy(() => import('./components/molecules/alert/AlertDocs').then(module => ({ default: module.AlertDocs }))) },
   { path: '/components/approval-request', Component: lazy(() => import('./components/molecules/approval-request/ApprovalRequestDocs').then(module => ({ default: module.ApprovalRequestDocs }))) },
+  { path: '/components/attachments', Component: lazy(() => import('./components/molecules/attachments/AttachmentsDocs').then(module => ({ default: module.AttachmentsDocs }))) },
   { path: '/components/avatar-group', Component: lazy(() => import('./components/molecules/avatar-group/AvatarGroupDocs').then(module => ({ default: module.AvatarGroupDocs }))) },
   { path: '/components/breadcrumbs', Component: lazy(() => import('./components/molecules/breadcrumbs/BreadcrumbsDocs').then(module => ({ default: module.BreadcrumbsDocs }))) },
   { path: '/components/code-block', Component: lazy(() => import('./components/molecules/code-block/CodeBlockDocs').then(module => ({ default: module.CodeBlockDocs }))) },
@@ -95,6 +96,7 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/chat-thread', Component: lazy(() => import('./components/organisms/chat-thread/ChatThreadDocs').then(module => ({ default: module.ChatThreadDocs }))) },
   { path: '/components/chart-panel', Component: lazy(() => import('./components/organisms/chart-panel/ChartPanelDocs').then(module => ({ default: module.ChartPanelDocs }))) },
   { path: '/components/checkout-form', Component: lazy(() => import('./components/organisms/checkout-form/CheckoutFormDocs').then(module => ({ default: module.CheckoutFormDocs }))) },
+  { path: '/components/comment-thread', Component: lazy(() => import('./components/organisms/comment-thread/CommentThreadDocs').then(module => ({ default: module.CommentThreadDocs }))) },
   { path: '/components/command-palette', Component: lazy(() => import('./components/organisms/command-palette/CommandPaletteDocs').then(module => ({ default: module.CommandPaletteDocs }))) },
   { path: '/components/data-table', Component: lazy(() => import('./components/organisms/data-table/DataTableDocs').then(module => ({ default: module.DataTableDocs }))) },
   { path: '/components/dialog', Component: lazy(() => import('./components/organisms/dialog/DialogDocs').then(module => ({ default: module.DialogDocs }))) },
@@ -104,6 +106,7 @@ export const DOCS_PAGES: DocsPage[] = [
   { path: '/components/newsletter-form', Component: lazy(() => import('./components/organisms/newsletter-form/NewsletterFormDocs').then(module => ({ default: module.NewsletterFormDocs }))) },
   { path: '/components/product-card', Component: lazy(() => import('./components/organisms/product-card/ProductCardDocs').then(module => ({ default: module.ProductCardDocs }))) },
   { path: '/components/sheet', Component: lazy(() => import('./components/organisms/sheet/SheetDocs').then(module => ({ default: module.SheetDocs }))) },
+  { path: '/components/side-panel', Component: lazy(() => import('./components/organisms/side-panel/SidePanelDocs').then(module => ({ default: module.SidePanelDocs }))) },
   { path: '/components/sidebar', Component: lazy(() => import('./components/organisms/sidebar/SidebarDocs').then(module => ({ default: module.SidebarDocs }))) },
   { path: '/components/terminal', Component: lazy(() => import('./components/organisms/terminal/TerminalDocs').then(module => ({ default: module.TerminalDocs }))) },
 ]

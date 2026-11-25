@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 — 2026-11-25
+
+### Added
+- **SidePanel** (organism): a wide panel docked beside the page's content, for reading and editing one item while the board or list it came from stays in view and usable. It is the non-modal counterpart of Sheet: no scrim, no focus trap, no portal, so opening another item swaps its content without closing anything. The leading edge resizes it, by pointer or with the arrow keys (a `separator` with a value); `width` / `defaultWidth` / `minWidth` / `maxWidth` / `onWidthChange` let a page remember the width. `eyebrow`, `actions` and a pinned `footer` cover an issue tracker's header and Save row. Escape inside it closes it and returns focus to the opener. Below 768px it covers the screen.
+- **CommentThread** (organism): comments on one item with an avatar, author, time, Reply, Edit and Delete, replies one level deep, and a comment box (Ctrl+Enter sends). Comments by an assistant (`author.assistant`) carry an AiLabel. Delete asks in an AlertDialog. Controlled through `onAdd(body, parentId)`, `onEdit` and `onDelete`; a returned promise keeps the button busy, and a rejected one keeps the text.
+- **Attachments** (molecule): a grid of attached files (image preview, name as a link, size, Remove) and a drop zone with Choose files. A pasted image is added too. It never uploads: `onAdd` gets the `File`s that passed `accept` and `maxSize`, and the rest are refused with a message. Helpers: `formatBytes`, `acceptsFile`.
+- **KanbanBoard `selectedItemId`**: the card whose details are open beside the board gets the selection border and `aria-current`.
+
 ## 0.15.2 — 2026-11-25
 
 ### Docs

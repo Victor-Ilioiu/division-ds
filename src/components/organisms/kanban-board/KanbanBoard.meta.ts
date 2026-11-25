@@ -158,6 +158,11 @@ export const meta: ComponentMeta = {
       default: '3',
       description: "The heading level of the column titles. Pick one that sits under the page's own heading outline.",
     },
+    {
+      name: 'selectedItemId',
+      type: 'string | null',
+      description: "The card whose details are open beside the board, in a SidePanel. It gets a 2px accent.signal.fill border and aria-current, so the board shows which card the panel is about.",
+    },
     { name: 'className', type: 'string', description: 'Goes on the region.' },
     {
       name: 'applyKanbanMove()',

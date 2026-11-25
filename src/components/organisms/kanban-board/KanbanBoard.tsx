@@ -139,6 +139,9 @@ export type KanbanBoardProps<T> = {
   emptyColumnMessage?: string
   /** The column titles' heading level, under the page's own outline. @default 3 */
   columnHeadingLevel?: 2 | 3 | 4
+  /** The card whose details are open beside the board (in a SidePanel): it gets the selection
+   *  border and aria-current, so the board shows which card the panel is about. */
+  selectedItemId?: string | null
   className?: string
 }
 
@@ -515,6 +518,7 @@ export function KanbanBoard<T>({
   onViewChange,
   emptyColumnMessage = 'Nothing here',
   columnHeadingLevel = 3,
+  selectedItemId = null,
   className,
 }: KanbanBoardProps<T>) {
   const reduced = useReducedMotion()
@@ -814,6 +818,7 @@ export function KanbanBoard<T>({
         columnId={column.id}
         label={itemLabel}
         color={column.color}
+        selected={selectedItemId === itemId}
         dragging={activeId !== null}
         laneDragging={activeLane !== null}
         motion={motion}
@@ -1243,6 +1248,7 @@ function KanbanCard({
   columnId,
   label,
   color,
+  selected,
   dragging,
   laneDragging,
   motion,
@@ -1256,6 +1262,7 @@ function KanbanCard({
   columnId: string
   label: string
   color?: CategoryColor
+  selected: boolean
   dragging: boolean
   laneDragging: boolean
   motion: Motion
@@ -1280,13 +1287,20 @@ function KanbanCard({
     <li
       ref={setNodeRef}
       data-kanban-card={itemId}
+      aria-current={selected ? 'true' : undefined}
       style={{ transform: CSS.Translate.toString(transform), transition }}
       className="relative"
     >
       <div
         {...pointerListeners}
         className={cn(FRAME, 'cursor-grab')}
-        style={isDragging ? { borderStyle: 'dashed', borderColor: 'var(--color-border-selection)' } : undefined}
+        style={
+          isDragging
+            ? { borderStyle: 'dashed', borderColor: 'var(--color-border-selection)' }
+            : selected
+              ? { border: '2px solid var(--color-accent-signal-fill)' }
+              : undefined
+        }
       >
         {isDragging ? null : <Tint color={color} opacity={KANBAN_TINT.card} />}
         <div className={cn('relative min-w-0 grow', isDragging && 'opacity-0')}>{children}</div>

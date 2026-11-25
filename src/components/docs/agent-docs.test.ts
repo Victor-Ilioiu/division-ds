@@ -33,7 +33,7 @@ describe('the generated agent docs', () => {
 
   it('give every component a page with an import line, props and at least one example', () => {
     const pages = Object.entries(files).filter(([path]) => path.startsWith('public/docs/components/'))
-    expect(pages).toHaveLength(81)
+    expect(pages).toHaveLength(84)
     for (const [path, text] of pages) {
       expect(text, path).toMatch(/## Import\n\n```tsx\nimport \{ \w/)
       expect(text, path).toContain('## Props')
@@ -190,7 +190,8 @@ describe('the generated agent docs', () => {
     // 25.5 kB from 2026-10-30, when Panel and CodeBlock took it just over 24 kB.
     // 28.5 kB from 2026-11-16: six components (KnowledgeGraph, MeterRow, PanelHeader, LogFeed,
     // SegmentedMeter, StatusChip) took it to about 27.4 kB, one line each.
-    expect(files['public/llms.txt'].length).toBeLessThan(28_500)
+    // 29.5 kB from 2026-11-25: SidePanel, CommentThread and Attachments added three lines (about 1.4 kB).
+    expect(files['public/llms.txt'].length).toBeLessThan(29_500)
     // 8 kB until the Assistant copy rule (2026-10-26) took it just over, trimmed to three lines.
     expect(files['public/llms-guidelines.txt'].length).toBeLessThan(8_500)
   })

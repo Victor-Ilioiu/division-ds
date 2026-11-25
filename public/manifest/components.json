@@ -4198,6 +4198,180 @@
       "closed": true
     },
     {
+      "name": "Attachments",
+      "title": "Attachments",
+      "tier": "molecules",
+      "slug": "attachments",
+      "summary": "The files attached to one item: a grid of tiles, each with a preview for an image, the name as a link, the size and a Remove button, and a drop zone with a Choose files button. An image pasted while focus is in the component is added too. It never uploads anything itself: it hands you the files, and you pass back what is attached.",
+      "useWhen": "Files attached to one record: screenshots on a ticket, a contract on a deal, receipts on an expense.",
+      "notFor": "A file that is one field of a form with a Save (a profile photo): use a labelled file input in a FormField.",
+      "source": "src/components/molecules/attachments/Attachments.tsx",
+      "docs": "/docs/components/attachments.md",
+      "imports": [
+        {
+          "names": [
+            "acceptsFile",
+            "Attachments",
+            "formatBytes"
+          ],
+          "from": "src/components/molecules/attachments/Attachments"
+        }
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. Names the list and the drop zone: \"Attachments\"."
+        },
+        {
+          "name": "files",
+          "type": "readonly Attachment[]",
+          "description": "Required. { id, name, size, type?, href?, previewSrc?, status?, error? }. size is in bytes; status is 'uploading' or 'error'. An image type previews from previewSrc, or from href."
+        },
+        {
+          "name": "onAdd",
+          "type": "(files: File[]) => void",
+          "description": "Turns on the drop zone, Choose files and paste. Gets only the files that passed accept and maxSize. Upload them, and add them to files."
+        },
+        {
+          "name": "onRemove",
+          "type": "(id: string) => void",
+          "description": "Turns on a Remove button on each file."
+        },
+        {
+          "name": "accept",
+          "type": "string",
+          "description": "The file types it takes, as the accept attribute: \"image/*,.pdf\". Also checked on dropped and pasted files."
+        },
+        {
+          "name": "maxSize",
+          "type": "number",
+          "description": "The largest file it takes, in bytes. A larger one is refused with a message."
+        },
+        {
+          "name": "dropLabel",
+          "type": "string",
+          "default": "'Drop files here, paste an image, or'",
+          "description": "The words in the drop zone, before the button."
+        },
+        {
+          "name": "browseLabel",
+          "type": "string",
+          "default": "'Choose files'",
+          "description": "The button's words."
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "default": "'No attachments'",
+          "description": "Shown when nothing is attached and nothing can be added (no onAdd)."
+        },
+        {
+          "name": "renderLink",
+          "type": "(props: { href, className, children }) => ReactNode",
+          "default": "an anchor that opens a new tab",
+          "description": "How a file's name links to it."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the root classes. When Tailwind utility classes clash, the later one wins."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "The root div."
+        },
+        {
+          "name": "formatBytes()",
+          "type": "(bytes: number) => string",
+          "description": "1536 becomes \"1.5 KB\". Binary units, one decimal under 10."
+        },
+        {
+          "name": "acceptsFile()",
+          "type": "(file: { name, type }, accept?: string) => boolean",
+          "description": "Whether a file matches an accept string: extensions, exact types and type/* wildcards."
+        }
+      ],
+      "api": [
+        {
+          "name": "Attachment",
+          "kind": "type",
+          "code": "/**\n * Files attached to one item: a drop zone with a Choose files button, and the list of what is\n * attached, each with a preview for images, its size, a link to open it and a Remove button.\n * Images pasted while focus is inside the component are added too, so a screenshot goes straight\n * from the clipboard onto a ticket.\n *\n * Controlled: the component never uploads. onAdd gets the File objects; the parent uploads them and\n * passes the results back in `files` (with `status: 'uploading'` while that runs).\n *\n * Contrast: the zone is surface.base with a dashed hairline.strong border, accent.signal.indicator\n * while a file is dragged over it (the board's drop colour). Names are \"text.primary on\n * surface.base\", sizes and the zone's text \"text.secondary on surface.base\", an error line\n * \"accent.hostile.text on surface.base\". A preview tile is surface.sunken behind the image.\n */\n\nexport type Attachment = {\n  id: string\n  name: string\n  /** In bytes. */\n  size: number\n  /** The MIME type. Images get a preview. */\n  type?: string\n  /** Where the file opens. Without it the name is plain text. */\n  href?: string\n  /** An image URL for the preview. Defaults to href for an image type. */\n  previewSrc?: string\n  status?: 'uploading' | 'error'\n  /** Why it failed, shown under the name with status 'error'. */\n  error?: string\n}",
+          "from": "src/components/molecules/attachments/Attachments"
+        },
+        {
+          "name": "formatBytes",
+          "kind": "function",
+          "code": "/** 1536 -> \"1.5 KB\". Binary units, one decimal under 10. */\nexport function formatBytes(bytes: number): string",
+          "from": "src/components/molecules/attachments/Attachments"
+        },
+        {
+          "name": "acceptsFile",
+          "kind": "function",
+          "code": "/** Whether a file matches an accept string: extensions, exact types and type/* wildcards. */\nexport function acceptsFile(file: { name: string; type: string }, accept?: string): boolean",
+          "from": "src/components/molecules/attachments/Attachments"
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "Moves through each file's link and Remove button, then Choose files."
+        },
+        {
+          "keys": [
+            "Ctrl",
+            "V"
+          ],
+          "does": "With focus in the component but not in a text field, adds the pasted images."
+        }
+      ],
+      "dos": [
+        "Show an upload in progress as a file with status 'uploading', so it has its place in the grid at once.",
+        "Set maxSize to what your server takes, so a refusal happens before the upload.",
+        "Say in the page what happens to attached files, if someone other than the person reads them (an agent, a reviewer)."
+      ],
+      "donts": [
+        "Don't use it for a single field in a form with a Save. That is a file input in a FormField.",
+        "Don't remove a file without a way back if it was the only copy. Keep it until the person saves, or offer Undo in a Toast."
+      ],
+      "anatomy": [
+        {
+          "part": "List",
+          "description": "A ul named by label, laid out as a grid of tiles at least 11rem wide."
+        },
+        {
+          "part": "Tile",
+          "description": "A preview area on surface.sunken (the image, a file icon, or a Spinner while uploading), then the name, the size in the data font, and any error in accent.hostile.text."
+        },
+        {
+          "part": "Remove",
+          "description": "A ghost icon button on each tile, named \"Remove <file name>\"."
+        },
+        {
+          "part": "Drop zone",
+          "description": "A dashed area with the Choose files button. Its border turns accent.signal.indicator while files are dragged over it."
+        },
+        {
+          "part": "Refusals",
+          "description": "A polite live region under the zone that names each file it refused, and why: the wrong type, or too large."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Add by dropping, choosing or pasting; remove from the tile",
+          "source": "const START: Attachment[] = [\n  { id: 'a1', name: 'gate-2-error.pdf', size: 184_320, type: 'application/pdf' },\n  { id: 'a2', name: 'firmware-notes.txt', size: 2_140, type: 'text/plain' },\n]\n\nfunction LiveAttachmentsExample() {\n  const [files, setFiles] = useState(START)\n  return (\n    <Attachments\n      className=\"max-w-2xl\"\n      label=\"Attachments\"\n      files={files}\n      maxSize={10 * 1024 * 1024}\n      onAdd={added => setFiles(current => [\n        ...current,\n        ...added.map(file => ({\n          id: `${file.name}-${file.lastModified}`,\n          name: file.name,\n          size: file.size,\n          type: file.type,\n          href: URL.createObjectURL(file),\n        })),\n      ])}\n      onRemove={id => setFiles(current => current.filter(file => file.id !== id))}\n    />\n  )\n}\n\n<LiveAttachmentsExample />"
+        },
+        {
+          "caption": "Uploading, failed and read-only",
+          "source": "<Attachments\n  className=\"max-w-2xl\"\n  label=\"Attachments on R-1042\"\n  files={[\n    { id: 'u1', name: 'depot-count.csv', size: 0, status: 'uploading' },\n    { id: 'u2', name: 'shelf-photo.heic', size: 3_400_000, status: 'error', error: 'This type cannot be previewed or opened here.' },\n  ]}\n/>"
+        }
+      ],
+      "closed": true
+    },
+    {
       "name": "AvatarGroup",
       "title": "Avatar group",
       "tier": "molecules",
@@ -11100,6 +11274,179 @@
       "closed": true
     },
     {
+      "name": "CommentThread",
+      "title": "Comment thread",
+      "tier": "organisms",
+      "slug": "comment-thread",
+      "summary": "The comments on one item, as in an issue tracker: each with an avatar, the author, a time, the text and its actions (Reply, Edit, Delete), replies one level deep under the comment they answer, and a box to add a comment at the end. An assistant's comments carry an AiLabel, so a thread shared by people and an agent always says who wrote what.",
+      "useWhen": "People, and an assistant working on the item, discussing one item: a ticket, a document, an order.",
+      "notFor": "A conversation with an assistant, turn by turn: use ChatThread. A record of what happened to the item: use Timeline.",
+      "source": "src/components/organisms/comment-thread/CommentThread.tsx",
+      "docs": "/docs/components/comment-thread.md",
+      "imports": [
+        {
+          "names": [
+            "CommentThread"
+          ],
+          "from": "src/components/organisms/comment-thread/CommentThread"
+        }
+      ],
+      "requires": [
+        "A Toaster at the root, as every overlay needs: Delete asks in an AlertDialog."
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "description": "Required. Names the list: \"Comments on #12\"."
+        },
+        {
+          "name": "comments",
+          "type": "readonly ThreadComment[]",
+          "description": "Required. { id, author, body, time, timeLabel, edited?, canEdit?, canDelete?, replies? }, oldest first. author is { name, avatarSrc?, assistant? }."
+        },
+        {
+          "name": "onAdd",
+          "type": "(body: string, parentId: string | null) => void | Promise<unknown>",
+          "description": "Turns on the comment box and Reply. parentId is null for a new comment, or the top-level comment a reply belongs to. Return a promise to keep the button busy until it settles; when it rejects, the text stays in the box."
+        },
+        {
+          "name": "onEdit",
+          "type": "(id: string, body: string) => void | Promise<unknown>",
+          "description": "Turns on Edit for comments with canEdit."
+        },
+        {
+          "name": "onDelete",
+          "type": "(id: string) => void | Promise<unknown>",
+          "description": "Turns on Delete for comments with canDelete. An AlertDialog asks first."
+        },
+        {
+          "name": "renderBody",
+          "type": "(comment: ThreadComment) => ReactNode",
+          "default": "the text, line breaks kept",
+          "description": "How the text is drawn, for links or Markdown."
+        },
+        {
+          "name": "composerLabel",
+          "type": "string",
+          "default": "'Add a comment'",
+          "description": "The comment box's label."
+        },
+        {
+          "name": "composerHelp",
+          "type": "string",
+          "description": "Help under the label: who reads the comments, what happens next."
+        },
+        {
+          "name": "submitLabel",
+          "type": "string",
+          "default": "'Comment'",
+          "description": "The comment box's button."
+        },
+        {
+          "name": "emptyTitle",
+          "type": "string",
+          "default": "'No comments yet'",
+          "description": "The empty state title."
+        },
+        {
+          "name": "emptyLevel",
+          "type": "2 | 3 | 4",
+          "default": "3",
+          "description": "The empty state's heading level."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the root classes. When Tailwind utility classes clash, the later one wins."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "description": "The root div."
+        }
+      ],
+      "api": [
+        {
+          "name": "CommentAuthor",
+          "kind": "type",
+          "code": "/**\n * A comment thread on one item, after Jira's: each comment is an avatar, the author, a time, the\n * text and its actions (Reply, Edit, Delete), with replies one level deep under the comment they\n * answer, and a box to add a comment at the end. Comments from an assistant carry an AiLabel, so a\n * thread shared by people and an agent always says who wrote what.\n *\n * Controlled: the thread draws `comments` and reports what someone did; the parent stores it.\n * Replies to a reply join the same parent, so the depth never passes one.\n *\n * Contrast: every colour is on surface.base or the reply rail beside it. The author is\n * \"text.primary on surface.base\", the time, \"Edited\" and empty text \"text.secondary on\n * surface.base\", the body \"text.primary on surface.base\". The reply rail is the hairline, which is\n * decorative (the nesting is also in the list structure).\n */\n\nexport type CommentAuthor = {\n  name: string\n  /** An image for the avatar. Initials stand in without one. */\n  avatarSrc?: string\n  /** Marks the author as an assistant: an AiLabel beside the name. */\n  assistant?: boolean\n}",
+          "from": "src/components/organisms/comment-thread/CommentThread"
+        },
+        {
+          "name": "ThreadComment",
+          "kind": "type",
+          "code": "export type ThreadComment = {\n  id: string\n  author: CommentAuthor\n  body: string\n  /** An ISO datetime, for the time element's dateTime. */\n  time: string\n  /** What people see: \"2 hours ago\", \"25 Nov, 14:02\". */\n  timeLabel: string\n  edited?: boolean\n  /** Shows Edit on this comment, when onEdit is set. @default false */\n  canEdit?: boolean\n  /** Shows Delete on this comment, when onDelete is set. @default false */\n  canDelete?: boolean\n  /** Replies, oldest first. Only a top-level comment's replies are drawn. */\n  replies?: ThreadComment[]\n}",
+          "from": "src/components/organisms/comment-thread/CommentThread"
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "Moves through each comment's Reply, Edit and Delete, then the comment box."
+        },
+        {
+          "keys": [
+            "Ctrl",
+            "Enter"
+          ],
+          "does": "In a comment box, sends it (Cmd+Enter on a Mac). Enter alone starts a new line."
+        }
+      ],
+      "dos": [
+        "Mark every comment an assistant wrote with author.assistant, so its AiLabel says so.",
+        "Let people edit and delete only their own comments: set canEdit and canDelete per comment.",
+        "Say in composerHelp who reads the comments, when an agent picks them up."
+      ],
+      "donts": [
+        "Don't use it as a chat with an assistant. That is ChatThread.",
+        "Don't nest replies deeper than one level. The component joins a reply to a reply to the same parent for you."
+      ],
+      "anatomy": [
+        {
+          "part": "List",
+          "description": "An ol named by label, oldest comment first."
+        },
+        {
+          "part": "Comment",
+          "description": "An article named by its author: a small Avatar, the name, an AiLabel for an assistant, the time in a time element, and \"Edited\" after a change."
+        },
+        {
+          "part": "Body",
+          "description": "The text, line breaks kept, or what renderBody draws."
+        },
+        {
+          "part": "Actions",
+          "description": "Reply, Edit and Delete as quiet link buttons, each named with the author (\"Reply to Ilse Varga\"). Edit and Delete show only on comments that allow them."
+        },
+        {
+          "part": "Replies",
+          "description": "An ol under the comment, behind a hairline rail. A reply to a reply joins the same list."
+        },
+        {
+          "part": "Comment box",
+          "description": "A Textarea in a FormField with a Comment button. Ctrl+Enter sends it. Reply and Edit open the same box in place."
+        },
+        {
+          "part": "Empty state",
+          "description": "A small EmptyState when there are no comments yet."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Comment, reply, edit and delete",
+          "source": "const START: ThreadComment[] = [\n  {\n    id: 'c1',\n    author: { name: 'Ilse Varga' },\n    body: 'The scanner at gate 2 drops every third read. A photo of the error is attached.',\n    time: '2026-11-25T09:40:00Z',\n    timeLabel: '25 Nov, 09:40',\n    canEdit: true,\n    canDelete: true,\n    replies: [\n      {\n        id: 'c2',\n        author: { name: 'Assistant', assistant: true },\n        body: 'The firmware on that scanner is two versions behind the others. I have drafted the update steps in the description.',\n        time: '2026-11-25T09:52:00Z',\n        timeLabel: '25 Nov, 09:52',\n      },\n    ],\n  },\n  {\n    id: 'c3',\n    author: { name: 'Tomas Reyes' },\n    body: 'I can do the update on Thursday morning.',\n    time: '2026-11-25T11:10:00Z',\n    timeLabel: '25 Nov, 11:10',\n  },\n]\n\nfunction LiveThreadExample() {\n  const [comments, setComments] = useState(START)\n  const stamp = () => ({ time: new Date().toISOString(), timeLabel: 'Just now' })\n  return (\n    <CommentThread\n      className=\"max-w-2xl\"\n      label=\"Comments on R-1043\"\n      comments={comments}\n      composerHelp=\"Ctrl+Enter sends.\"\n      onAdd={(body, parentId) => {\n        const comment: ThreadComment = { id: `n${Date.now()}`, author: { name: 'Ilse Varga' }, body, canEdit: true, canDelete: true, ...stamp() }\n        setComments(current => parentId\n          ? current.map(c => (c.id === parentId ? { ...c, replies: [...(c.replies ?? []), comment] } : c))\n          : [...current, comment])\n      }}\n      onEdit={(id, body) => setComments(current => current.map(c => (c.id === id ? { ...c, body, edited: true } : c)))}\n      onDelete={id => setComments(current => current.filter(c => c.id !== id))}\n    />\n  )\n}\n\n<LiveThreadExample />"
+        },
+        {
+          "caption": "Read-only, with nothing yet",
+          "source": "<CommentThread label=\"Comments on R-1044\" comments={[]} />"
+        }
+      ],
+      "closed": true
+    },
+    {
       "name": "DataTable",
       "title": "Data table",
       "tier": "organisms",
@@ -11883,6 +12230,11 @@
           "type": "2 | 3 | 4",
           "default": "3",
           "description": "The heading level of the column titles. Pick one that sits under the page's own heading outline."
+        },
+        {
+          "name": "selectedItemId",
+          "type": "string | null",
+          "description": "The card whose details are open beside the board, in a SidePanel. It gets a 2px accent.signal.fill border and aria-current, so the board shows which card the panel is about."
         },
         {
           "name": "className",
@@ -12975,6 +13327,227 @@
         }
       ],
       "closed": true
+    },
+    {
+      "name": "SidePanel",
+      "title": "Side panel",
+      "tier": "organisms",
+      "slug": "side-panel",
+      "summary": "A wide panel docked beside the page's content, for reading or editing one item while the list or board it came from stays in view. It is not modal: there is no scrim (the dimmed layer a Sheet puts over the page), the page keeps working, and opening another item swaps what the panel shows. Its leading edge can be dragged, or moved with the arrow keys, to make it wider or narrower.",
+      "useWhen": "The details of one item from a board, list or table, read and edited while that board or list stays visible and usable beside it.",
+      "notFor": "A task that must be finished or cancelled before anything else: use Dialog. Filters or navigation on a narrow screen: use Sheet.",
+      "source": "src/components/organisms/side-panel/SidePanel.tsx",
+      "docs": "/docs/components/side-panel.md",
+      "imports": [
+        {
+          "names": [
+            "SIDE_PANEL_WIDTH",
+            "SidePanel"
+          ],
+          "from": "src/components/organisms/side-panel/SidePanel"
+        }
+      ],
+      "requires": [
+        "A flex row: put the page content (with min-w-0 flex-1) and the panel side by side, so the panel pushes the content aside instead of covering it.",
+        "A height when the page scrolls inside a container: it is sticky at the top and h-dvh by default. In a padded scroll area, pass className=\"md:h-[calc(100dvh-4rem)]\" or whatever fits."
+      ],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "description": "Required. Whether the panel is shown. Closed, it renders nothing."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "description": "Required. Called with false by the close button and by Escape inside the panel."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Required. The visible heading and the panel's accessible name."
+        },
+        {
+          "name": "eyebrow",
+          "type": "ReactNode",
+          "description": "A short line above the title: the item's key, its type, its column."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Shown under the title. Screen readers read it as the accessible description."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "description": "Controls in the header, before the close button, such as Run or a DropdownMenu. Keep it to two or three."
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "description": "Pinned under the body, outside the scroll: a form's Cancel and Save. Laid out as a right-aligned row with a gap."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "The width in pixels, when your code controls it. Pass it together with onWidthChange."
+        },
+        {
+          "name": "defaultWidth",
+          "type": "number",
+          "default": "560",
+          "description": "The width it opens at, when it keeps track of the width itself. SIDE_PANEL_WIDTH, exported beside the component, holds the three defaults and the 32px keyboard step."
+        },
+        {
+          "name": "minWidth",
+          "type": "number",
+          "default": "360",
+          "description": "The narrowest the handle can make it."
+        },
+        {
+          "name": "maxWidth",
+          "type": "number",
+          "default": "960",
+          "description": "The widest the handle can make it."
+        },
+        {
+          "name": "onWidthChange",
+          "type": "(width: number) => void",
+          "description": "Called as the width changes, from a drag or a key. Store the value (in localStorage, say) to open at the same width next time."
+        },
+        {
+          "name": "resizeLabel",
+          "type": "string",
+          "default": "'Resize panel'",
+          "description": "The resize handle's accessible name."
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "default": "'Close'",
+          "description": "The close button's accessible name."
+        },
+        {
+          "name": "closeOnEscape",
+          "type": "boolean",
+          "default": "true",
+          "description": "Whether Escape inside the panel closes it. An Escape that closes a menu or a listbox opened from the panel never does."
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3",
+          "default": "2",
+          "description": "The title's heading level, so it carries on the page's outline."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "description": "Merged with the panel classes. When Tailwind utility classes clash, the later one wins: this is where a height goes."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "description": "The aside element."
+        },
+        {
+          "name": "aria-labelledby / aria-describedby",
+          "type": "—",
+          "description": "Left out on purpose. The title and description are the only source of the name and description."
+        },
+        {
+          "name": "...rest",
+          "type": "Omit<HTMLAttributes<HTMLElement>, 'title'>",
+          "description": "Every other native attribute, onto the aside."
+        }
+      ],
+      "api": [
+        {
+          "name": "SIDE_PANEL_WIDTH",
+          "kind": "const",
+          "code": "/**\n * A docked, non-modal side panel: the standard side sheet of Material 3, where Sheet is the modal\n * one. It sits beside the content in the page's own layout and pushes it aside, so the page stays\n * visible, scrollable and usable while the panel is open. That is the difference that matters: an\n * item opened from a board or a list can be read and edited while the board is still in view, and\n * another item can be opened from the board without closing anything first.\n *\n * Non-modal means no scrim, no focus trap and no portal. Focus moves to the panel's heading when it\n * opens, Escape inside the panel closes it, and closing returns focus to whatever opened it, when\n * focus was still in the panel.\n *\n * The leading edge is a resize handle: a vertical `separator` with a value, dragged with a pointer\n * or moved with the arrow keys, so the width is never pointer-only.\n *\n * Below the md breakpoint (768px) there is no room to dock, so it covers the screen instead,\n * edge to edge, like a full-screen Dialog.\n *\n * Contrast: the panel paints surface.base, so the title reuses \"text.primary on surface.base\", the\n * eyebrow, description and close glyph \"text.secondary on surface.base\", and focus rings \"focus.ring\n * on surface.base\". The handle's line at rest is the hairline (decorative, the separator's value is\n * announced); hovered, dragged or focused it is accent.signal.indicator, the board's own\n * drop-indicator colour.\n */\n\nexport const SIDE_PANEL_WIDTH = { default: 560, min: 360, max: 960, step: 32 } as const …",
+          "from": "src/components/organisms/side-panel/SidePanel"
+        }
+      ],
+      "keyboard": [
+        {
+          "keys": [
+            "Esc"
+          ],
+          "does": "Inside the panel, closes it and sends focus back to whatever opened it."
+        },
+        {
+          "keys": [
+            "←",
+            "→"
+          ],
+          "does": "On the resize handle: wider and narrower by 32px, by 128px with Shift."
+        },
+        {
+          "keys": [
+            "Home",
+            "End"
+          ],
+          "does": "On the resize handle: the narrowest and the widest."
+        },
+        {
+          "keys": [
+            "Tab"
+          ],
+          "does": "Moves through the panel and on into the page: the panel traps nothing."
+        }
+      ],
+      "dos": [
+        "Open it from the item itself (a card title, a row) and swap its content when another item is opened, without closing it first.",
+        "Mark the open item in the list: KanbanBoard's selectedItemId does it for a board.",
+        "Save a field as it is changed or left, as an issue tracker does, so closing the panel never loses work.",
+        "Remember the width people drag it to."
+      ],
+      "donts": [
+        "Don't use it for a choice the page has to wait for. That is a Dialog.",
+        "Don't open a Sheet or a second SidePanel from it. A Dialog or AlertDialog from inside it is fine.",
+        "Don't put it over the content with position fixed on a wide screen: docked beside the content is the point."
+      ],
+      "anatomy": [
+        {
+          "part": "Panel",
+          "description": "An aside (a complementary landmark, which screen readers can jump to) named by the title. surface.base, a strong hairline on its leading edge, full height, sticky."
+        },
+        {
+          "part": "Resize handle",
+          "description": "The leading edge: a vertical separator with the width as its value. The line turns accent.signal.indicator on hover, on focus and while dragging."
+        },
+        {
+          "part": "Eyebrow",
+          "description": "Optional, above the title, in the data font: the item's key, type or column."
+        },
+        {
+          "part": "Title",
+          "description": "Required. An h2 by default, and the panel's accessible name. It takes focus when the panel opens."
+        },
+        {
+          "part": "Actions",
+          "description": "Optional controls in the header, before the close button."
+        },
+        {
+          "part": "Close",
+          "description": "A ghost icon button at the end of the header."
+        },
+        {
+          "part": "Body",
+          "description": "The part that scrolls. The header and the footer stay put."
+        },
+        {
+          "part": "Footer",
+          "description": "Optional, under the body: the buttons of a form, right-aligned."
+        }
+      ],
+      "examples": [
+        {
+          "caption": "Beside a list: open one, then another, without closing",
+          "source": "const ORDERS = [\n  { id: 'R-1042', title: 'Restock the north depot', status: 'Open' },\n  { id: 'R-1043', title: 'Replace the scanner at gate 2', status: 'In review' },\n  { id: 'R-1044', title: 'Count the replica shelf', status: 'Open' },\n]\n\nfunction BesideAListExample() {\n  const [openId, setOpenId] = useState<string | null>(null)\n  const [width, setWidth] = useState(420)\n  const open = ORDERS.find(order => order.id === openId)\n  return (\n    <div className=\"flex h-[28rem] w-full overflow-hidden border border-[var(--color-border-hairline)]\">\n      <ul role=\"list\" className=\"m-0 flex min-w-0 flex-1 list-none flex-col gap-2 overflow-y-auto p-4\">\n        {ORDERS.map(order => (\n          <li\n            key={order.id}\n            aria-current={order.id === openId ? 'true' : undefined}\n            className=\"flex items-center justify-between gap-3 border border-[var(--color-border-hairline)] p-3\"\n            style={order.id === openId ? { border: '2px solid var(--color-accent-signal-fill)' } : undefined}\n          >\n            <Button variant=\"link\" tone=\"neutral\" className=\"font-semibold\" onClick={() => setOpenId(order.id)}>\n              {order.title}\n            </Button>\n            <Badge tone={order.status === 'Open' ? 'info' : 'warning'}>{order.status}</Badge>\n          </li>\n        ))}\n      </ul>\n      <SidePanel\n        key={openId ?? ''}\n        open={open !== undefined}\n        onOpenChange={next => { if (!next) setOpenId(null) }}\n        title={open?.title ?? ''}\n        eyebrow={open?.id}\n        description={open?.status}\n        width={width}\n        onWidthChange={setWidth}\n        minWidth={320}\n        maxWidth={640}\n        className=\"md:h-full\"\n        footer={<Button size=\"sm\" onClick={() => setOpenId(null)}>Done</Button>}\n      >\n        <div className=\"flex flex-col gap-4\">\n          <FormField label=\"Title\"><Input defaultValue={open?.title} /></FormField>\n          <FormField label=\"Notes\" help=\"Saved when you leave the field.\"><Textarea rows={4} /></FormField>\n        </div>\n      </SidePanel>\n    </div>\n  )\n}\n\n<BesideAListExample />"
+        }
+      ],
+      "closed": false
     },
     {
       "name": "Sidebar",

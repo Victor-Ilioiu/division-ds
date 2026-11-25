@@ -839,6 +839,32 @@
       ]
     },
     {
+      "name": "attachments",
+      "type": "registry:item",
+      "title": "Attachments",
+      "description": "Attachments. Best for: Files attached to one record: screenshots on a ticket, a contract on a deal, receipts on an expense.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/spinner.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/molecules/attachments/Attachments.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/molecules/attachments/Attachments.tsx"
+        }
+      ]
+    },
+    {
       "name": "avatar-group",
       "type": "registry:item",
       "title": "Avatar group",
@@ -1872,6 +1898,35 @@
       ]
     },
     {
+      "name": "comment-thread",
+      "type": "registry:item",
+      "title": "Comment thread",
+      "description": "Comment thread. Best for: People, and an assistant working on the item, discussing one item: a ticket, a document, an order.",
+      "dependencies": [
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/ai-label.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/alert-dialog.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/avatar.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/button.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/empty-state.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/form-field.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/textarea.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/comment-thread/CommentThread.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/comment-thread/CommentThread.tsx"
+        }
+      ]
+    },
+    {
       "name": "data-table",
       "type": "registry:item",
       "title": "Data table",
@@ -2135,6 +2190,30 @@
       ]
     },
     {
+      "name": "side-panel",
+      "type": "registry:item",
+      "title": "Side panel",
+      "description": "Side panel. Best for: The details of one item from a board, list or table, read and edited while that board or list stays visible and usable beside it.",
+      "dependencies": [
+        "lucide-react@^1.47.0",
+        "react@^19.2.8"
+      ],
+      "devDependencies": [
+        "@types/react@^19.2.18"
+      ],
+      "registryDependencies": [
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/division-ds-base.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/icon-button.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/organisms/side-panel/SidePanel.tsx",
+          "type": "registry:file",
+          "target": "src/division-ds/components/organisms/side-panel/SidePanel.tsx"
+        }
+      ]
+    },
+    {
       "name": "sidebar",
       "type": "registry:item",
       "title": "Sidebar",
@@ -2223,6 +2302,7 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/accordion.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/alert.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/approval-request.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/attachments.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/avatar-group.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/breadcrumbs.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/card.json",
@@ -2264,6 +2344,7 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/chat-thread.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/checkout-form.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/command-palette.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/comment-thread.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/data-table.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/dialog.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/footer.json",
@@ -2273,6 +2354,7 @@
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/newsletter-form.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/product-card.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sheet.json",
+        "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/side-panel.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/sidebar.json",
         "https://raw.githubusercontent.com/Victor-Ilioiu/division-ds/main/public/r/terminal.json"
       ],

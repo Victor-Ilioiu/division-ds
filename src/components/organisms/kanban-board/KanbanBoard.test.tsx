@@ -69,6 +69,14 @@ function LiveBoard({ onMove }: { onMove?: (...args: [string, string, number]) =>
 const columnList = (title: string) => screen.getByRole('list', { name: title })
 
 describe('KanbanBoard', () => {
+  it('marks the card open beside the board with aria-current and the selection border', () => {
+    const { container } = render(<Board selectedItemId="b" />)
+    const selected = container.querySelector('[data-kanban-card="b"]') as HTMLElement
+    expect(selected).toHaveAttribute('aria-current', 'true')
+    expect((selected.firstElementChild as HTMLElement).style.border).toContain('var(--color-accent-signal-fill)')
+    expect(container.querySelector('[data-kanban-card="a"]')).not.toHaveAttribute('aria-current')
+  })
+
   it('is a region named by label, with a column per entry and the cards in items order', () => {
     render(<Board />)
     const region = screen.getByRole('region', { name: 'Hiring board' })

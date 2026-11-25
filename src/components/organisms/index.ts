@@ -1,5 +1,5 @@
 // Division DS — organisms barrel. One export line per component folder, alphabetical, re-exporting
-// the component(s) and their exported types and helpers. Nineteen folders under
+// the component(s) and their exported types and helpers. Twenty-one folders under
 // src/components/organisms/ — verify the folder count still matches before trusting either.
 // terminal/ is the one folder left out on purpose: exporting it here would put xterm in every
 // screen that imports this barrel. Import it from its own file.
@@ -38,6 +38,7 @@ export {
   type CheckoutOrder,
   type DeliveryOption,
 } from './checkout-form/CheckoutForm'
+export { CommentThread, type CommentAuthor, type CommentThreadProps, type ThreadComment } from './comment-thread/CommentThread'
 export {
   CommandPalette,
   filterCommands,
@@ -102,5 +103,6 @@ export {
   type ProductGridProps,
 } from './product-card/ProductCard'
 export { Sheet, SheetClose, SheetContent, SheetTrigger, type SheetContentProps } from './sheet/Sheet'
+export { SIDE_PANEL_WIDTH, SidePanel, type SidePanelProps } from './side-panel/SidePanel'
 export { Sidebar, type SidebarGroup, type SidebarItem, type SidebarProps } from './sidebar/Sidebar'
 export type { LinkRenderProps } from '../../lib/render-link'
